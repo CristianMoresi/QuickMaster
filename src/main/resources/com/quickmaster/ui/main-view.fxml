@@ -21,12 +21,14 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="rootPane"
-            xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.quickmaster.ui.MainController"
-            styleClass="root-pane"
-            prefWidth="1180" prefHeight="820">
+<StackPane fx:id="rootStack"
+           xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.quickmaster.ui.MainController"
+           prefWidth="1180" prefHeight="820">
+
+<BorderPane fx:id="rootPane" styleClass="root-pane"
+            maxWidth="Infinity" maxHeight="Infinity">
 
     <top>
         <VBox>
@@ -238,8 +240,26 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="analyzeLabel" text="Analyzing audio…" styleClass="status-text" visible="false" managed="false"/>
                 <ProgressBar fx:id="analyzeProgress" prefWidth="160" progress="-1.0" visible="false" managed="false"/>
-                <ProgressBar fx:id="exportProgress" prefWidth="180" visible="false" managed="false"/>
             </HBox>
         </VBox>
     </bottom>
 </BorderPane>
+
+    <!-- Export overlay: a full-window veil + centred card that blocks all
+         interaction while an export runs. Sibling of rootPane in the StackPane,
+         so disabling rootPane never disables the Cancel button. -->
+    <VBox fx:id="exportOverlay" styleClass="export-overlay" alignment="CENTER"
+          maxWidth="Infinity" maxHeight="Infinity"
+          visible="false" managed="false">
+        <VBox styleClass="export-card" alignment="CENTER" spacing="14"
+              maxWidth="440" maxHeight="-Infinity">
+            <padding><Insets top="26" right="32" bottom="26" left="32"/></padding>
+            <Label text="Exporting" styleClass="section-header"/>
+            <Label fx:id="exportFileLabel" text="" styleClass="value"/>
+            <ProgressBar fx:id="exportBar" prefWidth="320" progress="0.0"/>
+            <Label fx:id="exportPercentLabel" text="0 %" styleClass="value"/>
+            <Label fx:id="exportTimeLabel" text="" styleClass="caption"/>
+            <Button text="Cancel" onAction="#onCancelExport" styleClass="action-button"/>
+        </VBox>
+    </VBox>
+</StackPane>

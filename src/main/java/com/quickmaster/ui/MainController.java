@@ -294,10 +294,20 @@ public class MainController
 
     // Status bar
     @FXML private Label statusLabel;
-    @FXML private ProgressBar exportProgress;
     @FXML private Label analyzeLabel;
     @FXML private ProgressBar analyzeProgress;
     private int analyzeJobs = 0;
+
+    // Export overlay: a full-window modal blocker shown while an export runs.
+    @FXML private StackPane rootStack;
+    @FXML private VBox exportOverlay;
+    @FXML private ProgressBar exportBar;
+    @FXML private Label exportFileLabel;
+    @FXML private Label exportPercentLabel;
+    @FXML private Label exportTimeLabel;
+    private volatile boolean exporting = false;
+    private long exportStartNanos = 0L;
+    private Task<?> exportTask;
 
     /* =========================================================
      *  Domain state
@@ -485,6 +495,7 @@ public class MainController
                 // Space toggles play/pause anywhere - except while typing in a field.
                 newS.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, ev ->
                 {
+                    if (exporting) return;   // window is locked during export
                     if (ev.getCode() == javafx.scene.input.KeyCode.SPACE
                             && !(newS.getFocusOwner() instanceof javafx.scene.control.TextInputControl))
                     {
@@ -1174,23 +1185,37 @@ public class MainController
                 exportAsMp3, loadedFile.getSampleRate(), fileBits, fileFloat);
         if (settings == null) { setStatus("Export cancelled."); return; }
 
+        // Stop live playback before exporting: the audio thread and the offline
+        // render must never touch the chain at once. The render also runs on an
+        // independent snapshot of the chain (never the live pipeline), so the two
+        // stay fully decoupled even if the audio thread is still winding down.
+        player.stop();
+        final Snapshot snap = buildSnapshot();
+
         final int srcRate = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
         final float[] src = loadedFile.getSamples().clone();   // the (possibly trimmed) editable audio
         final int os = oversampling;
-        setStatus("Exporting …");
 
         Task<Void> task = new Task<>()
         {
             @Override
             protected Void call() throws AudioFileException
             {
-                // Render the chain on a throwaway copy (so the editable audio is
-                // not modified), oversampled if requested. Streams block-by-block
-                // (bounded memory) and reports progress to the export bar.
-                float[] processed = renderOversampled(pipeline, src, srcRate, ch, os,
-                        frac -> updateProgress(frac, 1.0));
+                // Render the snapshot chain on a throwaway copy (the editable audio
+                // is untouched), oversampled if requested. Streams block-by-block
+                // (bounded memory) and reports progress; a Cancel throws out of the
+                // progress callback at the next block boundary (snapshot discarded).
+                float[] processed = renderOversampled(snap.pipeline, src, srcRate, ch, os,
+                        frac ->
+                        {
+                            if (isCancelled())
+                                throw new java.util.concurrent.CancellationException();
+                            updateProgress(frac, 1.0);
+                        });
+                if (isCancelled()) return null;   // cancelled: write nothing
                 float[] out = resampleCubic(processed, ch, srcRate, settings.sampleRate());
+                if (isCancelled()) return null;
                 if (exportAsMp3)
                 {
                     new Mp3File(path, settings.sampleRate(), ch, out, settings.kbps(), false).save(path);
@@ -1206,7 +1231,7 @@ public class MainController
 
         task.setOnSucceeded(ev ->
         {
-            finishExportProgress();
+            hideExportOverlay();
             setStatus("Exported: " + target.getName());
             AppLogger.info("Exported to: " + path);
             File parent = target.getParentFile();
@@ -1214,32 +1239,88 @@ public class MainController
         });
         task.setOnFailed(ev ->
         {
-            finishExportProgress();
+            hideExportOverlay();
             AppLogger.error("Export failed: " + path, task.getException());
             setStatus("Export failed.");
             showError("Export failed", task.getException().getMessage());
         });
-        beginExportProgress(task);
+        task.setOnCancelled(ev ->
+        {
+            hideExportOverlay();
+            setStatus("Export cancelled.");
+            AppLogger.info("Export cancelled: " + path);
+        });
+        exportTask = task;
+        showExportOverlay(target.getName(), task);
         runTask(task);
     }
 
-    /** Shows the export progress bar and binds it to the running task. */
-    private void beginExportProgress(Task<?> task)
+    /**
+     * Cancel action from the export overlay. Requests cancellation of the running
+     * export task; the task notices at its next block boundary and its
+     * onCancelled handler restores the window.
+     */
+    @FXML
+    private void onCancelExport()
     {
-        if (exportProgress == null) return;
-        exportProgress.progressProperty().bind(task.progressProperty());
-        exportProgress.setVisible(true);
-        exportProgress.setManaged(true);
+        if (exportTask != null) exportTask.cancel(true);
     }
 
-    /** Hides the export progress bar and releases the binding. */
-    private void finishExportProgress()
+    /**
+     * Shows the modal export overlay and locks the rest of the window. Binds the
+     * overlay's progress bar to the task and listens to its progress to keep the
+     * percentage and elapsed / remaining labels current. Disabling {@code rootPane}
+     * blocks every control beneath the overlay (and file drag-and-drop); the
+     * overlay is a sibling in the StackPane, so its Cancel button stays live.
+     */
+    private void showExportOverlay(String fileName, Task<?> task)
     {
-        if (exportProgress == null) return;
-        exportProgress.progressProperty().unbind();
-        exportProgress.setProgress(0.0);
-        exportProgress.setVisible(false);
-        exportProgress.setManaged(false);
+        exporting = true;
+        exportStartNanos = System.nanoTime();
+        exportFileLabel.setText(fileName);
+        exportPercentLabel.setText("Preparing…");
+        exportTimeLabel.setText("");
+        exportBar.progressProperty().bind(task.progressProperty());
+        task.progressProperty().addListener((o, ov, nv) -> updateExportEta(nv.doubleValue()));
+        exportOverlay.setVisible(true);
+        exportOverlay.setManaged(true);
+        rootPane.setDisable(true);
+        setStatus("Exporting …");
+    }
+
+    /** Hides the export overlay, unlocks the window and clears export state. */
+    private void hideExportOverlay()
+    {
+        exporting = false;
+        exportTask = null;
+        exportBar.progressProperty().unbind();
+        exportBar.setProgress(0.0);
+        exportOverlay.setVisible(false);
+        exportOverlay.setManaged(false);
+        rootPane.setDisable(false);
+    }
+
+    /** Updates the overlay's percentage and remaining-time labels from progress in [0, 1]. */
+    private void updateExportEta(double p)
+    {
+        if (p <= 0.0)
+        {
+            exportPercentLabel.setText("Preparing…");
+            exportTimeLabel.setText("");
+            return;
+        }
+        exportPercentLabel.setText(String.format(Locale.US, "%.0f %%", p * 100.0));
+        double elapsed = (System.nanoTime() - exportStartNanos) / 1e9;
+        double remaining = elapsed * (1.0 - p) / p;
+        exportTimeLabel.setText(formatClock(elapsed) + " elapsed · " + formatClock(remaining) + " left");
+    }
+
+    /** Formats a duration in seconds as m:ss (zero-clamped, non-finite-safe). */
+    private static String formatClock(double seconds)
+    {
+        if (seconds < 0 || Double.isNaN(seconds) || Double.isInfinite(seconds)) seconds = 0;
+        int total = (int) Math.round(seconds);
+        return String.format(Locale.US, "%d:%02d", total / 60, total % 60);
     }
 
     /** Shows/hides the "Analyzing audio" indicator (reference-counted across jobs). */
@@ -1774,6 +1855,7 @@ public class MainController
     @FXML
     private void onUndo()
     {
+        if (exporting) return;
         if (loadedFile == null || undoStack.isEmpty()) return;
         redoStack.push(loadedFile.getSamples().clone());
         loadedFile.setSamples(undoStack.pop());
@@ -1784,6 +1866,7 @@ public class MainController
     @FXML
     private void onRedo()
     {
+        if (exporting) return;
         if (loadedFile == null || redoStack.isEmpty()) return;
         undoStack.push(loadedFile.getSamples().clone());
         loadedFile.setSamples(redoStack.pop());

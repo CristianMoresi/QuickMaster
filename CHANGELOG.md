@@ -5,6 +5,19 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-06-07
+
+### Added
+- **Export progress overlay** - exporting now shows a modal progress box (percentage, elapsed
+  and remaining time) with a Cancel button, and locks the rest of the window while the master
+  is rendered, so the export cannot collide with playback.
+
+### Fixed
+- **Garbled audio when exporting during playback** - export now stops playback and renders on
+  an independent copy of the processing chain, so the live audio engine and the offline render
+  no longer share state. Previously, exporting while the audio was playing could break the
+  real-time output into loud noise.
+
 ## [1.0.1] - 2026-06-07
 
 ### Added
