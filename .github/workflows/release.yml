@@ -70,7 +70,7 @@ jobs:
             --main-jar quickmaster.jar \
             --main-class com.quickmaster.Launcher \
             --icon "$ICON" \
-            --add-modules java.base,java.desktop,java.logging,java.xml,java.prefs,java.management,jdk.unsupported,jdk.zipfs,jdk.localedata,jdk.crypto.ec \
+            --add-modules java.base,java.desktop,java.scripting,java.sql,java.logging,java.xml,java.prefs,java.management,java.naming,jdk.jfr,jdk.unsupported,jdk.zipfs,jdk.localedata \
             --dest dist
 
       - name: Zip the bundle (Windows)
