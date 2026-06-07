@@ -35,6 +35,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -57,12 +58,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -201,6 +204,9 @@ public class MainController
     /* =========================================================
      *  FXML field bindings - one per fx:id in main-view.fxml
      * ========================================================= */
+
+    // Root container (target for whole-window file drag-and-drop).
+    @FXML private BorderPane rootPane;
 
     // Top bar
     @FXML private Label fileNameLabel;
@@ -347,6 +353,11 @@ public class MainController
     private double selStartSec = -1.0, selEndSec = -1.0;
     private boolean selecting = false;
 
+    /** True while a loadable audio file is being dragged over the window. */
+    private boolean fileDragActive = false;
+    /** Pseudo-class toggled on the root to highlight the window during a file drag. */
+    private static final PseudoClass FILE_DRAG_PSEUDO = PseudoClass.getPseudoClass("file-drag");
+
     /** Number of equalizer bands the user has added. */
     private int eqBandCount = 0;
     /** Index of the band currently shown in the EQ editor, or -1 for none. */
@@ -418,6 +429,7 @@ public class MainController
         initChainUi();
         initDynamicsUi();
         initClipUi();
+        initFileDragAndDrop();
 
         // --- Fade: always on, edited by dragging the handles on the waveform ---
         fade.setEnabled(true);
@@ -521,7 +533,7 @@ public class MainController
         goStartButton.setDisable(true);
         goEndButton.setDisable(true);
 
-        setStatus("Ready. Load a file to begin.");
+        setStatus("Ready. Load or drop a file to begin.");
 
         // Initial paint of the empty waveform area.
         Platform.runLater(this::drawWaveform);
@@ -879,24 +891,36 @@ public class MainController
             return;
         }
 
-        final String path = chosen.getAbsolutePath();
-        setStatus("Loading " + chosen.getName() + " …");
+        loadAudioFile(chosen);
+    }
+
+    /**
+     * Loads an audio file on a background thread and, on success,
+     * hands off to {@link #onAudioReady} to configure the whole UI
+     * for it. Shared by the "Load file" button and by drag-and-drop.
+     * The format is detected from the file content, not its
+     * extension; load failures are logged and shown in a dialog.
+     */
+    private void loadAudioFile(File file)
+    {
+        final String path = file.getAbsolutePath();
+        setStatus("Loading " + file.getName() + " …");
 
         Task<AudioFile> task = new Task<>()
         {
             @Override
             protected AudioFile call() throws AudioFileException
             {
-                AudioFile file = AudioFormatDetector.loadAuto(path);
-                file.load();
-                return file;
+                AudioFile loaded = AudioFormatDetector.loadAuto(path);
+                loaded.load();
+                return loaded;
             }
         };
 
         task.setOnSucceeded(ev ->
         {
             loadedFile = task.getValue();
-            onAudioReady(chosen);
+            onAudioReady(file);
         });
         task.setOnFailed(ev ->
         {
@@ -906,6 +930,82 @@ public class MainController
             showError("Could not load the file", cause.getMessage());
         });
         runTask(task);
+    }
+
+    /**
+     * Wires whole-window drag-and-drop loading. Filters on the root
+     * run in the capture phase, so they see the gesture before the
+     * chain chips (which only ever accept their own string payload
+     * for reordering) and work over the entire window. A drop is
+     * accepted only when it carries a file with a supported audio
+     * extension; the window is highlighted while such a file hovers.
+     */
+    private void initFileDragAndDrop()
+    {
+        rootPane.addEventFilter(DragEvent.DRAG_OVER, ev ->
+        {
+            Dragboard db = ev.getDragboard();
+            if (db.hasFiles() && firstAudioFile(db.getFiles()) != null)
+            {
+                ev.acceptTransferModes(TransferMode.COPY);
+                if (!fileDragActive)
+                {
+                    fileDragActive = true;
+                    rootPane.pseudoClassStateChanged(FILE_DRAG_PSEUDO, true);
+                }
+                ev.consume();
+            }
+        });
+
+        rootPane.addEventFilter(DragEvent.DRAG_EXITED, ev -> clearFileDragHighlight());
+
+        rootPane.addEventFilter(DragEvent.DRAG_DROPPED, ev ->
+        {
+            Dragboard db = ev.getDragboard();
+            boolean loaded = false;
+            if (db.hasFiles())
+            {
+                File audio = firstAudioFile(db.getFiles());
+                if (audio != null)
+                {
+                    loadAudioFile(audio);
+                    loaded = true;
+                }
+            }
+            clearFileDragHighlight();
+            ev.setDropCompleted(loaded);
+            ev.consume();
+        });
+    }
+
+    /** Removes the file-drag highlight if it is currently showing. */
+    private void clearFileDragHighlight()
+    {
+        if (fileDragActive)
+        {
+            fileDragActive = false;
+            rootPane.pseudoClassStateChanged(FILE_DRAG_PSEUDO, false);
+        }
+    }
+
+    /**
+     * Returns the first regular file in the list whose name ends in
+     * a supported audio extension (.wav / .mp3), or {@code null} if
+     * none qualifies. This is a quick check to decide whether to
+     * accept a drag; the real format is verified by content when the
+     * file is loaded.
+     */
+    private static File firstAudioFile(List<File> files)
+    {
+        for (File f : files)
+        {
+            String name = f.getName().toLowerCase(Locale.ROOT);
+            if ((name.endsWith(".wav") || name.endsWith(".mp3")) && f.isFile())
+            {
+                return f;
+            }
+        }
+        return null;
     }
 
     /**

@@ -39,6 +39,12 @@
     -fx-text-fill: -fx-text-primary;
 }
 
+/* Whole-window glow while a loadable audio file is dragged over it.
+   An inner shadow does not take part in layout, so nothing shifts. */
+.root-pane:file-drag {
+    -fx-effect: innershadow(gaussian, -fx-accent, 28, 0.55, 0, 0);
+}
+
 .top-bar {
     -fx-background-color: -fx-bg-surface;
     -fx-border-color: transparent transparent -fx-border-soft transparent;
