@@ -1,0 +1,575 @@
+.root {
+    -fx-bg-base:       #1a1a1f;
+    -fx-bg-surface:    #232329;
+    -fx-bg-elevated:   #2d2d35;
+    -fx-border-soft:   #3a3a44;
+    -fx-text-primary:  #e7e7ea;
+    -fx-text-muted:    #8a8a93;
+    -fx-text-strong:   #ffffff;
+    -fx-accent:        #4a9eff;
+    -fx-accent-hover:  #6bb0ff;
+    -fx-accent-dim:    #355a82;
+    -fx-warning:       #f0b14a;
+}
+
+/* Erase (destructive) - subtle until hovered. */
+.erase-button {
+    -fx-text-fill: #d98a8a;
+}
+.erase-button:hover {
+    -fx-background-color: #5a2d2d;
+    -fx-text-fill: #ffd6d6;
+}
+
+/* Floating mute/erase menu that appears over the selected EQ band. */
+.band-menu {
+    -fx-background-color: rgba(36, 36, 42, 0.96);
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-padding: 3 4 3 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 8, 0.3, 0, 2);
+}
+
+.root-pane {
+    -fx-background-color: -fx-bg-base;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.top-bar {
+    -fx-background-color: -fx-bg-surface;
+    -fx-border-color: transparent transparent -fx-border-soft transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.status-bar {
+    -fx-background-color: -fx-bg-surface;
+    -fx-border-color: -fx-border-soft transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+.center-pane {
+    -fx-background-color: -fx-bg-base;
+}
+
+.processor-pane {
+    -fx-background-color: -fx-bg-base;
+    -fx-min-width: 340;
+    -fx-pref-width: 340;
+}
+
+.waveform-wrapper {
+    -fx-background-color: #14141a;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.transport-bar {
+    -fx-background-color: -fx-bg-surface;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.trim-card {
+    -fx-background-color: -fx-bg-surface;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.processor-card {
+    -fx-background-color: -fx-bg-surface;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.label {
+    -fx-text-fill: -fx-text-primary;
+}
+
+.caption {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 11px;
+}
+
+.value {
+    -fx-text-fill: -fx-text-strong;
+    -fx-font-weight: bold;
+}
+
+.value-muted {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-style: italic;
+}
+
+.time-display {
+    -fx-text-fill: -fx-text-strong;
+    -fx-font-family: "Consolas", "Menlo", "Monaco", monospace;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.status-text {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 11px;
+}
+
+.section-header {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.processor-title {
+    -fx-text-fill: -fx-text-strong;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: -fx-bg-elevated;
+    -fx-text-fill: -fx-text-primary;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 5 11 5 11;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.button:hover {
+    -fx-background-color: derive(-fx-bg-elevated, 18%);
+    -fx-border-color: derive(-fx-border-soft, 35%);
+}
+
+.button:pressed {
+    -fx-background-color: derive(-fx-bg-elevated, -10%);
+}
+
+.button:disabled {
+    -fx-opacity: 0.45;
+}
+
+.action-button {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+    -fx-border-color: -fx-accent;
+    -fx-font-weight: bold;
+}
+
+.action-button:hover {
+    -fx-background-color: -fx-accent-hover;
+    -fx-border-color: -fx-accent-hover;
+}
+
+.transport-button {
+    -fx-min-width: 70;
+}
+
+.transport-icon {
+    -fx-min-width: 36;
+    -fx-font-size: 13px;
+}
+
+.transport-play {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+    -fx-border-color: -fx-accent;
+    -fx-font-weight: bold;
+    -fx-min-width: 80;
+}
+
+.transport-play:hover {
+    -fx-background-color: -fx-accent-hover;
+    -fx-border-color: -fx-accent-hover;
+}
+
+.transport-toggle {
+    -fx-background-color: -fx-bg-elevated;
+    -fx-text-fill: -fx-text-primary;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 5 14 5 14;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.transport-toggle:hover {
+    -fx-background-color: derive(-fx-bg-elevated, 18%);
+}
+
+.transport-toggle:selected {
+    -fx-background-color: -fx-warning;
+    -fx-text-fill: #1a1a1f;
+    -fx-border-color: -fx-warning;
+}
+
+.toggle-button {
+    -fx-background-color: -fx-bg-elevated;
+    -fx-text-fill: -fx-text-primary;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 5 11 5 11;
+    -fx-cursor: hand;
+}
+
+.toggle-button:selected {
+    -fx-background-color: -fx-warning;
+    -fx-text-fill: #1a1a1f;
+    -fx-border-color: -fx-warning;
+}
+
+.slider {
+    -fx-padding: 2 0 2 0;
+}
+
+.slider .track {
+    -fx-background-color: -fx-bg-elevated;
+    -fx-background-radius: 2;
+    -fx-pref-height: 4;
+}
+
+.slider .thumb {
+    -fx-background-color: -fx-accent;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+}
+
+.slider .thumb:hover {
+    -fx-background-color: -fx-accent-hover;
+}
+
+.slider .axis {
+    -fx-tick-label-fill: -fx-text-muted;
+    -fx-tick-mark-fill: -fx-border-soft;
+}
+
+.check-box {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 11px;
+}
+
+.check-box > .box {
+    -fx-background-color: -fx-bg-elevated;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-padding: 1;
+}
+
+.check-box:selected > .box {
+    -fx-background-color: -fx-accent;
+    -fx-border-color: -fx-accent;
+}
+
+.check-box:selected > .box > .mark {
+    -fx-background-color: white;
+}
+
+.enable-check {
+    -fx-font-size: 10px;
+    -fx-text-fill: -fx-text-muted;
+}
+
+.separator .line {
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 0 1 0 0;
+}
+
+.separator:horizontal .line {
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ============================================================
+ *  Processing-chain tab bar
+ * ============================================================ */
+
+.chain-scroll {
+    -fx-background-color: -fx-bg-surface;
+    -fx-background: -fx-bg-surface;
+    -fx-border-color: transparent transparent -fx-border-soft transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.chain-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.chain-bar {
+    -fx-background-color: -fx-bg-surface;
+}
+
+.chain-chip {
+    -fx-background-color: -fx-bg-elevated;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 12 5 10;
+    -fx-cursor: hand;
+}
+
+.chain-chip:hover {
+    -fx-background-color: derive(-fx-bg-elevated, 14%);
+}
+
+.chain-chip-selected {
+    -fx-border-color: -fx-accent;
+    -fx-background-color: -fx-accent-dim;
+}
+
+.chain-chip-off {
+    -fx-opacity: 0.5;
+}
+
+.chip-name {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.chip-led {
+    -fx-min-width: 9;
+    -fx-min-height: 9;
+    -fx-pref-width: 9;
+    -fx-pref-height: 9;
+    -fx-background-radius: 50%;
+    -fx-background-color: -fx-text-muted;
+}
+
+.chain-chip-on .chip-led {
+    -fx-background-color: #46d17a;
+}
+
+.chain-chip-off .chip-led {
+    -fx-background-color: #5a5a63;
+}
+
+/* ============================================================
+ *  Module panels + meters
+ * ============================================================ */
+
+.module-content {
+    -fx-background-color: -fx-bg-base;
+}
+
+.module-panel {
+    -fx-background-color: -fx-bg-surface;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.meter-panel {
+    -fx-background-color: -fx-bg-surface;
+    -fx-border-color: transparent transparent transparent -fx-border-soft;
+    -fx-border-width: 0 0 0 1;
+    -fx-min-width: 184;
+    -fx-pref-width: 184;
+}
+
+.meter-big {
+    -fx-text-fill: -fx-accent;
+    -fx-font-family: "Consolas", "Menlo", "Monaco", monospace;
+    -fx-font-size: 23px;
+    -fx-font-weight: bold;
+}
+
+.meter-panel .value {
+    -fx-font-family: "Consolas", "Menlo", "Monaco", monospace;
+}
+
+/* The right panel's three equal sections sit transparently over the surface,
+ * separated by the inherited separators. */
+.meter-section {
+    -fx-background-color: transparent;
+}
+
+/* Export progress bar: dark track + accent fill to match the theme. */
+.progress-bar > .track {
+    -fx-background-color: #0e0e12;
+    -fx-background-radius: 3;
+}
+
+.progress-bar > .bar {
+    -fx-background-color: -fx-accent;
+    -fx-background-radius: 3;
+    -fx-background-insets: 1;
+}
+
+/* ===== Dynamics panel: per-compressor cards + live -GR meters ===== */
+.dyn-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-padding: 0;
+}
+.dyn-scroll > .viewport { -fx-background-color: transparent; }
+
+.dynamics-card {
+    -fx-background-color: transparent;
+    -fx-padding: 9 11 10 11;
+}
+
+.dyn-card-title {
+    -fx-text-fill: -fx-text-strong;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.dyn-card-tip {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 11px;
+}
+
+/* Chain-position number badge on each square (background colour set in code). */
+.dyn-badge {
+    -fx-text-fill: #0e0e12;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-min-width: 18;  -fx-min-height: 18;
+    -fx-max-width: 18;  -fx-max-height: 18;
+    -fx-alignment: center;
+    -fx-background-radius: 9;
+}
+
+.dyn-move {
+    -fx-background-color: -fx-bg-surface;
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 9px;
+    -fx-padding: 1 5 1 5;
+    -fx-background-radius: 3;
+    -fx-cursor: hand;
+}
+.dyn-move:hover {
+    -fx-text-fill: -fx-text-primary;
+    -fx-background-color: -fx-accent-dim;
+}
+
+/* -GR meter: a dark track with a green→amber→red fill that grows with reduction. */
+.gr-meter-track {
+    -fx-background-color: #0e0e12;
+    -fx-background-radius: 3;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+}
+
+.gr-meter-fill {
+    -fx-background-color: linear-gradient(to right, #54d98c, #f0b14a 70%, #ff5d5d);
+    -fx-background-radius: 3;
+    -fx-background-insets: 1;
+}
+
+.monitor-bar {
+    -fx-background-color: -fx-bg-base;
+}
+
+/* The EQ sits directly on the base background - no card, no border, no surface
+ * (like the loudness sidebar). The curve canvas paints the same base colour. */
+.eq-panel {
+    -fx-background-color: -fx-bg-base;
+}
+
+.eq-canvas-wrapper {
+    -fx-background-color: transparent;
+}
+
+.knob {
+    -fx-cursor: hand;
+}
+
+.knob-sep {
+    -fx-padding: 0 2 0 2;
+    -fx-opacity: 0.6;
+}
+
+/* The EQ knob row: enclosed top and bottom by a divider line. */
+.eq-knob-row {
+    -fx-border-color: #3a3a44 transparent #3a3a44 transparent;
+    -fx-border-width: 1 0 1 0;
+}
+
+.knob-editor {
+    -fx-background-color: #0e0e12;
+    -fx-text-fill: -fx-text-strong;
+    -fx-font-family: "Consolas", "Menlo", "Monaco", monospace;
+    -fx-font-size: 11px;
+    -fx-alignment: center;
+    -fx-border-color: -fx-accent;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-padding: 1 2 1 2;
+}
+
+.eq-controls-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-padding: 4 0 0 0;
+}
+
+.eq-controls-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.meter-canvas-wrap {
+    -fx-background-color: #14141a;
+    -fx-border-color: -fx-border-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+
+.chain-arrow {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 15px;
+    -fx-padding: 0 1 0 1;
+}
+
+/* Subtle depth so panels and chips don't read as flat blocks. */
+.module-panel,
+.meter-panel {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.32), 9, 0.0, 0, 2);
+}
+
+.chain-chip {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.28), 4, 0.0, 0, 1);
+}
+
+.chain-chip-selected {
+    -fx-effect: dropshadow(gaussian, rgba(74, 158, 255, 0.45), 8, 0.2, 0, 0);
+}
+
+/* Tooltips: a marked dark background and high-contrast text so they read clearly,
+ * with a border and shadow lifting them off the UI. */
+.tooltip {
+    -fx-background-color: #14161e;
+    -fx-text-fill: #eef0f5;
+    -fx-font-size: 12.5px;
+    -fx-padding: 9 12 9 12;
+    -fx-background-radius: 5;
+    -fx-border-color: #5a6172;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.55), 11, 0.0, 0, 3);
+}
