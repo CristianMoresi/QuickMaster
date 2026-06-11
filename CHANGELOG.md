@@ -5,6 +5,13 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2026-06-11
+
+### Changed
+- **The transport's comparison toggle is now called "Bypass"** - it bypasses the chain to hear
+  the original audio, so it now says exactly that, leaving "Set A"/"Set B" (top bar) as the only
+  control named A/B: the one that switches between two complete chain configurations.
+
 ## [1.2.1] - 2026-06-11
 
 ### Changed

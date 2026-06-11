@@ -62,7 +62,7 @@ A **Push** control says how many dB the loudest peak should come down; quieter p
 
 The **Peak Normalizer** sets the delivery ceiling in dBTP (default -1 dBTP) using true-peak measurement, and you can render with selectable **oversampling** up to 16x.
 
-Exports are delivery-grade end to end: 16 and 24-bit renders are **TPDF-dithered**, sample-rate conversion uses a polyphase windowed-sinc resampler (anti-aliased, with the true-peak ceiling re-anchored at the delivery rate), and same-container exports keep the source's **metadata** (ID3 tags on MP3, LIST-INFO and bext chunks on WAV). The whole chain can be saved and loaded as a **preset**, compared via two full **A/B settings slots**, and applied to a folder of songs at once with **batch export**.
+Exports are delivery-grade end to end: 16 and 24-bit renders are **TPDF-dithered**, sample-rate conversion uses a polyphase windowed-sinc resampler (anti-aliased, with the true-peak ceiling re-anchored at the delivery rate), and same-container exports keep the source's **metadata** (ID3 tags on MP3, LIST-INFO and bext chunks on WAV). The whole chain can be saved and loaded as a **preset**, compared via two full **Set A / Set B configuration slots** (while the transport's **Bypass** compares against the original audio), and applied to a folder of songs at once with **batch export**.
 
 ## Features at a glance
 
@@ -72,9 +72,9 @@ Exports are delivery-grade end to end: 16 and 24-bit renders are **TPDF-dithered
 - **Clip**: Tube/Tape/Transformer saturation and hard clip, dialled in dB, all antiderivative anti-aliased (ADAA).
 - **Limit**: two-stage true-peak limiter, fully oversampled.
 - True-peak Peak Normalizer and oversampling up to 16x.
-- Real-time playback with latency-compensated cursor and meters, time-aligned instant **A/B**, selection **looping**, an interactive waveform, non-destructive crop and trim.
+- Real-time playback with latency-compensated cursor and meters, a time-aligned **Bypass** (instant original-vs-master comparison), selection **looping**, an interactive waveform, non-destructive crop and trim.
 - Integrated **LUFS** metering (ITU-R BS.1770), true-peak readout, phase correlation, M/S levels and a goniometer, plus a draggable processing-chain bar.
-- Chain **presets** (JSON), two A/B settings slots, and undo/redo that also covers parameter changes.
+- Chain **presets** (JSON), two **Set A / Set B** configuration slots, and undo/redo that also covers parameter changes.
 - **Batch export**: master a whole folder with the current chain.
 - WAV (16, 24 and 32-bit integer, 32-bit float) and MP3 (decode and encode), with TPDF dither on reduced-depth renders and metadata preservation.
 

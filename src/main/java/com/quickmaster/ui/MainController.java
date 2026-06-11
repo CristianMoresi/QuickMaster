@@ -531,9 +531,9 @@ public class MainController
         player.abModeProperty().addListener((obs, o, n) ->
                 abButton.setSelected(n));
 
-        // The two A/B controls answer different questions; say so on hover.
+        // Bypass and Set A/B answer different questions; say so on hover.
         abButton.setTooltip(new Tooltip(
-                "Compare the processed master with the ORIGINAL audio (time-aligned bypass)."));
+                "Bypass the chain to hear the ORIGINAL audio (time-aligned with the master)."));
         if (settingsAbButton != null)
         {
             settingsAbButton.setTooltip(new Tooltip(
@@ -1176,7 +1176,7 @@ public class MainController
     {
         if (loadedFile == null) return;
         player.toggleAB();
-        setStatus(player.isAbMode() ? "A/B: original (bypass)" : "A/B: processed");
+        setStatus(player.isAbMode() ? "Bypass: original audio" : "Bypass off: processed master");
     }
 
     /**

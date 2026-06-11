@@ -240,7 +240,7 @@
                 <Button fx:id="playButton" text="▶ Play" onAction="#onPlayPause" styleClass="transport-play"/>
                 <Button fx:id="stopButton" text="⏹ Stop" onAction="#onStop" styleClass="transport-button"/>
                 <Button fx:id="goEndButton" text="⏭" onAction="#onGoToEnd" styleClass="transport-icon"/>
-                <ToggleButton fx:id="abButton" text="A/B" onAction="#onToggleAB" styleClass="transport-toggle"/>
+                <ToggleButton fx:id="abButton" text="Bypass" onAction="#onToggleAB" styleClass="transport-toggle"/>
                 <ToggleButton fx:id="loopButton" text="Loop" onAction="#onToggleLoop" styleClass="transport-toggle"/>
                 <Separator orientation="VERTICAL"/>
                 <Label fx:id="positionLabel" text="0:00.000 / 0:00.000" styleClass="time-display"/>
