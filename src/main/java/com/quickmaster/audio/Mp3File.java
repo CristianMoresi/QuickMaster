@@ -1,5 +1,6 @@
 package com.quickmaster.audio;
 
+import com.dspark.core.Dither;
 import de.sciss.jump3r.lowlevel.LameEncoder;
 
 import javax.sound.sampled.AudioFormat;
@@ -401,8 +402,8 @@ public class Mp3File extends AudioFile
                             + "Export to WAV instead, or resample the audio.");
         }
 
-        // Quantise floats to 16-bit signed little-endian PCM.
-        byte[] pcm = encode16BitInt(samples);
+        // Quantise floats to 16-bit signed little-endian PCM (TPDF-dithered).
+        byte[] pcm = encode16BitInt(samples, channels);
 
         // Build the source AudioFormat that the encoder needs.
         AudioFormat pcmFormat = new AudioFormat(
@@ -477,15 +478,20 @@ public class Mp3File extends AudioFile
 
     /**
      * Encodes a normalized float sample array as interleaved
-     * 16-bit signed little-endian PCM, with defensive clamping
-     * to the valid range before quantisation.
+     * 16-bit signed little-endian PCM, with TPDF dither (per-channel
+     * state) and defensive clamping to the valid range.
      */
-    private static byte[] encode16BitInt(float[] samples)
+    private static byte[] encode16BitInt(float[] samples, int channels)
     {
+        Dither dither = new Dither(16, false);
+        int ch = Math.max(1, channels);
         ByteBuffer bb = ByteBuffer.allocate(samples.length * 2).order(ByteOrder.LITTLE_ENDIAN);
-        for (float s : samples)
+        for (int i = 0; i < samples.length; i++)
         {
-            int v = Math.round(clamp(s) * 32767.0f);
+            float q = dither.processSample(clamp(samples[i]), i % ch);
+            int v = (int) Math.rint(q * 32768.0);
+            if (v >  32767) v =  32767;
+            if (v < -32768) v = -32768;
             bb.putShort((short) v);
         }
         return bb.array();

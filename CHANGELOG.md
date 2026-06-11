@@ -5,6 +5,62 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Auto EQ with oversampling produced corrupted audio** - the pre-rendered Auto EQ output was
+  indexed by high-rate frame positions, so at any oversampling factor it played back sped up and
+  then dropped out entirely. The render is now positioned by time (with smooth interpolation),
+  so Auto EQ is correct at every oversampling factor, live and on export.
+- **Active multiband limiter shifted the master by ~23 ms** - the linear-phase crossover's
+  latency was reported as zero at the moment the offline renderer asked for it, so every export
+  with the Limit module on came out delayed by the crossover length and lost its tail. The
+  crossover is now prepared eagerly and its latency always compensated; a regression test
+  renders through the full pipeline and asserts sample alignment.
+- **EQ edits now re-analyse the chain** - dragging a band, using the wheel on the curve, editing
+  band knobs, adding/removing bands or dragging the fade handles triggers the same debounced
+  re-analysis as every other control, so what plays always matches what exports.
+- **Playback is latency-compensated** - the cursor and meters now show the audio that is
+  actually sounding, the chain's tail is flushed when the song ends (the last instants are no
+  longer cut off), and the A/B comparison runs the original through a matching delay so toggling
+  no longer jumps in time.
+- **Export sample-rate conversion is anti-aliased** - the previous cubic interpolator aliased on
+  downsampling; conversion now uses DSPark's polyphase Kaiser windowed-sinc resampler at its
+  highest quality, and the true-peak ceiling is re-measured and re-anchored at the delivery rate.
+- The Leveler now measures loudness as the per-channel K-weighted power sum (BS.1770) instead of
+  a mono fold-down, so wide mixes are no longer underweighted.
+- The broadband limiter's true-peak map is aligned with the detector's group delay.
+- Oversampled totals no longer overflow on very long, high-rate files (sample counts are 64-bit
+  throughout the processing API).
+
+### Added
+- **TPDF dither** on every 16 and 24-bit render (WAV and the MP3 encoder feed) and on the
+  16-bit monitoring path, replacing truncation distortion with a flat noise floor.
+- **Chain presets** - save and load the entire chain as a JSON `.qmpreset` file.
+- **A/B settings slots** - two full chain configurations switchable from the top bar, for
+  comparing two complete masters of the same song.
+- **Undo/redo for parameters** - knob gestures, band edits and module toggles join crop/delete
+  in the undo history (one entry per gesture); the history is also bounded by memory so long
+  files cannot exhaust the heap.
+- **Batch export** - master a set of files with the current chain in one go, each with its own
+  tempo/onset analysis, with progress and cancellation.
+- **Metadata preservation** - same-container exports keep the source's ID3 tags (MP3) and
+  LIST-INFO/bext chunks (WAV).
+- **Loop playback** - loop the waveform selection (or the whole track) sample-accurately while
+  dialling the chain.
+- **Stereo image metering** - phase correlation, M/S levels and a goniometer beside the
+  loudness meters; the PEAK readout is now a true-peak (dBTP) measurement, live and offline.
+
+### Changed
+- **One-pass analysis** - the whole-chain analysis now renders the file once (instead of once
+  per analysis stage), the output meters reuse that same render, and an EQ-unchanged gesture
+  starts from a cached post-EQ signal, so parameter changes settle several times faster.
+- **Rate-independent linear-phase kernels** - the linear-phase EQ and the multiband crossover
+  scale their FIR length with the processing rate (constant time span), so the realized curves
+  are identical in Hz at 44.1 to 192 kHz and at any oversampling factor.
+- **ADAA clipping** - all four hard-clip curves are antiderivative anti-aliased, so clipping no
+  longer folds harmonics back as aliasing even without oversampling.
+
 ## [1.1.0] - 2026-06-07
 
 ### Added

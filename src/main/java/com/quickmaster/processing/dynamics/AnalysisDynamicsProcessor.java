@@ -62,7 +62,7 @@ public abstract class AnalysisDynamicsProcessor implements AudioProcessor
     public int getLatencyFrames() { return 0; }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         this.sampleRate = sampleRate;
         this.framesProcessed = 0L;

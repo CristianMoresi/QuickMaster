@@ -88,7 +88,10 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
         double[] kc = kWeightingCoeffs(sampleRate);
         double pB0 = kc[0], pB1 = kc[1], pB2 = kc[2], pA1 = kc[3], pA2 = kc[4];
         double rB0 = kc[5], rB1 = kc[6], rB2 = kc[7], rA1 = kc[8], rA2 = kc[9];
-        double z1a = 0, z2a = 0, z1b = 0, z2b = 0;
+        // Per-channel filter state: BS.1770 sums the K-weighted power of each
+        // channel (a mono fold-down would cancel out-of-phase side content).
+        double[] z1a = new double[channels], z2a = new double[channels];
+        double[] z1b = new double[channels], z2b = new double[channels];
 
         int numHops = Math.max(1, (frames + HOP_FRAMES - 1) / HOP_FRAMES);
         double[] hopSumSq = new double[numHops];
@@ -96,19 +99,21 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
         for (int f = 0; f < frames; f++)
         {
             int base = f * channels;
-            double mono = 0.0;
-            for (int c = 0; c < channels; c++) mono += samples[base + c];
-            mono /= channels;
-
-            double v = pB0 * mono + z1a;
-            z1a = pB1 * mono - pA1 * v + z2a;
-            z2a = pB2 * mono - pA2 * v;
-            double w = rB0 * v + z1b;
-            z1b = rB1 * v - rA1 * w + z2b;
-            z2b = rB2 * v - rA2 * w;
+            double power = 0.0;
+            for (int c = 0; c < channels; c++)
+            {
+                double x = samples[base + c];
+                double v = pB0 * x + z1a[c];
+                z1a[c] = pB1 * x - pA1 * v + z2a[c];
+                z2a[c] = pB2 * x - pA2 * v;
+                double w = rB0 * v + z1b[c];
+                z1b[c] = rB1 * v - rA1 * w + z2b[c];
+                z2b[c] = rB2 * v - rA2 * w;
+                power += w * w;
+            }
 
             int h = f / HOP_FRAMES;
-            hopSumSq[h] += w * w;
+            hopSumSq[h] += power;
             hopCount[h]++;
         }
         float[] hopLoud = new float[numHops];

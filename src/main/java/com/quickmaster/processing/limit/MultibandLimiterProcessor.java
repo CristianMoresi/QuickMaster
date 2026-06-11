@@ -105,15 +105,21 @@ public final class MultibandLimiterProcessor implements AudioProcessor
     @Override
     public int getLatencyFrames()
     {
-        return (enabled && bandEnv != null && crossoverReady) ? crossover.getLatency() : 0;
+        // The crossover is prepared eagerly at prepare() time, so this is valid
+        // before the first block; the offline renderer relies on that to
+        // compensate the linear-phase split's constant delay.
+        return (enabled && bandEnv != null) ? crossover.getLatency() : 0;
     }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         this.sampleRate = sampleRate;
         this.framesProcessed = 0L;
-        this.crossoverReady = false;   // re-prepare the crossover for this rate on next use
+        // Eagerly (re)prepare the crossover for this rate so getLatencyFrames()
+        // is correct before the first process()/analyze() call.
+        this.crossoverReady = false;
+        ensureCrossover(preparedChannels > 0 ? preparedChannels : 2);
     }
 
     @Override

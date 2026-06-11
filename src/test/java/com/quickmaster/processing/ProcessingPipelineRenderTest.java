@@ -150,6 +150,36 @@ class ProcessingPipelineRenderTest
     }
 
     @Test
+    @DisplayName("An ACTIVE multiband limiter renders time-aligned (crossover latency compensated)")
+    void activeMultibandLimiterStaysAligned()
+    {
+        // Zero push on every band keeps the limiter transparent while still
+        // engaging the linear-phase crossover (split + recombine), so any
+        // uncompensated crossover latency shows up as a time shift here.
+        float[] input = signal(24000, CH);
+        WavFile file = mem(input);
+
+        MultibandLimiterProcessor mb = new MultibandLimiterProcessor();
+        mb.setEnabled(true);
+        for (int b = 0; b < MultibandLimiterProcessor.BANDS; b++) mb.setPushDb(b, 0.0);
+
+        ProcessingPipeline pipeline = new ProcessingPipeline();
+        pipeline.addProcessor(mb);
+        pipeline.process(file);
+
+        float[] out = file.getSamples();
+        assertEquals(input.length, out.length);
+        // Skip the crossover warm-up at the very edges; the middle must match
+        // the input sample-for-sample (within the FIR reconstruction error).
+        int guard = 4096 * CH;
+        for (int i = guard; i < input.length - guard; i++)
+        {
+            assertEquals(input[i], out[i], 3e-3f,
+                    "active multiband render must stay aligned at i=" + i);
+        }
+    }
+
+    @Test
     @DisplayName("Peak Normalizer analyzes the post-upstream (post-EQ) signal")
     void peakNormalizerAccountsForUpstreamEq()
     {
@@ -335,7 +365,7 @@ class ProcessingPipelineRenderTest
         DelayProcessor(int delayFrames) { this.delayFrames = delayFrames; }
 
         @Override
-        public void prepare(int sampleRate, int totalSamples)
+        public void prepare(int sampleRate, long totalSamples)
         {
             tail = null;
             tailChannels = -1;
@@ -377,7 +407,7 @@ class ProcessingPipelineRenderTest
         GainProcessor(float gain) { this.gain = gain; }
 
         @Override
-        public void prepare(int sampleRate, int totalSamples) { }
+        public void prepare(int sampleRate, long totalSamples) { }
 
         @Override
         public float[] process(float[] buffer, int channels)

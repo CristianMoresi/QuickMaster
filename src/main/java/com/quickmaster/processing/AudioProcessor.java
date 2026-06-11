@@ -18,7 +18,7 @@ package com.quickmaster.processing;
  * by passing the entire file as a single buffer.
  * <p>
  * <b>Lifecycle.</b> Before the first buffer is processed,
- * {@link #prepare(int, int)} must be called to inform the
+ * {@link #prepare(int, long)} must be called to inform the
  * processor of the audio sample rate and total sample count.
  * This pattern, borrowed from professional audio plugin APIs,
  * separates one-off setup work (such as recomputing filter
@@ -85,10 +85,12 @@ public interface AudioProcessor
      * @param totalSamples  total number of float samples in the
      *                      whole audio, summed across channels
      *                      (e.g. 1 second of 44.1 kHz stereo =
-     *                      88200). Use 0 if unknown or not
-     *                      applicable to the implementation.
+     *                      88200). Declared {@code long} so an
+     *                      oversampled total cannot overflow on
+     *                      long, high-rate files. Use 0 if unknown
+     *                      or not applicable to the implementation.
      */
-    void prepare(int sampleRate, int totalSamples);
+    void prepare(int sampleRate, long totalSamples);
 
     /**
      * Optional whole-audio pre-scan. The pipeline calls this

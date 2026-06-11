@@ -71,7 +71,7 @@ public final class PeakNormalizer implements AudioProcessor
     }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples) { }
+    public void prepare(int sampleRate, long totalSamples) { }
 
     @Override
     public boolean usesAnalysis() { return true; }

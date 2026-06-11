@@ -33,7 +33,7 @@ package com.quickmaster.processing;
  * maintains an internal frame counter that advances as buffers
  * are processed, and uses the total sample count to locate the
  * start of the fade-out. The counter is reset to zero each time
- * {@link #prepare(int, int)} is called, so the same processor
+ * {@link #prepare(int, long)} is called, so the same processor
  * instance can be reused across different audios or across
  * repeated processing passes of the same audio.
  * <p>
@@ -76,23 +76,25 @@ public class FadeProcessor implements AudioProcessor
     private FadeType fadeType = FadeType.LINEAR;
     private boolean enabled = true;
 
-    /** Audio sample rate, set by {@link #prepare(int, int)}. */
+    /** Audio sample rate, set by {@link #prepare(int, long)}. */
     private int sampleRate;
 
     /**
      * Total number of float samples (across channels) of the audio
-     * being processed. Either supplied at {@link #prepare(int, int)}
+     * being processed. Either supplied at {@link #prepare(int, long)}
      * time (streaming mode) or inferred from the first buffer
-     * (offline mode).
+     * (offline mode). A {@code long} so an oversampled total cannot
+     * overflow on long, high-rate files (which would misplace the
+     * fade-out).
      */
-    private int totalSamples;
+    private long totalSamples;
 
     /** Number of frames already processed since the last prepare(). */
     private long framesProcessed;
 
     /**
      * Creates a new FadeProcessor with no fade-in and no fade-out
-     * (both durations set to 0). {@link #prepare(int, int)} must
+     * (both durations set to 0). {@link #prepare(int, long)} must
      * be called before processing the first buffer.
      */
     public FadeProcessor()
@@ -102,7 +104,7 @@ public class FadeProcessor implements AudioProcessor
 
     /**
      * Creates a new FadeProcessor with the given fade durations.
-     * {@link #prepare(int, int)} must be called before processing
+     * {@link #prepare(int, long)} must be called before processing
      * the first buffer.
      *
      * @param fadeInSec   fade-in duration in seconds (0 to 10)
@@ -159,7 +161,7 @@ public class FadeProcessor implements AudioProcessor
     }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         if (sampleRate <= 0)
         {
@@ -194,7 +196,7 @@ public class FadeProcessor implements AudioProcessor
         if (sampleRate <= 0)
         {
             throw new IllegalStateException(
-                    "Sample rate not configured; call prepare(int, int) first.");
+                    "Sample rate not configured; call prepare(int, long) first.");
         }
 
         // Offline mode: infer totalSamples from the first buffer if not provided.

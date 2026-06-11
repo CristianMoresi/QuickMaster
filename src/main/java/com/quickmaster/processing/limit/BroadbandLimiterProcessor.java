@@ -85,7 +85,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
     public int getLatencyFrames() { return 0; }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         this.sampleRate = sampleRate;
         this.framesProcessed = 0L;
@@ -119,6 +119,14 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
             }
             pm[f] = (float) p;
             if (p > mx) mx = p;
+        }
+        // The detector's polyphase FIR lags its estimate by a few frames;
+        // shift the map left so the envelope lands on the audio it measured.
+        int lag = TruePeak.GROUP_DELAY_FRAMES;
+        if (frames > lag)
+        {
+            System.arraycopy(pm, lag, pm, 0, frames - lag);
+            java.util.Arrays.fill(pm, frames - lag, frames, pm[frames - lag - 1]);
         }
         peakMapTp = pm;
         peakTp = mx;

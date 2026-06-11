@@ -37,6 +37,7 @@ public final class HardClipProcessor implements AudioProcessor
     private volatile Curve curve = Curve.HARD;
     private volatile double cachedPeak = 0.0;
     private volatile double solvedCeiling = 1.0;     // the ceiling recompute() settled on
+    private volatile float clampLevel = Float.MAX_VALUE;  // exact output peak (= peak - clipDb)
     private volatile float[] hopPeak = new float[0]; // input sample-peak per hop (base rate)
     private volatile float[] grEnv = new float[0];   // reduction per hop (dB, <= 0), for the meter
 
@@ -108,6 +109,7 @@ public final class HardClipProcessor implements AudioProcessor
             solvedCeiling = Math.pow(10.0, 6.0 / 20.0);
             clipper.setCeilingDb(6.0);          // no clipping (transparent)
             clipper.setInputGainDb(0.0);
+            clampLevel = Float.MAX_VALUE;
             buildGrEnv();
             return;
         }
@@ -121,6 +123,7 @@ public final class HardClipProcessor implements AudioProcessor
         solvedCeiling = 0.5 * (lo + hi);
         clipper.setCeilingDb(20.0 * Math.log10(solvedCeiling));
         clipper.setInputGainDb(0.0);
+        clampLevel = (float) target;   // safety clamp catches any ADAA transition overshoot
         buildGrEnv();
     }
 
@@ -145,7 +148,7 @@ public final class HardClipProcessor implements AudioProcessor
     }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         clipper.prepare(sampleRate, 2);
         clipper.setMode(curve == Curve.HARD ? Clipper.Mode.HARD : Clipper.Mode.SOFT);
@@ -186,6 +189,13 @@ public final class HardClipProcessor implements AudioProcessor
     {
         if (!enabled || clipDb <= 1e-6) return buffer;   // 0 dB = no clipping, no peak change
         clipper.process(buffer, channels);
+        float lim = clampLevel;
+        if (lim < Float.MAX_VALUE)
+            for (int i = 0; i < buffer.length; i++)
+            {
+                if (buffer[i] > lim) buffer[i] = lim;
+                else if (buffer[i] < -lim) buffer[i] = -lim;
+            }
         return buffer;
     }
 

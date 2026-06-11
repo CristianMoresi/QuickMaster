@@ -5,6 +5,7 @@ import com.dspark.effects.MasterEqualizer;
 import com.quickmaster.audio.AudioFile;
 import com.quickmaster.audio.AudioFileException;
 import com.quickmaster.audio.AudioFormatDetector;
+import com.quickmaster.audio.MetadataPreserver;
 import com.quickmaster.audio.Mp3File;
 import com.quickmaster.audio.WavFile;
 import com.quickmaster.config.AppConfig;
@@ -223,7 +224,11 @@ public class MainController
     @FXML private Button stopButton;
     @FXML private Button goEndButton;
     @FXML private ToggleButton abButton;
+    @FXML private ToggleButton loopButton;
     @FXML private Label positionLabel;
+
+    // Preset A/B settings toggle (top bar).
+    @FXML private ToggleButton settingsAbButton;
 
     // Trim
     @FXML private Label selectionLabel;
@@ -234,6 +239,7 @@ public class MainController
     @FXML private Canvas eqCanvas;
     @FXML private CheckBox autoEqOn;
     private ComboBox<AutoEqProcessor.Target> autoEqTarget;
+    private Knob autoEqAmountKnob, autoEqAttackKnob, autoEqReleaseKnob;
     private Node[] autoEqControls;
     private HBox bandMenu;                 // floating mute/erase over the clicked band
     private Button bandMuteBtn;
@@ -291,6 +297,12 @@ public class MainController
     @FXML private Label meterLra;
     @FXML private Label meterPeak;
     @FXML private Label meterGr;
+
+    // Stereo image meters: phase correlation, M/S levels, goniometer.
+    @FXML private Label meterCorr;
+    @FXML private Label meterMid;
+    @FXML private Label meterSide;
+    @FXML private Canvas gonioCanvas;
 
     // Status bar
     @FXML private Label statusLabel;
@@ -350,10 +362,54 @@ public class MainController
     private AudioFile loadedFile;
     private float[] waveformDownsampled;
 
-    /** Undo / redo history of the editable samples (for crop / delete). */
-    private final java.util.Deque<float[]> undoStack = new java.util.ArrayDeque<>();
-    private final java.util.Deque<float[]> redoStack = new java.util.ArrayDeque<>();
+    /**
+     * One undo / redo entry: a destructive sample edit (crop / delete, with
+     * the samples captured) or a parameter change (samples {@code null}).
+     * Both carry the full chain configuration of the moment, so undo also
+     * restores knob positions.
+     */
+    private static final class EditState
+    {
+        final float[] samples;            // null = parameter-only entry
+        final com.quickmaster.config.ChainPreset params;
+
+        EditState(float[] samples, com.quickmaster.config.ChainPreset params)
+        {
+            this.samples = samples;
+            this.params = params;
+        }
+
+        long bytes() { return (samples != null) ? samples.length * 4L : 4096L; }
+    }
+
+    /** Undo / redo history (sample edits and parameter gestures). */
+    private final java.util.Deque<EditState> undoStack = new java.util.ArrayDeque<>();
+    private final java.util.Deque<EditState> redoStack = new java.util.ArrayDeque<>();
     private static final int MAX_UNDO_STEPS = 24;
+    /** Byte budget for the history, so long hi-rate files cannot exhaust the heap. */
+    private static final long MAX_UNDO_BYTES = 512L * 1024 * 1024;
+
+    /** Chain state at the start of the current parameter gesture (null = no open gesture). */
+    private com.quickmaster.config.ChainPreset paramGestureBaseline = null;
+    /** True while a preset (or an undo) is being applied, so listeners stay quiet. */
+    private boolean applyingPreset = false;
+
+    /** A/B settings slots: the configuration not currently active. */
+    private com.quickmaster.config.ChainPreset settingsSlotA = null;
+    private com.quickmaster.config.ChainPreset settingsSlotB = null;
+
+    /** Tonal-prefix cache: the analysed signal after the EQ block, so a
+     *  dynamics / clip / limit gesture skips re-rendering the (expensive)
+     *  tonal stages when they did not change. */
+    private long tonalSigCache = 0L;
+    private float[] tonalBufCache = null;
+    private int tonalStagesCache = -1;
+
+    /** Streaming true-peak detectors for the live PEAK meter (FX thread). */
+    private com.dspark.analysis.TruePeak[] liveTp = null;
+    /** Smoothed stereo-image readouts (FX thread). */
+    private double liveCorrSmooth = 0.0;
+    private double liveMidPow = 0.0, liveSidePow = 0.0;
 
     /** True while the user is dragging on the waveform to scrub. */
     private boolean scrubbing = false;
@@ -395,8 +451,6 @@ public class MainController
     private final java.util.concurrent.ConcurrentLinkedQueue<float[]> meterQueue =
             new java.util.concurrent.ConcurrentLinkedQueue<>();
     private volatile double livePeak = 0.0;
-    /** True while an idle output-measurement render is running. */
-    private volatile boolean measuring = false;
 
     /**
      * Standard MP3 bitrate options offered in the export dialog
@@ -460,14 +514,12 @@ public class MainController
                 playButton.setText(n ? "⏸ Pause" : "▶ Play"));
 
         // Live metering tap: the audio thread hands processed buffers off to a
-        // bounded queue (drained on the FX thread) and tracks the live peak.
+        // bounded queue; all metering (LUFS, true peak, stereo image) is
+        // computed on the FX thread when the queue is drained.
         player.setMeterTap((buf, ch) ->
         {
             if (meterQueue.size() < 32)
                 meterQueue.add(java.util.Arrays.copyOf(buf, buf.length));
-            float p = 0.0f;
-            for (float s : buf) { float a = (s >= 0.0f) ? s : -s; if (a > p) p = a; }
-            if (p > livePeak) livePeak = p;
         });
 
         player.positionSamplesProperty().addListener((obs, o, n) ->
@@ -1214,7 +1266,11 @@ public class MainController
                             updateProgress(frac, 1.0);
                         });
                 if (isCancelled()) return null;   // cancelled: write nothing
-                float[] out = resampleCubic(processed, ch, srcRate, settings.sampleRate());
+                float[] out = resampleForExport(processed, ch, srcRate, settings.sampleRate());
+                if (settings.sampleRate() != srcRate && snap.normalizer.isEnabled())
+                {
+                    reclampTruePeak(out, ch, snap.normalizer.getTargetDbfs());
+                }
                 if (isCancelled()) return null;
                 if (exportAsMp3)
                 {
@@ -1225,6 +1281,8 @@ public class MainController
                     new WavFile(path, settings.sampleRate(), ch, out,
                             settings.bitDepth(), settings.isFloat()).save(path);
                 }
+                // Same-container exports keep the source's tags (ID3 / LIST-INFO / bext).
+                MetadataPreserver.preserve(loadedFile.getFilePath(), path);
                 return null;
             }
         };
@@ -1421,42 +1479,34 @@ public class MainController
     }
 
     /**
-     * Catmull-Rom cubic resampler for export sample-rate conversion; returns the
-     * input unchanged when the rates match (the common case).
+     * Sample-rate conversion for export: a polyphase Kaiser windowed-sinc
+     * converter (anti-aliased on downsampling), at the engine's highest
+     * quality since export is offline. Returns the input unchanged when the
+     * rates match (the common case).
      */
-    private static float[] resampleCubic(float[] in, int channels, int fromRate, int toRate)
+    private static float[] resampleForExport(float[] in, int channels, int fromRate, int toRate)
     {
         if (fromRate == toRate || in.length == 0) return in;
-        int framesIn = in.length / channels;
-        int framesOut = (int) Math.round(framesIn * (double) toRate / fromRate);
-        float[] out = new float[framesOut * channels];
-        double ratio = (double) fromRate / toRate;
-        for (int c = 0; c < channels; c++)
-        {
-            for (int i = 0; i < framesOut; i++)
-            {
-                double srcPos = i * ratio;
-                int i1 = (int) Math.floor(srcPos);
-                double t = srcPos - i1;
-                float p0 = sampleAt(in, channels, c, i1 - 1, framesIn);
-                float p1 = sampleAt(in, channels, c, i1,     framesIn);
-                float p2 = sampleAt(in, channels, c, i1 + 1, framesIn);
-                float p3 = sampleAt(in, channels, c, i1 + 2, framesIn);
-                double a0 = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
-                double a1 = p0 - 2.5 * p1 + 2.0 * p2 - 0.5 * p3;
-                double a2 = -0.5 * p0 + 0.5 * p2;
-                double v = ((a0 * t + a1) * t + a2) * t + p1;
-                out[i * channels + c] = (float) Math.max(-1.0, Math.min(1.0, v));
-            }
-        }
-        return out;
+        com.dspark.core.Resampler resampler = new com.dspark.core.Resampler();
+        resampler.prepare(fromRate, toRate, com.dspark.core.Resampler.Quality.ULTRA);
+        return resampler.resampleInterleaved(in, channels);
     }
 
-    private static float sampleAt(float[] buf, int channels, int c, int frame, int framesIn)
+    /**
+     * Re-anchors the delivery true peak after a sample-rate conversion: the
+     * conversion moves the inter-sample peaks, so the ceiling the normalizer
+     * guaranteed at the source rate is re-measured at the delivery rate and
+     * the buffer is scaled down if it overshoots. Never scales up.
+     */
+    private static void reclampTruePeak(float[] out, int channels, double targetDbtp)
     {
-        if (frame < 0) frame = 0;
-        if (frame >= framesIn) frame = framesIn - 1;
-        return buf[frame * channels + c];
+        double tp = com.dspark.analysis.TruePeak.measureMax(out, channels);
+        double targetLin = Math.pow(10.0, targetDbtp / 20.0);
+        if (tp > targetLin && tp > 1e-9)
+        {
+            float g = (float) (targetLin / tp);
+            for (int i = 0; i < out.length; i++) out[i] *= g;
+        }
     }
 
     /**
@@ -1592,11 +1642,16 @@ public class MainController
     private void onWaveformMouseReleased(MouseEvent e)
     {
         scrubbing = false;
-        fadeDragMode = 0;
+        if (fadeDragMode != 0)
+        {
+            fadeDragMode = 0;
+            scheduleDynamicsRefresh();   // the fade changed: downstream analysis is stale
+        }
         if (selecting)
         {
             selecting = false;
             updateSelectionLabel();
+            if (loopButton != null && loopButton.isSelected()) applyLoopFromSelection();
         }
     }
 
@@ -1702,6 +1757,9 @@ public class MainController
 
         clearSelectionState();
         clearHistory();
+        if (loopButton != null) loopButton.setSelected(false);
+        liveTp = null;            // new source: fresh true-peak detectors
+        resetGoniometer();
 
         playButton.setDisable(false);
         stopButton.setDisable(false);
@@ -1828,21 +1886,34 @@ public class MainController
         AppLogger.info(message + " New duration: " + dur + "s");
     }
 
-    /* --- Undo / redo of destructive audio edits --- */
+    /* --- Undo / redo: destructive audio edits AND parameter gestures --- */
 
     private void pushUndo()
     {
         if (loadedFile == null) return;
-        undoStack.push(loadedFile.getSamples().clone());
-        while (undoStack.size() > MAX_UNDO_STEPS) undoStack.removeLast();
+        undoStack.push(new EditState(loadedFile.getSamples().clone(), capturePreset()));
+        trimUndoHistory();
         redoStack.clear();
         updateUndoRedoButtons();
+    }
+
+    /** Bounds the history by step count AND total bytes (sample clones are big). */
+    private void trimUndoHistory()
+    {
+        while (undoStack.size() > MAX_UNDO_STEPS) undoStack.removeLast();
+        long total = 0;
+        for (EditState s : undoStack) total += s.bytes();
+        while (total > MAX_UNDO_BYTES && undoStack.size() > 1)
+        {
+            total -= undoStack.removeLast().bytes();
+        }
     }
 
     private void clearHistory()
     {
         undoStack.clear();
         redoStack.clear();
+        paramGestureBaseline = null;
         updateUndoRedoButtons();
     }
 
@@ -1857,9 +1928,11 @@ public class MainController
     {
         if (exporting) return;
         if (loadedFile == null || undoStack.isEmpty()) return;
-        redoStack.push(loadedFile.getSamples().clone());
-        loadedFile.setSamples(undoStack.pop());
-        afterTrim("Undo.");
+        EditState prev = undoStack.pop();
+        redoStack.push(new EditState(
+                (prev.samples != null) ? loadedFile.getSamples().clone() : null,
+                capturePreset()));
+        restoreEditState(prev, "Undo.");
         updateUndoRedoButtons();
     }
 
@@ -1868,10 +1941,28 @@ public class MainController
     {
         if (exporting) return;
         if (loadedFile == null || redoStack.isEmpty()) return;
-        undoStack.push(loadedFile.getSamples().clone());
-        loadedFile.setSamples(redoStack.pop());
-        afterTrim("Redo.");
+        EditState next = redoStack.pop();
+        undoStack.push(new EditState(
+                (next.samples != null) ? loadedFile.getSamples().clone() : null,
+                capturePreset()));
+        restoreEditState(next, "Redo.");
         updateUndoRedoButtons();
+    }
+
+    /** Restores one history entry: parameters always, samples when present. */
+    private void restoreEditState(EditState state, String message)
+    {
+        if (state.params != null) applyPreset(state.params);
+        if (state.samples != null)
+        {
+            loadedFile.setSamples(state.samples.clone());
+            afterTrim(message);
+        }
+        else
+        {
+            scheduleDynamicsRefreshAfterPresetApply();
+            setStatus(message);
+        }
     }
 
     /* =========================================================
@@ -1902,7 +1993,6 @@ public class MainController
         if (loadedFile == null) return;
         setStatus("Recalculating peak…");
         syncLiveAnalysis(() -> setStatus("Peak recalculated."));
-        measureOutput();
     }
 
     /**
@@ -1915,87 +2005,150 @@ public class MainController
     }
 
     /**
-     * Measures the processed OUTPUT (the real master): renders the whole chain
-     * on a throwaway copy and reports integrated / short / momentary LUFS, LRA,
-     * peak and the Peak Normalizer's applied gain. Skipped while playing (the
-     * live meters are authoritative then) and while another render runs.
+     * Measures the processed OUTPUT (the real master). The measurement now
+     * rides on the single cumulative analysis pass: {@link #syncLiveAnalysis}
+     * renders the chain once, adopts the envelopes onto the live processors
+     * and reports LUFS / LRA / true peak / stereo image from that same render.
      */
     private void measureOutput()
     {
-        if (loadedFile == null || measuring || player.isPlaying()) return;
-        measuring = true;
-        final float[] src = loadedFile.getSamples().clone();
-        final int sr = loadedFile.getSampleRate();
-        final int ch = loadedFile.getChannels();
-
-        // An independent copy of the chain for the offline render.
-        final Snapshot snap = buildSnapshot();
-        final int osm = oversampling;
-        setStatus("Measuring output …");
-
-        Task<double[]> task = new Task<>()
-        {
-            @Override
-            protected double[] call()
-            {
-                float[] out = renderOversampled(snap.pipeline, src, sr, ch, osm, null);
-                LoudnessMeter meter = new LoudnessMeter();
-                meter.prepare(sr);
-                meter.process(out, ch);
-                float peak = 0.0f;
-                for (float s : out)
-                {
-                    float a = (s >= 0.0f) ? s : -s;
-                    if (a > peak) peak = a;
-                }
-                double peakDb = (peak <= 0.0f) ? Double.NEGATIVE_INFINITY : 20.0 * Math.log10(peak);
-                return new double[] {
-                        meter.getIntegratedLufs(), meter.getShortTermLufs(),
-                        meter.getMomentaryLufs(), meter.getLoudnessRange(),
-                        peakDb, snap.normalizer.getGainDb() };
-            }
-        };
-        task.setOnSucceeded(ev ->
-        {
-            double[] r = task.getValue();
-            meterLufs.setText(formatLufs(r[0]));
-            meterShort.setText(formatLufs(r[1]));
-            meterMom.setText(formatLufs(r[2]));
-            meterLra.setText(String.format(Locale.US, "%.1f LU", r[3]));
-            meterPeak.setText(Double.isInfinite(r[4]) ? "-∞ dB"
-                    : String.format(Locale.US, "%.1f dBFS", r[4]));
-            meterGr.setText(String.format(Locale.US, "%.1f dB", broadband.getGrAtPosition(player.getPositionSamples())));
-            peakAppliedLabel.setText(Double.isInfinite(r[5]) ? "·"
-                    : String.format(Locale.US, "%+.2f dB", r[5]));
-            setStatus("Output measured.");
-            measuring = false;
-        });
-        task.setOnFailed(ev ->
-        {
-            AppLogger.error("Output measurement failed", task.getException());
-            setStatus("Measurement failed.");
-            measuring = false;
-        });
-        runTask(task);
+        syncLiveAnalysis();
     }
 
     /** Updates the live meters from the drained playback buffers. */
     private void updateLiveMeters()
     {
         int ch = (loadedFile != null) ? loadedFile.getChannels() : 2;
+        if (liveTp == null || liveTp.length != ch)
+        {
+            liveTp = new com.dspark.analysis.TruePeak[ch];
+            for (int c = 0; c < ch; c++) liveTp[c] = new com.dspark.analysis.TruePeak();
+        }
         float[] buf;
-        while ((buf = meterQueue.poll()) != null) { liveMeter.process(buf, ch); liveSpectrum.push(buf, ch); }
+        float[] lastBuf = null;
+        while ((buf = meterQueue.poll()) != null)
+        {
+            liveMeter.process(buf, ch);
+            liveSpectrum.push(buf, ch);
+            feedStereoImage(buf, ch);
+            int frames = buf.length / ch;
+            for (int f = 0; f < frames; f++)
+            {
+                for (int c = 0; c < ch; c++)
+                {
+                    double tp = liveTp[c].process(buf[f * ch + c]);
+                    if (tp > livePeak) livePeak = tp;
+                }
+            }
+            lastBuf = buf;
+        }
         liveSpectrum.update();
+        if (lastBuf != null) drawGoniometer(lastBuf, ch);
 
         meterLufs.setText(formatLufs(liveMeter.getIntegratedLufs()));
         meterShort.setText(formatLufs(liveMeter.getShortTermLufs()));
         meterMom.setText(formatLufs(liveMeter.getMomentaryLufs()));
         meterLra.setText(String.format(Locale.US, "%.1f LU", liveMeter.getLoudnessRange()));
         double pdb = (livePeak <= 0.0) ? Double.NEGATIVE_INFINITY : 20.0 * Math.log10(livePeak);
-        meterPeak.setText(Double.isInfinite(pdb) ? "-∞ dB"
-                : String.format(Locale.US, "%.1f dBFS", pdb));
+        meterPeak.setText(Double.isInfinite(pdb) ? "-∞ dBTP"
+                : String.format(Locale.US, "%.1f dBTP", pdb));
         meterGr.setText(String.format(Locale.US, "%.1f dB", broadband.getGrAtPosition(player.getPositionSamples())));
+        updateStereoImageLabels();
         livePeak *= 0.90;   // peak falls back
+    }
+
+    /* =========================================================
+     *  Stereo image metering (correlation, M/S, goniometer)
+     * ========================================================= */
+
+    /** Accumulates the phase correlation and M/S power of one buffer (smoothed). */
+    private void feedStereoImage(float[] buf, int ch)
+    {
+        if (ch < 2) { liveCorrSmooth = 1.0; return; }
+        double sumLR = 0.0, sumL2 = 0.0, sumR2 = 0.0, midPow = 0.0, sidePow = 0.0;
+        int frames = buf.length / ch;
+        for (int f = 0; f < frames; f++)
+        {
+            double l = buf[f * ch], r = buf[f * ch + 1];
+            sumLR += l * r;
+            sumL2 += l * l;
+            sumR2 += r * r;
+            double m = (l + r) * 0.5, s = (l - r) * 0.5;
+            midPow += m * m;
+            sidePow += s * s;
+        }
+        double denom = Math.sqrt(sumL2 * sumR2);
+        double corr = (denom > 1e-12) ? sumLR / denom : 1.0;
+        liveCorrSmooth += (corr - liveCorrSmooth) * 0.25;
+        liveMidPow  += (midPow / Math.max(1, frames) - liveMidPow) * 0.25;
+        liveSidePow += (sidePow / Math.max(1, frames) - liveSidePow) * 0.25;
+    }
+
+    private void updateStereoImageLabels()
+    {
+        if (meterCorr != null)
+            meterCorr.setText(String.format(Locale.US, "%+.2f", liveCorrSmooth));
+        if (meterMid != null)
+            meterMid.setText(formatPowerDb(liveMidPow));
+        if (meterSide != null)
+            meterSide.setText(formatPowerDb(liveSidePow));
+    }
+
+    private static String formatPowerDb(double meanPower)
+    {
+        if (meanPower <= 1e-10) return "-∞ dB";
+        return String.format(Locale.US, "%.1f dB", 10.0 * Math.log10(meanPower));
+    }
+
+    /** Phase correlation of a whole buffer (for the offline render's readout). */
+    private static double correlationOf(float[] buf, int ch)
+    {
+        if (ch < 2) return 1.0;
+        double sumLR = 0.0, sumL2 = 0.0, sumR2 = 0.0;
+        for (int i = 0; i + 1 < buf.length; i += ch)
+        {
+            double l = buf[i], r = buf[i + 1];
+            sumLR += l * r;
+            sumL2 += l * l;
+            sumR2 += r * r;
+        }
+        double denom = Math.sqrt(sumL2 * sumR2);
+        return (denom > 1e-12) ? sumLR / denom : 1.0;
+    }
+
+    /** Lissajous goniometer with persistence: M up, S sideways (45° rotation). */
+    private void drawGoniometer(float[] buf, int ch)
+    {
+        if (gonioCanvas == null || ch < 2) return;
+        GraphicsContext g = gonioCanvas.getGraphicsContext2D();
+        double w = gonioCanvas.getWidth(), h = gonioCanvas.getHeight();
+        g.setFill(Color.web("#14141a", 0.30));      // fade previous frame (persistence)
+        g.fillRect(0, 0, w, h);
+        g.setStroke(Color.web("#2d2d35"));
+        g.setLineWidth(1.0);
+        g.strokeLine(0, h / 2.0, w, h / 2.0);
+        g.strokeLine(w / 2.0, 0, w / 2.0, h);
+
+        g.setFill(Color.web("#46d17a", 0.55));
+        int frames = buf.length / ch;
+        for (int f = 0; f < frames; f += 4)
+        {
+            double l = buf[f * ch], r = buf[f * ch + 1];
+            double x = (l - r) * 0.7071;            // side axis
+            double y = (l + r) * 0.7071;            // mid axis
+            double px = w / 2.0 + x * (w / 2.0) * 0.92;
+            double py = h / 2.0 - y * (h / 2.0) * 0.92;
+            g.fillOval(px - 0.8, py - 0.8, 1.6, 1.6);
+        }
+    }
+
+    /** Clears the goniometer display (when playback stops). */
+    private void resetGoniometer()
+    {
+        if (gonioCanvas == null) return;
+        GraphicsContext g = gonioCanvas.getGraphicsContext2D();
+        g.setFill(Color.web("#14141a"));
+        g.fillRect(0, 0, gonioCanvas.getWidth(), gonioCanvas.getHeight());
     }
 
     /** Formats an integrated / short-term / momentary loudness value. */
@@ -2044,6 +2197,7 @@ public class MainController
         {
             eq.setEnabled(nv);
             drawEqCurve();
+            scheduleDynamicsRefresh();
         });
 
         eqType.valueProperty().addListener((o, ov, nv) ->
@@ -2227,6 +2381,9 @@ public class MainController
         if (updatingEqEditor || eqSelectedBand < 0) return;
         applyEditorToBand();
         drawEqCurve();
+        // EQ edits change everything downstream (normalizer gain, comp
+        // envelopes), so they re-analyse like every other parameter.
+        scheduleDynamicsRefresh();
     }
 
     /**
@@ -2249,6 +2406,7 @@ public class MainController
 
         setEqEditorDisabled(false);
         drawEqCurve();
+        scheduleDynamicsRefresh();
         setStatus("EQ band " + (i + 1) + " added.");
     }
 
@@ -2284,6 +2442,7 @@ public class MainController
         }
         updatingEqEditor = false;
         drawEqCurve();
+        scheduleDynamicsRefresh();
         setStatus("EQ band removed.");
     }
 
@@ -2670,6 +2829,9 @@ public class MainController
         Knob release = autoEqKnob("Release", AutoEqProcessor.MIN_RELEASE_SEC, AutoEqProcessor.MAX_RELEASE_SEC,
                 autoEq.getReleaseSec(), true, this::fmtEqTime,
                 "How slowly a band relaxes back.", autoEq::setReleaseSec);
+        autoEqAmountKnob = amount;
+        autoEqAttackKnob = attack;
+        autoEqReleaseKnob = release;
 
         // Auto EQ section: label on top, the knobs, then the target selector below.
         Label title = new Label("AUTO EQ");
@@ -2849,6 +3011,7 @@ public class MainController
     /** Ends an EQ band drag. */
     private void onEqCanvasReleased(MouseEvent e)
     {
+        if (eqDragging) scheduleDynamicsRefresh();   // the band drag is done: re-analyse
         eqDragging = false;
         eqDragAxis = 0;
     }
@@ -2900,6 +3063,7 @@ public class MainController
 
         eq.setBand(idx, b);
         selectBand(idx);
+        scheduleDynamicsRefresh();
         e.consume();
     }
 
@@ -3365,6 +3529,13 @@ public class MainController
 
     /** Peak/Beat reduction knobs, whose range follows the detected maximum. */
     private Knob peakTargetKnob, beatTargetKnob;
+    /** Remaining parameter controls, referenced so presets / undo can restore them. */
+    private Knob levelingKnob, levelerSpeedKnob, punchKnob;
+    private Knob satKnob, clipKnob;
+    private ComboBox<Saturation.Algorithm> satAlgoCombo;
+    private ComboBox<BeatCompProcessor.NoteValue> beatNoteCombo;
+    private final Knob[] mbPushKnobs = new Knob[MultibandLimiterProcessor.BANDS];
+    private Knob bbPushKnob;
 
     /** A compressor card (a square): processor + the widgets the UI updates. */
     private static final class DynCard
@@ -3643,6 +3814,7 @@ public class MainController
         {
             if (nv != null) { beatComp.setNote(nv); updateBpmUi(); scheduleDynamicsRefresh(); }
         });
+        beatNoteCombo = noteCombo;
 
         beatBpmLabel = new Label("no tempo");
         beatBpmLabel.getStyleClass().add("value-muted");
@@ -3687,6 +3859,8 @@ public class MainController
                 leveler.getSpeed(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
                 "How fast the leveler follows section changes (low = slow and gentle, high = agile)",
                 leveler::setSpeed);
+        levelingKnob = lev;
+        levelerSpeedKnob = speed;
         HBox knobs = new HBox(14, lev, speed);
         knobs.setAlignment(Pos.CENTER);
         return buildSquare(leveler, "Leveler",
@@ -3700,6 +3874,7 @@ public class MainController
                 punch.getAmountDb(), "#c77dff", v -> String.format(Locale.US, "%.1f dB", v),
                 "How much to boost the transients above the body.",
                 punch::setAmountDb);
+        punchKnob = k;
         return buildSquare(punch, "Punch",
                 "Adds punch through transient expansion (boosts transients, leaves the body untouched).",
                 "#c77dff", 12.0, k);
@@ -3824,7 +3999,7 @@ public class MainController
         if (clipCards == null) return;
         clipCardList.clear();
 
-        Knob satKnob = new Knob("Saturate", SoftClipProcessor.MIN_SAT_DB, SoftClipProcessor.MAX_SAT_DB,
+        satKnob = new Knob("Saturate", SoftClipProcessor.MIN_SAT_DB, SoftClipProcessor.MAX_SAT_DB,
                 SoftClipProcessor.DEFAULT_SAT_DB)
                 .formatter(v -> v < 0.05 ? "0.0 dB" : String.format(Locale.US, "-%.1f dB", v))
                 .accent("#b58cf0").scale(2.1)
@@ -3844,10 +4019,11 @@ public class MainController
         {
             if (nv != null) { softClip.setAlgorithm(nv); scheduleDynamicsRefresh(); }
         });
+        satAlgoCombo = satAlgo;
         VBox softCard = buildClipCard("Soft-Clip", "#b58cf0", satKnob, satAlgo,
                 softClip::getGrAtPosition, softClip::setEnabled);
 
-        Knob clipKnob = new Knob("Clip", HardClipProcessor.MIN_CLIP_DB, HardClipProcessor.MAX_CLIP_DB,
+        clipKnob = new Knob("Clip", HardClipProcessor.MIN_CLIP_DB, HardClipProcessor.MAX_CLIP_DB,
                 HardClipProcessor.DEFAULT_CLIP_DB)
                 .formatter(v -> v < 0.05 ? "0.0 dB" : String.format(Locale.US, "-%.1f dB", v))
                 .accent("#4a9eff").scale(2.1)
@@ -4014,22 +4190,53 @@ public class MainController
 
     private PauseTransition dynRefreshDebounce;
 
-    /** Schedules a chain re-analysis ~220&nbsp;ms after the last dynamics change. */
+    /**
+     * Schedules a chain re-analysis ~220&nbsp;ms after the last parameter
+     * change. The first call of a gesture also captures the chain state, so
+     * the whole gesture lands on the undo history as one entry when the
+     * debounce fires.
+     */
     private void scheduleDynamicsRefresh()
     {
+        if (applyingPreset) return;
         if (loadedFile == null) return;
+        if (paramGestureBaseline == null)
+        {
+            paramGestureBaseline = capturePreset();
+        }
         if (dynRefreshDebounce == null)
         {
             dynRefreshDebounce = new PauseTransition(Duration.millis(220));
-            dynRefreshDebounce.setOnFinished(e -> { syncLiveAnalysis(); measureOutput(); });
+            dynRefreshDebounce.setOnFinished(e ->
+            {
+                commitParamGesture();
+                syncLiveAnalysis();
+            });
         }
         dynRefreshDebounce.playFromStart();
     }
 
+    /** Pushes the open parameter gesture (if it changed anything) onto the undo history. */
+    private void commitParamGesture()
+    {
+        com.quickmaster.config.ChainPreset baseline = paramGestureBaseline;
+        paramGestureBaseline = null;
+        if (baseline == null) return;
+        com.google.gson.Gson gson = new com.google.gson.Gson();
+        if (gson.toJson(baseline).equals(gson.toJson(capturePreset()))) return;   // no-op gesture
+        undoStack.push(new EditState(null, baseline));
+        trimUndoHistory();
+        redoStack.clear();
+        updateUndoRedoButtons();
+    }
+
     /**
-     * Re-analyses the chain on a background snapshot and copies the result onto
-     * the live processors: each compressor receives its new gain envelope and the
-     * Peak Normalizer its new peak. {@code onDone} runs on the FX thread when done.
+     * Re-analyses the chain on a background snapshot in ONE cumulative pass and
+     * copies the result onto the live processors: each compressor receives its
+     * new gain envelope and the Peak Normalizer its new peak. The same render
+     * feeds the output meters (LUFS, LRA, true peak, correlation), and the
+     * post-EQ signal is cached so a dynamics-only gesture skips re-rendering
+     * the tonal stages. {@code onDone} runs on the FX thread when done.
      */
     private void syncLiveAnalysis() { syncLiveAnalysis(null); }
 
@@ -4040,20 +4247,46 @@ public class MainController
         final int sr = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
         final Snapshot s = buildSnapshot();
-        Task<Void> task = new Task<>()
+
+        // Tonal-prefix cache: when the EQ block (and the source) are unchanged,
+        // start the pass from the cached post-EQ signal.
+        final int tonalStages = tonalStageCount(s);
+        final long sig = tonalSignature(src, sr, ch, tonalStages);
+        final boolean useCache = tonalStages > 0
+                && tonalStagesCache == tonalStages
+                && tonalSigCache == sig
+                && tonalBufCache != null
+                && tonalBufCache.length == src.length;
+        final float[] startBuf = useCache ? tonalBufCache : null;
+        final float[][] tonalTap = { null };
+
+        Task<double[]> task = new Task<>()
         {
-            @Override protected Void call()
+            @Override protected double[] call()
             {
                 s.pipeline.prepare(sr, src.length);
-                s.pipeline.analyze(src, ch);     // computes every copy's envelope + the normalizer peak
-                return null;
+                float[] render = s.pipeline.analyzeAndRender(src, ch,
+                        useCache ? tonalStages : 0, startBuf, null,
+                        (buf, idx) -> { if (idx == tonalStages - 1) tonalTap[0] = buf; });
+
+                // The render doubles as the output measurement.
+                LoudnessMeter meter = new LoudnessMeter();
+                meter.prepare(sr);
+                meter.process(render, ch);
+                double tp = com.dspark.analysis.TruePeak.measureMax(render, ch);
+                double tpDb = (tp <= 0.0) ? Double.NEGATIVE_INFINITY : 20.0 * Math.log10(tp);
+                double corr = correlationOf(render, ch);
+                return new double[] {
+                        meter.getIntegratedLufs(), meter.getShortTermLufs(),
+                        meter.getMomentaryLufs(), meter.getLoudnessRange(),
+                        tpDb, s.normalizer.getGainDb(), corr };
             }
         };
         analyzing(true);
         task.setOnSucceeded(e ->
         {
             analyzing(false);
-            if (s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
+            if (!useCache && s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
             adoptLive(peakComp, s);
             adoptLive(beatComp, s);
             adoptLive(leveler, s);
@@ -4067,10 +4300,96 @@ public class MainController
                     ? formatSignedDb(normalizer.getGainDb()) : "·");
             updateTargetRanges(s);
             player.setAnalysisValid(true);   // live chain is now analysed: the next play reuses it
+
+            if (tonalTap[0] != null)
+            {
+                tonalBufCache = tonalTap[0];
+                tonalSigCache = sig;
+                tonalStagesCache = tonalStages;
+            }
+
+            // Output meters from the same render (live meters take over while playing).
+            double[] r = task.getValue();
+            if (!player.isPlaying())
+            {
+                meterLufs.setText(formatLufs(r[0]));
+                meterShort.setText(formatLufs(r[1]));
+                meterMom.setText(formatLufs(r[2]));
+                meterLra.setText(String.format(Locale.US, "%.1f LU", r[3]));
+                meterPeak.setText(Double.isInfinite(r[4]) ? "-∞ dBTP"
+                        : String.format(Locale.US, "%.1f dBTP", r[4]));
+                if (meterCorr != null) meterCorr.setText(String.format(Locale.US, "%+.2f", r[6]));
+            }
             if (onDone != null) onDone.run();
         });
         task.setOnFailed(e -> { AppLogger.error("Live analysis failed.", task.getException()); analyzing(false); if (onDone != null) onDone.run(); });
         runTask(task);
+    }
+
+    /** Number of leading snapshot stages that belong to the tonal (EQ) block. */
+    private int tonalStageCount(Snapshot s)
+    {
+        int n = 0;
+        for (AudioProcessor p : s.pipeline.getProcessors())
+        {
+            if (p instanceof AutoEqProcessor || p instanceof EqualizerProcessor
+                    || p instanceof FadeProcessor) n++;
+            else break;
+        }
+        return n;
+    }
+
+    /** Cache key for the tonal prefix: source identity + every tonal parameter. */
+    private long tonalSignature(float[] src, int sr, int ch, int tonalStages)
+    {
+        long h = 1125899906842597L;
+        h = h * 31 + tonalStages;
+        h = h * 31 + sr;
+        h = h * 31 + ch;
+        h = h * 31 + src.length;
+        int stride = Math.max(1, src.length / 512);
+        for (int i = 0; i < src.length; i += stride)
+            h = h * 1099511628211L + Float.floatToIntBits(src[i]);
+
+        h = h * 31 + (autoEq.isEnabled() ? 1 : 0);
+        h = h * 31 + Double.hashCode(autoEq.getAmount());
+        h = h * 31 + autoEq.getTarget().ordinal();
+        h = h * 31 + Double.hashCode(autoEq.getAttackSec());
+        h = h * 31 + Double.hashCode(autoEq.getReleaseSec());
+
+        h = h * 31 + (eq.isEnabled() ? 1 : 0);
+        h = h * 31 + eq.getNumBands();
+        for (int i = 0; i < eq.getNumBands(); i++)
+        {
+            MasterEqualizer.Band b = eq.getBand(i);
+            if (b == null) continue;
+            h = h * 31 + b.type.ordinal();
+            h = h * 31 + b.channel.ordinal();
+            h = h * 31 + b.phase.ordinal();
+            h = h * 31 + Double.hashCode(b.frequency);
+            h = h * 31 + Double.hashCode(b.gainDb);
+            h = h * 31 + Double.hashCode(b.q);
+            h = h * 31 + b.slope;
+            h = h * 31 + (b.enabled ? 1 : 0);
+            h = h * 31 + (b.dynamic ? 1 : 0);
+            h = h * 31 + Double.hashCode(b.threshold);
+            h = h * 31 + Double.hashCode(b.aboveRatio);
+            h = h * 31 + Double.hashCode(b.aboveRangeDb);
+            h = h * 31 + Double.hashCode(b.aboveAttackMs);
+            h = h * 31 + Double.hashCode(b.aboveReleaseMs);
+            h = h * 31 + (b.aboveBoost ? 1 : 0);
+            h = h * 31 + Double.hashCode(b.belowRatio);
+            h = h * 31 + Double.hashCode(b.belowRangeDb);
+            h = h * 31 + Double.hashCode(b.belowAttackMs);
+            h = h * 31 + Double.hashCode(b.belowReleaseMs);
+            h = h * 31 + (b.belowBoost ? 1 : 0);
+        }
+
+        h = h * 31 + (fade.isEnabled() ? 1 : 0);
+        h = h * 31 + Double.hashCode(fade.getFadeInSec());
+        h = h * 31 + Double.hashCode(fade.getFadeOutSec());
+        h = h * 31 + fade.getFadeType().ordinal();
+        return h;
     }
 
     private void adoptLive(AnalysisDynamicsProcessor live, Snapshot s)
@@ -4111,6 +4430,15 @@ public class MainController
      */
     private Snapshot buildSnapshot()
     {
+        return buildSnapshot(trackAnalysis);
+    }
+
+    /**
+     * Like {@link #buildSnapshot()} but bound to a specific per-track analysis,
+     * so the batch export can master each file with its own tempo and onsets.
+     */
+    private Snapshot buildSnapshot(TrackAnalysis analysis)
+    {
         AutoEqProcessor oAutoEq = new AutoEqProcessor();
         oAutoEq.setEnabled(autoEq.isEnabled());
         oAutoEq.setAmount(autoEq.getAmount());
@@ -4129,11 +4457,11 @@ public class MainController
         ofade.setEnabled(fade.isEnabled());
 
         PeakCompProcessor opeak = new PeakCompProcessor();
-        opeak.setTrackAnalysis(trackAnalysis);
+        opeak.setTrackAnalysis(analysis);
         opeak.setTargetDb(peakComp.getTargetDb());
         opeak.setEnabled(peakComp.isEnabled());
         BeatCompProcessor obeat = new BeatCompProcessor();
-        obeat.setTrackAnalysis(trackAnalysis);
+        obeat.setTrackAnalysis(analysis);
         obeat.setTargetDb(beatComp.getTargetDb());
         obeat.setNote(beatComp.getNote());
         obeat.setEnabled(beatComp.isEnabled());
@@ -4142,7 +4470,7 @@ public class MainController
         olev.setSpeed(leveler.getSpeed());
         olev.setEnabled(leveler.isEnabled());
         PunchProcessor opunch = new PunchProcessor();
-        opunch.setTrackAnalysis(trackAnalysis);
+        opunch.setTrackAnalysis(analysis);
         opunch.setAmountDb(punch.getAmountDb());
         opunch.setEnabled(punch.isEnabled());
 
@@ -4186,6 +4514,603 @@ public class MainController
         ProcessingPipeline snap = new ProcessingPipeline();
         for (AudioProcessor p : snapOrder) snap.addProcessor(p);
         return new Snapshot(snap, copies, onorm);
+    }
+
+    /* =========================================================
+     *  Chain presets: capture / apply, save / load, A/B settings
+     * ========================================================= */
+
+    /** Short key identifying a dynamics compressor in a preset. */
+    private String procKey(AudioProcessor p)
+    {
+        if (p == peakComp) return "peak";
+        if (p == beatComp) return "beat";
+        if (p == leveler)  return "leveler";
+        return "punch";
+    }
+
+    private AudioProcessor procForKey(String key)
+    {
+        switch (key)
+        {
+            case "peak":    return peakComp;
+            case "beat":    return beatComp;
+            case "leveler": return leveler;
+            default:        return punch;
+        }
+    }
+
+    /** Captures the entire chain configuration as a serializable preset. */
+    private com.quickmaster.config.ChainPreset capturePreset()
+    {
+        com.quickmaster.config.ChainPreset p = new com.quickmaster.config.ChainPreset();
+
+        p.autoEqOn = autoEq.isEnabled();
+        p.autoEqAmount = autoEq.getAmount();
+        p.autoEqTarget = autoEq.getTarget().name();
+        p.autoEqAttackSec = autoEq.getAttackSec();
+        p.autoEqReleaseSec = autoEq.getReleaseSec();
+
+        p.eqOn = eq.isEnabled();
+        for (int i = 0; i < eqBandCount; i++)
+        {
+            MasterEqualizer.Band b = eq.getBand(i);
+            if (b == null) continue;
+            com.quickmaster.config.ChainPreset.BandPreset bp =
+                    new com.quickmaster.config.ChainPreset.BandPreset();
+            bp.type = b.type.name();
+            bp.channel = b.channel.name();
+            bp.phase = b.phase.name();
+            bp.frequency = b.frequency;
+            bp.gainDb = b.gainDb;
+            bp.q = b.q;
+            bp.slope = b.slope;
+            bp.enabled = b.enabled;
+            bp.dynamic = b.dynamic;
+            bp.threshold = b.threshold;
+            bp.aboveRatio = b.aboveRatio;
+            bp.aboveAttackMs = b.aboveAttackMs;
+            bp.aboveReleaseMs = b.aboveReleaseMs;
+            bp.aboveRangeDb = b.aboveRangeDb;
+            bp.aboveBoost = b.aboveBoost;
+            bp.belowRatio = b.belowRatio;
+            bp.belowAttackMs = b.belowAttackMs;
+            bp.belowReleaseMs = b.belowReleaseMs;
+            bp.belowRangeDb = b.belowRangeDb;
+            bp.belowBoost = b.belowBoost;
+            p.bands.add(bp);
+        }
+
+        p.fadeInSec = fade.getFadeInSec();
+        p.fadeOutSec = fade.getFadeOutSec();
+        p.fadeType = fade.getFadeType().name();
+
+        p.dynamicsOn = dynMasterEnabled.isSelected();
+        DynCard pc = cardFor(peakComp), bc = cardFor(beatComp),
+                lc = cardFor(leveler), uc = cardFor(punch);
+        p.peakCompOn = pc != null && pc.on.isSelected();
+        p.peakCompTargetDb = peakComp.getTargetDb();
+        p.beatCompOn = bc != null && bc.on.isSelected();
+        p.beatCompTargetDb = beatComp.getTargetDb();
+        p.beatNote = beatComp.getNote().name();
+        p.levelerOn = lc != null && lc.on.isSelected();
+        p.leveling = leveler.getLeveling();
+        p.levelerSpeed = leveler.getSpeed();
+        p.punchOn = uc != null && uc.on.isSelected();
+        p.punchAmountDb = punch.getAmountDb();
+        for (AudioProcessor d : dynamicsOrder) p.dynamicsOrder.add(procKey(d));
+
+        p.clipOn = clipEnabled.isSelected();
+        p.softClipOn = !clipCardList.isEmpty() && clipCardList.get(0).on.isSelected();
+        p.softClipDb = softClip.getSatDb();
+        p.softClipAlgo = softClip.getAlgorithm().name();
+        p.hardClipOn = clipCardList.size() > 1 && clipCardList.get(1).on.isSelected();
+        p.hardClipDb = hardClip.getClipDb();
+        p.hardClipCurve = hardClip.getCurve().name();
+
+        p.limitOn = limEnabled.isSelected();
+        for (int b = 0; b < MultibandLimiterProcessor.BANDS; b++) p.mbPushDb[b] = multiband.getPushDb(b);
+        p.bbPushDb = broadband.getPushDb();
+
+        p.normalizerOn = peakEnabled.isSelected();
+        p.normalizerTargetDbtp = normalizer.getTargetDbfs();
+        p.osOn = osToggle != null && osToggle.isSelected();
+        p.osFactor = oversampling > 1 ? oversampling
+                : (osCombo != null && osCombo.getValue() != null
+                   ? Integer.parseInt(osCombo.getValue().replace("x", "")) : 4);
+
+        for (ChainModule m : chainModules) p.chainOrder.add(m.name);
+        return p;
+    }
+
+    /**
+     * Applies a preset to every processor and control. Listeners run (so the
+     * processors get the values) but per-control re-analysis and undo capture
+     * are suppressed; the caller follows up with one
+     * {@link #scheduleDynamicsRefreshAfterPresetApply()}.
+     */
+    private void applyPreset(com.quickmaster.config.ChainPreset p)
+    {
+        if (p == null) return;
+        applyingPreset = true;
+        try
+        {
+            autoEqOn.setSelected(p.autoEqOn);
+            if (autoEqAmountKnob != null) autoEqAmountKnob.setValue(p.autoEqAmount);
+            if (autoEqAttackKnob != null) autoEqAttackKnob.setValue(p.autoEqAttackSec);
+            if (autoEqReleaseKnob != null) autoEqReleaseKnob.setValue(p.autoEqReleaseSec);
+            if (autoEqTarget != null)
+                autoEqTarget.getSelectionModel().select(enumOr(
+                        AutoEqProcessor.Target.class, p.autoEqTarget, AutoEqProcessor.Target.PINK));
+
+            eqEnabled.setSelected(p.eqOn);
+            int n = (p.bands != null) ? p.bands.size() : 0;
+            updatingEqEditor = true;
+            eq.setNumBands(n);
+            for (int i = 0; i < n; i++)
+            {
+                com.quickmaster.config.ChainPreset.BandPreset bp = p.bands.get(i);
+                MasterEqualizer.Band b = new MasterEqualizer.Band();
+                b.type = enumOr(MasterEqualizer.BandType.class, bp.type, MasterEqualizer.BandType.BELL);
+                b.channel = enumOr(MasterEqualizer.Channel.class, bp.channel, MasterEqualizer.Channel.STEREO);
+                b.phase = enumOr(MasterEqualizer.BandPhase.class, bp.phase, MasterEqualizer.BandPhase.LINEAR);
+                b.frequency = bp.frequency;
+                b.gainDb = bp.gainDb;
+                b.q = bp.q;
+                b.slope = bp.slope;
+                b.enabled = bp.enabled;
+                b.dynamic = bp.dynamic;
+                b.threshold = bp.threshold;
+                b.aboveRatio = bp.aboveRatio;
+                b.aboveAttackMs = bp.aboveAttackMs;
+                b.aboveReleaseMs = bp.aboveReleaseMs;
+                b.aboveRangeDb = bp.aboveRangeDb;
+                b.aboveBoost = bp.aboveBoost;
+                b.belowRatio = bp.belowRatio;
+                b.belowAttackMs = bp.belowAttackMs;
+                b.belowReleaseMs = bp.belowReleaseMs;
+                b.belowRangeDb = bp.belowRangeDb;
+                b.belowBoost = bp.belowBoost;
+                eq.setBand(i, b);
+            }
+            eqBandCount = n;
+            showBandMenu = false;
+            refreshBandSelector();
+            if (n > 0)
+            {
+                eqBandSelector.getSelectionModel().select(0);
+                eqSelectedBand = 0;
+                loadBandToEditor(0);
+                setEqEditorDisabled(false);
+            }
+            else
+            {
+                eqSelectedBand = -1;
+                setEqEditorDisabled(true);
+            }
+            updatingEqEditor = false;
+
+            fade.setFadeInSec(Math.max(0.0, p.fadeInSec));
+            fade.setFadeOutSec(Math.max(0.0, p.fadeOutSec));
+            fade.setFadeType(enumOr(FadeProcessor.FadeType.class, p.fadeType,
+                    FadeProcessor.FadeType.LINEAR));
+
+            dynMasterEnabled.setSelected(p.dynamicsOn);
+            DynCard pc = cardFor(peakComp), bc = cardFor(beatComp),
+                    lc = cardFor(leveler), uc = cardFor(punch);
+            if (pc != null) pc.on.setSelected(p.peakCompOn);
+            if (bc != null) bc.on.setSelected(p.beatCompOn);
+            if (lc != null) lc.on.setSelected(p.levelerOn);
+            if (uc != null) uc.on.setSelected(p.punchOn);
+            if (peakTargetKnob != null) peakTargetKnob.setValue(p.peakCompTargetDb);
+            if (beatTargetKnob != null) beatTargetKnob.setValue(p.beatCompTargetDb);
+            if (beatNoteCombo != null)
+                beatNoteCombo.getSelectionModel().select(enumOr(
+                        BeatCompProcessor.NoteValue.class, p.beatNote, BeatCompProcessor.NoteValue.QUARTER));
+            if (levelingKnob != null) levelingKnob.setValue(p.leveling);
+            if (levelerSpeedKnob != null) levelerSpeedKnob.setValue(p.levelerSpeed);
+            if (punchKnob != null) punchKnob.setValue(p.punchAmountDb);
+            if (p.dynamicsOrder != null && p.dynamicsOrder.size() == dynamicsOrder.size())
+            {
+                List<AudioProcessor> newDyn = new ArrayList<>();
+                for (String key : p.dynamicsOrder)
+                {
+                    AudioProcessor d = procForKey(key);
+                    if (!newDyn.contains(d)) newDyn.add(d);
+                }
+                if (newDyn.size() == dynamicsOrder.size())
+                {
+                    dynamicsOrder.clear();
+                    dynamicsOrder.addAll(newDyn);
+                    layoutDynamicsGrid();
+                }
+            }
+            updateAllCompressorEnabled();
+
+            clipEnabled.setSelected(p.clipOn);
+            if (!clipCardList.isEmpty()) clipCardList.get(0).on.setSelected(p.softClipOn);
+            if (clipCardList.size() > 1) clipCardList.get(1).on.setSelected(p.hardClipOn);
+            if (satKnob != null) satKnob.setValue(p.softClipDb);
+            if (satAlgoCombo != null)
+                satAlgoCombo.getSelectionModel().select(enumOr(
+                        Saturation.Algorithm.class, p.softClipAlgo, Saturation.Algorithm.TUBE));
+            if (clipKnob != null) clipKnob.setValue(p.hardClipDb);
+            hardClip.setCurve(enumOr(HardClipProcessor.Curve.class, p.hardClipCurve,
+                    HardClipProcessor.Curve.HARD));
+            updateClipEnabled();
+
+            limEnabled.setSelected(p.limitOn);
+            for (int b = 0; b < MultibandLimiterProcessor.BANDS && b < p.mbPushDb.length; b++)
+            {
+                if (mbPushKnobs[b] != null) mbPushKnobs[b].setValue(p.mbPushDb[b]);
+                multiband.setPushDb(b, p.mbPushDb[b]);
+            }
+            if (bbPushKnob != null) bbPushKnob.setValue(p.bbPushDb);
+            broadband.setPushDb(p.bbPushDb);
+
+            peakEnabled.setSelected(p.normalizerOn);
+            peakTarget.setValue(Math.max(peakTarget.getMin(),
+                    Math.min(peakTarget.getMax(), p.normalizerTargetDbtp)));
+            if (osToggle != null) osToggle.setSelected(p.osOn);
+            if (osCombo != null && p.osFactor >= 2) osCombo.setValue(p.osFactor + "x");
+            updateOversampling();
+
+            // Chain order, then a manual pipeline rebuild (no extra analysis here;
+            // the caller schedules one refresh for the whole apply).
+            if (p.chainOrder != null && p.chainOrder.size() == chainModules.size())
+            {
+                List<ChainModule> newOrder = new ArrayList<>();
+                for (String name : p.chainOrder)
+                {
+                    for (ChainModule m : chainModules)
+                        if (m.name.equals(name) && !newOrder.contains(m)) newOrder.add(m);
+                }
+                if (newOrder.size() == chainModules.size())
+                {
+                    chainModules.clear();
+                    chainModules.addAll(newOrder);
+                    rebuildChainBar();
+                    if (selectedModule != null) selectModule(selectedModule);
+                }
+            }
+            List<AudioProcessor> order = new ArrayList<>();
+            for (ChainModule m : chainModules) order.addAll(m.processors);
+            order.add(normalizer);
+            pipeline.setProcessors(order);
+            if (loadedFile != null) player.prepare(loadedFile);
+
+            drawEqCurve();
+            drawWaveform();
+        }
+        finally
+        {
+            applyingPreset = false;
+        }
+    }
+
+    /** One full refresh after a preset / undo apply (suppressed during it). */
+    private void scheduleDynamicsRefreshAfterPresetApply()
+    {
+        if (loadedFile != null) syncLiveAnalysis();
+    }
+
+    private static <E extends Enum<E>> E enumOr(Class<E> type, String name, E fallback)
+    {
+        if (name == null) return fallback;
+        try { return Enum.valueOf(type, name); }
+        catch (IllegalArgumentException e) { return fallback; }
+    }
+
+    /** Saves the current chain configuration as a JSON preset file. */
+    @FXML
+    private void onSavePreset()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save chain preset");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("QuickMaster preset", "*.qmpreset"));
+        chooser.setInitialFileName("chain.qmpreset");
+        String dir = config.getOutputDir();
+        File initial = new File(dir);
+        if (initial.isDirectory()) chooser.setInitialDirectory(initial);
+        Window window = waveformCanvas.getScene().getWindow();
+        File target = chooser.showSaveDialog(window);
+        if (target == null) return;
+        try
+        {
+            String json = new com.google.gson.GsonBuilder().setPrettyPrinting().create()
+                    .toJson(capturePreset());
+            java.nio.file.Files.writeString(target.toPath(), json);
+            setStatus("Preset saved: " + target.getName());
+        }
+        catch (Exception ex)
+        {
+            AppLogger.error("Could not save preset", ex);
+            showError("Could not save the preset", ex.getMessage());
+        }
+    }
+
+    /** Loads a JSON preset file and applies it to the whole chain. */
+    @FXML
+    private void onLoadPreset()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Load chain preset");
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("QuickMaster preset", "*.qmpreset"),
+                new FileChooser.ExtensionFilter("All files", "*.*"));
+        String dir = config.getOutputDir();
+        File initial = new File(dir);
+        if (initial.isDirectory()) chooser.setInitialDirectory(initial);
+        Window window = waveformCanvas.getScene().getWindow();
+        File chosen = chooser.showOpenDialog(window);
+        if (chosen == null) return;
+        try
+        {
+            String json = java.nio.file.Files.readString(chosen.toPath());
+            com.quickmaster.config.ChainPreset p =
+                    new com.google.gson.Gson().fromJson(json, com.quickmaster.config.ChainPreset.class);
+            if (p == null) throw new IllegalArgumentException("Empty preset file.");
+            undoStack.push(new EditState(null, capturePreset()));
+            trimUndoHistory();
+            redoStack.clear();
+            updateUndoRedoButtons();
+            applyPreset(p);
+            scheduleDynamicsRefreshAfterPresetApply();
+            setStatus("Preset loaded: " + chosen.getName());
+        }
+        catch (Exception ex)
+        {
+            AppLogger.error("Could not load preset " + chosen, ex);
+            showError("Could not load the preset", ex.getMessage());
+        }
+    }
+
+    /**
+     * A/B settings comparison: two in-memory configuration slots. Toggling
+     * stores the current chain into the active slot and applies the other one,
+     * so two complete masters can be compared with one click (independent of
+     * the player's A/B bypass, which compares processed vs original).
+     */
+    @FXML
+    private void onToggleSettingsAB()
+    {
+        boolean toB = settingsAbButton.isSelected();
+        settingsAbButton.setText(toB ? "B" : "A");
+        if (toB)
+        {
+            settingsSlotA = capturePreset();
+            if (settingsSlotB == null) settingsSlotB = capturePreset();   // first switch: B starts as a copy
+            applyPreset(settingsSlotB);
+        }
+        else
+        {
+            settingsSlotB = capturePreset();
+            if (settingsSlotA == null) settingsSlotA = capturePreset();
+            applyPreset(settingsSlotA);
+        }
+        scheduleDynamicsRefreshAfterPresetApply();
+        setStatus("Settings " + (toB ? "B" : "A") + " active.");
+    }
+
+    /* =========================================================
+     *  Loop region (selection looping)
+     * ========================================================= */
+
+    /** Toggles looping over the waveform selection (or the whole file). */
+    @FXML
+    private void onToggleLoop()
+    {
+        if (loadedFile == null)
+        {
+            if (loopButton != null) loopButton.setSelected(false);
+            return;
+        }
+        if (loopButton.isSelected())
+        {
+            applyLoopFromSelection();
+            setStatus(hasSelection() ? "Looping the selection." : "Looping the whole track.");
+        }
+        else
+        {
+            player.clearLoopRegion();
+            setStatus("Loop off.");
+        }
+    }
+
+    /** Sets the player's loop region from the selection (whole file if none). */
+    private void applyLoopFromSelection()
+    {
+        if (loadedFile == null) return;
+        long total = loadedFile.getSamples().length / loadedFile.getChannels();
+        long s = 0, e = total;
+        if (hasSelection())
+        {
+            double a = Math.min(selStartSec, selEndSec), b = Math.max(selStartSec, selEndSec);
+            s = Math.round(a * loadedFile.getSampleRate());
+            e = Math.round(b * loadedFile.getSampleRate());
+        }
+        player.setLoopRegion(s, e);
+    }
+
+    /* =========================================================
+     *  Batch export
+     * ========================================================= */
+
+    /** Batch settings: target format + encoding (sampleRate 0 = keep source). */
+    private record BatchSettings(boolean mp3, int sampleRate, int bitDepth, boolean isFloat, int kbps) { }
+
+    /**
+     * Masters a whole set of files with the current chain: each file is
+     * loaded, analysed on its own snapshot (its own tempo/onset analysis),
+     * rendered with the same settings, and saved as
+     * {@code <name>-mastered.<ext>} into a chosen folder. Runs on one
+     * background task with the export overlay (cancellable between blocks).
+     */
+    @FXML
+    private void onBatchExport()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Batch export: choose the source files");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Audio files", "*.wav", "*.mp3"));
+        String dir = config.getOutputDir();
+        File initial = new File(dir);
+        if (initial.isDirectory()) chooser.setInitialDirectory(initial);
+        Window window = waveformCanvas.getScene().getWindow();
+        List<File> files = chooser.showOpenMultipleDialog(window);
+        if (files == null || files.isEmpty()) return;
+
+        BatchSettings settings = askBatchSettings();
+        if (settings == null) { setStatus("Batch export cancelled."); return; }
+
+        javafx.stage.DirectoryChooser dirChooser = new javafx.stage.DirectoryChooser();
+        dirChooser.setTitle("Batch export: choose the destination folder");
+        if (initial.isDirectory()) dirChooser.setInitialDirectory(initial);
+        File outDir = dirChooser.showDialog(window);
+        if (outDir == null) { setStatus("Batch export cancelled."); return; }
+
+        player.stop();
+        final List<File> sources = new ArrayList<>(files);
+        final int os = oversampling;
+
+        Task<Void> task = new Task<>()
+        {
+            @Override
+            protected Void call() throws Exception
+            {
+                int n = sources.size();
+                for (int i = 0; i < n; i++)
+                {
+                    if (isCancelled()) return null;
+                    File srcFile = sources.get(i);
+                    final int index = i;
+                    Platform.runLater(() -> exportFileLabel.setText(
+                            (index + 1) + " / " + n + ": " + srcFile.getName()));
+
+                    AudioFile audio = AudioFormatDetector.loadAuto(srcFile.getAbsolutePath());
+                    audio.load();
+
+                    TrackAnalysis ta = new TrackAnalysis();
+                    ta.analyze(audio.getSamples(), audio.getChannels(), audio.getSampleRate());
+
+                    Snapshot snap = buildSnapshot(ta);
+                    final double base = (double) index / n;
+                    float[] processed = renderOversampled(snap.pipeline,
+                            audio.getSamples().clone(), audio.getSampleRate(),
+                            audio.getChannels(), os,
+                            frac ->
+                            {
+                                if (isCancelled())
+                                    throw new java.util.concurrent.CancellationException();
+                                updateProgress(base + frac / n, 1.0);
+                            });
+                    if (isCancelled()) return null;
+
+                    int outRate = (settings.sampleRate() > 0)
+                            ? settings.sampleRate() : audio.getSampleRate();
+                    float[] out = resampleForExport(processed, audio.getChannels(),
+                            audio.getSampleRate(), outRate);
+                    if (outRate != audio.getSampleRate() && snap.normalizer.isEnabled())
+                    {
+                        reclampTruePeak(out, audio.getChannels(), snap.normalizer.getTargetDbfs());
+                    }
+
+                    String baseName = srcFile.getName();
+                    int dot = baseName.lastIndexOf('.');
+                    if (dot > 0) baseName = baseName.substring(0, dot);
+                    String ext = settings.mp3() ? ".mp3" : ".wav";
+                    String outPath = new File(outDir, baseName + "-mastered" + ext).getAbsolutePath();
+
+                    if (settings.mp3())
+                    {
+                        new Mp3File(outPath, outRate, audio.getChannels(), out,
+                                settings.kbps(), false).save(outPath);
+                    }
+                    else
+                    {
+                        new WavFile(outPath, outRate, audio.getChannels(), out,
+                                settings.bitDepth(), settings.isFloat()).save(outPath);
+                    }
+                    MetadataPreserver.preserve(srcFile.getAbsolutePath(), outPath);
+                }
+                return null;
+            }
+        };
+        task.setOnSucceeded(ev ->
+        {
+            hideExportOverlay();
+            setStatus("Batch export done: " + sources.size() + " files → " + outDir.getName());
+            AppLogger.info("Batch export finished into " + outDir.getAbsolutePath());
+            config.setOutputDir(outDir.getAbsolutePath());
+        });
+        task.setOnFailed(ev ->
+        {
+            hideExportOverlay();
+            AppLogger.error("Batch export failed", task.getException());
+            setStatus("Batch export failed.");
+            showError("Batch export failed", task.getException().getMessage());
+        });
+        task.setOnCancelled(ev ->
+        {
+            hideExportOverlay();
+            setStatus("Batch export cancelled.");
+        });
+        exportTask = task;
+        showExportOverlay(sources.size() + " files", task);
+        runTask(task);
+    }
+
+    /** Asks for the batch encoding: format, sample rate (keep / fixed) and depth / bitrate. */
+    private BatchSettings askBatchSettings()
+    {
+        ComboBox<String> fmtCombo = new ComboBox<>();
+        fmtCombo.getItems().addAll("WAV", "MP3");
+        fmtCombo.setValue("WAV");
+
+        ComboBox<String> srCombo = new ComboBox<>();
+        srCombo.getItems().addAll("Keep source", "44100", "48000", "88200", "96000", "176400", "192000");
+        srCombo.setValue("Keep source");
+
+        ComboBox<String> bitCombo = new ComboBox<>();
+        bitCombo.getItems().addAll("16-bit", "24-bit", "32-bit float");
+        bitCombo.setValue("24-bit");
+
+        ComboBox<Integer> kbpsCombo = new ComboBox<>();
+        kbpsCombo.getItems().addAll(96, 128, 160, 192, 224, 256, 320);
+        kbpsCombo.setValue(320);
+
+        GridPane g = new GridPane();
+        g.setHgap(12);
+        g.setVgap(10);
+        g.addRow(0, new Label("Format"), fmtCombo);
+        g.addRow(1, new Label("Sample rate (Hz)"), srCombo);
+        Label encLabel = new Label("Bit depth");
+        g.addRow(2, encLabel, bitCombo);
+        fmtCombo.valueProperty().addListener((o, ov, nv) ->
+        {
+            boolean mp3 = "MP3".equals(nv);
+            encLabel.setText(mp3 ? "Bitrate (kbps)" : "Bit depth");
+            g.getChildren().removeAll(bitCombo, kbpsCombo);
+            g.add(mp3 ? kbpsCombo : bitCombo, 1, 2);
+        });
+
+        Dialog<ButtonType> dlg = new Dialog<>();
+        dlg.setTitle("Batch export settings");
+        dlg.setHeaderText("Master every file with the current chain");
+        dlg.getDialogPane().setContent(g);
+        dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Optional<ButtonType> res = dlg.showAndWait();
+        if (res.isEmpty() || res.get() != ButtonType.OK) return null;
+
+        boolean mp3 = "MP3".equals(fmtCombo.getValue());
+        int sr = "Keep source".equals(srCombo.getValue()) ? 0 : Integer.parseInt(srCombo.getValue());
+        if (mp3) return new BatchSettings(true, sr, 16, false, kbpsCombo.getValue());
+        String bd = bitCombo.getValue();
+        if (bd.startsWith("16")) return new BatchSettings(false, sr, 16, false, 0);
+        if (bd.startsWith("24")) return new BatchSettings(false, sr, 24, false, 0);
+        return new BatchSettings(false, sr, 32, true, 0);
     }
 
     /* =========================================================
@@ -4252,6 +5177,7 @@ public class MainController
                             + " band until its loudest peak is limited by this many dB.");
             k.valueProperty().addListener((o, ov, nv) -> scheduleMbPush(band, nv.doubleValue()));
             k.disableProperty().bind(limEnabled.selectedProperty().not());
+            mbPushKnobs[b] = k;
 
             Object[] m = limMeter(MB_METER_W);
             mbFills.add((Region) m[1]);
@@ -4273,6 +5199,7 @@ public class MainController
                 .tooltip("Push the whole mix until its loudest true peak is limited by this many dB.");
         bk.valueProperty().addListener((o, ov, nv) -> scheduleBbPush(nv.doubleValue()));
         bk.disableProperty().bind(limEnabled.selectedProperty().not());
+        bbPushKnob = bk;
 
         Object[] bm = limMeter(BB_METER_W);
         bbFill = (Region) bm[1];

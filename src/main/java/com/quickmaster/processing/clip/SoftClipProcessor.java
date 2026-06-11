@@ -147,7 +147,7 @@ public final class SoftClipProcessor implements AudioProcessor
     }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         sat.prepare(sampleRate, 2);
         sat.setAlgorithm(algorithm);

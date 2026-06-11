@@ -74,7 +74,7 @@ class EqualizerProcessorTest
     }
 
     @Test
-    @DisplayName("Latency is one block only for an active linear-phase band")
+    @DisplayName("Latency is half the kernel only for an active linear-phase band")
     void latencyReporting()
     {
         assertEquals(0, eq.getLatencyFrames(), "no bands");
@@ -84,7 +84,10 @@ class EqualizerProcessorTest
         lin.phase = MasterEqualizer.BandPhase.LINEAR;
         lin.frequency = 1000; lin.gainDb = 3;
         eq.setBand(0, lin);
-        assertEquals(EqualizerProcessor.MAX_BLOCK_FRAMES, eq.getLatencyFrames());
+        // Kernel spans a constant time window, so the latency derives from the rate.
+        int kernel = (int) Math.round(MasterEqualizer.KERNEL_SECONDS * SR);
+        if ((kernel & 1) == 1) kernel++;
+        assertEquals(kernel / 2, eq.getLatencyFrames());
 
         MasterEqualizer.Band min = new MasterEqualizer.Band();
         min.type = MasterEqualizer.BandType.BELL;

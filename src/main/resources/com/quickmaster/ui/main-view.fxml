@@ -40,12 +40,18 @@
                 <Button fx:id="undoButton" text="↶ Undo" onAction="#onUndo"/>
                 <Button fx:id="redoButton" text="↷ Redo" onAction="#onRedo"/>
                 <Separator orientation="VERTICAL"/>
+                <Label text="Preset:" styleClass="caption"/>
+                <Button text="Save…" onAction="#onSavePreset"/>
+                <Button text="Load…" onAction="#onLoadPreset"/>
+                <ToggleButton fx:id="settingsAbButton" text="A" onAction="#onToggleSettingsAB"/>
+                <Separator orientation="VERTICAL"/>
                 <Label text="File:" styleClass="caption"/>
                 <Label fx:id="fileNameLabel" text="(none)" styleClass="value"/>
                 <Label fx:id="fileInfoLabel" text="" styleClass="value-muted"/>
                 <Label fx:id="topBpmLabel" text="" styleClass="value"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Measure" onAction="#onMeasureLufs"/>
+                <Button text="Batch…" onAction="#onBatchExport"/>
                 <Button text="Export…" onAction="#onExport" styleClass="action-button"/>
             </HBox>
 
@@ -162,10 +168,22 @@
                     <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterMom" text="·" styleClass="value"/></HBox>
                 <HBox spacing="6"><Label text="LRA" styleClass="caption" minWidth="56"/>
                     <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterLra" text="·" styleClass="value"/></HBox>
-                <HBox spacing="6"><Label text="Peak" styleClass="caption" minWidth="56"/>
+                <HBox spacing="6"><Label text="True peak" styleClass="caption" minWidth="56"/>
                     <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterPeak" text="·" styleClass="value"/></HBox>
                 <HBox spacing="6"><Label text="Lim GR" styleClass="caption" minWidth="56"/>
                     <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterGr" text="·" styleClass="value"/></HBox>
+                <Separator/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Canvas fx:id="gonioCanvas" width="76" height="76"/>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <HBox spacing="6"><Label text="Corr" styleClass="caption" minWidth="36"/>
+                            <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterCorr" text="·" styleClass="value"/></HBox>
+                        <HBox spacing="6"><Label text="Mid" styleClass="caption" minWidth="36"/>
+                            <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterMid" text="·" styleClass="value"/></HBox>
+                        <HBox spacing="6"><Label text="Side" styleClass="caption" minWidth="36"/>
+                            <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterSide" text="·" styleClass="value"/></HBox>
+                    </VBox>
+                </HBox>
             </VBox>
 
             <Separator/>
@@ -223,6 +241,7 @@
                 <Button fx:id="stopButton" text="⏹ Stop" onAction="#onStop" styleClass="transport-button"/>
                 <Button fx:id="goEndButton" text="⏭" onAction="#onGoToEnd" styleClass="transport-icon"/>
                 <ToggleButton fx:id="abButton" text="A/B" onAction="#onToggleAB" styleClass="transport-toggle"/>
+                <ToggleButton fx:id="loopButton" text="Loop" onAction="#onToggleLoop" styleClass="transport-toggle"/>
                 <Separator orientation="VERTICAL"/>
                 <Label fx:id="positionLabel" text="0:00.000 / 0:00.000" styleClass="time-display"/>
                 <Region HBox.hgrow="ALWAYS"/>

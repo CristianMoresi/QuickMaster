@@ -1,5 +1,7 @@
 package com.quickmaster.audio;
 
+import com.dspark.core.Dither;
+
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -256,13 +258,13 @@ public class WavFile extends AudioFile
         }
         else if (bitDepth == 16)
         {
-            raw = encode16BitInt(samples);
+            raw = encode16BitInt(samples, getChannels());
             encoding = AudioFormat.Encoding.PCM_SIGNED;
             frameSize = 2 * getChannels();
         }
         else if (bitDepth == 24)
         {
-            raw = encode24BitInt(samples);
+            raw = encode24BitInt(samples, getChannels());
             encoding = AudioFormat.Encoding.PCM_SIGNED;
             frameSize = 3 * getChannels();
         }
@@ -312,23 +314,39 @@ public class WavFile extends AudioFile
         return v;
     }
 
-    private static byte[] encode16BitInt(float[] samples)
+    /**
+     * Quantises to 16-bit with TPDF dither (per-channel state), replacing
+     * truncation distortion with a flat, uncorrelated noise floor - the
+     * standard practice when delivering a float master at a reduced depth.
+     */
+    private static byte[] encode16BitInt(float[] samples, int channels)
     {
+        Dither dither = new Dither(16, false);
+        int ch = Math.max(1, channels);
         ByteBuffer bb = ByteBuffer.allocate(samples.length * 2).order(ByteOrder.LITTLE_ENDIAN);
-        for (float s : samples)
+        for (int i = 0; i < samples.length; i++)
         {
-            int v = Math.round(clamp(s) * 32767.0f);
+            float q = dither.processSample(clamp(samples[i]), i % ch);
+            int v = (int) Math.rint(q * 32768.0);
+            if (v >  32767) v =  32767;
+            if (v < -32768) v = -32768;
             bb.putShort((short) v);
         }
         return bb.array();
     }
 
-    private static byte[] encode24BitInt(float[] samples)
+    /** Quantises to 24-bit with TPDF dither (see {@link #encode16BitInt}). */
+    private static byte[] encode24BitInt(float[] samples, int channels)
     {
+        Dither dither = new Dither(24, false);
+        int ch = Math.max(1, channels);
         byte[] out = new byte[samples.length * 3];
         for (int i = 0; i < samples.length; i++)
         {
-            int v = Math.round(clamp(samples[i]) * 8388607.0f);     // 2^23 - 1
+            float q = dither.processSample(clamp(samples[i]), i % ch);
+            int v = (int) Math.rint(q * 8388608.0);                 // 2^23
+            if (v >  8388607) v =  8388607;
+            if (v < -8388608) v = -8388608;
             out[i * 3]     = (byte) ( v        & 0xFF);
             out[i * 3 + 1] = (byte) ((v >> 8)  & 0xFF);
             out[i * 3 + 2] = (byte) ((v >> 16) & 0xFF);

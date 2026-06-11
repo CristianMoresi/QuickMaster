@@ -63,6 +63,7 @@ public final class AutoEqProcessor implements AudioProcessor
     private volatile float[] rendered = null;
     private int renderedFrames = 0;
     private int renderedChannels = 0;
+    private int renderedRate = 0;         // rate the render was analysed at (the base rate)
     private long renderSignature = 0L;    // cache key: input + params
 
     // Per-frame per-band gain (dB), kept for the correction display.
@@ -88,7 +89,7 @@ public final class AutoEqProcessor implements AudioProcessor
     @Override public int getLatencyFrames() { return 0; }
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         this.sampleRate = sampleRate;
         this.framesProcessed = 0L;
@@ -241,10 +242,11 @@ public final class AutoEqProcessor implements AudioProcessor
 
         this.gainMap = gain;
         this.gainFrames = nFrames;
-        this.rendered = out;
         this.renderedFrames = frames;
         this.renderedChannels = channels;
+        this.renderedRate = sampleRate;
         this.renderSignature = sig;
+        this.rendered = out;             // volatile publish, last
     }
 
     /** Fills {@code outDb} with the correction (dB) applied at each frequency for the given position. */
@@ -275,15 +277,58 @@ public final class AutoEqProcessor implements AudioProcessor
         if (!enabled || r == null || channels != renderedChannels) return buffer;
         int frames = buffer.length / channels;
         long pos = framesProcessed;
-        for (int f = 0; f < frames; f++)
+
+        // The render is stored at its analysis (base) rate; position it by time,
+        // so the same render plays correctly at any oversampled processing rate.
+        double ratio = (sampleRate > 0 && renderedRate > 0)
+                ? (double) renderedRate / sampleRate : 1.0;
+        if (ratio == 1.0)
         {
-            long s = pos + f;
-            if (s < 0 || s >= renderedFrames) continue;
-            int bi = f * channels, ri = (int) (s * channels);
-            for (int c = 0; c < channels; c++) buffer[bi + c] = r[ri + c];
+            for (int f = 0; f < frames; f++)
+            {
+                long s = pos + f;
+                if (s < 0 || s >= renderedFrames) continue;
+                int bi = f * channels, ri = (int) (s * channels);
+                for (int c = 0; c < channels; c++) buffer[bi + c] = r[ri + c];
+            }
+        }
+        else
+        {
+            for (int f = 0; f < frames; f++)
+            {
+                double s = (pos + f) * ratio;
+                if (s < 0.0 || s >= renderedFrames) continue;
+                int bi = f * channels;
+                for (int c = 0; c < channels; c++)
+                {
+                    buffer[bi + c] = sampleRendered(r, channels, c, s);
+                }
+            }
         }
         framesProcessed += frames;
         return buffer;
+    }
+
+    /** Catmull-Rom read of the base-rate render at a fractional frame position. */
+    private float sampleRendered(float[] r, int channels, int c, double pos)
+    {
+        int i1 = (int) pos;
+        double t = pos - i1;
+        float p0 = renderedAt(r, channels, c, i1 - 1);
+        float p1 = renderedAt(r, channels, c, i1);
+        float p2 = renderedAt(r, channels, c, i1 + 1);
+        float p3 = renderedAt(r, channels, c, i1 + 2);
+        double a0 = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
+        double a1 = p0 - 2.5 * p1 + 2.0 * p2 - 0.5 * p3;
+        double a2 = -0.5 * p0 + 0.5 * p2;
+        return (float) (((a0 * t + a1) * t + a2) * t + p1);
+    }
+
+    private float renderedAt(float[] r, int channels, int c, int frame)
+    {
+        if (frame < 0) frame = 0;
+        if (frame >= renderedFrames) frame = renderedFrames - 1;
+        return r[frame * channels + c];
     }
 
     /** Adopts another instance's rendered output (after a background re-analysis). */
@@ -291,6 +336,7 @@ public final class AutoEqProcessor implements AudioProcessor
     {
         this.renderedFrames = src.renderedFrames;
         this.renderedChannels = src.renderedChannels;
+        this.renderedRate = src.renderedRate;
         this.renderSignature = src.renderSignature;
         this.gainFrames = src.gainFrames;
         this.gainMap = src.gainMap;

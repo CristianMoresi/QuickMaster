@@ -17,7 +17,7 @@ import com.dspark.effects.MasterEqualizer;
  * static band is linear-phase by default or minimum-phase per band.
  * <p>
  * <b>Lazy / eager preparation.</b> The engine needs the channel count and a
- * maximum block size that {@link AudioProcessor#prepare(int, int)} does not
+ * maximum block size that {@link AudioProcessor#prepare(int, long)} does not
  * supply. The wrapper eagerly prepares the engine for stereo at
  * {@code prepare} time (so {@link #getLatencyFrames()} is correct before the
  * first block) and re-prepares it on the first {@link #process} call if the
@@ -25,8 +25,10 @@ import com.dspark.effects.MasterEqualizer;
  * {@link #MAX_BLOCK_FRAMES} frames; the player and the offline renderer both
  * honour that bound.
  * <p>
- * <b>Latency.</b> {@code maxBlockSize} when at least one linear-phase static
- * band is active, otherwise 0; the offline renderer compensates for it.
+ * <b>Latency.</b> Half the engine's linear-phase kernel when at least one
+ * linear-phase static band is active, otherwise 0; the offline renderer
+ * compensates for it. The kernel spans a constant time window, so the EQ
+ * curve is realized identically at any processing rate.
  * <p>
  * <b>Default state.</b> Enabled but with no bands configured - a transparent,
  * zero-latency passthrough until bands are added.
@@ -102,7 +104,7 @@ public final class EqualizerProcessor implements AudioProcessor
     /* --- AudioProcessor --- */
 
     @Override
-    public void prepare(int sampleRate, int totalSamples)
+    public void prepare(int sampleRate, long totalSamples)
     {
         this.sampleRate = sampleRate;
         // Eagerly prepare for stereo so getLatencyFrames() is correct before

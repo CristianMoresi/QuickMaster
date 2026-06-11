@@ -30,7 +30,7 @@ class MultibandLimiterProcessorTest
         for (int b = 0; b < MultibandLimiterProcessor.BANDS; b++) p.setPushDb(b, 0.0);  // unity bands
         p.prepare(SR, frames * ch);
         p.analyze(x, ch);
-        int lat = new com.dspark.effects.MultibandCrossover().getLatency();
+        int lat = p.getLatencyFrames();   // the crossover's rate-derived delay
 
         float[] out = x.clone();
         p.process(out, ch);
@@ -56,13 +56,11 @@ class MultibandLimiterProcessorTest
         p.prepare(SR, frames * ch);
         p.analyze(x, ch);
 
-        double deepest = 0.0;
-        for (long f = 0; f < frames; f += 200) deepest = Math.min(deepest, p.getBandGrAtPosition(0, f));
+        double deepest = p.getBandGrDeepest(0, 0, frames);
         assertEquals(-3.0, deepest, 0.6, "LOW band should be limited by ~3 dB at its loudest");
 
         // An untouched band shows no reduction.
-        double hi = 0.0;
-        for (long f = 0; f < frames; f += 200) hi = Math.min(hi, p.getBandGrAtPosition(2, f));
+        double hi = p.getBandGrDeepest(2, 0, frames);
         assertEquals(0.0, hi, 1e-6, "un-pushed band must show no reduction");
     }
 
