@@ -43,7 +43,7 @@
                 <Label text="Preset:" styleClass="caption"/>
                 <Button text="Save…" onAction="#onSavePreset"/>
                 <Button text="Load…" onAction="#onLoadPreset"/>
-                <ToggleButton fx:id="settingsAbButton" text="A" onAction="#onToggleSettingsAB"/>
+                <ToggleButton fx:id="settingsAbButton" text="Set A" onAction="#onToggleSettingsAB"/>
                 <Separator orientation="VERTICAL"/>
                 <Label text="File:" styleClass="caption"/>
                 <Label fx:id="fileNameLabel" text="(none)" styleClass="value"/>

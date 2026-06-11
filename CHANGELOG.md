@@ -5,6 +5,19 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-06-11
+
+### Changed
+- **Batch export is folder-based** - pick the folder with the songs (instead of a barely
+  discoverable multi-file selection) and one dialog now states everything up front: the source
+  folder and song count, the destination folder (visible and changeable, defaulting to a
+  "mastered" subfolder), the encoding, the output naming (`<name>-mastered.<ext>`) and that the
+  chain is applied exactly as currently configured.
+- **The two A/B controls are now distinguishable** - the top-bar settings toggle reads
+  "Set A"/"Set B" and both it and the transport's A/B carry tooltips: the transport A/B compares
+  the processed master against the ORIGINAL audio, while Set A/B switches between two complete
+  chain configurations to compare two masters.
+
 ## [1.2.0] - 2026-06-11
 
 ### Fixed

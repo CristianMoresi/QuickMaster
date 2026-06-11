@@ -531,6 +531,17 @@ public class MainController
         player.abModeProperty().addListener((obs, o, n) ->
                 abButton.setSelected(n));
 
+        // The two A/B controls answer different questions; say so on hover.
+        abButton.setTooltip(new Tooltip(
+                "Compare the processed master with the ORIGINAL audio (time-aligned bypass)."));
+        if (settingsAbButton != null)
+        {
+            settingsAbButton.setTooltip(new Tooltip(
+                    "Two complete chain setups (A and B): toggling stores the current settings"
+                            + " into the active slot and applies the other one. Use it to compare"
+                            + " two different masters of the same song."));
+        }
+
         // --- Mouse handlers on waveform: click + drag scrubbing ---
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED,  this::onWaveformMousePressed);
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_DRAGGED,  this::onWaveformMouseDragged);
@@ -4876,7 +4887,7 @@ public class MainController
     private void onToggleSettingsAB()
     {
         boolean toB = settingsAbButton.isSelected();
-        settingsAbButton.setText(toB ? "B" : "A");
+        settingsAbButton.setText(toB ? "Set B" : "Set A");
         if (toB)
         {
             settingsSlotA = capturePreset();
@@ -4937,38 +4948,58 @@ public class MainController
      *  Batch export
      * ========================================================= */
 
-    /** Batch settings: target format + encoding (sampleRate 0 = keep source). */
-    private record BatchSettings(boolean mp3, int sampleRate, int bitDepth, boolean isFloat, int kbps) { }
+    /** Batch settings: destination + target format + encoding (sampleRate 0 = keep source). */
+    private record BatchSettings(File outDir, boolean mp3, int sampleRate,
+                                 int bitDepth, boolean isFloat, int kbps) { }
 
     /**
-     * Masters a whole set of files with the current chain: each file is
-     * loaded, analysed on its own snapshot (its own tempo/onset analysis),
-     * rendered with the same settings, and saved as
-     * {@code <name>-mastered.<ext>} into a chosen folder. Runs on one
-     * background task with the export overlay (cancellable between blocks).
+     * Masters a whole folder with the current chain: the user picks a source
+     * folder, every {@code .wav} / {@code .mp3} in it (alphabetical, not
+     * recursive) is loaded, analysed on its own snapshot (its own tempo/onset
+     * analysis), rendered with the same settings, and saved as
+     * {@code <name>-mastered.<ext>} into a chosen destination folder. Runs on
+     * one background task with the export overlay (cancellable between blocks).
      */
     @FXML
     private void onBatchExport()
     {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Batch export: choose the source files");
-        chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Audio files", "*.wav", "*.mp3"));
         String dir = config.getOutputDir();
         File initial = new File(dir);
-        if (initial.isDirectory()) chooser.setInitialDirectory(initial);
         Window window = waveformCanvas.getScene().getWindow();
-        List<File> files = chooser.showOpenMultipleDialog(window);
-        if (files == null || files.isEmpty()) return;
 
-        BatchSettings settings = askBatchSettings();
+        javafx.stage.DirectoryChooser srcChooser = new javafx.stage.DirectoryChooser();
+        srcChooser.setTitle("Batch export: choose the folder with the songs");
+        if (initial.isDirectory()) srcChooser.setInitialDirectory(initial);
+        File srcDir = srcChooser.showDialog(window);
+        if (srcDir == null) return;
+
+        File[] found = srcDir.listFiles(f ->
+        {
+            if (!f.isFile()) return false;
+            String n = f.getName().toLowerCase(Locale.ROOT);
+            return n.endsWith(".wav") || n.endsWith(".mp3");
+        });
+        if (found == null || found.length == 0)
+        {
+            showError("No audio files found",
+                    "The folder \"" + srcDir.getName() + "\" contains no .wav or .mp3 files.");
+            return;
+        }
+        Arrays.sort(found, java.util.Comparator.comparing(f -> f.getName().toLowerCase(Locale.ROOT)));
+        List<File> files = Arrays.asList(found);
+
+        BatchSettings settings = askBatchSettings(srcDir, files.size());
         if (settings == null) { setStatus("Batch export cancelled."); return; }
-
-        javafx.stage.DirectoryChooser dirChooser = new javafx.stage.DirectoryChooser();
-        dirChooser.setTitle("Batch export: choose the destination folder");
-        if (initial.isDirectory()) dirChooser.setInitialDirectory(initial);
-        File outDir = dirChooser.showDialog(window);
-        if (outDir == null) { setStatus("Batch export cancelled."); return; }
+        File outDir = settings.outDir();
+        try
+        {
+            java.nio.file.Files.createDirectories(outDir.toPath());
+        }
+        catch (Exception ex)
+        {
+            showError("Cannot create the destination folder", ex.getMessage());
+            return;
+        }
 
         player.stop();
         final List<File> sources = new ArrayList<>(files);
@@ -5061,8 +5092,13 @@ public class MainController
         runTask(task);
     }
 
-    /** Asks for the batch encoding: format, sample rate (keep / fixed) and depth / bitrate. */
-    private BatchSettings askBatchSettings()
+    /**
+     * The one batch dialog: states what will be applied (the chain exactly as
+     * configured right now), shows and lets the user change the destination
+     * folder (default: a "mastered" subfolder of the source), and asks for the
+     * encoding (format, sample rate, depth / bitrate).
+     */
+    private BatchSettings askBatchSettings(File srcDir, int fileCount)
     {
         ComboBox<String> fmtCombo = new ComboBox<>();
         fmtCombo.getItems().addAll("WAV", "MP3");
@@ -5080,37 +5116,73 @@ public class MainController
         kbpsCombo.getItems().addAll(96, 128, 160, 192, 224, 256, 320);
         kbpsCombo.setValue(320);
 
+        // Destination: visible, editable, defaulting to <source>/mastered.
+        final File[] outDirHolder = { new File(srcDir, "mastered") };
+        Label outDirLabel = new Label(outDirHolder[0].getAbsolutePath());
+        outDirLabel.getStyleClass().add("value");
+        outDirLabel.setMaxWidth(320);
+        Button chooseOut = new Button("Change…");
+        chooseOut.setOnAction(ev ->
+        {
+            javafx.stage.DirectoryChooser dc = new javafx.stage.DirectoryChooser();
+            dc.setTitle("Batch export: destination folder");
+            if (srcDir.isDirectory()) dc.setInitialDirectory(srcDir);
+            File chosen = dc.showDialog(chooseOut.getScene().getWindow());
+            if (chosen != null)
+            {
+                outDirHolder[0] = chosen;
+                outDirLabel.setText(chosen.getAbsolutePath());
+            }
+        });
+        HBox outRow = new HBox(8, outDirLabel, chooseOut);
+        outRow.setAlignment(Pos.CENTER_LEFT);
+
         GridPane g = new GridPane();
         g.setHgap(12);
         g.setVgap(10);
-        g.addRow(0, new Label("Format"), fmtCombo);
-        g.addRow(1, new Label("Sample rate (Hz)"), srCombo);
+        g.addRow(0, new Label("Source"), new Label(
+                srcDir.getAbsolutePath() + "  (" + fileCount
+                        + (fileCount == 1 ? " song)" : " songs)")));
+        g.addRow(1, new Label("Destination"), outRow);
+        g.addRow(2, new Label("Format"), fmtCombo);
+        g.addRow(3, new Label("Sample rate (Hz)"), srCombo);
         Label encLabel = new Label("Bit depth");
-        g.addRow(2, encLabel, bitCombo);
+        g.addRow(4, encLabel, bitCombo);
+        Label note = new Label(
+                "Applies the chain exactly as it is configured right now.\n"
+                        + "Each song is saved as <name>-mastered." + "wav" + " into the destination.");
+        note.getStyleClass().add("value-muted");
+        note.setWrapText(true);
+        g.add(note, 0, 5, 2, 1);
         fmtCombo.valueProperty().addListener((o, ov, nv) ->
         {
             boolean mp3 = "MP3".equals(nv);
             encLabel.setText(mp3 ? "Bitrate (kbps)" : "Bit depth");
             g.getChildren().removeAll(bitCombo, kbpsCombo);
-            g.add(mp3 ? kbpsCombo : bitCombo, 1, 2);
+            g.add(mp3 ? kbpsCombo : bitCombo, 1, 4);
+            note.setText("Applies the chain exactly as it is configured right now.\n"
+                    + "Each song is saved as <name>-mastered." + (mp3 ? "mp3" : "wav")
+                    + " into the destination.");
         });
 
         Dialog<ButtonType> dlg = new Dialog<>();
-        dlg.setTitle("Batch export settings");
-        dlg.setHeaderText("Master every file with the current chain");
+        dlg.setTitle("Batch export");
+        dlg.setHeaderText("Master " + fileCount + (fileCount == 1 ? " song" : " songs")
+                + " with the current chain");
         dlg.getDialogPane().setContent(g);
         dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         Optional<ButtonType> res = dlg.showAndWait();
         if (res.isEmpty() || res.get() != ButtonType.OK) return null;
 
+        File outDir = outDirHolder[0];
         boolean mp3 = "MP3".equals(fmtCombo.getValue());
         int sr = "Keep source".equals(srCombo.getValue()) ? 0 : Integer.parseInt(srCombo.getValue());
-        if (mp3) return new BatchSettings(true, sr, 16, false, kbpsCombo.getValue());
+        if (mp3) return new BatchSettings(outDir, true, sr, 16, false, kbpsCombo.getValue());
         String bd = bitCombo.getValue();
-        if (bd.startsWith("16")) return new BatchSettings(false, sr, 16, false, 0);
-        if (bd.startsWith("24")) return new BatchSettings(false, sr, 24, false, 0);
-        return new BatchSettings(false, sr, 32, true, 0);
+        if (bd.startsWith("16")) return new BatchSettings(outDir, false, sr, 16, false, 0);
+        if (bd.startsWith("24")) return new BatchSettings(outDir, false, sr, 24, false, 0);
+        return new BatchSettings(outDir, false, sr, 32, true, 0);
     }
 
     /* =========================================================
