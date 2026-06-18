@@ -40,3 +40,9 @@ quickmaster.log
 *.log
 *.log.*
 *.lck
+
+# Scripts
+*.bat
+*.ps1
+*.sh
+*.command

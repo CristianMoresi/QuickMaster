@@ -43,7 +43,13 @@
                 <Label text="Preset:" styleClass="caption"/>
                 <Button text="Save…" onAction="#onSavePreset"/>
                 <Button text="Load…" onAction="#onLoadPreset"/>
-                <ToggleButton fx:id="settingsAbButton" text="Set A" onAction="#onToggleSettingsAB"/>
+                <Label text="A/B:" styleClass="caption"/>
+                <HBox spacing="0" alignment="CENTER_LEFT" styleClass="ab-switch">
+                    <ToggleButton fx:id="slotAButton" text="A" selected="true"
+                                  onAction="#onSelectSlotA" styleClass="ab-seg,ab-seg-left"/>
+                    <ToggleButton fx:id="slotBButton" text="B"
+                                  onAction="#onSelectSlotB" styleClass="ab-seg,ab-seg-right"/>
+                </HBox>
                 <Separator orientation="VERTICAL"/>
                 <Label text="File:" styleClass="caption"/>
                 <Label fx:id="fileNameLabel" text="(none)" styleClass="value"/>
@@ -273,7 +279,7 @@
         <VBox styleClass="export-card" alignment="CENTER" spacing="14"
               maxWidth="440" maxHeight="-Infinity">
             <padding><Insets top="26" right="32" bottom="26" left="32"/></padding>
-            <Label text="Exporting" styleClass="section-header"/>
+            <Label fx:id="exportTitleLabel" text="Exporting" styleClass="section-header"/>
             <Label fx:id="exportFileLabel" text="" styleClass="value"/>
             <ProgressBar fx:id="exportBar" prefWidth="320" progress="0.0"/>
             <Label fx:id="exportPercentLabel" text="0 %" styleClass="value"/>

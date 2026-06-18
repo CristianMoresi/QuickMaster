@@ -5,6 +5,19 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **The A/B settings comparison now works: instant, gapless, no re-analysis.** The single
+  "Set A"/"Set B" toggle (whose label changed on every click and was easy to misread as a command)
+  is replaced by a joined **A | B** switch where exactly one slot is highlighted as active.
+  Switching stores the edits you are leaving in their slot and recalls the other, so neither
+  configuration is lost. Each slot is rendered once to a buffer (the first time you compare it,
+  shown behind the progress overlay); after that, toggling A/B hands the player the other slot's
+  render instantly - no playback stop, no several-seconds re-analysis. Editing a slot drops its
+  render and returns to live processing so the edit is heard at once. Undo/redo and loading a
+  preset also keep playback running from the same position instead of resetting to the start.
+
 ## [1.2.2] - 2026-06-11
 
 ### Changed

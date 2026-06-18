@@ -118,6 +118,14 @@ public class AudioPlayer
        boolean so the audio thread never touches a JavaFX property. */
     private volatile boolean abBypass = false;
 
+    /* Optional pre-rendered, source-aligned output (the active A/B settings
+       slot). When non-null the loop plays it back directly instead of running
+       the live pipeline, so switching between two such renders is instant and
+       needs no re-analysis. Same length, channel count and rate as the source;
+       already latency-compensated, so it carries no chain delay. A plain
+       volatile reference, swapped atomically: safe to set during playback. */
+    private volatile float[] fixedRender = null;
+
     /* Loop region in source frames (end <= 0 disables). Set from the UI. */
     private volatile long loopStartFrames = 0L;
     private volatile long loopEndFrames = 0L;
@@ -193,6 +201,7 @@ public class AudioPlayer
         this.seekRequested = false;
         this.analysisValid = false;   // new source: must be (re)analysed before the next play
         this.loopEnabled = false;     // a new source invalidates the previous loop region
+        this.fixedRender = null;      // a new source invalidates any pre-rendered A/B slot
 
         Platform.runLater(() ->
         {
@@ -385,6 +394,20 @@ public class AudioPlayer
     public void setAnalysisValid(boolean valid) { this.analysisValid = valid; }
 
     /**
+     * Plays a pre-rendered, source-aligned output buffer directly instead of
+     * running the live pipeline. Passing {@code null} restores live processing.
+     * The swap is a single volatile write, safe to call during playback: the
+     * audio thread picks up the new buffer on its next block. Used by the A/B
+     * settings switch so toggling between two rendered slots is instant.
+     *
+     * @param render a full-length, source-aligned render, or {@code null} for live
+     */
+    public void setFixedRender(float[] render) { this.fixedRender = render; }
+
+    /** True while a pre-rendered slot is being played back (see {@link #setFixedRender}). */
+    public boolean hasFixedRender() { return fixedRender != null; }
+
+    /**
      * (Re)prepares the chain at the current oversampling factor and returns it.
      * At {@code 1} the pipeline runs at the base rate; above it the pipeline is
      * prepared at {@code factor x} the base rate and {@link #osEngine} performs
@@ -498,9 +521,11 @@ public class AudioPlayer
         }
 
         // Prepare for this audio: base-rate analysis (peak-normalizer gain),
-        // then (re)prepare at the oversampled rate for the actual render.
+        // then (re)prepare at the oversampled rate for the actual render. A
+        // pre-rendered slot (A/B compare) plays back directly, so the live
+        // pipeline needs neither analysis nor preparation here.
         pipeline.prepare(sampleRate, sourceSamples.length);
-        if (!analysisValid)
+        if (fixedRender == null && !analysisValid)
         {
             pipeline.analyze(sourceSamples, channels);   // only if the UI has not already analysed
             analysisValid = true;
@@ -525,7 +550,11 @@ public class AudioPlayer
                     continue;
                 }
 
-                int latBase = chainLatencyBaseFrames(curFactor);
+                // A pre-rendered slot (A/B compare) plays back directly, bypassing
+                // the live pipeline; it is source-aligned, so it carries no chain
+                // latency. Captured once per buffer (the reference is volatile).
+                final float[] render = fixedRender;
+                int latBase = (render != null) ? 0 : chainLatencyBaseFrames(curFactor);
 
                 long start;
                 long framesThisBuffer;
@@ -558,59 +587,78 @@ public class AudioPlayer
                     seekRequested = false;
                 }
 
-                // Copy the slice from the source into a per-buffer working array
-                // (silence while flushing the chain tail), so the in-place
-                // pipeline cannot corrupt the original samples.
+                // Build this buffer's output: either a pre-rendered slot (played
+                // back directly) or the live pipeline.
                 int samplesThisBuffer = (int) (framesThisBuffer * channels);
-                float[] working = new float[samplesThisBuffer];
-                if (!flushing)
+                float[] out;
+                if (render != null)
                 {
-                    System.arraycopy(sourceSamples, (int) (start * channels),
-                            working, 0, samplesThisBuffer);
-                }
-
-                // Re-prepare the chain if the oversampling factor changed.
-                if (osDirty)
-                {
-                    curFactor = applyOversampling();
-                    latBase = chainLatencyBaseFrames(curFactor);
-                }
-
-                // Index every position-aware stage by the true source position
-                // (in current-rate frames). At an oversampled rate the signal
-                // additionally lags by the up-path delay, which is subtracted so
-                // precomputed envelopes land on the audio they were built for.
-                if (curFactor == 1)
-                {
-                    pipeline.setPlaybackPosition(start);
+                    // Pre-rendered, source-aligned slot output. Bypass plays the
+                    // raw source (also source-aligned), so no delay line is needed.
+                    out = new float[samplesThisBuffer];
+                    if (!flushing)
+                    {
+                        float[] from = abBypass ? sourceSamples : render;
+                        int off = (int) (start * channels);
+                        int n = Math.min(samplesThisBuffer, from.length - off);
+                        if (n > 0) System.arraycopy(from, off, out, 0, n);
+                    }
                 }
                 else
                 {
-                    pipeline.setPlaybackPosition(
-                            start * curFactor - osEngine.getUpsampleLatencyHiFrames());
-                }
+                    // Copy the slice from the source into a per-buffer working array
+                    // (silence while flushing the chain tail), so the in-place
+                    // pipeline cannot corrupt the original samples.
+                    float[] working = new float[samplesThisBuffer];
+                    if (!flushing)
+                    {
+                        System.arraycopy(sourceSamples, (int) (start * channels),
+                                working, 0, samplesThisBuffer);
+                    }
 
-                // Keep the bypass delay line matched to the current latency and
-                // feed it the original block, so an A/B toggle stays aligned.
-                ensureAbDelay(latBase);
-                float[] original = working.clone();
-                delayBypass(original, samplesThisBuffer);
+                    // Re-prepare the chain if the oversampling factor changed.
+                    if (osDirty)
+                    {
+                        curFactor = applyOversampling();
+                        latBase = chainLatencyBaseFrames(curFactor);
+                    }
 
-                // Apply the pipeline unless A/B bypass is active. When
-                // oversampling, upsample the block, run the chain at the high
-                // rate (in sub-blocks the stages can handle), then downsample.
-                if (curFactor == 1)
-                {
-                    working = pipeline.execute(working, channels);
+                    // Index every position-aware stage by the true source position
+                    // (in current-rate frames). At an oversampled rate the signal
+                    // additionally lags by the up-path delay, which is subtracted so
+                    // precomputed envelopes land on the audio they were built for.
+                    if (curFactor == 1)
+                    {
+                        pipeline.setPlaybackPosition(start);
+                    }
+                    else
+                    {
+                        pipeline.setPlaybackPosition(
+                                start * curFactor - osEngine.getUpsampleLatencyHiFrames());
+                    }
+
+                    // Keep the bypass delay line matched to the current latency and
+                    // feed it the original block, so an A/B toggle stays aligned.
+                    ensureAbDelay(latBase);
+                    float[] original = working.clone();
+                    delayBypass(original, samplesThisBuffer);
+
+                    // Apply the pipeline unless A/B bypass is active. When
+                    // oversampling, upsample the block, run the chain at the high
+                    // rate (in sub-blocks the stages can handle), then downsample.
+                    if (curFactor == 1)
+                    {
+                        working = pipeline.execute(working, channels);
+                    }
+                    else
+                    {
+                        float[] up = osEngine.upsample(working, (int) framesThisBuffer);
+                        float[] hi = pipeline.executeBlocks(up, channels,
+                                ProcessingPipeline.OFFLINE_BLOCK_FRAMES);
+                        osEngine.downsample(hi, (int) framesThisBuffer, working);
+                    }
+                    out = abBypass ? original : working;
                 }
-                else
-                {
-                    float[] up = osEngine.upsample(working, (int) framesThisBuffer);
-                    float[] hi = pipeline.executeBlocks(up, channels,
-                            ProcessingPipeline.OFFLINE_BLOCK_FRAMES);
-                    osEngine.downsample(hi, (int) framesThisBuffer, working);
-                }
-                float[] out = abBypass ? original : working;
 
                 // Feed the processed output to the live metering tap, if any.
                 java.util.function.ObjIntConsumer<float[]> tap = meterTap;

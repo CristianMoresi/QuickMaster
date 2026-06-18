@@ -228,7 +228,8 @@ public class MainController
     @FXML private Label positionLabel;
 
     // Preset A/B settings toggle (top bar).
-    @FXML private ToggleButton settingsAbButton;
+    @FXML private ToggleButton slotAButton;
+    @FXML private ToggleButton slotBButton;
 
     // Trim
     @FXML private Label selectionLabel;
@@ -314,6 +315,7 @@ public class MainController
     @FXML private StackPane rootStack;
     @FXML private VBox exportOverlay;
     @FXML private ProgressBar exportBar;
+    @FXML private Label exportTitleLabel;
     @FXML private Label exportFileLabel;
     @FXML private Label exportPercentLabel;
     @FXML private Label exportTimeLabel;
@@ -394,9 +396,19 @@ public class MainController
     /** True while a preset (or an undo) is being applied, so listeners stay quiet. */
     private boolean applyingPreset = false;
 
-    /** A/B settings slots: the configuration not currently active. */
+    /** A/B settings slots: each holds a full chain configuration. The slot that
+     *  is currently live lives in the editor controls; the other slot's saved
+     *  state is held here. {@link #activeSettingsSlot} says which one is live. */
     private com.quickmaster.config.ChainPreset settingsSlotA = null;
     private com.quickmaster.config.ChainPreset settingsSlotB = null;
+    private char activeSettingsSlot = 'A';
+
+    /** Cached, source-aligned offline renders of each slot, so switching between
+     *  them is instant (the player just plays a different buffer, with no
+     *  re-analysis and no playback interruption). Null = stale/absent: a live
+     *  edit drops the active slot's render, a source change drops both. */
+    private float[] renderSlotA = null;
+    private float[] renderSlotB = null;
 
     /** Tonal-prefix cache: the analysed signal after the EQ block, so a
      *  dynamics / clip / limit gesture skips re-rendering the (expensive)
@@ -531,16 +543,16 @@ public class MainController
         player.abModeProperty().addListener((obs, o, n) ->
                 abButton.setSelected(n));
 
-        // Bypass and Set A/B answer different questions; say so on hover.
+        // Bypass and the A/B switch answer different questions; say so on hover.
         abButton.setTooltip(new Tooltip(
                 "Bypass the chain to hear the ORIGINAL audio (time-aligned with the master)."));
-        if (settingsAbButton != null)
-        {
-            settingsAbButton.setTooltip(new Tooltip(
-                    "Two complete chain setups (A and B): toggling stores the current settings"
-                            + " into the active slot and applies the other one. Use it to compare"
-                            + " two different masters of the same song."));
-        }
+        Tooltip abSlotTip = new Tooltip(
+                "Two independent chain setups, A and B. Switching keeps your edits in the slot"
+                        + " you leave and recalls the other, so you can compare two masters of the"
+                        + " same song. The switch is instant and never stops playback (each slot is"
+                        + " prepared once, the first time you compare it).");
+        if (slotAButton != null) slotAButton.setTooltip(abSlotTip);
+        if (slotBButton != null) slotBButton.setTooltip(abSlotTip);
 
         // --- Mouse handlers on waveform: click + drag scrubbing ---
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED,  this::onWaveformMousePressed);
@@ -1097,6 +1109,7 @@ public class MainController
         loadedFile.reset();
         clearSelectionState();
         clearHistory();
+        invalidateAllSlotRenders();
         player.prepare(loadedFile);
         downsampleForDisplay();
         drawWaveform();
@@ -1344,8 +1357,16 @@ public class MainController
      */
     private void showExportOverlay(String fileName, Task<?> task)
     {
+        showExportOverlay("Exporting", fileName, task);
+    }
+
+    /** As {@link #showExportOverlay(String, Task)} with a custom title (the A/B
+     *  comparison reuses the same overlay to render a slot). */
+    private void showExportOverlay(String title, String fileName, Task<?> task)
+    {
         exporting = true;
         exportStartNanos = System.nanoTime();
+        if (exportTitleLabel != null) exportTitleLabel.setText(title);
         exportFileLabel.setText(fileName);
         exportPercentLabel.setText("Preparing…");
         exportTimeLabel.setText("");
@@ -1354,7 +1375,7 @@ public class MainController
         exportOverlay.setVisible(true);
         exportOverlay.setManaged(true);
         rootPane.setDisable(true);
-        setStatus("Exporting …");
+        setStatus(title + " …");
     }
 
     /** Hides the export overlay, unlocks the window and clears export state. */
@@ -1471,6 +1492,7 @@ public class MainController
         }
         oversampling = factor;
         if (player != null) player.setOversampling(factor);
+        invalidateAllSlotRenders();   // renders bake in the oversampling factor
     }
 
     /**
@@ -1768,6 +1790,7 @@ public class MainController
 
         clearSelectionState();
         clearHistory();
+        invalidateAllSlotRenders();   // new source: any cached A/B render is stale
         if (loopButton != null) loopButton.setSelected(false);
         liveTp = null;            // new source: fresh true-peak detectors
         resetGoniometer();
@@ -1881,6 +1904,7 @@ public class MainController
     private void afterTrim(String message)
     {
         clearSelectionState();
+        invalidateAllSlotRenders();   // the timeline changed: cached A/B renders are stale
         // Clamp fades to the new (shorter) duration.
         double dur = loadedFile.getDuration();
         if (fade.getFadeInSec()  > dur) fade.setFadeInSec(dur);
@@ -3496,6 +3520,7 @@ public class MainController
      */
     private void rebuildPipeline()
     {
+        invalidateActiveSlotRender();   // the chain order changed: the active slot's render is stale
         boolean wasPlaying = player.isPlaying();
         int sr = (loadedFile != null) ? loadedFile.getSampleRate() : 0;
         double posSec = (sr > 0) ? player.getPositionSamples() / (double) sr : 0.0;
@@ -3766,6 +3791,7 @@ public class MainController
         AudioProcessor moved = dynamicsOrder.remove(from);
         dynamicsOrder.add(to, moved);
         layoutDynamicsGrid();
+        invalidateActiveSlotRender();   // the chain changed: the active slot's render is stale
 
         boolean wasPlaying = player.isPlaying();
         int sr = (loadedFile != null) ? loadedFile.getSampleRate() : 0;
@@ -4211,6 +4237,7 @@ public class MainController
     {
         if (applyingPreset) return;
         if (loadedFile == null) return;
+        invalidateActiveSlotRender();   // a live edit makes the active slot's render stale
         if (paramGestureBaseline == null)
         {
             paramGestureBaseline = capturePreset();
@@ -4642,6 +4669,18 @@ public class MainController
      */
     private void applyPreset(com.quickmaster.config.ChainPreset p)
     {
+        applyPreset(p, true);
+    }
+
+    /**
+     * As {@link #applyPreset(com.quickmaster.config.ChainPreset)}, but when
+     * {@code touchPlayer} is false the player transport is left alone: the
+     * pipeline is rebuilt but playback is neither stopped nor re-prepared. The
+     * A/B switch uses this, driving playback through pre-rendered slot buffers
+     * instead, so a switch never interrupts the audio.
+     */
+    private void applyPreset(com.quickmaster.config.ChainPreset p, boolean touchPlayer)
+    {
         if (p == null) return;
         applyingPreset = true;
         try
@@ -4787,8 +4826,35 @@ public class MainController
             List<AudioProcessor> order = new ArrayList<>();
             for (ChainModule m : chainModules) order.addAll(m.processors);
             order.add(normalizer);
-            pipeline.setProcessors(order);
-            if (loadedFile != null) player.prepare(loadedFile);
+
+            if (touchPlayer)
+            {
+                // Swap the pipeline but keep playback going: note where the player
+                // is, stop the audio thread before mutating the shared chain, then
+                // re-prepare and resume from the same spot (no jump to the start).
+                boolean wasPlaying = player.isPlaying();
+                int sr = (loadedFile != null) ? loadedFile.getSampleRate() : 0;
+                double posSec = (sr > 0) ? player.getPositionSamples() / (double) sr : 0.0;
+
+                player.stop();
+                pipeline.setProcessors(order);
+                // Undo/redo or loading a preset replaces the active slot's live
+                // config, so its cached render is stale (player.prepare already
+                // dropped any active fixed render).
+                setSlotRender(activeSettingsSlot, null);
+                if (loadedFile != null)
+                {
+                    player.prepare(loadedFile);
+                    if (posSec > 0.0) player.seekTo(posSec);
+                    if (wasPlaying) player.play();
+                }
+            }
+            else
+            {
+                // A/B switch: the audio thread is parked on a slot render, not the
+                // live pipeline, so the chain can be rebuilt without stopping.
+                pipeline.setProcessors(order);
+            }
 
             drawEqCurve();
             drawWaveform();
@@ -4878,30 +4944,154 @@ public class MainController
     }
 
     /**
-     * A/B settings comparison: two in-memory configuration slots. Toggling
-     * stores the current chain into the active slot and applies the other one,
-     * so two complete masters can be compared with one click (independent of
-     * the player's A/B bypass, which compares processed vs original).
+     * A/B settings comparison: two independent chain configurations, A and B.
+     * The A and B buttons form a real switch (exactly one is active). Switching
+     * stores the current edits in the slot being left and recalls the other,
+     * so two complete masters of the same song can be compared without losing
+     * either one. Independent of the player's Bypass, which compares processed
+     * vs original.
+     * <p>
+     * The switch is instant and never interrupts playback: each slot is rendered
+     * once to a source-aligned buffer (the first time it is compared, shown
+     * behind the progress overlay), and toggling just hands the player the other
+     * slot's render - no re-analysis, no stop/restart. Editing a slot drops its
+     * render and returns to live processing so the edit is heard at once.
      */
     @FXML
-    private void onToggleSettingsAB()
+    private void onSelectSlotA() { switchSettingsSlot('A'); }
+
+    @FXML
+    private void onSelectSlotB() { switchSettingsSlot('B'); }
+
+    private float[] slotRender(char slot)        { return slot == 'A' ? renderSlotA : renderSlotB; }
+    private void setSlotRender(char slot, float[] r) { if (slot == 'A') renderSlotA = r; else renderSlotB = r; }
+
+    /** Keeps the A | B switch showing the truly-active slot (used after a cancel). */
+    private void syncSlotButtons()
     {
-        boolean toB = settingsAbButton.isSelected();
-        settingsAbButton.setText(toB ? "Set B" : "Set A");
-        if (toB)
+        slotAButton.setSelected(activeSettingsSlot == 'A');
+        slotBButton.setSelected(activeSettingsSlot == 'B');
+    }
+
+    private void switchSettingsSlot(char target)
+    {
+        // The two buttons act as one switch: keep exactly one selected, and
+        // never let a click on the already-active button deselect it.
+        slotAButton.setSelected(target == 'A');
+        slotBButton.setSelected(target == 'B');
+        if (loadedFile == null) { activeSettingsSlot = target; return; }
+        if (target == activeSettingsSlot) return;
+        if (exporting) return;   // a render is already in flight; ignore the click
+
+        final char leaving = activeSettingsSlot;
+        if (leaving == 'A') settingsSlotA = capturePreset();
+        else                settingsSlotB = capturePreset();
+
+        // Recall the target slot; the first time it is visited it starts as a
+        // copy of the current chain (so B begins where A left off, then diverges).
+        com.quickmaster.config.ChainPreset recalled = (target == 'A') ? settingsSlotA : settingsSlotB;
+        final com.quickmaster.config.ChainPreset targetPreset =
+                (recalled != null) ? recalled : capturePreset();
+
+        Runnable reconfigureAndPlay = () ->
         {
-            settingsSlotA = capturePreset();
-            if (settingsSlotB == null) settingsSlotB = capturePreset();   // first switch: B starts as a copy
-            applyPreset(settingsSlotB);
+            activeSettingsSlot = target;
+            applyPreset(targetPreset, false);   // reconfigure controls/processors, no transport touch
+            ensureSlotRender(target, () ->
+            {
+                player.setFixedRender(slotRender(target));
+                setStatus("Settings " + target + " active.");
+            });
+        };
+
+        // Reconfiguring the live chain must not race the audio thread. If we are
+        // playing the live pipeline, first park playback on the leaving slot's
+        // render (it is independent of the live processors); once on a render,
+        // the pipeline can be rebuilt freely.
+        if (player.isPlaying() && !player.hasFixedRender())
+        {
+            ensureSlotRender(leaving, () ->
+            {
+                player.setFixedRender(slotRender(leaving));
+                reconfigureAndPlay.run();
+            });
         }
         else
         {
-            settingsSlotB = capturePreset();
-            if (settingsSlotA == null) settingsSlotA = capturePreset();
-            applyPreset(settingsSlotA);
+            reconfigureAndPlay.run();
         }
-        scheduleDynamicsRefreshAfterPresetApply();
-        setStatus("Settings " + (toB ? "B" : "A") + " active.");
+    }
+
+    /**
+     * Ensures {@code slot} has a render of the <i>current</i> live configuration,
+     * then runs {@code onReady} on the FX thread. A cached render runs the
+     * callback at once (instant switch); otherwise the chain is rendered on an
+     * independent snapshot behind the progress overlay, cached, and the callback
+     * runs when it completes. Never stops the player.
+     */
+    private void ensureSlotRender(char slot, Runnable onReady)
+    {
+        if (slotRender(slot) != null || loadedFile == null) { onReady.run(); return; }
+
+        final Snapshot snap = buildSnapshot();
+        final int sr = loadedFile.getSampleRate();
+        final int ch = loadedFile.getChannels();
+        final float[] src = loadedFile.getSamples().clone();
+        final int os = oversampling;
+
+        Task<float[]> task = new Task<>()
+        {
+            @Override protected float[] call()
+            {
+                return renderOversampled(snap.pipeline, src, sr, ch, os, frac ->
+                {
+                    if (isCancelled()) throw new java.util.concurrent.CancellationException();
+                    updateProgress(frac, 1.0);
+                });
+            }
+        };
+        task.setOnSucceeded(e ->
+        {
+            setSlotRender(slot, task.getValue());
+            hideExportOverlay();
+            onReady.run();
+        });
+        task.setOnFailed(e ->
+        {
+            hideExportOverlay();
+            AppLogger.error("A/B slot render failed.", task.getException());
+            onReady.run();
+        });
+        task.setOnCancelled(e ->
+        {
+            // Abort the comparison: fall back to live processing on the active slot
+            // and keep the switch buttons honest.
+            hideExportOverlay();
+            player.setFixedRender(null);
+            syncSlotButtons();
+            if (loadedFile != null) syncLiveAnalysis();
+        });
+        exportTask = task;
+        showExportOverlay("Preparing comparison", "Slot " + slot, task);
+        runTask(task);
+    }
+
+    /** A live edit makes the active slot's render stale: drop it and return the
+     *  player to live processing so the edit is heard immediately. */
+    private void invalidateActiveSlotRender()
+    {
+        if (applyingPreset) return;   // not an edit: an A/B apply is recalling a slot
+        setSlotRender(activeSettingsSlot, null);
+        if (player.hasFixedRender()) player.setFixedRender(null);
+    }
+
+    /** A source or oversampling change invalidates both slots' renders. */
+    private void invalidateAllSlotRenders()
+    {
+        if (applyingPreset) return;   // an A/B apply re-applies the OS factor; keep its renders
+        renderSlotA = null;
+        renderSlotB = null;
+        if (player.hasFixedRender()) player.setFixedRender(null);
     }
 
     /* =========================================================

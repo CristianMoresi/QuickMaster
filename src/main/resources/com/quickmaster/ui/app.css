@@ -241,6 +241,30 @@
     -fx-border-color: -fx-warning;
 }
 
+/* A/B settings switch: two joined segments, exactly one active at a time. */
+.ab-seg {
+    -fx-min-width: 30;
+    -fx-padding: 5 12 5 12;
+    -fx-font-weight: bold;
+}
+
+.ab-seg-left {
+    -fx-border-radius: 3 0 0 3;
+    -fx-background-radius: 3 0 0 3;
+}
+
+.ab-seg-right {
+    -fx-border-radius: 0 3 3 0;
+    -fx-background-radius: 0 3 3 0;
+    -fx-border-width: 1 1 1 0;
+}
+
+.ab-seg:selected {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: #1a1a1f;
+    -fx-border-color: -fx-accent;
+}
+
 .slider {
     -fx-padding: 2 0 2 0;
 }
