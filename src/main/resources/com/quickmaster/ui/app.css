@@ -350,6 +350,10 @@
  *  Processing-chain tab bar
  * ============================================================ */
 
+.chain-row {
+    -fx-background-color: -fx-bg-surface;
+}
+
 .chain-scroll {
     -fx-background-color: -fx-bg-surface;
     -fx-background: -fx-bg-surface;

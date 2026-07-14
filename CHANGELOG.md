@@ -24,7 +24,8 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   ceilings such as -1 dBTP remain available when lossy-codec safety margin is
   preferred.
 - The main layout is wider and more compact, with icon-only undo/redo controls and
-  a simplified correlation/Mid/Side meter panel.
+  a centred Correlation/Mid/Side meter panel. Its full labels and persistent English
+  tooltips explain how to interpret stereo phase and Mid/Side energy.
 - Individual and batch WAV exports now default to **48 kHz / 24-bit** instead of
   inheriting the source encoding; every previously supported format remains selectable.
 - JavaFX is updated to the latest JavaFX 21 LTS patch release (21.0.11).

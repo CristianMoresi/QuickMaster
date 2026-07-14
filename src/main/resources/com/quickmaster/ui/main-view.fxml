@@ -63,9 +63,8 @@
 
             <!-- Processing-chain tab bar (signal order; drag to reorder) -->
             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="chain-row">
-                <padding><Insets right="12"/></padding>
                 <ScrollPane styleClass="chain-scroll" fitToHeight="true" HBox.hgrow="ALWAYS"
-                            hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
+                            hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" maxWidth="Infinity">
                     <HBox fx:id="chainBar" styleClass="chain-bar" spacing="6" alignment="CENTER_LEFT">
                         <padding><Insets top="6" right="12" bottom="6" left="12"/></padding>
                     </HBox>
@@ -179,12 +178,20 @@
                 <HBox spacing="6"><Label text="Lim GR" styleClass="caption" minWidth="56"/>
                     <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterGr" text="·" styleClass="value"/></HBox>
                 <Separator/>
-                <HBox spacing="6"><Label text="Corr" styleClass="caption" minWidth="56"/>
-                    <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterCorr" text="·" styleClass="value"/></HBox>
-                <HBox spacing="6"><Label text="Mid" styleClass="caption" minWidth="56"/>
-                    <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterMid" text="·" styleClass="value"/></HBox>
-                <HBox spacing="6"><Label text="Side" styleClass="caption" minWidth="56"/>
-                    <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterSide" text="·" styleClass="value"/></HBox>
+                <VBox alignment="CENTER" spacing="8" VBox.vgrow="ALWAYS" fillWidth="true">
+                    <HBox fx:id="correlationRow" alignment="CENTER_LEFT" spacing="6">
+                        <Label text="Correlation" styleClass="caption" minWidth="76"/>
+                        <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterCorr" text="·" styleClass="value"/>
+                    </HBox>
+                    <HBox fx:id="midRow" alignment="CENTER_LEFT" spacing="6">
+                        <Label text="Mid" styleClass="caption" minWidth="76"/>
+                        <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterMid" text="·" styleClass="value"/>
+                    </HBox>
+                    <HBox fx:id="sideRow" alignment="CENTER_LEFT" spacing="6">
+                        <Label text="Side" styleClass="caption" minWidth="76"/>
+                        <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterSide" text="·" styleClass="value"/>
+                    </HBox>
+                </VBox>
             </VBox>
 
             <Separator/>

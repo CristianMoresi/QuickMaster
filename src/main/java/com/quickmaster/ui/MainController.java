@@ -306,6 +306,9 @@ public class MainController
     @FXML private Label meterCorr;
     @FXML private Label meterMid;
     @FXML private Label meterSide;
+    @FXML private HBox correlationRow;
+    @FXML private HBox midRow;
+    @FXML private HBox sideRow;
     @FXML private Canvas gonioCanvas;
 
     // Status bar
@@ -566,6 +569,16 @@ public class MainController
         if (undoButton != null) undoButton.setTooltip(new Tooltip("Undo the last change"));
         if (redoButton != null) redoButton.setTooltip(new Tooltip("Redo"));
 
+        installPersistentTooltip(correlationRow,
+                "Stereo phase correlation: +1 is fully in phase, 0 is uncorrelated or wide, "
+                        + "and negative values may cause cancellation in mono.");
+        installPersistentTooltip(midRow,
+                "Mid level: energy shared by the left and right channels "
+                        + "(the mono or centre component).");
+        installPersistentTooltip(sideRow,
+                "Side level: energy that differs between the left and right channels "
+                        + "(the stereo-width component).");
+
         // --- Mouse handlers on waveform: click + drag scrubbing ---
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED,  this::onWaveformMousePressed);
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_DRAGGED,  this::onWaveformMouseDragged);
@@ -635,6 +648,18 @@ public class MainController
 
         // Initial paint of the empty waveform area.
         Platform.runLater(this::drawWaveform);
+    }
+
+    /** Keeps explanatory tooltips visible until the pointer leaves their row. */
+    private static void installPersistentTooltip(Node owner, String text)
+    {
+        Tooltip tooltip = new Tooltip(text);
+        tooltip.setShowDelay(Duration.millis(250));
+        tooltip.setShowDuration(Duration.INDEFINITE);
+        tooltip.setHideDelay(Duration.millis(100));
+        tooltip.setWrapText(true);
+        tooltip.setMaxWidth(340);
+        Tooltip.install(owner, tooltip);
     }
 
     /**
