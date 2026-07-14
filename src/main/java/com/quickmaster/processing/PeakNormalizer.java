@@ -14,7 +14,8 @@ import com.dspark.analysis.TruePeak;
  * <p>
  * Placed last, after the limiter layers (which flatten the crest), it cashes that
  * flattening in as loudness while clamping the delivery true-peak. The default
- * ceiling is -1&nbsp;dBTP (lossy-codec safe); 0&nbsp;dBTP is the clean maximum.
+ * ceiling is -0.1&nbsp;dBTP; 0&nbsp;dBTP is the clean maximum, and a lower ceiling
+ * (for example -1&nbsp;dBTP) adds lossy-codec safety margin.
  * <p>
  * {@link #usesAnalysis()} is {@code true}, so the pipeline feeds this stage the
  * <i>post-upstream</i> signal. Zero latency.
@@ -23,7 +24,7 @@ public final class PeakNormalizer implements AudioProcessor
 {
     public static final double MIN_TARGET_DBFS = -60.0;
     public static final double MAX_TARGET_DBFS = 0.0;
-    public static final double DEFAULT_TARGET_DBFS = -1.0;
+    public static final double DEFAULT_TARGET_DBFS = -0.1;
 
     /** Never amplify by more than this (avoids blowing up near-silent material). */
     private static final double MAX_GAIN_DB = 24.0;

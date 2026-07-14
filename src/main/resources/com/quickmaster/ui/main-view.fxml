@@ -25,7 +25,7 @@
            xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.quickmaster.ui.MainController"
-           prefWidth="1180" prefHeight="820">
+           prefWidth="1360" prefHeight="830">
 
 <BorderPane fx:id="rootPane" styleClass="root-pane"
             maxWidth="Infinity" maxHeight="Infinity">
@@ -33,32 +33,32 @@
     <top>
         <VBox>
             <!-- Command bar -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="top-bar">
+            <HBox spacing="8" alignment="CENTER_LEFT" styleClass="top-bar">
                 <padding><Insets top="9" right="14" bottom="9" left="14"/></padding>
-                <Button text="Load file" onAction="#onLoadFile" styleClass="action-button"/>
-                <Button text="Reset" onAction="#onReset"/>
-                <Button fx:id="undoButton" text="↶ Undo" onAction="#onUndo"/>
-                <Button fx:id="redoButton" text="↷ Redo" onAction="#onRedo"/>
+                <Button text="Load file" onAction="#onLoadFile" styleClass="action-button" minWidth="-Infinity"/>
+                <Button text="Reset" onAction="#onReset" minWidth="-Infinity"/>
+                <Button fx:id="undoButton" text="↶" onAction="#onUndo" styleClass="icon-button" minWidth="-Infinity"/>
+                <Button fx:id="redoButton" text="↷" onAction="#onRedo" styleClass="icon-button" minWidth="-Infinity"/>
                 <Separator orientation="VERTICAL"/>
-                <Label text="Preset:" styleClass="caption"/>
-                <Button text="Save…" onAction="#onSavePreset"/>
-                <Button text="Load…" onAction="#onLoadPreset"/>
-                <Label text="A/B:" styleClass="caption"/>
-                <HBox spacing="0" alignment="CENTER_LEFT" styleClass="ab-switch">
+                <Label text="Preset:" styleClass="caption" minWidth="-Infinity"/>
+                <Button text="Save…" onAction="#onSavePreset" minWidth="-Infinity"/>
+                <Button text="Load…" onAction="#onLoadPreset" minWidth="-Infinity"/>
+                <Label text="A/B:" styleClass="caption" minWidth="-Infinity"/>
+                <HBox spacing="0" alignment="CENTER_LEFT" styleClass="ab-switch" minWidth="-Infinity">
                     <ToggleButton fx:id="slotAButton" text="A" selected="true"
                                   onAction="#onSelectSlotA" styleClass="ab-seg,ab-seg-left"/>
                     <ToggleButton fx:id="slotBButton" text="B"
                                   onAction="#onSelectSlotB" styleClass="ab-seg,ab-seg-right"/>
                 </HBox>
                 <Separator orientation="VERTICAL"/>
-                <Label text="File:" styleClass="caption"/>
+                <Label text="File:" styleClass="caption" minWidth="-Infinity"/>
                 <Label fx:id="fileNameLabel" text="(none)" styleClass="value"/>
                 <Label fx:id="fileInfoLabel" text="" styleClass="value-muted"/>
                 <Label fx:id="topBpmLabel" text="" styleClass="value"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Measure" onAction="#onMeasureLufs"/>
-                <Button text="Batch…" onAction="#onBatchExport"/>
-                <Button text="Export…" onAction="#onExport" styleClass="action-button"/>
+                <Region HBox.hgrow="ALWAYS" minWidth="0"/>
+                <Button text="Measure" onAction="#onMeasureLufs" minWidth="-Infinity"/>
+                <Button text="Batch…" onAction="#onBatchExport" minWidth="-Infinity"/>
+                <Button text="Export…" onAction="#onExport" styleClass="action-button" minWidth="-Infinity"/>
             </HBox>
 
             <!-- Processing-chain tab bar (signal order; drag to reorder) -->
@@ -76,7 +76,7 @@
 
     <center>
         <StackPane fx:id="moduleContent" styleClass="module-content">
-            <padding><Insets top="10" right="10" bottom="6" left="14"/></padding>
+            <padding><Insets top="10" right="14" bottom="6" left="20"/></padding>
 
             <!-- General panel: equalizer (tone + routing + dynamics) -->
             <VBox fx:id="eqPanel" styleClass="eq-panel" spacing="0"
@@ -164,7 +164,7 @@
 
             <!-- 1 / 3 - Loudness metering -->
             <VBox styleClass="meter-section" spacing="6" VBox.vgrow="ALWAYS">
-                <padding><Insets top="18" right="14" bottom="10" left="14"/></padding>
+                <padding><Insets top="18" right="18" bottom="10" left="16"/></padding>
                 <Label text="LOUDNESS" styleClass="section-header"/>
                 <Label fx:id="meterLufs" text="·" styleClass="meter-big"/>
                 <Separator/>
@@ -179,24 +179,19 @@
                 <HBox spacing="6"><Label text="Lim GR" styleClass="caption" minWidth="56"/>
                     <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterGr" text="·" styleClass="value"/></HBox>
                 <Separator/>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Canvas fx:id="gonioCanvas" width="76" height="76"/>
-                    <VBox spacing="5" HBox.hgrow="ALWAYS">
-                        <HBox spacing="6"><Label text="Corr" styleClass="caption" minWidth="36"/>
-                            <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterCorr" text="·" styleClass="value"/></HBox>
-                        <HBox spacing="6"><Label text="Mid" styleClass="caption" minWidth="36"/>
-                            <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterMid" text="·" styleClass="value"/></HBox>
-                        <HBox spacing="6"><Label text="Side" styleClass="caption" minWidth="36"/>
-                            <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterSide" text="·" styleClass="value"/></HBox>
-                    </VBox>
-                </HBox>
+                <HBox spacing="6"><Label text="Corr" styleClass="caption" minWidth="56"/>
+                    <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterCorr" text="·" styleClass="value"/></HBox>
+                <HBox spacing="6"><Label text="Mid" styleClass="caption" minWidth="56"/>
+                    <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterMid" text="·" styleClass="value"/></HBox>
+                <HBox spacing="6"><Label text="Side" styleClass="caption" minWidth="56"/>
+                    <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterSide" text="·" styleClass="value"/></HBox>
             </VBox>
 
             <Separator/>
 
             <!-- 2 / 3 - Peak normalizer (target is a slider) -->
             <VBox styleClass="meter-section" spacing="8" VBox.vgrow="ALWAYS">
-                <padding><Insets top="14" right="14" bottom="10" left="14"/></padding>
+                <padding><Insets top="14" right="18" bottom="10" left="16"/></padding>
                 <HBox alignment="CENTER_LEFT" spacing="6">
                     <Label text="PEAK NORMALIZER" styleClass="section-header"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -207,9 +202,9 @@
                 <HBox spacing="6" alignment="CENTER_LEFT">
                     <Label text="Target" styleClass="caption" minWidth="56"/>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Label fx:id="peakTargetLabel" text="-1.0 dBTP" styleClass="value"/>
+                    <Label fx:id="peakTargetLabel" text="-0.1 dBTP" styleClass="value"/>
                 </HBox>
-                <Slider fx:id="peakTarget" min="-24" max="0" value="-1"/>
+                <Slider fx:id="peakTarget" min="-24" max="0" value="-0.1"/>
                 <HBox spacing="6"><Label text="Gain" styleClass="caption" minWidth="56"/>
                     <Region HBox.hgrow="ALWAYS"/><Label fx:id="peakAppliedLabel" text="·" styleClass="value-muted"/></HBox>
                 <Button text="Recalculate Peak" onAction="#onRecalculatePeak" maxWidth="Infinity"/>
@@ -219,7 +214,7 @@
 
             <!-- 3 / 3 - Oversampling (live + offline render) -->
             <VBox styleClass="meter-section" spacing="8" VBox.vgrow="ALWAYS">
-                <padding><Insets top="14" right="14" bottom="12" left="14"/></padding>
+                <padding><Insets top="14" right="18" bottom="12" left="16"/></padding>
                 <HBox alignment="CENTER_LEFT" spacing="6">
                     <Label text="OVERSAMPLING" styleClass="section-header"/>
                     <Region HBox.hgrow="ALWAYS"/>

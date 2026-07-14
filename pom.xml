@@ -36,8 +36,9 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>17.0.10</javafx.version>
+        <javafx.version>21.0.11</javafx.version>
         <junit.version>5.10.2</junit.version>
+        <jna.version>5.17.0</jna.version>
     </properties>
 
     <dependencies>
@@ -58,6 +59,14 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- Win32 WM_SIZING constraint. JavaFX itself has no Stage
+             aspect-ratio property. -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna.version}</version>
         </dependency>
 
         <!-- MP3 decoding (read support) -->

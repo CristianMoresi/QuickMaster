@@ -28,10 +28,10 @@ class PeakNormalizerTest
     }
 
     @Test
-    @DisplayName("Default constructor targets -1 dBTP, unity gain until analysed")
+    @DisplayName("Default constructor targets -0.1 dBTP, unity gain until analysed")
     void defaultConstructorIsUnity()
     {
-        assertEquals(-1.0, normalizer.getTargetDbfs(), 0.0);
+        assertEquals(-0.1, normalizer.getTargetDbfs(), 0.0);
         assertEquals(1.0, normalizer.getGain(), 0.0);
     }
 
@@ -67,8 +67,8 @@ class PeakNormalizerTest
     {
         float[] buffer = { 0.25f, -0.5f, 0.10f, -0.30f };   // peak ~0.5
         normalizer.analyze(buffer, 2);
-        // The gain scales the analysed true peak exactly to the -1 dBTP ceiling.
-        double targetLin = Math.pow(10.0, -1.0 / 20.0);
+        // The gain scales the analysed true peak exactly to the -0.1 dBTP ceiling.
+        double targetLin = Math.pow(10.0, -0.1 / 20.0);
         assertEquals(targetLin / normalizer.getAnalyzedPeak(), normalizer.getGain(), EPSILON);
         assertTrue(normalizer.getGain() > 1.0, "quiet input should be amplified");
     }

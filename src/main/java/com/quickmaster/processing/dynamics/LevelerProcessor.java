@@ -3,23 +3,37 @@ package com.quickmaster.processing.dynamics;
 import com.dspark.core.DspMath;
 
 /**
- * <b>Leveler</b> - automatic loudness rider that evens out the song's sections.
+ * <b>Leveler</b> - automatic loudness rider that evens out the song's sections
+ * without flattening its musical dynamics.
  * <p>
- * Tooltip: <i>"Reduces the volume difference between the sections of the song so
- * the master is consistent from start to finish."</i>
+ * Tooltip: <i>"Evens out the loudness of the song's sections so the master is
+ * consistent, while leaving intentionally quiet parts alone."</i>
  * <p>
- * It measures the K-weighted loudness along the track and keeps only changes
- * that last at least {@value #MIN_SECTION_SEC} seconds (a median filter removes
- * shorter events - drum breaks, single hits - so they are never treated as
- * sections). The resulting section level is pushed toward the track's
- * <b>median loudness</b>: louder sections come down, quieter ones come up, and a
- * section already at the median is left alone. The gain rides between sections
- * <b>asymmetrically</b>: it anticipates a rise (lifts a quiet part before it
- * begins) but only falls once a louder part actually starts (a quiet passage is
- * never dipped early).
+ * It measures the K-weighted loudness along the track and keeps only changes that
+ * last at least {@value #MIN_SECTION_SEC} seconds (a median filter removes shorter
+ * events - drum breaks, single hits, a two-second tail, a brief interlude - so
+ * they are never mistaken for a section). Each section is compared to the track's
+ * <b>median section loudness</b>:
+ * <ul>
+ *   <li>a section within a couple of dB of the median is left untouched, so the
+ *       natural loudness contour between sections survives;</li>
+ *   <li>a section clearly above the median comes down (cuts go deeper than boosts,
+ *       because reining in a loud part is always safe);</li>
+ *   <li>a section clearly below the median comes up, but the boost <b>rolls off</b>
+ *       the further under the median it sits and reaches zero for parts kept quiet
+ *       on purpose (an outro fade, a breakdown, the ring-out at the end), so those
+ *       are never pumped up.</li>
+ * </ul>
+ * A boost is additionally capped so a section's peak can never exceed the track
+ * peak: leveling therefore <b>never raises the master's true peak</b>, and so can
+ * never take headroom away from the downstream peak normalizer.
  * <p>
- * Controls: <b>Leveling</b> ({@code 0}&nbsp;= off, {@code 1}&nbsp;= every section
- * at the median) and <b>Speed</b> ({@code 0}&nbsp;= slow/gentle,
+ * The gain rides between sections <b>asymmetrically</b>: it anticipates a rise
+ * (lifts a quiet part before it begins) but only falls once a louder part actually
+ * starts (a quiet passage is never dipped early).
+ * <p>
+ * Controls: <b>Leveling</b> ({@code 0}&nbsp;= off, {@code 1}&nbsp;= full correction
+ * toward the median) and <b>Speed</b> ({@code 0}&nbsp;= slow/gentle,
  * {@code 1}&nbsp;= fast/agile - how quickly the gain rides between sections).
  */
 public final class LevelerProcessor extends AnalysisDynamicsProcessor
@@ -33,16 +47,34 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
     public static final double MIN_SPEED = 0.0;
     public static final double MAX_SPEED = 1.0;
 
-    /** Shortest level change treated as a section (shorter events are ignored). */
-    public static final double MIN_SECTION_SEC = 3.0;
+    /**
+     * Shortest level change treated as a section. A median filter of this length
+     * removes anything shorter (a drum break, a single hit, a two-second tail, a
+     * brief interlude), so it is never mistaken for a section and regulated.
+     */
+    public static final double MIN_SECTION_SEC = 8.0;
     /** Loudness is measured per this many frames. */
     private static final int HOP_FRAMES = 2048;
     /** Gain ride time at the slow / fast ends of the Speed control, in seconds. */
     private static final double SLOW_RESPONSE_SEC = 2.0;
     private static final double FAST_RESPONSE_SEC = 0.3;
-    /** Bounds on the correction (down more than up, to avoid lifting noise too far). */
+    /**
+     * A section within this many dB of the median is left alone, so the natural
+     * loudness contour between sections is not flattened.
+     */
+    private static final double TOLERANCE_DB = 2.0;
+    /** Bounds on the correction: cuts go deeper than boosts, because reining in a
+     *  loud section is always safe but dragging a quiet one up is not. */
     private static final double MAX_CUT_DB = 12.0;
-    private static final double MAX_BOOST_DB = 9.0;
+    private static final double MAX_BOOST_DB = 6.0;
+    /**
+     * A section up to {@link #BOOST_FULL_BELOW_DB} under the median gets the full
+     * boost; from there the boost fades to zero by {@link #BOOST_ZERO_BELOW_DB}, so
+     * parts kept quiet on purpose (an outro fade, a breakdown, the ring-out at the
+     * end) are never pumped up.
+     */
+    private static final double BOOST_FULL_BELOW_DB = 8.0;
+    private static final double BOOST_ZERO_BELOW_DB = 20.0;
     private static final double SILENCE_FLOOR_LUFS = -55.0;
     private static final double LUFS_OFFSET = -0.691;          // BS.1770-4
 
@@ -51,6 +83,11 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
 
     // Per-hop section loudness (median-filtered), the hop size, and the track median.
     private float[] sectionLoud = new float[0];
+    // Per-hop peak (the hop plus its immediate neighbours) and the whole-track peak:
+    // a boost is capped so a hop's peak can never exceed the track peak, which keeps
+    // leveling from raising the master's true peak even through gain interpolation.
+    private float[] sectionPeak = new float[0];
+    private double trackMaxPeak = 0.0;
     private int hopFrames = HOP_FRAMES;
     private int totalFrames = 0;
     private double medianLufs = SILENCE_FLOOR_LUFS;
@@ -96,10 +133,12 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
         int numHops = Math.max(1, (frames + HOP_FRAMES - 1) / HOP_FRAMES);
         double[] hopSumSq = new double[numHops];
         long[] hopCount = new long[numHops];
+        float[] hopPeak = new float[numHops];
         for (int f = 0; f < frames; f++)
         {
             int base = f * channels;
             double power = 0.0;
+            float peak = 0.0f;
             for (int c = 0; c < channels; c++)
             {
                 double x = samples[base + c];
@@ -110,29 +149,42 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
                 z1b[c] = rB1 * v - rA1 * w + z2b[c];
                 z2b[c] = rB2 * v - rA2 * w;
                 power += w * w;
+                float ax = Math.abs((float) x);
+                if (ax > peak) peak = ax;
             }
 
             int h = f / HOP_FRAMES;
             hopSumSq[h] += power;
             hopCount[h]++;
+            if (peak > hopPeak[h]) hopPeak[h] = peak;
         }
         float[] hopLoud = new float[numHops];
+        double maxPeak = 0.0;
         for (int h = 0; h < numHops; h++)
         {
             double ms = (hopCount[h] > 0) ? hopSumSq[h] / hopCount[h] : 0.0;
             hopLoud[h] = (float) (LUFS_OFFSET + 10.0 * Math.log10(Math.max(ms, 1e-12)));
+            if (hopPeak[h] > maxPeak) maxPeak = hopPeak[h];
         }
+        this.trackMaxPeak = maxPeak;
 
         // Median filter: keep only changes lasting >= MIN_SECTION_SEC; drop shorter
-        // events (breaks, single hits) so they are never mistaken for a section.
+        // events (breaks, single hits, brief tails) so they are never mistaken for a
+        // section. The cap peak is the loudest sample in the hop and its neighbours
+        // (a narrow window: just enough to stay peak-safe across the interpolation).
         int half = Math.max(1, (int) (MIN_SECTION_SEC * sampleRate / HOP_FRAMES) / 2);
         float[] section = new float[numHops];
+        float[] secPeak = new float[numHops];
         int[] hist = new int[700];
         for (int h = 0; h < numHops; h++)
         {
             int lo = Math.max(0, h - half), hi = Math.min(numHops - 1, h + half);
             float m = median(hopLoud, lo, hi);
             section[h] = m;
+            int pl = Math.max(0, h - 1), ph = Math.min(numHops - 1, h + 1);
+            float pk = 0.0f;
+            for (int i = pl; i <= ph; i++) if (hopPeak[i] > pk) pk = hopPeak[i];
+            secPeak[h] = pk;
             if (m > SILENCE_FLOOR_LUFS)
             {
                 int bin = (int) ((m + 65.0) * 10.0);
@@ -141,6 +193,7 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
             }
         }
         this.sectionLoud = section;
+        this.sectionPeak = secPeak;
         this.medianLufs = percentile(hist, 0.5);
     }
 
@@ -158,12 +211,40 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
         double hopSec = (double) hopFrames / envRate;
         double resp = responseSec();
 
-        // Target gain per hop, toward the median.
+        // The outro: everything past the last body-level section (a fade, a
+        // ring-out, a quiet ending) is left alone and never pumped back up. A quiet
+        // part earlier in the song still has a louder section ahead of it, so it is
+        // a genuine dip worth evening out.
+        double bodyThresh = medianLufs - TOLERANCE_DB;
+        int lastBodyHop = 0;
+        for (int h = hops - 1; h >= 0; h--)
+        {
+            if (sectionLoud[h] >= bodyThresh) { lastBodyHop = h; break; }
+        }
+
+        // Target gain per hop, toward the median. Only the deviation beyond the
+        // tolerance is corrected (natural dynamics survive); a boost is capped, is
+        // rolled off for parts far below the median (kept quiet on purpose), and
+        // can never lift a section's peak above the track peak (so leveling cannot
+        // steal the peak normalizer's headroom).
         float[] target = new float[hops];
         for (int h = 0; h < hops; h++)
         {
-            double delta = DspMath.clamp(medianLufs - sectionLoud[h], -MAX_CUT_DB, MAX_BOOST_DB);
-            target[h] = (float) DspMath.decibelsToGain(leveling * delta);
+            double dev = medianLufs - sectionLoud[h];       // + => quieter than the body
+            double corrDb;
+            if (dev >= 0.0)
+            {
+                double boost = (h > lastBodyHop) ? 0.0
+                        : Math.min(Math.max(0.0, dev - TOLERANCE_DB), MAX_BOOST_DB) * boostRolloff(dev);
+                corrDb = leveling * boost;
+            }
+            else
+            {
+                double cut = Math.min(Math.max(0.0, -dev - TOLERANCE_DB), MAX_CUT_DB);
+                corrDb = -leveling * cut;
+            }
+            double gTarget = DspMath.decibelsToGain(corrDb);
+            target[h] = (float) Math.min(gTarget, peakSafeCap(h));
         }
 
         // Anticipate rises, hold through falls until the boundary, then a causal glide.
@@ -173,6 +254,14 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
         float[] gain = new float[hops];
         double g = lead[0];
         for (int h = 0; h < hops; h++) { g = a * g + (1 - a) * lead[h]; gain[h] = (float) g; }
+
+        // The look-ahead can slide a boost onto an earlier hop with a loud peak;
+        // re-apply the cap so the ride can never raise the track peak either.
+        for (int h = 0; h < hops; h++)
+        {
+            double cap = peakSafeCap(h);
+            if (gain[h] > cap) gain[h] = (float) cap;
+        }
 
         // Upsample the per-hop gain to a per-frame envelope (linear interpolation).
         for (int f = 0; f < totalFrames; f++)
@@ -184,6 +273,29 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
             env[f] = (float) (gain[h0] + frac * (gain[h0 + 1] - gain[h0]));
         }
         gainEnv = env;
+    }
+
+    /**
+     * Boost weight for a section {@code belowDb} under the median: full up to
+     * {@link #BOOST_FULL_BELOW_DB}, fading to zero by {@link #BOOST_ZERO_BELOW_DB}.
+     */
+    private static double boostRolloff(double belowDb)
+    {
+        if (belowDb <= BOOST_FULL_BELOW_DB) return 1.0;
+        if (belowDb >= BOOST_ZERO_BELOW_DB) return 0.0;
+        return (BOOST_ZERO_BELOW_DB - belowDb) / (BOOST_ZERO_BELOW_DB - BOOST_FULL_BELOW_DB);
+    }
+
+    /**
+     * Largest boost ({@code >= 1}) that keeps hop {@code h}'s peak at or below the
+     * track peak, so leveling never raises the master's true peak.
+     */
+    private double peakSafeCap(int h)
+    {
+        if (sectionPeak == null || h >= sectionPeak.length) return Double.MAX_VALUE;
+        double sp = sectionPeak[h];
+        if (sp <= 1e-9 || trackMaxPeak <= 0.0) return Double.MAX_VALUE;
+        return Math.max(1.0, trackMaxPeak / sp);
     }
 
     private static float median(float[] a, int lo, int hi)

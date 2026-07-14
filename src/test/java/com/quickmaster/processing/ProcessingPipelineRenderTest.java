@@ -62,12 +62,12 @@ class ProcessingPipelineRenderTest
         WavFile file = mem(input);
 
         ProcessingPipeline pipeline = new ProcessingPipeline();
-        pipeline.addProcessor(new PeakNormalizer());          // enabled, target 0 dBFS
+        pipeline.addProcessor(new PeakNormalizer());          // enabled, target -0.1 dBTP
 
         pipeline.process(file);
 
         assertEquals(input.length, file.getSamples().length);
-        assertEquals((float) Math.pow(10.0, -1.0 / 20.0), maxAbs(file.getSamples()), 2e-3f);
+        assertEquals((float) Math.pow(10.0, -0.1 / 20.0), maxAbs(file.getSamples()), 2e-3f);
     }
 
     @Test
@@ -113,14 +113,14 @@ class ProcessingPipelineRenderTest
 
         ProcessingPipeline pipeline = new ProcessingPipeline();
         pipeline.addProcessor(new DelayProcessor(700));
-        pipeline.addProcessor(new PeakNormalizer());          // target 0 dBFS
+        pipeline.addProcessor(new PeakNormalizer());          // target -0.1 dBTP
 
         pipeline.process(file);
 
         float[] out = file.getSamples();
         assertEquals(input.length, out.length);
-        // Delay is compensated and the static gain (true peak -> -1 dBTP) is uniform.
-        float gain = (float) (Math.pow(10.0, -1.0 / 20.0)
+        // Delay is compensated and the static gain (true peak -> -0.1 dBTP) is uniform.
+        float gain = (float) (Math.pow(10.0, -0.1 / 20.0)
                 / com.dspark.analysis.TruePeak.measureMax(input, CH));
         for (int i = 0; i < input.length; i++)
         {
@@ -195,7 +195,7 @@ class ProcessingPipelineRenderTest
         g.gainDb = 6.0;
         eq.setBand(0, g);
 
-        PeakNormalizer norm = new PeakNormalizer();        // target 0 dBFS
+        PeakNormalizer norm = new PeakNormalizer();        // target -0.1 dBTP
 
         ProcessingPipeline pipeline = new ProcessingPipeline();
         pipeline.addProcessor(eq);
@@ -205,9 +205,9 @@ class ProcessingPipelineRenderTest
         // The normalizer must scale to the EQ's real output peak, not the
         // original source peak: gain = 1 / (peak · 10^(6/20)).
         double postEqPeak = maxAbs(input) * Math.pow(10.0, 6.0 / 20.0);
-        assertEquals(Math.pow(10.0, -1.0 / 20.0) / postEqPeak, norm.getGain(), 1e-3);
-        // ...and the rendered peak lands on the -1 dBTP ceiling (no clipping).
-        assertEquals((float) Math.pow(10.0, -1.0 / 20.0), maxAbs(file.getSamples()), 3e-3f);
+        assertEquals(Math.pow(10.0, -0.1 / 20.0) / postEqPeak, norm.getGain(), 1e-3);
+        // ...and the rendered peak lands on the -0.1 dBTP ceiling (no clipping).
+        assertEquals((float) Math.pow(10.0, -0.1 / 20.0), maxAbs(file.getSamples()), 3e-3f);
     }
 
     /* ====================================================================

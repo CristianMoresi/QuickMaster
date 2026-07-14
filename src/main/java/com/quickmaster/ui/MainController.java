@@ -40,6 +40,7 @@ import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -56,6 +57,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.ClipboardContent;
@@ -554,6 +556,9 @@ public class MainController
         if (slotAButton != null) slotAButton.setTooltip(abSlotTip);
         if (slotBButton != null) slotBButton.setTooltip(abSlotTip);
 
+        if (undoButton != null) undoButton.setTooltip(new Tooltip("Undo the last change"));
+        if (redoButton != null) redoButton.setTooltip(new Tooltip("Redo"));
+
         // --- Mouse handlers on waveform: click + drag scrubbing ---
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED,  this::onWaveformMousePressed);
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_DRAGGED,  this::onWaveformMouseDragged);
@@ -860,6 +865,83 @@ public class MainController
                 event.consume();
             }
         });
+    }
+
+    /**
+     * Makes the Peak Normalizer target editable by typing: a double-click on the
+     * slider or on its value label opens a dB entry, and Ctrl/Cmd-click resets it
+     * to the default. This replaces the generic double-click-to-reset for this one
+     * control (typing an exact ceiling is what a mastering engineer wants here).
+     */
+    private static void installPeakTargetEditor(Slider slider, Label label)
+    {
+        // The value before an unmodified click, so a cancelled edit can undo the
+        // slider's click-to-jump.
+        final double[] preClick = { slider.getValue() };
+        slider.addEventFilter(MouseEvent.MOUSE_PRESSED, e ->
+        {
+            if (!e.isShiftDown() && !e.isShortcutDown() && e.getClickCount() == 1)
+                preClick[0] = slider.getValue();
+        });
+        slider.addEventFilter(MouseEvent.MOUSE_CLICKED, e ->
+        {
+            if (slider.isDisabled()) return;
+            if (e.getClickCount() == 2 && !e.isShiftDown() && !e.isShortcutDown())
+            {
+                editPeakTarget(slider, preClick[0]);
+                e.consume();
+            }
+            else if (e.getClickCount() == 1 && e.isShortcutDown())
+            {
+                slider.setValue(clampToRange(slider, PeakNormalizer.DEFAULT_TARGET_DBFS));
+                e.consume();
+            }
+        });
+        slider.setTooltip(new Tooltip(
+                "Drag to set. Shift-drag = 0.1 dB steps. Double-click to type. Ctrl-click resets."));
+        if (label != null)
+        {
+            label.setCursor(Cursor.TEXT);
+            Tooltip.install(label, new Tooltip("Double-click to type the target ceiling (dBTP)"));
+            label.setOnMouseClicked(e ->
+            {
+                if (e.getClickCount() == 2) { editPeakTarget(slider, slider.getValue()); e.consume(); }
+            });
+        }
+    }
+
+    /**
+     * Opens a small text entry to type the Peak Normalizer target ceiling (dBTP).
+     * A blank or unparseable entry, or Cancel, restores {@code restoreValue} (so a
+     * double-click that first nudged the slider is undone). The result is clamped
+     * to the slider's range.
+     */
+    private static void editPeakTarget(Slider slider, double restoreValue)
+    {
+        TextInputDialog dlg = new TextInputDialog(String.format(Locale.US, "%.1f", slider.getValue()));
+        dlg.setTitle("Peak Normalizer");
+        dlg.setHeaderText(null);
+        dlg.setContentText("Target ceiling (dBTP):");
+        if (slider.getScene() != null)
+        {
+            dlg.initOwner(slider.getScene().getWindow());
+            dlg.getDialogPane().getStylesheets().addAll(slider.getScene().getStylesheets());
+            dlg.getDialogPane().getStyleClass().add("root");
+        }
+        Optional<String> res = dlg.showAndWait();
+        Double typed = res.map(MainController::parseDb).orElse(null);
+        slider.setValue(clampToRange(slider, typed != null ? typed : restoreValue));
+    }
+
+    /** Parses a dB number out of free text (a trailing unit such as "dBTP" is ok). */
+    private static Double parseDb(String s)
+    {
+        if (s == null) return null;
+        java.util.regex.Matcher m =
+                java.util.regex.Pattern.compile("-?\\d*\\.?\\d+").matcher(s.trim());
+        if (!m.find()) return null;
+        try { return Double.parseDouble(m.group()); }
+        catch (NumberFormatException e) { return null; }
     }
 
     /**
@@ -2310,9 +2392,10 @@ public class MainController
                 labeledGroup("BELOW", "#46d17a", kBelowRange, kBelowRatio, kBelowAtk, kBelowRel));
 
         // Peak Normalizer target slider (right panel). A horizontal slider reads
-        // more naturally here than a knob: it maps directly to "scale the peak up
-        // to this dBFS ceiling", and carries the same audio-style shortcuts as the
-        // limiter sliders (wheel / arrows / Shift-Ctrl steps / double-click reset).
+        // more naturally here than a knob: it maps directly to "scale the peak up to
+        // this dBTP ceiling". Wheel / arrows nudge it (Shift or Ctrl = 0.1 dB steps),
+        // Shift-drag snaps to 0.1 dB, and a double-click (on the slider or its value)
+        // types an exact ceiling; Ctrl-click resets it to the default.
         peakTarget.valueProperty().addListener((o, ov, nv) ->
         {
             normalizer.setTargetDbfs(nv.doubleValue());
@@ -2322,7 +2405,10 @@ public class MainController
         });
         normalizer.setTargetDbfs(peakTarget.getValue());
         peakTargetLabel.setText(String.format(Locale.US, "%.1f dBTP", peakTarget.getValue()));
-        installAudioSliderShortcuts(peakTarget, 1.0, 0.5, 0.1, PeakNormalizer.DEFAULT_TARGET_DBFS);
+        installWheelShortcut(peakTarget, 1.0, 0.1, 0.1);
+        installArrowShortcut(peakTarget, 1.0, 0.1, 0.1);
+        installDragShortcut(peakTarget, 0.1, 0.1);     // Shift-drag / Ctrl-drag snap to 0.1 dB
+        installPeakTargetEditor(peakTarget, peakTargetLabel);
 
         eqBandSelector.getSelectionModel().selectedIndexProperty().addListener((o, ov, nv) ->
         {

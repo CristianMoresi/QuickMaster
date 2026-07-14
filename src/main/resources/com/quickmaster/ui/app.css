@@ -32,6 +32,17 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 8, 0.3, 0, 2);
 }
 
+/* Root scroll wrapper: only shows scrollbars when the window is smaller than the
+   UI's minimum size (e.g. at high DPI scaling); otherwise it is invisible. */
+.root-scroll {
+    -fx-background-color: -fx-bg-base;
+    -fx-background: -fx-bg-base;
+    -fx-padding: 0;
+}
+.root-scroll > .viewport {
+    -fx-background-color: -fx-bg-base;
+}
+
 .root-pane {
     -fx-background-color: -fx-bg-base;
     -fx-font-family: "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
@@ -177,6 +188,13 @@
 .action-button:hover {
     -fx-background-color: -fx-accent-hover;
     -fx-border-color: -fx-accent-hover;
+}
+
+/* Compact icon-only buttons (undo / redo): the glyph carries the meaning,
+   with a tooltip on hover. Kept narrow so the command bar has room. */
+.icon-button {
+    -fx-font-size: 15px;
+    -fx-padding: 3 9 3 9;
 }
 
 .transport-button {
@@ -414,8 +432,8 @@
     -fx-background-color: -fx-bg-surface;
     -fx-border-color: transparent transparent transparent -fx-border-soft;
     -fx-border-width: 0 0 0 1;
-    -fx-min-width: 184;
-    -fx-pref-width: 184;
+    -fx-min-width: 200;
+    -fx-pref-width: 200;
 }
 
 .meter-big {

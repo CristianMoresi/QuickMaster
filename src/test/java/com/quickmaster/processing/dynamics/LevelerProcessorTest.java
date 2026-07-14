@@ -90,10 +90,10 @@ class LevelerProcessorTest
     }
 
     @Test
-    @DisplayName("Higher speed settles into a new section sooner")
+    @DisplayName("Higher speed rides between sections sooner")
     void speedControlsSettling()
     {
-        float[] s = sig(0.22, 8.0, 0.8, 12.0);     // quiet 8 s (boosted) -> loud body
+        float[] s = sig(0.8, 8.0, 0.25, 12.0);     // loud 8 s (cut) -> quiet body
         LevelerProcessor p = new LevelerProcessor();
         p.setEnabled(true);
         p.setLeveling(1.0);
@@ -101,11 +101,11 @@ class LevelerProcessorTest
 
         p.setSpeed(1.0);
         p.analyze(s, 1);
-        float fast = gainEnvelope(p, s.length)[(int) (9.0 * SR)];   // 1 s into the loud part
+        float fast = gainEnvelope(p, s.length)[(int) (8.3 * SR)];   // just into the body
         p.setSpeed(0.0);
         p.analyze(s, 1);
-        float slow = gainEnvelope(p, s.length)[(int) (9.0 * SR)];
-        assertTrue(fast < slow - 0.1f, "fast should have settled toward the loud level (fast="
+        float slow = gainEnvelope(p, s.length)[(int) (8.3 * SR)];
+        assertTrue(fast > slow + 0.05f, "fast should release the cut toward unity sooner (fast="
                 + fast + ", slow=" + slow + ")");
     }
 
@@ -151,5 +151,71 @@ class LevelerProcessorTest
         float around = env[(int) (2.0 * SR)];
         assertTrue(Math.abs(atBreak - around) < 0.1f,
                 "short break should not be regulated (break=" + atBreak + ", around=" + around + ")");
+    }
+
+    @Test
+    @DisplayName("Leveling never raises the track peak (keeps the normalizer's headroom)")
+    void neverRaisesTrackPeak()
+    {
+        int quietN = (int) (6.0 * SR), n = (int) (20.0 * SR);
+        float[] s = new float[n];
+        double step = 2.0 * Math.PI * 220.0 / SR;
+        for (int i = 0; i < n; i++)
+        {
+            double amp = (i < quietN) ? 0.12 : 0.6;    // quiet 6 s, loud body 14 s
+            s[i] = (float) (amp * Math.sin(step * i));
+        }
+        // Sparse transients inside the quiet part: its peak is nearly the body's, but
+        // its loudness is low, so it "wants" a big boost the peak cap must deny.
+        for (int i = 0; i < quietN; i += (int) (0.4 * SR))
+            for (int k = 0; k < 3 && i + k < quietN; k++) s[i + k] = 0.55f;
+
+        float inPeak = 0.0f;
+        for (float v : s) inPeak = Math.max(inPeak, Math.abs(v));
+
+        LevelerProcessor p = new LevelerProcessor();
+        p.setEnabled(true);
+        p.setLeveling(1.0);
+        p.prepare(SR, n);
+        p.analyze(s, 1);
+        float[] env = gainEnvelope(p, n);
+
+        float outPeak = 0.0f;
+        for (int i = 0; i < n; i++) outPeak = Math.max(outPeak, Math.abs(s[i] * env[i]));
+        assertTrue(outPeak <= inPeak * 1.005f,
+                "leveling raised the peak (in=" + inPeak + ", out=" + outPeak + ")");
+        assertTrue(env[(int) (3.0 * SR)] > 1.02f,
+                "the quiet part should still be lifted a little, was " + env[(int) (3.0 * SR)]);
+    }
+
+    @Test
+    @DisplayName("A quiet outro fade is left alone, not pumped back up")
+    void doesNotBoostQuietOutro()
+    {
+        int bodyN = (int) (12.0 * SR), n = (int) (20.0 * SR);
+        float[] s = new float[n];
+        double step = 2.0 * Math.PI * 220.0 / SR;
+        for (int i = 0; i < n; i++)
+        {
+            double amp;
+            if (i < bodyN) amp = 0.5;
+            else
+            {
+                double t = (double) (i - bodyN) / (n - bodyN);   // 0..1 across the fade
+                amp = 0.5 * Math.pow(10.0, -3.0 * t);            // fade down to -60 dB
+            }
+            s[i] = (float) (amp * Math.sin(step * i));
+        }
+        LevelerProcessor p = new LevelerProcessor();
+        p.setEnabled(true);
+        p.setLeveling(1.0);
+        p.prepare(SR, n);
+        p.analyze(s, 1);
+        float[] env = gainEnvelope(p, n);
+
+        assertTrue(env[(int) (18.5 * SR)] < 1.05f,
+                "the quiet outro was boosted, env=" + env[(int) (18.5 * SR)]);
+        float body = env[(int) (6.0 * SR)];
+        assertTrue(body > 0.9f && body < 1.1f, "the body should be ~unity, was " + body);
     }
 }
