@@ -28,6 +28,7 @@ import com.quickmaster.processing.ProcessingPipeline;
 import com.quickmaster.processing.dynamics.PunchProcessor;
 import com.quickmaster.processing.eq.AutoEqProcessor;
 import com.quickmaster.processing.analysis.LiveSpectrum;
+import com.quickmaster.processing.analysis.OutputAnalysis;
 import com.quickmaster.processing.analysis.SpectrumAnalysis;
 import com.quickmaster.processing.analysis.TrackAnalysis;
 
@@ -157,8 +158,8 @@ import java.util.function.DoubleConsumer;
  *       application code.</li>
  *   <li><b>Double-click</b> on a slider (no modifier needed),
  *       or <b>Ctrl/Cmd + single click</b>, returns the value
- *       to the parameter's default - 0 dB on gain sliders, 0 s
- *       on fades and trims, 0 dBFS on the peak target. This
+     *       to the parameter's default - 0 dB on gain sliders, 0 s
+     *       on fades and trims, -0.1 dBTP on the peak target. This
  *       mirrors the alt-click reset found in many DAW
  *       plug-ins.</li>
  * </ul>
@@ -356,7 +357,10 @@ public class MainController
             new ArrayList<>(List.of(peakComp, beatComp, leveler, punch));
     /** Per-track tempo + onset analysis, shared by Glue and Punch. */
     private final TrackAnalysis trackAnalysis = new TrackAnalysis();
-    private final SpectrumAnalysis spectrumAnalysis = new SpectrumAnalysis();
+    /** Static analyser curve for the latest fully rendered master. */
+    private SpectrumAnalysis spectrumAnalysis = new SpectrumAnalysis();
+    /** Rejects background output analyses that finish after a newer request. */
+    private long outputAnalysisGeneration = 0L;
     private final LiveSpectrum liveSpectrum = new LiveSpectrum();
 
     private final ProcessingPipeline pipeline = buildPipeline();
@@ -473,6 +477,8 @@ public class MainController
      */
     private static final List<Integer> MP3_BITRATE_OPTIONS =
             Arrays.asList(64, 96, 128, 160, 192, 224, 256, 320);
+    static final int DEFAULT_EXPORT_SAMPLE_RATE = 48_000;
+    static final int DEFAULT_EXPORT_BIT_DEPTH = 24;
 
     /* =========================================================
      *  Initialisation
@@ -517,6 +523,7 @@ public class MainController
         {
             normalizer.setEnabled(n);
             peakAppliedLabel.setText(n ? formatSignedDb(normalizer.getGainDb()) : "·");
+            scheduleDynamicsRefresh();
         });
         normalizer.setEnabled(peakEnabled.isSelected());   // transparent by default (off)
 
@@ -1334,13 +1341,9 @@ public class MainController
         final String path = target.getAbsolutePath();
         final boolean exportAsMp3 = path.toLowerCase(Locale.US).endsWith(".mp3");
 
-        // Ask for the encoding settings (sample rate + bit depth / bitrate),
-        // defaulting to the loaded file's own format.
-        int fileBits = 24;
-        boolean fileFloat = false;
-        if (loadedFile instanceof WavFile wav) { fileBits = wav.getBitDepth(); fileFloat = wav.isFloat(); }
-        final ExportSettings settings = askExportSettings(
-                exportAsMp3, loadedFile.getSampleRate(), fileBits, fileFloat);
+        // Ask for the encoding settings. Delivery defaults are 48 kHz / 24-bit;
+        // the user can still choose every previously supported rate and depth.
+        final ExportSettings settings = askExportSettings(exportAsMp3);
         if (settings == null) { setStatus("Export cancelled."); return; }
 
         // Stop live playback before exporting: the audio thread and the offline
@@ -1508,15 +1511,14 @@ public class MainController
     private record ExportSettings(int sampleRate, int bitDepth, boolean isFloat, int kbps) { }
 
     /**
-     * Asks for the export encoding: sample rate (defaulting to the file's) and
-     * either bit depth (WAV) or bitrate (MP3, up to 320 kbps).
+     * Asks for the export encoding: sample rate (default 48 kHz) and either bit
+     * depth (default 24-bit WAV) or bitrate (MP3, up to 320 kbps).
      */
-    private ExportSettings askExportSettings(boolean isMp3, int fileRate, int fileBits, boolean fileFloat)
+    private ExportSettings askExportSettings(boolean isMp3)
     {
         ComboBox<Integer> srCombo = new ComboBox<>();
         srCombo.getItems().addAll(44100, 48000, 88200, 96000, 176400, 192000);
-        if (!srCombo.getItems().contains(fileRate)) srCombo.getItems().add(0, fileRate);
-        srCombo.setValue(fileRate);
+        srCombo.setValue(DEFAULT_EXPORT_SAMPLE_RATE);
 
         ComboBox<String> bitCombo = new ComboBox<>();
         ComboBox<Integer> kbpsCombo = new ComboBox<>();
@@ -1534,8 +1536,7 @@ public class MainController
         else
         {
             bitCombo.getItems().addAll("16-bit", "24-bit", "32-bit float");
-            bitCombo.setValue(fileFloat ? "32-bit float"
-                    : (fileBits == 16 ? "16-bit" : (fileBits == 32 ? "32-bit float" : "24-bit")));
+            bitCombo.setValue(DEFAULT_EXPORT_BIT_DEPTH + "-bit");
             g.addRow(1, new Label("Bit depth"), bitCombo);
         }
 
@@ -2217,22 +2218,6 @@ public class MainController
         return String.format(Locale.US, "%.1f dB", 10.0 * Math.log10(meanPower));
     }
 
-    /** Phase correlation of a whole buffer (for the offline render's readout). */
-    private static double correlationOf(float[] buf, int ch)
-    {
-        if (ch < 2) return 1.0;
-        double sumLR = 0.0, sumL2 = 0.0, sumR2 = 0.0;
-        for (int i = 0; i + 1 < buf.length; i += ch)
-        {
-            double l = buf[i], r = buf[i + 1];
-            sumLR += l * r;
-            sumL2 += l * l;
-            sumR2 += r * r;
-        }
-        double denom = Math.sqrt(sumL2 * sumR2);
-        return (denom > 1e-12) ? sumLR / denom : 1.0;
-    }
-
     /** Lissajous goniometer with persistence: M up, S sideways (45° rotation). */
     private void drawGoniometer(float[] buf, int ch)
     {
@@ -2402,6 +2387,7 @@ public class MainController
             peakTargetLabel.setText(String.format(Locale.US, "%.1f dBTP", nv.doubleValue()));
             if (peakEnabled.isSelected())
                 peakAppliedLabel.setText(formatSignedDb(normalizer.getGainDb()));
+            scheduleDynamicsRefresh();
         });
         normalizer.setTargetDbfs(peakTarget.getValue());
         peakTargetLabel.setText(String.format(Locale.US, "%.1f dBTP", peakTarget.getValue()));
@@ -2480,6 +2466,9 @@ public class MainController
                 liveSpectrum.setSampleRate(loadedFile != null ? loadedFile.getSampleRate() : 48000);
                 liveSpectrum.reset();
                 livePeak = 0.0;
+                liveCorrSmooth = 1.0;
+                liveMidPow = 0.0;
+                liveSidePow = 0.0;
                 meterQueue.clear();
                 eqAnimator.start();
             }
@@ -4289,8 +4278,10 @@ public class MainController
         {
             @Override protected Void call()
             {
+                // Tempo and onsets describe the source and intentionally drive
+                // the processors before rendering. Every user-facing analyser
+                // is computed later from the final output in syncLiveAnalysis.
                 trackAnalysis.analyze(src, ch, sr);
-                spectrumAnalysis.analyze(src, ch, sr);
                 return null;
             }
         };
@@ -4299,8 +4290,6 @@ public class MainController
         {
             analyzing(false);
             updateBpmUi();
-            drawEqCurve();              // show the freshly analysed spectrum
-            syncLiveAnalysis();
             if (after != null) after.run();
         });
         task.setOnFailed(e -> { analyzing(false); if (after != null) after.run(); });
@@ -4371,6 +4360,7 @@ public class MainController
         final int sr = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
         final Snapshot s = buildSnapshot();
+        final long generation = ++outputAnalysisGeneration;
 
         // Tonal-prefix cache: when the EQ block (and the source) are unchanged,
         // start the pass from the cached post-EQ signal.
@@ -4384,32 +4374,31 @@ public class MainController
         final float[] startBuf = useCache ? tonalBufCache : null;
         final float[][] tonalTap = { null };
 
-        Task<double[]> task = new Task<>()
+        Task<OutputAnalysis.Result> task = new Task<>()
         {
-            @Override protected double[] call()
+            @Override protected OutputAnalysis.Result call()
             {
                 s.pipeline.prepare(sr, src.length);
                 float[] render = s.pipeline.analyzeAndRender(src, ch,
                         useCache ? tonalStages : 0, startBuf, null,
                         (buf, idx) -> { if (idx == tonalStages - 1) tonalTap[0] = buf; });
 
-                // The render doubles as the output measurement.
-                LoudnessMeter meter = new LoudnessMeter();
-                meter.prepare(sr);
-                meter.process(render, ch);
-                double tp = com.dspark.analysis.TruePeak.measureMax(render, ch);
-                double tpDb = (tp <= 0.0) ? Double.NEGATIVE_INFINITY : 20.0 * Math.log10(tp);
-                double corr = correlationOf(render, ch);
-                return new double[] {
-                        meter.getIntegratedLufs(), meter.getShortTermLufs(),
-                        meter.getMomentaryLufs(), meter.getLoudnessRange(),
-                        tpDb, s.normalizer.getGainDb(), corr };
+                // LUFS, LRA, true peak, stereo image and static spectrum all
+                // consume exactly the final buffer returned by the full chain.
+                return OutputAnalysis.measure(render, ch, sr);
             }
         };
         analyzing(true);
         task.setOnSucceeded(e ->
         {
             analyzing(false);
+            // A slower, older render must never overwrite a newer parameter
+            // state with stale (often apparently pre-processing) measurements.
+            if (generation != outputAnalysisGeneration)
+            {
+                if (onDone != null) onDone.run();
+                return;
+            }
             if (!useCache && s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
             adoptLive(peakComp, s);
             adoptLive(beatComp, s);
@@ -4432,21 +4421,33 @@ public class MainController
                 tonalStagesCache = tonalStages;
             }
 
-            // Output meters from the same render (live meters take over while playing).
-            double[] r = task.getValue();
+            // Output meters and the stopped-state analyser from the same final render
+            // (the live post-processing meter takes over while playing).
+            OutputAnalysis.Result r = task.getValue();
+            spectrumAnalysis = r.spectrum();
+            drawEqCurve();
             if (!player.isPlaying())
             {
-                meterLufs.setText(formatLufs(r[0]));
-                meterShort.setText(formatLufs(r[1]));
-                meterMom.setText(formatLufs(r[2]));
-                meterLra.setText(String.format(Locale.US, "%.1f LU", r[3]));
-                meterPeak.setText(Double.isInfinite(r[4]) ? "-∞ dBTP"
-                        : String.format(Locale.US, "%.1f dBTP", r[4]));
-                if (meterCorr != null) meterCorr.setText(String.format(Locale.US, "%+.2f", r[6]));
+                meterLufs.setText(formatLufs(r.integratedLufs()));
+                meterShort.setText(formatLufs(r.shortTermLufs()));
+                meterMom.setText(formatLufs(r.momentaryLufs()));
+                meterLra.setText(String.format(Locale.US, "%.1f LU", r.loudnessRange()));
+                meterPeak.setText(Double.isInfinite(r.truePeakDbtp()) ? "-∞ dBTP"
+                        : String.format(Locale.US, "%.1f dBTP", r.truePeakDbtp()));
+                if (meterCorr != null)
+                    meterCorr.setText(String.format(Locale.US, "%+.2f", r.correlation()));
+                if (meterMid != null) meterMid.setText(formatPowerDb(r.midPower()));
+                if (meterSide != null) meterSide.setText(formatPowerDb(r.sidePower()));
             }
             if (onDone != null) onDone.run();
         });
-        task.setOnFailed(e -> { AppLogger.error("Live analysis failed.", task.getException()); analyzing(false); if (onDone != null) onDone.run(); });
+        task.setOnFailed(e ->
+        {
+            analyzing(false);
+            if (generation == outputAnalysisGeneration)
+                AppLogger.error("Post-processing output analysis failed.", task.getException());
+            if (onDone != null) onDone.run();
+        });
         runTask(task);
     }
 
@@ -5224,7 +5225,7 @@ public class MainController
      *  Batch export
      * ========================================================= */
 
-    /** Batch settings: destination + target format + encoding (sampleRate 0 = keep source). */
+    /** Batch settings: destination + target format + encoding. */
     private record BatchSettings(File outDir, boolean mp3, int sampleRate,
                                  int bitDepth, boolean isFloat, int kbps) { }
 
@@ -5382,11 +5383,11 @@ public class MainController
 
         ComboBox<String> srCombo = new ComboBox<>();
         srCombo.getItems().addAll("Keep source", "44100", "48000", "88200", "96000", "176400", "192000");
-        srCombo.setValue("Keep source");
+        srCombo.setValue(Integer.toString(DEFAULT_EXPORT_SAMPLE_RATE));
 
         ComboBox<String> bitCombo = new ComboBox<>();
         bitCombo.getItems().addAll("16-bit", "24-bit", "32-bit float");
-        bitCombo.setValue("24-bit");
+        bitCombo.setValue(DEFAULT_EXPORT_BIT_DEPTH + "-bit");
 
         ComboBox<Integer> kbpsCombo = new ComboBox<>();
         kbpsCombo.getItems().addAll(96, 128, 160, 192, 224, 256, 320);

@@ -40,7 +40,7 @@ Four automatic look-ahead compressors. On load, QuickMaster analyses the whole t
 
 - **Peak Comp (micro-dynamics).** The classic "shave the peaks" compressor: a fast attack and a short release (around 60 ms, short but long enough to avoid distortion). Since the transients are known in advance, it touches **only** the loudest transients and leaves the body untouched.
 - **Beat Comp (beat-level).** Glue compression that evens out the level of transients from beat to beat.
-- **Leveler (macro-dynamics).** Brings the loudness of different song sections closer together for a consistent master.
+- **Leveler (macro-dynamics).** Brings clearly different song sections closer together while preserving the natural contour around the median. It leaves intentionally quiet breakdowns, fades and outros alone, and caps every boost so leveling can never raise the track's peak or steal headroom from the final normalizer.
 - **Punch.** Raises **only** the transients (transient expansion), which is only possible because the onsets are declared up front.
 
 You dial the dB of reduction (or boost) you want; the analysis derives the thresholds, sensitivity and timing.
@@ -60,7 +60,7 @@ A **Push** control says how many dB the loudest peak should come down; quieter p
 
 ### Output
 
-The **Peak Normalizer** sets the delivery ceiling in dBTP (default -1 dBTP) using true-peak measurement, and you can render with selectable **oversampling** up to 16x.
+The **Peak Normalizer** sets the delivery ceiling in dBTP (default -0.1 dBTP) using true-peak measurement, and you can render with selectable **oversampling** up to 16x. Double-click its slider or value to type an exact ceiling; use a lower value such as -1 dBTP when you want extra lossy-codec safety margin. Export dialogs default to the standard delivery format of **48 kHz / 24-bit**, while retaining every other supported rate and depth as an option.
 
 Exports are delivery-grade end to end: 16 and 24-bit renders are **TPDF-dithered**, sample-rate conversion uses a polyphase windowed-sinc resampler (anti-aliased, with the true-peak ceiling re-anchored at the delivery rate), and same-container exports keep the source's **metadata** (ID3 tags on MP3, LIST-INFO and bext chunks on WAV). The whole chain can be saved and loaded as a **preset**, compared via a two-slot **A/B settings switch** (two full chain configurations, switchable while playing, while the transport's **Bypass** compares against the original audio), and applied to a folder of songs at once with **batch export**.
 
@@ -72,8 +72,9 @@ Exports are delivery-grade end to end: 16 and 24-bit renders are **TPDF-dithered
 - **Clip**: Tube/Tape/Transformer saturation and hard clip, dialled in dB, all antiderivative anti-aliased (ADAA).
 - **Limit**: two-stage true-peak limiter, fully oversampled.
 - True-peak Peak Normalizer and oversampling up to 16x.
+- Proportional whole-window scaling on Windows: the fixed interface resizes as one unit, without horizontal or vertical stretching, clipping or black frames during live resize.
 - Real-time playback with latency-compensated cursor and meters, a time-aligned **Bypass** (instant original-vs-master comparison), selection **looping**, an interactive waveform, non-destructive crop and trim.
-- Integrated **LUFS** metering (ITU-R BS.1770), true-peak readout, phase correlation, M/S levels and a goniometer, plus a draggable processing-chain bar.
+- Integrated **LUFS** metering (ITU-R BS.1770), true-peak readout, phase correlation and M/S levels, all measured from the fully post-processed master even while Bypass is auditioning the source, plus a draggable processing-chain bar.
 - Chain **presets** (JSON), a two-slot **A/B settings switch** for comparing two full chain configurations, and undo/redo that also covers parameter changes.
 - **Batch export**: master a whole folder with the current chain.
 - WAV (16, 24 and 32-bit integer, 32-bit float) and MP3 (decode and encode), with TPDF dither on reduced-depth renders and metadata preservation.

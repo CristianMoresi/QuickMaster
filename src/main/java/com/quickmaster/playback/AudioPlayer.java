@@ -131,8 +131,9 @@ public class AudioPlayer
     private volatile long loopEndFrames = 0L;
     private volatile boolean loopEnabled = false;
 
-    /* Optional metering tap: fed every processed output buffer from the audio
-       thread, so the UI can show live loudness/peak/GR meters. */
+    /* Optional metering tap: always fed the post-processing master, even while
+       Bypass makes the raw source audible, so output meters never switch to a
+       pre-processing signal. */
     private volatile java.util.function.ObjIntConsumer<float[]> meterTap;
 
     /* Playback position in frames (the source read cursor). Mutations from the
@@ -591,18 +592,28 @@ public class AudioPlayer
                 // back directly) or the live pipeline.
                 int samplesThisBuffer = (int) (framesThisBuffer * channels);
                 float[] out;
+                float[] meteredOutput;
                 if (render != null)
                 {
-                    // Pre-rendered, source-aligned slot output. Bypass plays the
-                    // raw source (also source-aligned), so no delay line is needed.
-                    out = new float[samplesThisBuffer];
+                    // Pre-rendered, source-aligned slot output. Keep the master in
+                    // a separate buffer while bypass is active: playback may use
+                    // the source, but metering must remain post-processing.
+                    float[] mastered = new float[samplesThisBuffer];
                     if (!flushing)
                     {
-                        float[] from = abBypass ? sourceSamples : render;
                         int off = (int) (start * channels);
-                        int n = Math.min(samplesThisBuffer, from.length - off);
-                        if (n > 0) System.arraycopy(from, off, out, 0, n);
+                        int n = Math.min(samplesThisBuffer, render.length - off);
+                        if (n > 0) System.arraycopy(render, off, mastered, 0, n);
                     }
+                    meteredOutput = mastered;
+                    if (abBypass && !flushing)
+                    {
+                        out = new float[samplesThisBuffer];
+                        int off = (int) (start * channels);
+                        int n = Math.min(samplesThisBuffer, sourceSamples.length - off);
+                        if (n > 0) System.arraycopy(sourceSamples, off, out, 0, n);
+                    }
+                    else out = mastered;
                 }
                 else
                 {
@@ -657,12 +668,13 @@ public class AudioPlayer
                                 ProcessingPipeline.OFFLINE_BLOCK_FRAMES);
                         osEngine.downsample(hi, (int) framesThisBuffer, working);
                     }
+                    meteredOutput = working;
                     out = abBypass ? original : working;
                 }
 
-                // Feed the processed output to the live metering tap, if any.
+                // Always feed the processed master, never the audible bypass source.
                 java.util.function.ObjIntConsumer<float[]> tap = meterTap;
-                if (tap != null) tap.accept(out, channels);
+                if (tap != null) tap.accept(meteredOutput, channels);
 
                 // Convert float [-1,+1] to dithered signed 16-bit little-endian.
                 floatToPcm16Le(out, outBuffer, samplesThisBuffer);

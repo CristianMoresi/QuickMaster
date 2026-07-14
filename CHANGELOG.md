@@ -5,6 +5,44 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-07-14
+
+### Added
+- **Proportional whole-window scaling on Windows.** QuickMaster keeps its fixed
+  1360 x 830 design ratio and scales the complete interface as one unit from any
+  native edge or corner, with DPI-aware limits for high-resolution displays.
+- **Exact Peak Normalizer target entry.** Double-click the target slider or its
+  value to type a dBTP ceiling; Shift-drag uses 0.1 dB steps and Ctrl-click resets
+  the control to its default.
+
+### Changed
+- **The Leveler now preserves musical dynamics.** It ignores short events, leaves
+  sections close to the song median untouched, rolls off boosts for intentionally
+  quiet passages, never pumps a fade or outro back up, and caps boosts so leveling
+  cannot raise the track peak or consume the normalizer's headroom.
+- The Peak Normalizer's default delivery ceiling is now **-0.1 dBTP**. Lower
+  ceilings such as -1 dBTP remain available when lossy-codec safety margin is
+  preferred.
+- The main layout is wider and more compact, with icon-only undo/redo controls and
+  a simplified correlation/Mid/Side meter panel.
+- Individual and batch WAV exports now default to **48 kHz / 24-bit** instead of
+  inheriting the source encoding; every previously supported format remains selectable.
+- JavaFX is updated to the latest JavaFX 21 LTS patch release (21.0.11).
+
+### Fixed
+- Live proportional resizing no longer flashes black or clipped frames. During a
+  resize, a stable snapshot represents the interface and the live scene is restored
+  immediately when the pointer is released.
+- Corner resizing no longer oscillates between horizontal and vertical sizes; the
+  pointer is projected continuously onto the window's aspect-ratio diagonal.
+- Native Windows sizing now converts correctly between JavaFX logical coordinates
+  and Win32 physical pixels, including 200% display scaling on 5K monitors.
+- Moving the window without resizing no longer hides or clips the bottom controls.
+- LUFS, LRA, true peak, correlation, Mid/Side levels and the stopped-state spectrum
+  are now measured exclusively from the fully post-processed render. Bypass no longer
+  switches live meters to the raw source, Normalizer edits trigger a fresh output
+  analysis, and stale background measurements cannot overwrite newer results.
+
 ## [1.2.3] - 2026-06-23
 
 ### Fixed
