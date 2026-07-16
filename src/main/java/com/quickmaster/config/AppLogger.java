@@ -1,6 +1,8 @@
 package com.quickmaster.config;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -165,12 +167,7 @@ public final class AppLogger
             sb.append(System.lineSeparator());
             if (record.getThrown() != null)
             {
-                Throwable t = record.getThrown();
-                sb.append(t).append(System.lineSeparator());
-                for (StackTraceElement el : t.getStackTrace())
-                {
-                    sb.append("    at ").append(el).append(System.lineSeparator());
-                }
+                sb.append(throwableText(record.getThrown()));
             }
             return sb.toString();
         }
@@ -182,5 +179,17 @@ public final class AppLogger
             if (level == Level.INFO)    return "INFO";
             return level.getName();
         }
+    }
+
+    /**
+     * Renders the complete exception tree, including nested causes and
+     * suppressed exceptions. Using {@link Throwable#printStackTrace(PrintWriter)}
+     * avoids losing the low-level I/O reason when domain exceptions wrap it.
+     */
+    static String throwableText(Throwable throwable)
+    {
+        StringWriter text = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(text));
+        return text.toString();
     }
 }

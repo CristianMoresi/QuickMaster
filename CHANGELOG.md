@@ -5,6 +5,20 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Individual and batch exports keep each source file's basename instead of
+  appending `-mastered`; choosing another output format changes only the extension.
+
+### Fixed
+- Batch export retries transient source I/O failures, isolates failures per song
+  so the rest of the folder continues, and reports a final per-file error summary.
+- Application logs now retain complete nested exception causes, and batch logs
+  identify every file as it starts and completes.
+- WAV loading now selects the runtime's dedicated WAV readers directly, preventing
+  mp3spi from aborting valid float WAV files with `Resetting to invalid mark`.
+
 ## [1.3.0] - 2026-07-14
 
 ### Added

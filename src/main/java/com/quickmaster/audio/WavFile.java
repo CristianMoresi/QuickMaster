@@ -7,11 +7,13 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.spi.AudioFileReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ServiceLoader;
 
 /**
  * Concrete {@link AudioFile} implementation for WAV files.
@@ -103,7 +105,7 @@ public class WavFile extends AudioFile
                     "WAV file cannot be read (check permissions): " + getFilePath());
         }
 
-        try (AudioInputStream in = AudioSystem.getAudioInputStream(file))
+        try (AudioInputStream in = openWavInputStream(file))
         {
             AudioFormat format = in.getFormat();
 
@@ -158,6 +160,61 @@ public class WavFile extends AudioFile
             throw new AudioFileException(
                     "I/O error while reading WAV: " + getFilePath(), e);
         }
+    }
+
+    /**
+     * Opens a WAV with the runtime's dedicated WAV readers instead of asking
+     * {@link AudioSystem} to probe every installed decoder. The mp3spi reader
+     * can otherwise inspect some large floating-point WAV files first and
+     * exhaust its mark buffer, aborting detection with "Resetting to invalid
+     * mark" before Java reaches the correct WAV reader.
+     */
+    private static AudioInputStream openWavInputStream(File file)
+            throws UnsupportedAudioFileException, IOException
+    {
+        IOException ioFailure = null;
+        boolean foundWavReader = false;
+
+        for (AudioFileReader reader : ServiceLoader.load(AudioFileReader.class))
+        {
+            // Java's PCM, float and extensible implementations are named
+            // WaveFileReader, WaveFloatFileReader and WaveExtensibleFileReader.
+            if (!reader.getClass().getSimpleName().startsWith("Wave"))
+            {
+                continue;
+            }
+
+            foundWavReader = true;
+            try
+            {
+                return reader.getAudioInputStream(file);
+            }
+            catch (UnsupportedAudioFileException ignored)
+            {
+                // This WAV variant belongs to one of the other WAV readers.
+            }
+            catch (IOException e)
+            {
+                if (ioFailure == null)
+                {
+                    ioFailure = e;
+                }
+                else
+                {
+                    ioFailure.addSuppressed(e);
+                }
+            }
+        }
+
+        if (ioFailure != null)
+        {
+            throw ioFailure;
+        }
+
+        String detail = foundWavReader
+                ? "No WAV reader recognised the file"
+                : "No WAV reader is available in the Java runtime";
+        throw new UnsupportedAudioFileException(detail + ": " + file);
     }
 
     /* --- Decoders: bytes -> normalized float[] --- */

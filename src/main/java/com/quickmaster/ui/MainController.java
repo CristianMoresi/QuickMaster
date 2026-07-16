@@ -85,11 +85,16 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
 
 /**
@@ -1657,10 +1662,21 @@ public class MainController
     private String suggestedOutputName()
     {
         if (loadedFile == null) return "output.wav";
-        String src = new File(loadedFile.getFilePath()).getName();
+        return exportFileName(loadedFile.getFilePath(), ".wav");
+    }
+
+    /**
+     * Keeps the source basename for an export and replaces only its extension.
+     * Neither individual nor batch exports add a filename suffix; an existing
+     * destination with the same name may be overwritten by the export flow.
+     */
+    static String exportFileName(String sourcePath, String extension)
+    {
+        String src = new File(sourcePath).getName();
         int dot = src.lastIndexOf('.');
         String base = (dot > 0) ? src.substring(0, dot) : src;
-        return base + "-mastered.wav";
+        String ext = extension.startsWith(".") ? extension : "." + extension;
+        return base + ext;
     }
 
     /**
@@ -5254,12 +5270,18 @@ public class MainController
     private record BatchSettings(File outDir, boolean mp3, int sampleRate,
                                  int bitDepth, boolean isFloat, int kbps) { }
 
+    /** One source that could not be exported, retained for the final summary. */
+    private record BatchFailure(String fileName, String detail) { }
+
+    private static final int BATCH_IO_ATTEMPTS = 3;
+    private static final long BATCH_IO_RETRY_DELAY_MS = 500L;
+
     /**
      * Masters a whole folder with the current chain: the user picks a source
      * folder, every {@code .wav} / {@code .mp3} in it (alphabetical, not
      * recursive) is loaded, analysed on its own snapshot (its own tempo/onset
      * analysis), rendered with the same settings, and saved as
-     * {@code <name>-mastered.<ext>} into a chosen destination folder. Runs on
+     * {@code <name>.<ext>} into a chosen destination folder. Runs on
      * one background task with the export overlay (cancellable between blocks).
      */
     @FXML
@@ -5305,6 +5327,7 @@ public class MainController
 
         player.stop();
         final List<File> sources = new ArrayList<>(files);
+        final List<BatchFailure> failures = new ArrayList<>();
         final int os = oversampling;
 
         Task<Void> task = new Task<>()
@@ -5320,52 +5343,82 @@ public class MainController
                     final int index = i;
                     Platform.runLater(() -> exportFileLabel.setText(
                             (index + 1) + " / " + n + ": " + srcFile.getName()));
+                    AppLogger.info("Batch export " + (index + 1) + " / " + n
+                            + " started: " + srcFile.getAbsolutePath());
 
-                    AudioFile audio = AudioFormatDetector.loadAuto(srcFile.getAbsolutePath());
-                    audio.load();
-
-                    TrackAnalysis ta = new TrackAnalysis();
-                    ta.analyze(audio.getSamples(), audio.getChannels(), audio.getSampleRate());
-
-                    Snapshot snap = buildSnapshot(ta);
-                    final double base = (double) index / n;
-                    float[] processed = renderOversampled(snap.pipeline,
-                            audio.getSamples().clone(), audio.getSampleRate(),
-                            audio.getChannels(), os,
-                            frac ->
-                            {
-                                if (isCancelled())
-                                    throw new java.util.concurrent.CancellationException();
-                                updateProgress(base + frac / n, 1.0);
-                            });
-                    if (isCancelled()) return null;
-
-                    int outRate = (settings.sampleRate() > 0)
-                            ? settings.sampleRate() : audio.getSampleRate();
-                    float[] out = resampleForExport(processed, audio.getChannels(),
-                            audio.getSampleRate(), outRate);
-                    if (outRate != audio.getSampleRate() && snap.normalizer.isEnabled())
+                    try
                     {
-                        reclampTruePeak(out, audio.getChannels(), snap.normalizer.getTargetDbfs());
-                    }
+                        AudioFile audio = retryIo(() ->
+                        {
+                            AudioFile candidate = AudioFormatDetector.loadAuto(
+                                    srcFile.getAbsolutePath());
+                            candidate.load();
+                            return candidate;
+                        }, BATCH_IO_ATTEMPTS, BATCH_IO_RETRY_DELAY_MS,
+                                this::isCancelled,
+                                (attempt, error) -> AppLogger.warn(
+                                        "Batch read attempt " + attempt + " / "
+                                                + BATCH_IO_ATTEMPTS + " failed for "
+                                                + srcFile.getAbsolutePath() + ": "
+                                                + rootCauseSummary(error) + "; retrying."));
 
-                    String baseName = srcFile.getName();
-                    int dot = baseName.lastIndexOf('.');
-                    if (dot > 0) baseName = baseName.substring(0, dot);
-                    String ext = settings.mp3() ? ".mp3" : ".wav";
-                    String outPath = new File(outDir, baseName + "-mastered" + ext).getAbsolutePath();
+                        TrackAnalysis ta = new TrackAnalysis();
+                        ta.analyze(audio.getSamples(), audio.getChannels(), audio.getSampleRate());
 
-                    if (settings.mp3())
-                    {
-                        new Mp3File(outPath, outRate, audio.getChannels(), out,
-                                settings.kbps(), false).save(outPath);
+                        Snapshot snap = buildSnapshot(ta);
+                        final double base = (double) index / n;
+                        float[] processed = renderOversampled(snap.pipeline,
+                                audio.getSamples().clone(), audio.getSampleRate(),
+                                audio.getChannels(), os,
+                                frac ->
+                                {
+                                    if (isCancelled())
+                                        throw new CancellationException();
+                                    updateProgress(base + frac / n, 1.0);
+                                });
+                        if (isCancelled()) return null;
+
+                        int outRate = (settings.sampleRate() > 0)
+                                ? settings.sampleRate() : audio.getSampleRate();
+                        float[] out = resampleForExport(processed, audio.getChannels(),
+                                audio.getSampleRate(), outRate);
+                        if (outRate != audio.getSampleRate() && snap.normalizer.isEnabled())
+                        {
+                            reclampTruePeak(out, audio.getChannels(),
+                                    snap.normalizer.getTargetDbfs());
+                        }
+
+                        String ext = settings.mp3() ? ".mp3" : ".wav";
+                        String outName = exportFileName(srcFile.getName(), ext);
+                        String outPath = new File(outDir, outName).getAbsolutePath();
+
+                        if (settings.mp3())
+                        {
+                            new Mp3File(outPath, outRate, audio.getChannels(), out,
+                                    settings.kbps(), false).save(outPath);
+                        }
+                        else
+                        {
+                            new WavFile(outPath, outRate, audio.getChannels(), out,
+                                    settings.bitDepth(), settings.isFloat()).save(outPath);
+                        }
+                        MetadataPreserver.preserve(srcFile.getAbsolutePath(), outPath);
+                        AppLogger.info("Batch export " + (index + 1) + " / " + n
+                                + " completed: " + outPath);
                     }
-                    else
+                    catch (CancellationException ex)
                     {
-                        new WavFile(outPath, outRate, audio.getChannels(), out,
-                                settings.bitDepth(), settings.isFloat()).save(outPath);
+                        if (isCancelled()) return null;
+                        throw ex;
                     }
-                    MetadataPreserver.preserve(srcFile.getAbsolutePath(), outPath);
+                    catch (Exception ex)
+                    {
+                        String detail = rootCauseSummary(ex);
+                        failures.add(new BatchFailure(srcFile.getName(), detail));
+                        AppLogger.error("Batch export failed for "
+                                + srcFile.getAbsolutePath(), ex);
+                        updateProgress((index + 1.0) / n, 1.0);
+                    }
                 }
                 return null;
             }
@@ -5373,8 +5426,21 @@ public class MainController
         task.setOnSucceeded(ev ->
         {
             hideExportOverlay();
-            setStatus("Batch export done: " + sources.size() + " files → " + outDir.getName());
-            AppLogger.info("Batch export finished into " + outDir.getAbsolutePath());
+            int exported = sources.size() - failures.size();
+            if (failures.isEmpty())
+            {
+                setStatus("Batch export done: " + exported + " files → " + outDir.getName());
+                AppLogger.info("Batch export finished into " + outDir.getAbsolutePath());
+            }
+            else
+            {
+                String status = "Batch export finished: " + exported + " exported, "
+                        + failures.size() + " failed.";
+                setStatus(status);
+                AppLogger.warn(status + " Destination: " + outDir.getAbsolutePath());
+                showError("Batch export completed with errors",
+                        batchFailureSummary(status, failures));
+            }
             config.setOutputDir(outDir.getAbsolutePath());
         });
         task.setOnFailed(ev ->
@@ -5382,7 +5448,7 @@ public class MainController
             hideExportOverlay();
             AppLogger.error("Batch export failed", task.getException());
             setStatus("Batch export failed.");
-            showError("Batch export failed", task.getException().getMessage());
+            showError("Batch export failed", rootCauseSummary(task.getException()));
         });
         task.setOnCancelled(ev ->
         {
@@ -5392,6 +5458,89 @@ public class MainController
         exportTask = task;
         showExportOverlay(sources.size() + " files", task);
         runTask(task);
+    }
+
+    /**
+     * Retries operations whose exception chain contains an {@link IOException}.
+     * Format, validation and processing errors are returned immediately because
+     * repeating them cannot make the input valid. Cancellation is checked before
+     * every attempt and while waiting between attempts.
+     */
+    static <T> T retryIo(Callable<T> operation, int maxAttempts, long retryDelayMs,
+                         BooleanSupplier cancelled,
+                         BiConsumer<Integer, Throwable> onRetry) throws Exception
+    {
+        if (maxAttempts < 1) throw new IllegalArgumentException("maxAttempts must be positive");
+        if (retryDelayMs < 0) throw new IllegalArgumentException("retryDelayMs must not be negative");
+
+        for (int attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            if (cancelled != null && cancelled.getAsBoolean())
+                throw new CancellationException("Batch export cancelled.");
+            try
+            {
+                return operation.call();
+            }
+            catch (Exception ex)
+            {
+                if (!causedByIo(ex) || attempt == maxAttempts) throw ex;
+                if (onRetry != null) onRetry.accept(attempt, ex);
+                try
+                {
+                    Thread.sleep(retryDelayMs * attempt);
+                }
+                catch (InterruptedException interrupted)
+                {
+                    Thread.currentThread().interrupt();
+                    CancellationException cancelledEx =
+                            new CancellationException("Batch retry interrupted.");
+                    cancelledEx.initCause(interrupted);
+                    throw cancelledEx;
+                }
+            }
+        }
+        throw new IllegalStateException("Unreachable retry state");
+    }
+
+    /** True when an exception or one of its nested causes is an I/O failure. */
+    static boolean causedByIo(Throwable error)
+    {
+        Throwable current = error;
+        for (int depth = 0; current != null && depth < 64; depth++)
+        {
+            if (current instanceof IOException) return true;
+            Throwable next = current.getCause();
+            if (next == current) break;
+            current = next;
+        }
+        return false;
+    }
+
+    /** Most specific available exception description for logs and dialogs. */
+    static String rootCauseSummary(Throwable error)
+    {
+        if (error == null) return "Unknown error.";
+        Throwable root = error;
+        for (int depth = 0; root.getCause() != null && root.getCause() != root
+                && depth < 64; depth++)
+        {
+            root = root.getCause();
+        }
+        String message = root.getMessage();
+        return root.getClass().getSimpleName()
+                + ((message == null || message.isBlank()) ? "" : ": " + message);
+    }
+
+    /** Builds the user-facing summary after a partially successful batch. */
+    private static String batchFailureSummary(String status, List<BatchFailure> failures)
+    {
+        StringBuilder summary = new StringBuilder(status).append("\n\n");
+        for (BatchFailure failure : failures)
+        {
+            summary.append("• ").append(failure.fileName())
+                    .append(" — ").append(failure.detail()).append('\n');
+        }
+        return summary.toString().stripTrailing();
     }
 
     /**
@@ -5452,7 +5601,8 @@ public class MainController
         g.addRow(4, encLabel, bitCombo);
         Label note = new Label(
                 "Applies the chain exactly as it is configured right now.\n"
-                        + "Each song is saved as <name>-mastered." + "wav" + " into the destination.");
+                        + "Each song keeps its original name and is saved as <name>.wav "
+                        + "into the destination.");
         note.getStyleClass().add("value-muted");
         note.setWrapText(true);
         g.add(note, 0, 5, 2, 1);
@@ -5463,8 +5613,8 @@ public class MainController
             g.getChildren().removeAll(bitCombo, kbpsCombo);
             g.add(mp3 ? kbpsCombo : bitCombo, 1, 4);
             note.setText("Applies the chain exactly as it is configured right now.\n"
-                    + "Each song is saved as <name>-mastered." + (mp3 ? "mp3" : "wav")
-                    + " into the destination.");
+                    + "Each song keeps its original name and is saved as <name>."
+                    + (mp3 ? "mp3" : "wav") + " into the destination.");
         });
 
         Dialog<ButtonType> dlg = new Dialog<>();

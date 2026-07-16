@@ -69,4 +69,23 @@ class WavFileRoundTripTest
             assertEquals(samples[i], loaded.getSamples()[i], 0.0f);
         }
     }
+
+    @Test
+    @DisplayName("large 32-bit float WAV bypasses unrelated audio decoders")
+    void largeFloatWavUsesDedicatedWavReader(@TempDir Path dir) throws Exception
+    {
+        float[] samples = ramp(300_000);
+        Path path = dir.resolve("large-float.wav");
+
+        new WavFile(path.toString(), 48000, 2, samples, 32, true).save(path.toString());
+
+        WavFile loaded = new WavFile(path.toString());
+        loaded.load();
+
+        assertEquals(48000, loaded.getSampleRate());
+        assertEquals(2, loaded.getChannels());
+        assertEquals(32, loaded.getBitDepth());
+        assertEquals(samples.length, loaded.getSamples().length);
+        assertEquals(samples[123_456], loaded.getSamples()[123_456], 0.0f);
+    }
 }
