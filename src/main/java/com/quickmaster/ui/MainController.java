@@ -1062,6 +1062,21 @@ public class MainController
         return value;
     }
 
+    /**
+     * Directory the file and folder choosers start in: the last folder used for an
+     * export, or the configured default (the user's desktop) when that folder is
+     * gone, for instance an unplugged drive.
+     *
+     * @return an existing directory, or {@code null} to let the system decide
+     */
+    private File browseStartDir()
+    {
+        File last = new File(config.getOutputDir());
+        if (last.isDirectory()) return last;
+        File fallback = new File(AppConfig.DEFAULT_OUTPUT_DIR);
+        return fallback.isDirectory() ? fallback : null;
+    }
+
     /* =========================================================
      *  Event handlers (called from FXML onAction)
      * ========================================================= */
@@ -1082,9 +1097,8 @@ public class MainController
                 new FileChooser.ExtensionFilter("Audio files", "*.wav", "*.mp3"),
                 new FileChooser.ExtensionFilter("All files",   "*.*"));
 
-        String defaultDir = config.getOutputDir();
-        File initial = new File(defaultDir);
-        if (initial.isDirectory())
+        File initial = browseStartDir();
+        if (initial != null)
         {
             chooser.setInitialDirectory(initial);
         }
@@ -1360,9 +1374,8 @@ public class MainController
                 new FileChooser.ExtensionFilter("MP3 (lossy)",    "*.mp3"));
         chooser.setInitialFileName(suggestedOutputName());
 
-        String defaultDir = config.getOutputDir();
-        File initial = new File(defaultDir);
-        if (initial.isDirectory()) chooser.setInitialDirectory(initial);
+        File initial = browseStartDir();
+        if (initial != null) chooser.setInitialDirectory(initial);
 
         Window window = waveformCanvas.getScene().getWindow();
         File target = chooser.showSaveDialog(window);
@@ -5015,9 +5028,8 @@ public class MainController
         chooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("QuickMaster preset", "*.qmpreset"));
         chooser.setInitialFileName("chain.qmpreset");
-        String dir = config.getOutputDir();
-        File initial = new File(dir);
-        if (initial.isDirectory()) chooser.setInitialDirectory(initial);
+        File initial = browseStartDir();
+        if (initial != null) chooser.setInitialDirectory(initial);
         Window window = waveformCanvas.getScene().getWindow();
         File target = chooser.showSaveDialog(window);
         if (target == null) return;
@@ -5044,9 +5056,8 @@ public class MainController
         chooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("QuickMaster preset", "*.qmpreset"),
                 new FileChooser.ExtensionFilter("All files", "*.*"));
-        String dir = config.getOutputDir();
-        File initial = new File(dir);
-        if (initial.isDirectory()) chooser.setInitialDirectory(initial);
+        File initial = browseStartDir();
+        if (initial != null) chooser.setInitialDirectory(initial);
         Window window = waveformCanvas.getScene().getWindow();
         File chosen = chooser.showOpenDialog(window);
         if (chosen == null) return;
@@ -5287,13 +5298,12 @@ public class MainController
     @FXML
     private void onBatchExport()
     {
-        String dir = config.getOutputDir();
-        File initial = new File(dir);
+        File initial = browseStartDir();
         Window window = waveformCanvas.getScene().getWindow();
 
         javafx.stage.DirectoryChooser srcChooser = new javafx.stage.DirectoryChooser();
         srcChooser.setTitle("Batch export: choose the folder with the songs");
-        if (initial.isDirectory()) srcChooser.setInitialDirectory(initial);
+        if (initial != null) srcChooser.setInitialDirectory(initial);
         File srcDir = srcChooser.showDialog(window);
         if (srcDir == null) return;
 

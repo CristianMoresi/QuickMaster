@@ -10,6 +10,13 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 - Individual and batch exports keep each source file's basename instead of
   appending `-mastered`; choosing another output format changes only the extension.
+- Export, preset and file dialogs now start on the user's desktop instead of the
+  process working directory, resolved per platform: `%USERPROFILE%\Desktop` or its
+  OneDrive redirection on Windows, `~/Desktop` on macOS, and the XDG desktop
+  directory (including localised names such as `~/Escritorio`) on Linux, falling
+  back to the home directory where no desktop exists. The folder of the last
+  export is still remembered, and is replaced by the desktop when it no longer
+  exists. Configurations written by earlier versions are migrated once.
 
 ### Fixed
 - Batch export retries transient source I/O failures, isolates failures per song
