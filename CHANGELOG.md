@@ -5,28 +5,7 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Changed
-- Individual and batch exports keep each source file's basename instead of
-  appending `-mastered`; choosing another output format changes only the extension.
-- Export, preset and file dialogs now start on the user's desktop instead of the
-  process working directory, resolved per platform: `%USERPROFILE%\Desktop` or its
-  OneDrive redirection on Windows, `~/Desktop` on macOS, and the XDG desktop
-  directory (including localised names such as `~/Escritorio`) on Linux, falling
-  back to the home directory where no desktop exists. The folder of the last
-  export is still remembered, and is replaced by the desktop when it no longer
-  exists. Configurations written by earlier versions are migrated once.
-
-### Fixed
-- Batch export retries transient source I/O failures, isolates failures per song
-  so the rest of the folder continues, and reports a final per-file error summary.
-- Application logs now retain complete nested exception causes, and batch logs
-  identify every file as it starts and completes.
-- WAV loading now selects the runtime's dedicated WAV readers directly, preventing
-  mp3spi from aborting valid float WAV files with `Resetting to invalid mark`.
-
-## [1.3.0] - 2026-07-14
+## [1.3.0] - 2026-07-21
 
 ### Added
 - **Proportional whole-window scaling on Windows.** QuickMaster keeps its fixed
@@ -49,6 +28,15 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   tooltips explain how to interpret stereo phase and Mid/Side energy.
 - Individual and batch WAV exports now default to **48 kHz / 24-bit** instead of
   inheriting the source encoding; every previously supported format remains selectable.
+- Individual and batch exports keep each source file's basename instead of
+  appending `-mastered`; choosing another output format changes only the extension.
+- **Export, preset and file dialogs now start on your desktop** instead of the
+  process working directory, resolved per platform: `%USERPROFILE%\Desktop` or its
+  OneDrive redirection on Windows, `~/Desktop` on macOS, and the XDG desktop
+  directory (including localised names such as `~/Escritorio`) on Linux, falling
+  back to the home directory where no desktop exists. The folder of the last
+  export is still remembered, and is replaced by the desktop when it no longer
+  exists. Configurations written by earlier versions are migrated once.
 - JavaFX is updated to the latest JavaFX 21 LTS patch release (21.0.11).
 
 ### Fixed
@@ -64,6 +52,12 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   are now measured exclusively from the fully post-processed render. Bypass no longer
   switches live meters to the raw source, Normalizer edits trigger a fresh output
   analysis, and stale background measurements cannot overwrite newer results.
+- Batch export retries transient source I/O failures, isolates failures per song
+  so the rest of the folder continues, and reports a final per-file error summary.
+- Application logs now retain complete nested exception causes, and batch logs
+  identify every file as it starts and completes.
+- WAV loading now selects the runtime's dedicated WAV readers directly, preventing
+  mp3spi from aborting valid float WAV files with `Resetting to invalid mark`.
 
 ## [1.2.3] - 2026-06-23
 
