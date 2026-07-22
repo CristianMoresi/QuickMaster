@@ -5,6 +5,22 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **DSP engine (dspark) synchronized with the upstream DSPark library and
+  re-audited end to end.** Loudness measurement now uses the exact ITU-R
+  BS.1770-5 K-weighting (readings were about 0.26 LU low before) with the
+  loudness range sampled per the EBU Tech 3342 cadence, and true-peak detection
+  uses the official BS.1770-5 Annex 2 interpolator everywhere (meters,
+  normalizer and limiter share one implementation). The sample-rate converter
+  fixes a sub-sample timing error in its kernel and gains per-quality
+  anti-alias windows, so rate-converted exports are cleaner. Dither now shapes
+  the total requantization error and lands exactly on the integer grid of the
+  target bit depth. The whole library is hardened against non-finite parameter
+  and signal values. Verified against EBU-style conformance vectors and the
+  library's published quality tables (114 dspark tests).
+
 ## [1.3.0] - 2026-07-21
 
 ### Added

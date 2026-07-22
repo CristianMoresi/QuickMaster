@@ -203,9 +203,12 @@ class ProcessingPipelineRenderTest
         pipeline.process(file);
 
         // The normalizer must scale to the EQ's real output peak, not the
-        // original source peak: gain = 1 / (peak · 10^(6/20)).
+        // original source peak: gain = 1 / (peak · 10^(6/20)). The normalizer
+        // targets dBTP, and the official BS.1770-5 Annex 2 interpolator reads
+        // this signal's inter-sample peak a hair above its sample peak, so the
+        // tolerance allows that small (~0.015 dB) true-peak margin.
         double postEqPeak = maxAbs(input) * Math.pow(10.0, 6.0 / 20.0);
-        assertEquals(Math.pow(10.0, -0.1 / 20.0) / postEqPeak, norm.getGain(), 1e-3);
+        assertEquals(Math.pow(10.0, -0.1 / 20.0) / postEqPeak, norm.getGain(), 4e-3);
         // ...and the rendered peak lands on the -0.1 dBTP ceiling (no clipping).
         assertEquals((float) Math.pow(10.0, -0.1 / 20.0), maxAbs(file.getSamples()), 3e-3f);
     }
