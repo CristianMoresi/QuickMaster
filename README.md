@@ -39,11 +39,15 @@ So if you want a detailed, manually dialled compressor instead of the automatic 
 Four automatic look-ahead compressors. On load, QuickMaster analyses the whole track (its transients and its peak map) and precomputes each one; it recomputes in real time as you change the stages above, so it always reflects the current signal. Because it reads the entire file, each one targets exactly what it should, at a different time scale:
 
 - **Peak Comp (micro-dynamics).** The classic "shave the peaks" compressor: a fast attack and a short release (around 60 ms, short but long enough to avoid distortion). Since the transients are known in advance, it touches **only** the loudest transients and leaves the body untouched.
-- **Beat Comp (beat-level).** Glue compression that evens out the level of transients from beat to beat.
-- **Leveler (macro-dynamics).** Brings clearly different song sections closer together while preserving the natural contour around the median. It leaves intentionally quiet breakdowns, fades and outros alone, and caps every boost so leveling can never raise the track's peak or steal headroom from the final normalizer.
+- **Beat Comp (beat-level).** Turns down transients louder than the median transient, with a stereo-linked gain envelope. The reduction target is a maximum, including while a previous analysis is being replaced. Release follows the selected note value and detected or manual BPM. `auto?` marks an uncertain estimate; disable Auto to enter the intended musical tempo. If no reliable single tempo is available, release falls back to 250 ms.
+- **Leveler (macro-dynamics).** Compares sustained sections with similar musical content, then adjusts their level differences with smooth transitions. It protects intros, outros, breaks and build-ups instead of lifting every quiet passage. **Leveling** controls the correction amount and **Speed** controls the transition rate. If the comparison is ambiguous or the peak-safety checks fail, it leaves the audio unchanged and reports the reason in the Dynamics card.
 - **Punch.** Raises **only** the transients (transient expansion), which is only possible because the onsets are declared up front.
 
 You dial the dB of reduction (or boost) you want; the analysis derives the thresholds, sensitivity and timing.
+
+### Waveform zoom
+
+Hold **Ctrl** and scroll over the waveform to zoom in or out on Windows/Linux; use **Command** on macOS. The time under the pointer stays anchored. Selection, seeking, playhead and fade handles use the same zoomed timeline. Scroll outward to return to the full track; an unmodified wheel over a fade handle continues to change its curve.
 
 ### Clip (saturation and hard clip)
 
@@ -101,8 +105,10 @@ Then, from the project root:
 
 ```bash
 mvn clean javafx:run   # build and launch the app
-mvn test               # run the unit test suite
+mvn test               # requires the official corpus properties documented below
 ```
+
+The complete test and package workflow requires the external ITU/EBU test signals and the applicable EBU usage authorization. See [validation and portable delivery](docs/VALIDATION.md) for the required Maven properties and Windows app-image commands. The official audio is not redistributed in this repository.
 
 ## Built on DSPark
 

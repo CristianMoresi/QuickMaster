@@ -1,0 +1,74 @@
+package com.quickmaster.processing.dynamics.leveler.model;
+
+/** Context vector in the normative component order. */
+public final class BodyContextVector
+{
+    private final double previousActivityRatio;
+    private final double nextActivityRatio;
+    private final double entryLoudness12;
+    private final double exitLoudness12;
+    private final double leftNoveltyMad;
+    private final double rightNoveltyMad;
+    private final int loudnessAvailabilityMask;
+
+    public BodyContextVector(double previousActivityRatio,
+                             double nextActivityRatio,
+                             double entryLoudness12,
+                             double exitLoudness12,
+                             double leftNoveltyMad,
+                             double rightNoveltyMad)
+    {
+        this(previousActivityRatio, nextActivityRatio, entryLoudness12, exitLoudness12,
+                leftNoveltyMad, rightNoveltyMad, 7);
+    }
+
+    /** Bits 1/2/4 identify available previous/current/next contextual loudness. */
+    public BodyContextVector(double previousActivityRatio,
+                             double nextActivityRatio,
+                             double entryLoudness12,
+                             double exitLoudness12,
+                             double leftNoveltyMad,
+                             double rightNoveltyMad,
+                             int loudnessAvailabilityMask)
+    {
+        if (!Double.isFinite(previousActivityRatio) || !Double.isFinite(nextActivityRatio)
+                || !Double.isFinite(entryLoudness12) || !Double.isFinite(exitLoudness12)
+                || !Double.isFinite(leftNoveltyMad) || !Double.isFinite(rightNoveltyMad))
+        {
+            throw new IllegalArgumentException("Body context must be finite.");
+        }
+        if (loudnessAvailabilityMask < 0 || loudnessAvailabilityMask > 7)
+        {
+            throw new IllegalArgumentException("Unknown contextual loudness availability bits.");
+        }
+        this.previousActivityRatio = previousActivityRatio;
+        this.nextActivityRatio = nextActivityRatio;
+        this.entryLoudness12 = entryLoudness12;
+        this.exitLoudness12 = exitLoudness12;
+        this.leftNoveltyMad = leftNoveltyMad;
+        this.rightNoveltyMad = rightNoveltyMad;
+        this.loudnessAvailabilityMask = loudnessAvailabilityMask;
+    }
+
+    public double previousActivityRatio() { return previousActivityRatio; }
+    public double nextActivityRatio() { return nextActivityRatio; }
+    public double entryLoudness12() { return entryLoudness12; }
+    public double exitLoudness12() { return exitLoudness12; }
+    public double leftNoveltyMad() { return leftNoveltyMad; }
+    public double rightNoveltyMad() { return rightNoveltyMad; }
+    public int loudnessAvailabilityMask() { return loudnessAvailabilityMask; }
+
+    public double componentAt(int index)
+    {
+        switch (index)
+        {
+            case 0: return previousActivityRatio;
+            case 1: return nextActivityRatio;
+            case 2: return entryLoudness12;
+            case 3: return exitLoudness12;
+            case 4: return leftNoveltyMad;
+            case 5: return rightNoveltyMad;
+            default: throw new IndexOutOfBoundsException("Body context component " + index);
+        }
+    }
+}

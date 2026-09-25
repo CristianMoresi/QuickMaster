@@ -46,3 +46,4 @@ quickmaster.log
 *.ps1
 *.sh
 *.command
+!tools/Deploy-Portable.ps1

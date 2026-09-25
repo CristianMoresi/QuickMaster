@@ -17,3 +17,7 @@ mvnw         text eol=lf
 # Binary assets (never modified or diffed as text).
 *.png        binary
 *.jar        binary
+
+# Test contracts have pinned byte hashes, including line endings.
+src/test/resources/leveler/** -text whitespace=cr-at-eol
+src/test/resources/official-conformance/** -text whitespace=cr-at-eol

@@ -1,0 +1,60 @@
+{
+  "id": "QM-M004-CORE-CHUNKS-B-001",
+  "status": "PROPOSED",
+  "implementation_accepted": false,
+  "approvedGlobalSchema": false,
+  "adjudication": "root selected representation B after g1-humongous-fix-design-001 and its independent GO critique; this narrow authority is not global/resource/conformance acceptance",
+  "predecessor": {"resource": "core-window-delta.json", "sha256": "7bf7369efa66327034c1633c9c46b4fc78c0db71a7feb5941a926be932042078"},
+  "baselineSourceSha256": "971947a18a928dcae0cf47912523f0d564c9146bee2885ff0820b9ca3c2ba851",
+  "owner": "com/quickmaster/processing/dynamics/leveler/LoudnessCore",
+  "fieldDescriptorChanges": [
+    {"name": "weightedPowerRing", "previousDescriptor": "[D", "descriptor": "[[D", "type": "double[][]"},
+    {"name": "weightedPowerTree", "previousDescriptor": "[D", "descriptor": "[[D", "type": "double[][]"}
+  ],
+  "fieldCount": 15,
+  "methodCount": 17,
+  "additionalFieldsAllowed": false,
+  "additionalMethodsAllowed": false,
+  "additionalOwnersAllowed": false,
+  "privateStaticHelpers": [
+    {"name": "nodePower", "descriptor": "([[D[[DII)D", "access": 10},
+    {"name": "rebuildTree", "descriptor": "([[D[[DII)V", "access": 10},
+    {"name": "treeRange", "descriptor": "([[D[[DIII)D", "access": 10},
+    {"name": "treeWindow", "descriptor": "([[D[[DIII)D", "access": 10},
+    {"name": "allocateChunks", "descriptor": "(I)[[D", "access": 10},
+    {"name": "storagePower", "descriptor": "([[DII)D", "access": 10},
+    {"name": "storePower", "descriptor": "([[DIID)V", "access": 10}
+  ],
+  "storage": {
+    "chunkCap": 32768,
+    "arrayShallowMaxBytes": 262176,
+    "logicalRingLength": "N=3*sampleRateHz",
+    "physicalTreeLength": "K=(N+1L)/2",
+    "outerLength": "(length-1)/32768+1 after length>0",
+    "ringOuterMax": 512,
+    "treeOuterMax": 256,
+    "lastChunk": "exact remaining length; no padding",
+    "ownedArrays": "5 small primitive arrays + 2 outer tables + ceil(N/32768) + ceil(K/32768) chunks",
+    "identity": "all owned arrays fresh, non-null, pairwise distinct within and across live measurements; no borrowed/exposed/static/native/offheap/pool storage",
+    "initialBits": "all storage raw +0 except coefficients; tree[0] stays raw +0",
+    "constructor": "allocate directly in chunks; never allocate a flat temporary; outer references never subsequently change",
+    "localAccessValidation": "positive logical length; index in logical range; exact outer length; visited page non-null with canonical exact length before access",
+    "treeValidation": "N>0; 2L*N-1<=Integer.MAX_VALUE; outer tables non-null/distinct and exact extents for N/K; node/leaf/range/window bounds before access",
+    "canonicalPrecondition": "complete shape and identity guaranteed by construction and measured deeply in tests; helpers do not scan unvisited pages or promise rejection of arbitrary unvisited corruption",
+    "physicalConservativeBound": "8*(N+K)+40*(ceil(N/32768)+ceil(K/32768))+704 <= 16*N+1024; runtime verifies fixed<=640, array overhead<=32, references<=8",
+    "unchangedAdmission": "16L*N+1024L<268435456L; max sampleRateHz=5592383; analyzer keeps 16L*N+42L*Q+1024L<268435456L"
+  },
+  "virtualTree": {
+    "leaf": "N<=node<2*N: ring[node-N]",
+    "virtualParent": "K<=node<N: validated ring[2*node-N] + validated ring[2*node+1-N], validate result; left then right then sum",
+    "cachedParent": "1<=node<K: validated tree[node]",
+    "rebuild": "validate leaf, visit every ancestor from (N+leaf)/2 to 1; same children and validation order; write only node<K",
+    "range": "unchanged prefix+=node(left++), suffix=node(--right)+suffix, prefix+suffix",
+    "window": "unchanged tail+head",
+    "work": "O(1) local access; O(log N) update/range; O(1) getters; no recursive subtree or per-frame chunk scan",
+    "allocationPerFrameAndScalarGetter": 0
+  },
+  "jdkCallsDelta": [],
+  "publicApiDelta": [],
+  "unchanged": "other 13 field rows/order/access/ConstantValue, 10 existing non-tree methods, coefficient/filter/gate logic, limits, API, cancellation/clock/EOF, retained roots/rows/aliases/formulas/MIN/MAX, active owners/allowances, all94 conformance readings/tolerances"
+}

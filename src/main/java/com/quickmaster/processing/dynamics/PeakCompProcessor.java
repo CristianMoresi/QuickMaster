@@ -19,6 +19,7 @@ import com.dspark.core.DspMath;
  * {@value #MIN_RELEASE_MS}&nbsp;ms), so the gain recovers as soon as a peak has
  * passed, without pumping the following audio.
  */
+@SuppressWarnings("deprecation")
 public final class PeakCompProcessor extends AnalysisDynamicsProcessor
 {
     /** Fixed look-ahead and attack times in ms (near-instant, click-free). */

@@ -114,4 +114,148 @@ class BeatCompProcessorTest
         p.setEnabled(false);
         for (float v : gainEnvelope(p, s.length)) assertEquals(1.0f, v, 1e-6f);
     }
+
+    @Test
+    @DisplayName("A -1 dB target bounds every applied sample and the actual gain-reduction meter")
+    void maximumReductionIsAHardBound()
+    {
+        float[] s = clicks(6.0, 0.5, 0.2, 3, 7);
+        TrackAnalysis ta = new TrackAnalysis();
+        ta.analyze(s, 1, SR);
+        BeatCompProcessor p = new BeatCompProcessor();
+        p.setTrackAnalysis(ta);
+        p.setEnabled(true);
+        p.setTargetDb(-1.0);
+        p.prepare(SR, s.length);
+        p.analyze(s, 1);
+        float[] gains = gainEnvelope(p, s.length);
+        double floor = Math.pow(10.0, -1.0 / 20.0);
+        for (float gain : gains)
+        {
+            assertTrue(gain <= 1.000001f);
+            assertTrue(gain >= floor - 1.0e-6, "Gain exceeded the selected -1 dB maximum: " + gain);
+        }
+        assertTrue(p.getGainReductionDb() >= -1.00001,
+                "Meter exceeded the selected -1 dB maximum: " + p.getGainReductionDb());
+    }
+
+    @Test
+    @DisplayName("A tighter target limits an already published envelope immediately")
+    void tighteningTargetDuringPlaybackCannotUseStaleStrongerReduction()
+    {
+        float[] s = clicks(6.0, 0.5, 0.2, 3, 7);
+        TrackAnalysis ta = new TrackAnalysis();
+        ta.analyze(s, 1, SR);
+        BeatCompProcessor p = new BeatCompProcessor();
+        p.setTrackAnalysis(ta);
+        p.setEnabled(true);
+        p.setTargetDb(-6.0);
+        p.prepare(SR, s.length);
+        p.analyze(s, 1);
+        p.prepare(SR, s.length);
+        p.setTargetDb(-1.0); // the UI can display this before the new analysis publishes
+        float[] ones = new float[s.length];
+        java.util.Arrays.fill(ones, 1.0f);
+        p.process(ones, 1);
+        float minimum = 1.0f;
+        for (float gain : ones) minimum = Math.min(minimum, gain);
+        assertTrue(minimum >= Math.pow(10.0, -1.0 / 20.0), "Stale envelope bypassed the new cap: " + minimum);
+        assertTrue(p.getGainReductionDb() >= -1.0,
+                "Meter reported more reduction than the selected target: " + p.getGainReductionDb());
+    }
+
+    @Test
+    @DisplayName("Lookahead attenuates the actual loud transient peak, not just its later tail")
+    void loudTransientPeaksAreCaughtWithoutAudioLatency()
+    {
+        float[] input = clicks(6.0, 0.5, 0.2, 3, 7);
+        TrackAnalysis analysis = new TrackAnalysis();
+        analysis.analyze(input, 1, SR);
+        BeatCompProcessor processor = new BeatCompProcessor();
+        processor.setTrackAnalysis(analysis);
+        processor.setEnabled(true);
+        processor.setTargetDb(-1.0);
+        processor.prepare(SR, input.length);
+        processor.analyze(input, 1);
+        float[] gain = gainEnvelope(processor, input.length);
+        for (int beat : new int[] {3, 7})
+        {
+            int start = (int)((0.2 + beat * 0.5) * SR);
+            int peak = start;
+            for (int frame = start; frame < start + (int)(0.008 * SR); frame++)
+                if (Math.abs(input[frame]) > Math.abs(input[peak])) peak = frame;
+            assertTrue(gain[peak] <= Math.pow(10.0, -0.95 / 20.0),
+                    "The loud peak escaped lookahead at frame " + peak + ": gain=" + gain[peak]);
+        }
+        processor.prepare(SR, input.length);
+        float[] output = processor.process(input.clone(), 1);
+        for (int frame = 0; frame < input.length; frame++)
+        {
+            assertEquals(input[frame] == 0.0f, output[frame] == 0.0f, "Audio support shifted at frame " + frame);
+            if (input[frame] != 0.0f) assertEquals(Math.signum(input[frame]), Math.signum(output[frame]));
+        }
+        assertEquals(0, processor.getLatencyFrames());
+    }
+
+    @Test
+    @DisplayName("Stereo phase inversion cannot erase transient detection or linked gain reduction")
+    void antiphaseStereoKeepsTransientDetectionAndImage()
+    {
+        float[] mono = clicks(6.0, 0.5, 0.2, 3, 7);
+        float[] stereo = new float[mono.length * 2];
+        for (int frame = 0; frame < mono.length; frame++)
+        {
+            stereo[frame * 2] = mono[frame];
+            stereo[frame * 2 + 1] = -mono[frame];
+        }
+        TrackAnalysis analysis = new TrackAnalysis();
+        analysis.analyze(stereo, 2, SR);
+        assertTrue(analysis.getOnsetCount() >= 8, "Antiphase must not cancel the onset detector");
+        BeatCompProcessor processor = new BeatCompProcessor();
+        processor.setTrackAnalysis(analysis);
+        processor.setTargetDb(-1.0);
+        processor.setEnabled(true);
+        processor.prepare(SR, mono.length);
+        processor.analyze(stereo, 2);
+        float[] output = processor.process(stereo.clone(), 2);
+        boolean reduced = false;
+        for (int frame = 0; frame < mono.length; frame++)
+        {
+            assertEquals(output[frame * 2], -output[frame * 2 + 1], 0.0f);
+            if (Math.abs(stereo[frame * 2]) > 1e-4f && Math.abs(output[frame * 2]) < 0.99f * Math.abs(stereo[frame * 2])) reduced = true;
+        }
+        assertTrue(reduced, "Loud antiphase transients must receive linked attenuation");
+    }
+
+    @Test
+    @DisplayName("The measured release time follows the selected note length")
+    void renderedReleaseMatchesTempoAndRemainsMonotonic()
+    {
+        float[] input = java.util.Arrays.copyOf(clicks(4.0, 0.5, 0.2, 3, 7), 7 * SR);
+        TrackAnalysis analysis = new TrackAnalysis();
+        analysis.analyze(input, 1, SR);
+        analysis.setManualBpm(120.0);
+        for (var note : new BeatCompProcessor.NoteValue[] { BeatCompProcessor.NoteValue.EIGHTH, BeatCompProcessor.NoteValue.QUARTER })
+        {
+            BeatCompProcessor processor = new BeatCompProcessor();
+            processor.setTrackAnalysis(analysis);
+            processor.setNote(note);
+            processor.setTargetDb(-1.0);
+            processor.setEnabled(true);
+            processor.prepare(SR, input.length);
+            processor.analyze(input, 1);
+            float[] gains = gainEnvelope(processor, input.length);
+            int releaseStart = (int)(3.7 * SR);
+            for (int frame = releaseStart; frame < (int)(4.1 * SR); frame++)
+                if (gains[frame] <= gains[releaseStart]) releaseStart = frame;
+            assertTrue(gains[releaseStart] < 0.95f);
+            double recovered = 1.0 - (1.0 - gains[releaseStart]) / Math.E;
+            int crossing = releaseStart;
+            while (crossing < gains.length && gains[crossing] < recovered) crossing++;
+            assertTrue(crossing < gains.length, "Release did not recover");
+            assertEquals(note.beats * 0.5, (crossing - releaseStart) / (double)SR, 0.002);
+            for (int frame = releaseStart + 1; frame < gains.length; frame++)
+                assertTrue(gains[frame] >= gains[frame - 1], "Unprompted gain dip during release");
+        }
+    }
 }

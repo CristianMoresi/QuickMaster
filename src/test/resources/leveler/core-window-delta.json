@@ -1,0 +1,232 @@
+{
+  "id": "QM-M004-ADR013-WINDOW-001",
+  "status": "PROPOSED",
+  "intent_ref": 374,
+  "implementation_accepted": false,
+  "owner": "com/quickmaster/processing/dynamics/leveler/LoudnessCore",
+  "classAccess": 49,
+  "superclass": "java/lang/Object",
+  "interfaces": [],
+  "additionalFieldsAllowed": false,
+  "fieldOrderIsExact": true,
+  "constantValueForAllFields": {
+    "attribute": "absent"
+  },
+  "fields": [
+    {
+      "name": "sampleRateHz",
+      "descriptor": "I",
+      "access": 18,
+      "type": "int",
+      "modifiers": "private final"
+    },
+    {
+      "name": "layout",
+      "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ChannelLayout;",
+      "access": 18,
+      "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+      "modifiers": "private final"
+    },
+    {
+      "name": "momentaryWindowFrames",
+      "descriptor": "I",
+      "access": 18,
+      "type": "int",
+      "modifiers": "private final"
+    },
+    {
+      "name": "shortTermWindowFrames",
+      "descriptor": "I",
+      "access": 18,
+      "type": "int",
+      "modifiers": "private final"
+    },
+    {
+      "name": "coefficients",
+      "descriptor": "[D",
+      "access": 18,
+      "type": "double[]",
+      "modifiers": "private final"
+    },
+    {
+      "name": "shelfZ1",
+      "descriptor": "[D",
+      "access": 18,
+      "type": "double[]",
+      "modifiers": "private final"
+    },
+    {
+      "name": "shelfZ2",
+      "descriptor": "[D",
+      "access": 18,
+      "type": "double[]",
+      "modifiers": "private final"
+    },
+    {
+      "name": "highPassZ1",
+      "descriptor": "[D",
+      "access": 18,
+      "type": "double[]",
+      "modifiers": "private final"
+    },
+    {
+      "name": "highPassZ2",
+      "descriptor": "[D",
+      "access": 18,
+      "type": "double[]",
+      "modifiers": "private final"
+    },
+    {
+      "name": "weightedPowerRing",
+      "descriptor": "[D",
+      "access": 18,
+      "type": "double[]",
+      "modifiers": "private final"
+    },
+    {
+      "name": "weightedPowerTree",
+      "descriptor": "[D",
+      "access": 18,
+      "type": "double[]",
+      "modifiers": "private final"
+    },
+    {
+      "name": "ringCursor",
+      "descriptor": "I",
+      "access": 2,
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "name": "framesSeen",
+      "descriptor": "J",
+      "access": 2,
+      "type": "long",
+      "modifiers": "private"
+    },
+    {
+      "name": "momentarySum",
+      "descriptor": "D",
+      "access": 2,
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "name": "shortTermSum",
+      "descriptor": "D",
+      "access": 2,
+      "type": "double",
+      "modifiers": "private"
+    }
+  ],
+  "arrayCaps": {
+    "coefficients": 10,
+    "shelfZ1": "layout.channels()",
+    "shelfZ2": "layout.channels()",
+    "highPassZ1": "layout.channels()",
+    "highPassZ2": "layout.channels()",
+    "weightedPowerRing": "max(1,round(3*sampleRateHz))",
+    "weightedPowerTree": "max(1,round(3*sampleRateHz))"
+  },
+  "mutableException": "only four listed scalar fields and elements of seven owned primitive arrays; never retained; no input/callback/stream fields; ADR013 current-leaf positive-addition tree with read-only getters",
+  "arrayIdentity": {
+    "count": 7,
+    "nonNull": true,
+    "pairwiseDistinct": true,
+    "distinctAcrossMeasurements": true,
+    "borrowedOrExposed": false,
+    "reservedTreeIndex": 0,
+    "reservedRawBits": "0000000000000000",
+    "ringLeaves": "node N+i maps only to ring[i], 0<=i<N",
+    "internalNodes": "1<=node<N; children 2*node and 2*node+1",
+    "nodeBounds": "1<=node<2*N; 2*N computed in long before checked conversion"
+  },
+  "privateStaticHelpers": [
+    {
+      "name": "nodePower",
+      "descriptor": "([D[DI)D",
+      "access": 10
+    },
+    {
+      "name": "rebuildTree",
+      "descriptor": "([D[DI)V",
+      "access": 10
+    },
+    {
+      "name": "treeRange",
+      "descriptor": "([D[DII)D",
+      "access": 10
+    },
+    {
+      "name": "treeWindow",
+      "descriptor": "([D[DII)D",
+      "access": 10
+    }
+  ],
+  "helperPolicy": "Only these four new helpers on the same owner, no new helper owner or JDK tuple. Existing requirePower/lufs/coefficients unchanged; obsolete sumWindow may be removed, never called for production readout. Helpers have complete bounds/identity checks before access; nodePower checks returned value; each addition checks its result.",
+  "publicApiDelta": [],
+  "jdkCallsDelta": [],
+  "algorithm": {
+    "leafWrite": "overwrite current ring cursor, never subtract previous power",
+    "update": "ancestor left+right bottom-up until node==0, at most ceil(log2(N))",
+    "range": "l=N+a,r=N+b,prefix=+0,suffix=+0; odd l: prefix+=node(l++); odd r: suffix=node(--r)+suffix; l/=2;r/=2; return prefix+suffix",
+    "window": "start=end-length; start>=0: range(start,end); otherwise range(start+N,N)+range(0,end)",
+    "partialLength": "min(framesSeen,W)",
+    "readout": "reject until framesSeen>=W, then validated cachedSum/W with no writes",
+    "reset": "new instance only",
+    "eofPaddingFrames": 0,
+    "allocationPerFrame": 0,
+    "workPerFrame": "O(C+log(N))",
+    "getterWork": "O(1)"
+  },
+  "preallocation": {
+    "arithmetic": "long; sr positive int, layout one of four existing constants; N=3L*sr; Wm=max(1,round(.4d*sr)); 1<=Wm<=N and 2N-1<=Integer.MAX_VALUE before checked int conversion",
+    "coreStrictBytes": "16L*N+1024L < 268435456L",
+    "analyzerStrictBytes": "16L*N+42L*Q+1024L < 268435456L; Q=ceil(F/H100); extent checked before all arrays",
+    "maxAbstractN": 16777151,
+    "maxIntSampleRateThatFitsCore": 5592383,
+    "failure": "existing budget rejection, no clamp; Analyzer returns existing failure/null route",
+    "extraPayloadBytesByRate": {
+      "44100": 1058400,
+      "48000": 1152000,
+      "96000": 2304000
+    }
+  },
+  "numericalOracle": {
+    "currentRingOnly": true,
+    "unitRoundoff": "2^-53",
+    "height": "ceil(log2(N))",
+    "k": "3*h+4",
+    "normalRelativeBound": "gamma(k)=k*u/(1-k*u)",
+    "absoluteSubnormalBound": "(4*N+8*h+16)*2^-1074",
+    "expected": "exact sum of actual binary64 ring leaves, exact division by full W",
+    "zero": "exact zero mean requires raw +0",
+    "secondaryFlatLufsTolerance": 1e-8,
+    "dspFloorOrEpsilonAllowed": false,
+    "officialToleranceChange": false
+  },
+  "unchanged": [
+    "four histories and K coefficients",
+    "ChannelLayout weights and input validation including LFE",
+    "all public methods",
+    "frames/source clock/EOF/reset",
+    "Integrated and regional gates",
+    "cancellation <=4096 and current adapter1024",
+    "runtime-profile and required-keys all94",
+    "retention formulas/roots/aliases/MIN/MAX",
+    "memory256/64/128 and p95.5",
+    "ADR012 fields/enums/roles/JDK tuples"
+  ],
+  "schemaComposition": {
+    "base011Selector": "classes[name=com.quickmaster.processing.dynamics.leveler.LoudnessCore]",
+    "replaceOnly": [
+      "fields",
+      "arrayCaps",
+      "mutableException"
+    ],
+    "candidate364Selector": "classes[owner=com/quickmaster/processing/dynamics/leveler/LoudnessCore].fields",
+    "candidateMutation": "insert weightedPowerTree after weightedPowerRing, exact descriptor [D/access18/ConstantValue absent; all other candidate bytes semantic-identical",
+    "metadataDelta": "none; ADR014 separate",
+    "globalFrozenSchemaClaim": false
+  }
+}

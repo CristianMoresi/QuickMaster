@@ -10,9 +10,10 @@ import com.dspark.core.DspMath;
  * spectral-flux detection ({@link TrackAnalysis}); each onset louder than the
  * median onset level is turned down toward it, by up to the
  * <b>Gain Reduction Target</b>. The attack is instantaneous (look-ahead) and the
- * release is locked to one musical note value ({@link NoteValue}) of the track's
- * tempo, so the gain recovers by the next beat.
+ * release time constant is locked to one musical note value ({@link NoteValue})
+ * of the track's tempo.
  */
+@SuppressWarnings("deprecation")
 public final class BeatCompProcessor extends AnalysisDynamicsProcessor
 {
     /** Musical note values for the tempo-synced release. */
@@ -58,7 +59,18 @@ public final class BeatCompProcessor extends AnalysisDynamicsProcessor
 
     public void setTargetDb(double db)
     {
+        if (!Double.isFinite(db)) throw new IllegalArgumentException("Beat reduction must be finite.");
         this.targetDb = DspMath.clamp(db, MIN_TARGET_DB, MAX_TARGET_DB);
+    }
+
+    @Override
+    protected float minimumLegacyGain()
+    {
+        double exact = DspMath.decibelsToGain(targetDb);
+        float rounded = (float) exact;
+        // Round toward unity: the selected maximum must never be exceeded by
+        // one float ULP, including while a stronger old analysis is published.
+        return rounded < exact ? Math.nextUp(rounded) : rounded;
     }
 
     public NoteValue getNote() { return note; }
@@ -66,7 +78,10 @@ public final class BeatCompProcessor extends AnalysisDynamicsProcessor
     public void setNote(NoteValue n) { this.note = (n == null) ? NoteValue.QUARTER : n; }
 
     /** Current tempo in BPM, or 0 if unknown. */
-    public double getBpm() { return (trackAnalysis != null) ? trackAnalysis.getBpm() : 0.0; }
+    public double getBpm()
+    {
+        return (trackAnalysis != null && trackAnalysis.isTempoReliable()) ? trackAnalysis.getBpm() : 0.0;
+    }
 
     /** Largest amount any beat sits above the median beat level, in dB. */
     public double getMaxExcessDb() { return maxExcessDb; }

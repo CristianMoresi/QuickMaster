@@ -7,8 +7,9 @@ import com.dspark.analysis.TempoEstimator;
  * Per-track musical analysis shared by the tempo- and transient-aware
  * dynamics (Beat Comp and Punch).
  * <p>
- * Wraps DSPark's {@link OnsetDetector} and {@link TempoEstimator} to extract,
- * <b>once per loaded track</b>, the global tempo (BPM) and a map of onsets
+ * Uses DSPark's FFT/onset and {@link TempoEstimator} primitives with pooled
+ * stereo spectral energy and a repeated onset-interval check to extract, <b>once per loaded track</b>, a reliable
+ * global tempo (BPM) and a map of onsets
  * (transient positions, durations and strengths). It is recomputed only when
  * the source timeline changes - a new file, or a crop/trim/delete - because
  * those are the only edits that move transients or change the tempo grid.
@@ -43,22 +44,69 @@ public final class TrackAnalysis
      */
     public void analyze(float[] interleaved, int channels, double sampleRate)
     {
-        OnsetDetector onsets = new OnsetDetector();
-        onsets.analyze(interleaved, channels, sampleRate);
-
+        float[] novelty;
+        double frameRate;
+        if (!validInput(interleaved, channels, sampleRate))
+        {
+            onsetTimesSec = new double[0];
+            onsetDurationsSec = new double[0];
+            onsetStrengths = new float[0];
+            detectedBpm = confidence = 0.0;
+            if (!manualBpm) bpm = 0.0;
+            return;
+        }
+        if (channels == 2)
+        {
+            StereoOnsetDetector.Result onsets = StereoOnsetDetector.analyze(interleaved, sampleRate);
+            onsetTimesSec = onsets.times();
+            onsetDurationsSec = onsets.durations();
+            onsetStrengths = onsets.strengths();
+            novelty = onsets.novelty();
+            frameRate = onsets.frameRate();
+        }
+        else
+        {
+            OnsetDetector onsets = new OnsetDetector();
+            onsets.analyze(interleaved, channels, sampleRate);
+            onsetTimesSec = onsets.getOnsetTimesSec();
+            onsetDurationsSec = onsets.getOnsetDurationsSec();
+            onsetStrengths = onsets.getOnsetStrengths();
+            novelty = onsets.getOdf();
+            frameRate = onsets.getFrameRate();
+        }
         TempoEstimator tempo = new TempoEstimator();
-        tempo.estimate(onsets);
+        tempo.estimate(novelty, frameRate);
 
-        this.onsetTimesSec = onsets.getOnsetTimesSec();
-        this.onsetDurationsSec = onsets.getOnsetDurationsSec();
-        this.onsetStrengths = onsets.getOnsetStrengths();
-
-        this.detectedBpm = tempo.getBpm();
+        OnsetTempoEstimator.Estimate onsetTempo =
+                OnsetTempoEstimator.estimate(onsetTimesSec, onsetStrengths);
+        if (onsetTempo.confidence() >= RELIABLE_CONFIDENCE)
+        {
+            this.detectedBpm = onsetTempo.bpm();
+            this.confidence = onsetTempo.confidence();
+        }
+        else if (!onsetTempo.conflictingSections()
+                && tempo.getConfidence() >= 0.5 && Double.isFinite(tempo.getBpm()))
+        {
+            this.detectedBpm = tempo.getBpm();
+            this.confidence = tempo.getConfidence();
+        }
+        else
+        {
+            this.detectedBpm = 0.0;
+            this.confidence = 0.0;
+        }
         if (!manualBpm)
         {
             this.bpm = detectedBpm;
         }
-        this.confidence = tempo.getConfidence();
+    }
+
+    private static boolean validInput(float[] samples, int channels, double rate)
+    {
+        if (samples == null || (channels != 1 && channels != 2) || samples.length % channels != 0
+                || !Double.isFinite(rate) || rate <= 0.0) return false;
+        for (float sample : samples) if (!Float.isFinite(sample)) return false;
+        return true;
     }
 
     /** Detected (or manually set) tempo in BPM; {@code 0} if unknown. */
@@ -76,7 +124,7 @@ public final class TrackAnalysis
     /** Overrides the tempo with a user-supplied BPM (sticks across re-analysis). */
     public void setManualBpm(double bpm)
     {
-        if (bpm > 0)
+        if (Double.isFinite(bpm) && bpm > 0)
         {
             this.bpm = bpm;
             this.manualBpm = true;
@@ -87,7 +135,7 @@ public final class TrackAnalysis
     public void clearManualBpm()
     {
         this.manualBpm = false;
-        if (detectedBpm > 0) this.bpm = detectedBpm;
+        this.bpm = detectedBpm;
     }
 
     /** Whether the current BPM came from the user rather than detection. */

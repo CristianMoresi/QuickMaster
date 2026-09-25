@@ -1,0 +1,604 @@
+{
+  "annex2": [
+    [
+      0.001708984375,
+      0.010986328125,
+      -0.0196533203125,
+      0.033203125,
+      -0.0594482421875,
+      0.1373291015625,
+      0.97216796875,
+      -0.102294921875,
+      0.047607421875,
+      -0.026611328125,
+      0.014892578125,
+      -0.00830078125
+    ],
+    [
+      -0.0291748046875,
+      0.029296875,
+      -0.0517578125,
+      0.089111328125,
+      -0.16650390625,
+      0.465087890625,
+      0.77978515625,
+      -0.2003173828125,
+      0.1015625,
+      -0.0582275390625,
+      0.0330810546875,
+      -0.0189208984375
+    ],
+    [
+      -0.0189208984375,
+      0.0330810546875,
+      -0.0582275390625,
+      0.1015625,
+      -0.2003173828125,
+      0.77978515625,
+      0.465087890625,
+      -0.16650390625,
+      0.089111328125,
+      -0.0517578125,
+      0.029296875,
+      -0.0291748046875
+    ],
+    [
+      -0.00830078125,
+      0.014892578125,
+      -0.026611328125,
+      0.047607421875,
+      -0.102294921875,
+      0.97216796875,
+      0.1373291015625,
+      -0.0594482421875,
+      0.033203125,
+      -0.0196533203125,
+      0.010986328125,
+      0.001708984375
+    ]
+  ],
+  "approvedGlobalSchema": false,
+  "baseSha256": "441250987cdeb73fdfa2e78ebb157ea34f786df283d174fdd9ea83c593e2b508",
+  "caps": {
+    "B": 2048,
+    "DConstant": 64,
+    "DMultiplier": 8,
+    "E": 94,
+    "J": 2,
+    "L": 32,
+    "S": 64,
+    "T": 258,
+    "d": 22
+  },
+  "classes": [
+    {
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 18,
+          "descriptor": "[S",
+          "name": "shortValues"
+        },
+        {
+          "access": 18,
+          "descriptor": "[S",
+          "name": "longValues"
+        },
+        {
+          "access": 18,
+          "descriptor": "[B",
+          "name": "shortFlags"
+        },
+        {
+          "access": 18,
+          "descriptor": "[B",
+          "name": "longFlags"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 18,
+          "descriptor": "[B",
+          "name": "pcmFingerprintSha256"
+        },
+        {
+          "access": 18,
+          "descriptor": "Ljava/lang/String;",
+          "name": "algorithmId"
+        },
+        {
+          "access": 18,
+          "descriptor": "Ljava/lang/String;",
+          "name": "profileId"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;",
+          "name": "loudness"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;",
+          "name": "features"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;",
+          "name": "layout"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "descriptors"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "protections"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;",
+          "name": "similarity"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/GroupingResult;",
+          "name": "grouping"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;",
+          "name": "referencePlan"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;",
+          "name": "comparison"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisCache",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 25,
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_String",
+            "value": "QM-LEVELER-S001-COMPARISON-V2"
+          },
+          "descriptor": "Ljava/lang/String;",
+          "name": "ALGORITHM_ID"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/leveler/LevelerAnalysisEngine",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 68,
+          "descriptor": "Z",
+          "name": "enabled"
+        },
+        {
+          "access": 68,
+          "descriptor": "[F",
+          "name": "gainEnv"
+        },
+        {
+          "access": 4,
+          "descriptor": "D",
+          "name": "envRate"
+        },
+        {
+          "access": 4,
+          "descriptor": "I",
+          "name": "envFrames"
+        },
+        {
+          "access": 66,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/PublishedGain;",
+          "name": "published"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "publicationSequence"
+        },
+        {
+          "access": 2,
+          "descriptor": "I",
+          "name": "preparedRateHz"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "preparedFrameCursor"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/DenseGainCursor;",
+          "name": "denseCursor"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/SparseGainCursor;",
+          "name": "sparseCursor"
+        },
+        {
+          "access": 66,
+          "descriptor": "D",
+          "name": "currentGrDb"
+        },
+        {
+          "access": 66,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;",
+          "name": "shadowAnalysis"
+        },
+        {
+          "access": 66,
+          "descriptor": "D",
+          "name": "leveling"
+        },
+        {
+          "access": 66,
+          "descriptor": "D",
+          "name": "speed"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/LevelerProcessor",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/GainSchedule;",
+          "name": "schedule"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "sourceRateHz"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "sourceChannels"
+        },
+        {
+          "access": 18,
+          "descriptor": "J",
+          "name": "analysisGeneration"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/AnalysisStatus;",
+          "name": "status"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/PublishedGain",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "generation"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "nextPreparedFrame"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/DenseGainCursor",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "generation"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "nextPreparedFrame"
+        },
+        {
+          "access": 2,
+          "descriptor": "I",
+          "name": "pieceIndex"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/SparseGainCursor",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "sourceRateHz"
+        },
+        {
+          "access": 18,
+          "descriptor": "J",
+          "name": "sourceFrames"
+        },
+        {
+          "access": 18,
+          "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/GainPiece;",
+          "name": "pieces"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/SparseGainSchedule",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "startFrame"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "endFrame"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "startDb"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "endDb"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/GainPieceShape;",
+          "name": "shape"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/GainPiece",
+      "ownership": "owned_snapshot"
+    },
+    {
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "previousActivityRatio"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "nextActivityRatio"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "entryLoudness12"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "exitLoudness12"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "leftNoveltyMad"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "rightNoveltyMad"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "loudnessAvailabilityMask"
+        }
+      ],
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector",
+      "ownership": "owned_snapshot"
+    }
+  ],
+  "comparisonAtoms": {
+    "algorithmId": "QM-LEVELER-S001-COMPARISON-V2",
+    "historicalProfileId": "QM-LEVELER-V1",
+    "profileId": "QM-LEVELER-V2"
+  },
+  "comparisonParentSha256": "2795e24224149d8a4712326655459ce139307b69fddbe0acdd1a5be5ab84d06d",
+  "comparisonParentStaticSha256": "93a9a36c0fa09fc3ef0e0935b012817a13471102866a5aacc3b4fbe4098f31c5",
+  "comparisonStrides": {
+    "longFlags": 1,
+    "longValues": 36,
+    "shortFlags": 1,
+    "shortValues": 52
+  },
+  "contextSuccessor": {
+    "mask": {
+      "access": 18,
+      "descriptor": "I",
+      "field": "loudnessAvailabilityMask",
+      "maximum": 7,
+      "minimum": 0,
+      "numericDimension": 6,
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector"
+    },
+    "parentRetentionSha256": "dbd591636e5caca299371ddf26f816066b35e50dbb2c681510b23e6d44ea9968",
+    "parentStaticSha256": "950c093f6e1dd5b0d03852211b3af28b01e89055956f04d0075e40769fa0ba2a",
+    "schemaId": "QM-S001-CONTEXT-CLOSURE-1",
+    "sourceHashes": {
+      "com/quickmaster/processing/dynamics/leveler/BodyContextGate": "35c905ade86cbf75169397f8bfb1059dc5c1ad772ef4425d5554d0df2b6ca1c4",
+      "com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder": "e3f1757fbb2e5fc3f35be7b611c2ba3c1e543c6b1d95f6ad0188c06734b1a131",
+      "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector": "99ed12e04529543cea32747a3b02924800216099e2e382f38a37ddfe71062ed5"
+    }
+  },
+  "dimensions": {
+    "A": "active owner count = 1",
+    "CB": "primitive comparison payload = 105*CS+73*CL bytes, excluding measured headers",
+    "CL": "ceil(8*F/Fs) long comparison observations",
+    "CP": "comparison timeline count = 1 current; not structural S",
+    "CS": "ceil(40*F/Fs) short comparison observations",
+    "E0": "first set evidence count",
+    "E1": "second set evidence count",
+    "K": "sum group membership plus 2R <=S",
+    "T": "actual sparse piece count <=258",
+    "Z": "sparse schedule count = 0 or 1"
+  },
+  "enums": {
+    "com/quickmaster/processing/dynamics/AnalysisStatus": [
+      "UNIT",
+      "LEGACY_READY",
+      "INVALID_INPUT",
+      "CLEARED",
+      "STRUCTURAL_READY",
+      "STANDARD_VALIDATION_FAILED",
+      "INSUFFICIENT_ANALYSIS",
+      "PEAK_UNSAFE",
+      "CANCELLED",
+      "INFEASIBLE_INPUT_BASELINE"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/GainPieceShape": [
+      "HOLD",
+      "SMOOTHSTEP"
+    ]
+  },
+  "formulaDelta": {
+    "arrays": {
+      "CP": 4,
+      "Z": 1
+    },
+    "edges": {
+      "A": 7,
+      "CP": 6,
+      "T": 2,
+      "Z": 1
+    },
+    "identities": {
+      "A": 4,
+      "CP": 5,
+      "T": 1,
+      "Z": 2
+    }
+  },
+  "normativeSchemaId": "QM-S001-ACTIVE-RETENTION-3-CONTEXT",
+  "parentSha256": "dbd591636e5caca299371ddf26f816066b35e50dbb2c681510b23e6d44ea9968",
+  "parentStaticSha256": "950c093f6e1dd5b0d03852211b3af28b01e89055956f04d0075e40769fa0ba2a",
+  "retentionRows": [
+    {
+      "array": false,
+      "id": "comparisonTimeline",
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline",
+      "quantity": "CP"
+    },
+    {
+      "array": true,
+      "id": "comparisonShortValues",
+      "owner": "[S",
+      "quantity": "CP"
+    },
+    {
+      "array": true,
+      "id": "comparisonLongValues",
+      "owner": "[S",
+      "quantity": "CP"
+    },
+    {
+      "array": true,
+      "id": "comparisonShortFlags",
+      "owner": "[B",
+      "quantity": "CP"
+    },
+    {
+      "array": true,
+      "id": "comparisonLongFlags",
+      "owner": "[B",
+      "quantity": "CP"
+    },
+    {
+      "array": false,
+      "id": "activeOwner",
+      "owner": "com/quickmaster/processing/dynamics/LevelerProcessor",
+      "quantity": "A"
+    },
+    {
+      "array": false,
+      "id": "publication",
+      "owner": "com/quickmaster/processing/dynamics/PublishedGain",
+      "quantity": "A"
+    },
+    {
+      "array": false,
+      "id": "denseCursor",
+      "owner": "com/quickmaster/processing/dynamics/DenseGainCursor",
+      "quantity": "A"
+    },
+    {
+      "array": false,
+      "id": "sparseCursor",
+      "owner": "com/quickmaster/processing/dynamics/SparseGainCursor",
+      "quantity": "A"
+    },
+    {
+      "array": false,
+      "id": "sparseSchedule",
+      "owner": "com/quickmaster/processing/dynamics/SparseGainSchedule",
+      "quantity": "Z"
+    },
+    {
+      "array": true,
+      "id": "gainPieces",
+      "owner": "[Lcom/quickmaster/processing/dynamics/leveler/model/GainPiece;",
+      "quantity": "Z"
+    },
+    {
+      "array": false,
+      "id": "gainPiece",
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/GainPiece",
+      "quantity": "T"
+    }
+  ],
+  "roots": [
+    "owner.denseCursor",
+    "owner.gainEnv",
+    "owner.published",
+    "owner.sparseCursor",
+    "owner.shadowAnalysis"
+  ],
+  "schemaVersion": "1",
+  "scope": "Explicit S001 successor for active owner and inherited publication. Graph structure is not conformance or resource acceptance.",
+  "sharedStaticRoots": [
+    "com/quickmaster/processing/dynamics/DenseGainSchedule.UNIT",
+    "com/quickmaster/processing/dynamics/leveler/ConformanceRequirement.OFFICIAL_LOUDNESS_V1",
+    "com/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile.V1",
+    "com/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile.V2",
+    "com/quickmaster/processing/dynamics/leveler/LoudnessStandard.BS1770_5",
+    "com/quickmaster/processing/dynamics/leveler/FiniteTruePeakStream.ANNEX2"
+  ]
+}

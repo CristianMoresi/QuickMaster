@@ -31,6 +31,8 @@ import com.quickmaster.processing.analysis.LiveSpectrum;
 import com.quickmaster.processing.analysis.OutputAnalysis;
 import com.quickmaster.processing.analysis.SpectrumAnalysis;
 import com.quickmaster.processing.analysis.TrackAnalysis;
+import com.quickmaster.ui.waveform.WaveformPeakIndex;
+import com.quickmaster.ui.waveform.WaveformViewport;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
@@ -93,6 +95,7 @@ import java.util.concurrent.CancellationException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
@@ -369,6 +372,10 @@ public class MainController
     private SpectrumAnalysis spectrumAnalysis = new SpectrumAnalysis();
     /** Rejects background output analyses that finish after a newer request. */
     private long outputAnalysisGeneration = 0L;
+    private long levelerStartedGeneration = -1L;
+    private long levelerReadyGeneration = -1L;
+    private long levelerFailedGeneration = -1L;
+    private long levelerCancelledGeneration = -1L;
     private final LiveSpectrum liveSpectrum = new LiveSpectrum();
 
     private final ProcessingPipeline pipeline = buildPipeline();
@@ -377,6 +384,8 @@ public class MainController
 
     private AudioFile loadedFile;
     private float[] waveformDownsampled;
+    private WaveformPeakIndex waveformPeakIndex;
+    private WaveformViewport waveformViewport = WaveformViewport.empty();
 
     /**
      * One undo / redo entry: a destructive sample edit (crop / delete, with
@@ -1239,11 +1248,13 @@ public class MainController
     private void onReset()
     {
         if (loadedFile == null) return;
+        invalidateOutputAnalysis();
         loadedFile.reset();
         clearSelectionState();
         clearHistory();
         invalidateAllSlotRenders();
         player.prepare(loadedFile);
+        resetWaveformViewport();
         downsampleForDisplay();
         drawWaveform();
         measureInputPeak();
@@ -1548,6 +1559,7 @@ public class MainController
         boolean show = analyzeJobs > 0;
         if (analyzeLabel != null) { analyzeLabel.setVisible(show); analyzeLabel.setManaged(show); }
         if (analyzeProgress != null) { analyzeProgress.setVisible(show); analyzeProgress.setManaged(show); }
+        updateLevelerDiagnostic();
     }
 
     /** Encoding settings chosen in the export dialog. */
@@ -1766,12 +1778,11 @@ public class MainController
         }
 
         // Grab a fade handle if the press lands on one (top strip of the wave).
-        double w = waveformCanvas.getWidth();
         double dur = loadedFile.getDuration();
         if (fade.isEnabled() && dur > 0.0 && e.getY() <= 22.0)
         {
-            double inX  = (fade.getFadeInSec() / dur) * w;
-            double outX = ((dur - fade.getFadeOutSec()) / dur) * w;
+            double inX  = waveformXAtTime(fade.getFadeInSec());
+            double outX = waveformXAtTime(dur - fade.getFadeOutSec());
             if (Math.abs(e.getX() - inX) <= 14.0)
             {
                 if (e.getClickCount() == 2) setFadeIn(0.0); else fadeDragMode = 1;
@@ -1800,9 +1811,8 @@ public class MainController
             drawWaveform();
             return;
         }
-        double w = waveformCanvas.getWidth();
         double dur = loadedFile.getDuration();
-        double xSec = (w > 0.0) ? Math.max(0.0, Math.min(dur, (e.getX() / w) * dur)) : 0.0;
+        double xSec = secAtX(e.getX());
         if (fadeDragMode == 1)      { setFadeIn(xSec);            return; }
         if (fadeDragMode == 2)      { setFadeOut(dur - xSec);     return; }
         if (scrubbing)              seekFromMouseX(e.getX());
@@ -1829,9 +1839,15 @@ public class MainController
     private double secAtX(double x)
     {
         double w = waveformCanvas.getWidth();
-        if (w <= 0.0 || loadedFile == null) return 0.0;
-        double dur = loadedFile.getDuration();
-        return Math.max(0.0, Math.min(dur, (x / w) * dur));
+        if (loadedFile == null) return 0.0;
+        return waveformViewport.timeAtX(x, w).orElse(0.0);
+    }
+
+    /** Maps absolute waveform time to X without clamping offscreen positions. */
+    private double waveformXAtTime(double timeSec)
+    {
+        return waveformViewport.xAtTime(timeSec, waveformCanvas.getWidth())
+                .orElse(Double.NaN);
     }
 
     private void setFadeIn(double sec)
@@ -1852,11 +1868,18 @@ public class MainController
     private void onWaveformScroll(ScrollEvent e)
     {
         if (loadedFile == null) return;
-        double w = waveformCanvas.getWidth();
         double dur = loadedFile.getDuration();
-        if (dur <= 0.0 || w <= 0.0) return;
-        double inX  = (fade.getFadeInSec() / dur) * w;
-        double outX = ((dur - fade.getFadeOutSec()) / dur) * w;
+        if (dur <= 0.0 || waveformCanvas.getWidth() <= 0.0) return;
+        if (e.isShortcutDown())
+        {
+            waveformViewport = waveformViewport.zoomAt(e.getX(), waveformCanvas.getWidth(), e.getDeltaY());
+            downsampleForDisplay();
+            drawWaveform();
+            e.consume();
+            return;
+        }
+        double inX  = waveformXAtTime(fade.getFadeInSec());
+        double outX = waveformXAtTime(dur - fade.getFadeOutSec());
         boolean nearHandle = e.getY() <= 24.0
                 && (Math.abs(e.getX() - inX) <= 18.0 || Math.abs(e.getX() - outX) <= 18.0);
         if (fadeDragMode != 0 || nearHandle)
@@ -1876,13 +1899,8 @@ public class MainController
      */
     private void seekFromMouseX(double x)
     {
-        double w = waveformCanvas.getWidth();
-        if (w <= 0) return;
-        double frac = x / w;
-        if (frac < 0) frac = 0;
-        if (frac > 1) frac = 1;
-        double sec = frac * loadedFile.getDuration();
-        player.seekTo(sec);
+        OptionalDouble sec = waveformViewport.timeAtX(x, waveformCanvas.getWidth());
+        sec.ifPresent(player::seekTo);
     }
 
     /* =========================================================
@@ -1899,6 +1917,7 @@ public class MainController
      */
     private void onAudioReady(File chosen)
     {
+        invalidateOutputAnalysis();
         AppLogger.info("Loaded: " + chosen.getAbsolutePath()
                 + " (" + loadedFile.getSampleRate() + " Hz, "
                 + loadedFile.getChannels() + " ch, "
@@ -1939,6 +1958,7 @@ public class MainController
         goEndButton.setDisable(false);
 
         player.prepare(loadedFile);
+        resetWaveformViewport();
         downsampleForDisplay();
         drawWaveform();
         updatePositionLabel();
@@ -2040,6 +2060,7 @@ public class MainController
     /** Re-prepares the player and redraws after the audio length changed. */
     private void afterTrim(String message)
     {
+        invalidateOutputAnalysis();
         clearSelectionState();
         invalidateAllSlotRenders();   // the timeline changed: cached A/B renders are stale
         // Clamp fades to the new (shorter) duration.
@@ -2048,6 +2069,7 @@ public class MainController
         if (fade.getFadeOutSec() > dur) fade.setFadeOutSec(dur);
         player.stop();
         player.prepare(loadedFile);
+        resetWaveformViewport();
         downsampleForDisplay();
         drawWaveform();
         measureInputPeak();
@@ -3696,6 +3718,7 @@ public class MainController
     private Knob peakTargetKnob, beatTargetKnob;
     /** Remaining parameter controls, referenced so presets / undo can restore them. */
     private Knob levelingKnob, levelerSpeedKnob, punchKnob;
+    private Label levelerDiagnosticLabel;
     private Knob satKnob, clipKnob;
     private ComboBox<Saturation.Algorithm> satAlgoCombo;
     private ComboBox<BeatCompProcessor.NoteValue> beatNoteCombo;
@@ -4019,19 +4042,76 @@ public class MainController
     {
         Knob lev = dynKnob("Leveling", LevelerProcessor.MIN_LEVELING, LevelerProcessor.MAX_LEVELING,
                 leveler.getLeveling(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
-                "How strongly to match the loudness of the song's sections (100% = no difference between parts).",
+                "Matches loudness only between confidently comparable sections. Intros, outros and breaks stay protected; confidence, headroom and correction limits still apply at 100%.",
                 leveler::setLeveling);
         Knob speed = dynKnob("Speed", LevelerProcessor.MIN_SPEED, LevelerProcessor.MAX_SPEED,
                 leveler.getSpeed(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
-                "How fast the leveler follows section changes (low = slow and gentle, high = agile)",
+                "Controls the speed of smooth section-level gain transitions (low = slower, high = faster). Protected passages remain unchanged.",
                 leveler::setSpeed);
         levelingKnob = lev;
         levelerSpeedKnob = speed;
         HBox knobs = new HBox(14, lev, speed);
         knobs.setAlignment(Pos.CENTER);
+        levelerDiagnosticLabel = new Label();
+        levelerDiagnosticLabel.getStyleClass().add("value-muted");
+        levelerDiagnosticLabel.setWrapText(true);
+        levelerDiagnosticLabel.setMaxWidth(270);
+        levelerDiagnosticLabel.setTooltip(new Tooltip(
+                "Ready means analysis completed, not necessarily nonzero correction. Only sufficiently different, confidently comparable sections receive gain changes."));
+        VBox controls = new VBox(7, knobs, levelerDiagnosticLabel);
+        controls.setAlignment(Pos.CENTER);
+        updateLevelerDiagnostic();
         return buildSquare(leveler, "Leveler",
-                "Reduces the volume difference between sections of the song so the master is consistent.",
-                "#54d98c", 12.0, knobs);
+                "Offline level matching between comparable sections, preserving intros, outros and breaks.",
+                "#54d98c", 12.0, controls);
+    }
+
+    /** Presentation only: readiness never promises a nonzero gain correction. */
+    private static String levelerDiagnosticText(String diagnostic, boolean hasAudio, boolean enabled, double amount)
+    {
+        if (!hasAudio) return "Load audio to analyze";
+        if (!enabled) return "Bypassed";
+        if (amount == 0) return "Leveling off (0%)";
+        if (diagnostic == null) return "Unchanged · analysis unavailable";
+        return switch (diagnostic)
+        {
+            case "STRUCTURAL_READY" -> "Ready · comparable sections only";
+            case "UNIT", "CLEARED" -> "Awaiting analysis";
+            case "INVALID_INPUT" -> "Unchanged · invalid audio";
+            case "INSUFFICIENT_ANALYSIS" -> "Unchanged · insufficient musical evidence";
+            case "STANDARD_VALIDATION_FAILED" -> "Unchanged · measurement validation failed";
+            case "PEAK_UNSAFE" -> "Unchanged · peak safety not verified";
+            case "CANCELLED" -> "Unchanged · analysis cancelled";
+            case "INFEASIBLE_INPUT_BASELINE" -> "Unchanged · input exceeds peak safety limit";
+            default -> "Unchanged · analysis unavailable";
+        };
+    }
+
+    private void updateLevelerDiagnostic()
+    {
+        if (levelerDiagnosticLabel == null) return;
+        String text = levelerDiagnosticForGeneration(leveler.getAnalysisDiagnostic(), loadedFile != null,
+                leveler.isEnabled(), leveler.getLeveling(), outputAnalysisGeneration,
+                levelerStartedGeneration, levelerReadyGeneration, levelerFailedGeneration, levelerCancelledGeneration);
+        if (!text.equals(levelerDiagnosticLabel.getText())) levelerDiagnosticLabel.setText(text);
+    }
+
+    private static String levelerDiagnosticForGeneration(String diagnostic, boolean hasAudio,
+            boolean enabled, double amount, long current, long started, long ready, long failed, long cancelled)
+    {
+        if (!hasAudio || !enabled || amount == 0)
+            return levelerDiagnosticText(diagnostic, hasAudio, enabled, amount);
+        if (failed == current) return "Analysis failed · previous result is stale";
+        if (cancelled == current) return "Analysis cancelled · previous result is stale";
+        if (ready != current) return started == current ? "Analyzing audio…" : "Awaiting analysis";
+        return levelerDiagnosticText(diagnostic, true, true, amount);
+    }
+
+    /** Invalidate both pending adoption and its displayed readiness immediately. */
+    private void invalidateOutputAnalysis()
+    {
+        outputAnalysisGeneration++;
+        updateLevelerDiagnostic();
     }
 
     private DynCard buildPunchCard()
@@ -4054,6 +4134,7 @@ public class MainController
         {
             c.proc.setEnabled(master && c.on.isSelected());
         }
+        updateLevelerDiagnostic();
     }
 
     private String dynamicsOrderText()
@@ -4100,10 +4181,17 @@ public class MainController
         }
         else
         {
-            String src = trackAnalysis.isManualBpm() ? "manual" : "auto";
+            String src = trackAnalysis.isManualBpm() ? "manual"
+                    : trackAnalysis.getConfidence() < 0.75 ? "auto?" : "auto";
             beatBpmLabel.setText(String.format(Locale.US, "%.0f BPM · %s · %.0f ms",
                     bpm, src, beatComp.getReleaseMs()));
         }
+        beatBpmLabel.setTooltip(new Tooltip(trackAnalysis.isManualBpm()
+                ? "User-supplied tempo."
+                : bpm <= 0.0 ? "No reliable single tempo. Beat Comp uses a 250 ms release; enter BPM to override."
+                : trackAnalysis.getConfidence() < 0.75
+                    ? "Uncertain tempo estimate; half/double-time interpretations may be possible. Turn off Auto to enter BPM."
+                    : "Estimated tempo. Turn off Auto to enter BPM."));
         if (beatBpmField != null && !beatBpmField.isFocused())
             beatBpmField.setText(bpm > 0 ? String.format(Locale.US, "%.0f", bpm) : "");
         if (bpmAuto != null && beatBpmField != null)
@@ -4113,6 +4201,7 @@ public class MainController
     /** Updates each card's -GR meter (called from the playback animator). */
     private void updateDynamicsMeters()
     {
+        updateLevelerDiagnostic();
         for (DynCard c : dynCards)
         {
             double gr = c.proc.getGainReductionDb();          // signed: - reduce, + boost
@@ -4364,8 +4453,12 @@ public class MainController
      */
     private void scheduleDynamicsRefresh()
     {
+        updateLevelerDiagnostic();
         if (applyingPreset) return;
         if (loadedFile == null) return;
+        // Invalidate in-flight work immediately, not only after the debounce.
+        // A worker built for the previous controls must not win this 220 ms window.
+        invalidateOutputAnalysis();
         invalidateActiveSlotRender();   // a live edit makes the active slot's render stale
         if (paramGestureBaseline == null)
         {
@@ -4442,6 +4535,7 @@ public class MainController
                 return OutputAnalysis.measure(render, ch, sr);
             }
         };
+        levelerStartedGeneration = generation;
         analyzing(true);
         task.setOnSucceeded(e ->
         {
@@ -4457,6 +4551,8 @@ public class MainController
             adoptLive(peakComp, s);
             adoptLive(beatComp, s);
             adoptLive(leveler, s);
+            levelerReadyGeneration = generation;
+            updateLevelerDiagnostic();
             adoptLive(punch, s);
             if (s.copies.get(softClip) instanceof SoftClipProcessor sc) softClip.adoptAnalysis(sc);
             if (s.copies.get(hardClip) instanceof HardClipProcessor hc) hardClip.adoptAnalysis(hc);
@@ -4499,7 +4595,21 @@ public class MainController
         {
             analyzing(false);
             if (generation == outputAnalysisGeneration)
+            {
+                levelerFailedGeneration = generation;
+                updateLevelerDiagnostic();
                 AppLogger.error("Post-processing output analysis failed.", task.getException());
+            }
+            if (onDone != null) onDone.run();
+        });
+        task.setOnCancelled(e ->
+        {
+            analyzing(false);
+            if (generation == outputAnalysisGeneration)
+            {
+                levelerCancelledGeneration = generation;
+                updateLevelerDiagnostic();
+            }
             if (onDone != null) onDone.run();
         });
         runTask(task);
@@ -4644,10 +4754,7 @@ public class MainController
         obeat.setTargetDb(beatComp.getTargetDb());
         obeat.setNote(beatComp.getNote());
         obeat.setEnabled(beatComp.isEnabled());
-        LevelerProcessor olev = new LevelerProcessor();
-        olev.setLeveling(leveler.getLeveling());
-        olev.setSpeed(leveler.getSpeed());
-        olev.setEnabled(leveler.isEnabled());
+        LevelerProcessor olev = leveler.forkForAnalysis(leveler.getLeveling(), leveler.getSpeed());
         PunchProcessor opunch = new PunchProcessor();
         opunch.setTrackAnalysis(analysis);
         opunch.setAmountDb(punch.getAmountDb());
@@ -5876,6 +5983,7 @@ public class MainController
         if (loadedFile == null) return;
         float[] src = loadedFile.getSamples();
         int channels = loadedFile.getChannels();
+        int sampleRate = loadedFile.getSampleRate();
         int width = (int) waveformCanvas.getWidth();
         if (width <= 0 || src.length == 0)
         {
@@ -5883,27 +5991,17 @@ public class MainController
             return;
         }
 
-        long totalFrames = src.length / channels;
-        long framesPerPixel = Math.max(1, totalFrames / width);
+        if (waveformPeakIndex == null) waveformPeakIndex = new WaveformPeakIndex(src, channels);
+        waveformDownsampled = waveformPeakIndex.columns(waveformViewport, sampleRate, width);
+    }
 
-        float[] out = new float[width];
-        for (int x = 0; x < width; x++)
-        {
-            long startFrame = (long) x * framesPerPixel;
-            long endFrame = Math.min(totalFrames, startFrame + framesPerPixel);
-            float max = 0.0f;
-            for (long f = startFrame; f < endFrame; f++)
-            {
-                for (int c = 0; c < channels; c++)
-                {
-                    float v = src[(int) (f * channels + c)];
-                    float abs = v >= 0 ? v : -v;
-                    if (abs > max) max = abs;
-                }
-            }
-            out[x] = max;
-        }
-        waveformDownsampled = out;
+    /** A new timeline invalidates the peak cache and returns to full view. */
+    private void resetWaveformViewport()
+    {
+        waveformPeakIndex = null;
+        waveformViewport = (loadedFile == null)
+                ? WaveformViewport.empty()
+                : WaveformViewport.fullView(loadedFile.getDuration());
     }
 
     /**
@@ -5947,38 +6045,44 @@ public class MainController
             double dur = loadedFile.getDuration();
             if (dur > 0.0)
             {
-                double inX  = (fade.getFadeInSec() / dur) * w;
-                double outX = ((dur - fade.getFadeOutSec()) / dur) * w;
+                double inX  = waveformXAtTime(fade.getFadeInSec());
+                double outX = waveformXAtTime(dur - fade.getFadeOutSec());
                 FadeProcessor.FadeType ft = fade.getFadeType();
                 gc.setStroke(Color.web("#f0b14a"));
                 gc.setLineWidth(2.0);
-                if (fade.getFadeInSec() > 0.0 && inX >= 1.0)
+                double viewStart = waveformViewport.startSec();
+                double secondsPerPixel = waveformViewport.visibleSec() / w;
+                if (fade.getFadeInSec() > 0.0 && viewStart < fade.getFadeInSec())
                 {
                     gc.beginPath();
-                    for (int px = 0; px <= inX; px++)
+                    for (int px = 0; px <= Math.min(w, inX); px++)
                     {
-                        double y = h - fadeShape(px / inX, ft) * h;
+                        double time = viewStart + px * secondsPerPixel;
+                        double y = h - fadeShape(time / fade.getFadeInSec(), ft) * h;
                         if (px == 0) gc.moveTo(px, y); else gc.lineTo(px, y);
                     }
                     gc.stroke();
                 }
-                if (fade.getFadeOutSec() > 0.0 && outX <= w - 1.0)
+                if (fade.getFadeOutSec() > 0.0
+                        && viewStart + waveformViewport.visibleSec() > dur - fade.getFadeOutSec())
                 {
                     gc.beginPath();
-                    for (int px = (int) outX; px <= w; px++)
+                    int firstPx = (int) Math.max(0.0, outX);
+                    for (int px = firstPx; px <= w; px++)
                     {
-                        double y = h - fadeShape((w - px) / (w - outX), ft) * h;
-                        if (px == (int) outX) gc.moveTo(px, y); else gc.lineTo(px, y);
+                        double time = viewStart + px * secondsPerPixel;
+                        double y = h - fadeShape((dur - time) / fade.getFadeOutSec(), ft) * h;
+                        if (px == firstPx) gc.moveTo(px, y); else gc.lineTo(px, y);
                     }
                     gc.stroke();
                 }
-                drawFadeHandle(gc, inX);
-                drawFadeHandle(gc, outX);
+                if (inX >= 0.0 && inX <= w) drawFadeHandle(gc, inX);
+                if (outX >= 0.0 && outX <= w) drawFadeHandle(gc, outX);
                 gc.setFill(Color.web("#f0b14a"));
                 gc.setFont(Font.font(10));
-                if (fade.getFadeInSec()  > 0.0)
+                if (fade.getFadeInSec() > 0.0 && inX >= 0.0 && inX <= w)
                     gc.fillText(formatSec(fade.getFadeInSec()),  Math.min(inX + 8, w - 46), 16);
-                if (fade.getFadeOutSec() > 0.0)
+                if (fade.getFadeOutSec() > 0.0 && outX >= 0.0 && outX <= w)
                     gc.fillText(formatSec(fade.getFadeOutSec()), Math.max(outX - 46, 4), 16);
                 gc.setFill(Color.web("#8a8a93"));
                 gc.setFont(Font.font(9));
@@ -5990,27 +6094,30 @@ public class MainController
         // Range selection overlay (shift-drag) for Crop / Delete.
         if (hasSelection())
         {
-            double dur = loadedFile.getDuration();
-            double x1 = (Math.min(selStartSec, selEndSec) / dur) * w;
-            double x2 = (Math.max(selStartSec, selEndSec) / dur) * w;
-            gc.setFill(Color.web("#4a9eff", 0.22));
-            gc.fillRect(x1, 0, x2 - x1, h);
-            gc.setStroke(Color.web("#4a9eff"));
-            gc.setLineWidth(1.0);
-            gc.strokeLine(x1, 0, x1, h);
-            gc.strokeLine(x2, 0, x2, h);
+            double x1 = waveformXAtTime(Math.min(selStartSec, selEndSec));
+            double x2 = waveformXAtTime(Math.max(selStartSec, selEndSec));
+            if (x2 >= 0.0 && x1 <= w)
+            {
+                gc.setFill(Color.web("#4a9eff", 0.22));
+                gc.fillRect(Math.max(0.0, x1), 0,
+                        Math.min(w, x2) - Math.max(0.0, x1), h);
+                gc.setStroke(Color.web("#4a9eff"));
+                gc.setLineWidth(1.0);
+                if (x1 >= 0.0) gc.strokeLine(x1, 0, x1, h);
+                if (x2 <= w) gc.strokeLine(x2, 0, x2, h);
+            }
         }
 
         if (loadedFile != null)
         {
             long pos = player.getPositionSamples();
-            long total = loadedFile.getSamples().length / loadedFile.getChannels();
-            if (total > 0)
+            if (loadedFile.getSampleRate() > 0)
             {
-                double x = (pos / (double) total) * w;
+                double playheadSec = pos / (double) loadedFile.getSampleRate();
+                double x = waveformXAtTime(playheadSec);
                 gc.setStroke(Color.web("#f0b14a"));
                 gc.setLineWidth(1.5);
-                gc.strokeLine(x, 0, x, h);
+                if (x >= 0.0 && x <= w) gc.strokeLine(x, 0, x, h);
             }
         }
     }

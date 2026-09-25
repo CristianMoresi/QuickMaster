@@ -1,0 +1,1760 @@
+{
+  "metadata": {
+    "id": "QM-M004-ADR014-CLEANUP-001",
+    "status": "PROPOSED",
+    "intent_ref": 374,
+    "implementation_accepted": false,
+    "type": "java/lang/Throwable",
+    "owner": "com/quickmaster/processing/dynamics/leveler/ConformanceArtifactLoader",
+    "classfileMajor": 61,
+    "generalTypeAllowlistAddition": false,
+    "jdkCallsDelta": [],
+    "retainedSchemaDelta": [],
+    "methodCodePolicy": "Only reference methods adjudicated here. Exact normalized instruction inventories, including normal-close paths, are pinned in cleanup-code.001.json; CP index/debug table layout are not permissions. Other code drift requires new adjudication, never infer another allowable pattern from a later build.",
+    "constantPoolPolicy": {
+      "classEntries": 1,
+      "utf8TypeEntries": 1,
+      "allowedConsumption": "StackMapTable single stack item at exactly the two handler entries below, and only the Class->Utf8 link supporting those uses",
+      "extraOrUnusedTypeReferenceAllowed": false,
+      "constantPoolIndexesNormative": false
+    },
+    "allowedRoles": [
+      "StackMapTable.handlerEntry.stack[0] only"
+    ],
+    "methods": [
+      {
+        "name": "readBundle",
+        "descriptor": "()[Ljava/lang/Object;",
+        "access": 10,
+        "exceptionSlot": 19,
+        "resourceSlot": 4,
+        "codeLength": 462,
+        "handlers": [
+          [
+            101,
+            201,
+            452,
+            0
+          ],
+          [
+            209,
+            444,
+            452,
+            0
+          ],
+          [
+            452,
+            454,
+            452,
+            0
+          ]
+        ],
+        "handlerPc": 452,
+        "stackMapThrowablePcs": [
+          452
+        ],
+        "cleanup": [
+          [
+            452,
+            "astore",
+            19
+          ],
+          [
+            454,
+            "aload",
+            4
+          ],
+          [
+            456,
+            "invokevirtual",
+            "java/util/jar/JarFile.close:()V"
+          ],
+          [
+            459,
+            "aload",
+            19
+          ],
+          [
+            461,
+            "athrow"
+          ]
+        ],
+        "normalCleanup": [
+          [
+            [
+              201,
+              "aload",
+              4
+            ],
+            [
+              203,
+              "invokevirtual",
+              "java/util/jar/JarFile.close:()V"
+            ],
+            [
+              206,
+              "aload",
+              11
+            ],
+            [
+              208,
+              "areturn"
+            ]
+          ],
+          [
+            [
+              444,
+              "aload",
+              4
+            ],
+            [
+              446,
+              "invokevirtual",
+              "java/util/jar/JarFile.close:()V"
+            ],
+            [
+              449,
+              "aload",
+              18
+            ],
+            [
+              451,
+              "areturn"
+            ]
+          ]
+        ],
+        "beforeResourceReturnPc": 25
+      },
+      {
+        "name": "readEntry",
+        "descriptor": "(Ljava/util/jar/JarFile;Ljava/util/zip/ZipEntry;I)[B",
+        "access": 10,
+        "exceptionSlot": 11,
+        "resourceSlot": 7,
+        "codeLength": 156,
+        "handlers": [
+          [
+            47,
+            138,
+            146,
+            0
+          ],
+          [
+            146,
+            148,
+            146,
+            0
+          ]
+        ],
+        "handlerPc": 146,
+        "stackMapThrowablePcs": [
+          146
+        ],
+        "cleanup": [
+          [
+            146,
+            "astore",
+            11
+          ],
+          [
+            148,
+            "aload",
+            7
+          ],
+          [
+            150,
+            "invokevirtual",
+            "java/io/InputStream.close:()V"
+          ],
+          [
+            153,
+            "aload",
+            11
+          ],
+          [
+            155,
+            "athrow"
+          ]
+        ],
+        "normalCleanup": [
+          [
+            [
+              138,
+              "aload",
+              7
+            ],
+            [
+              140,
+              "invokevirtual",
+              "java/io/InputStream.close:()V"
+            ],
+            [
+              143,
+              "aload",
+              10
+            ],
+            [
+              145,
+              "areturn"
+            ]
+          ]
+        ]
+      }
+    ],
+    "forbiddenRoles": [
+      "new",
+      "constructor",
+      "invoke API including addSuppressed",
+      "typed catch_type Throwable",
+      "field descriptor",
+      "method descriptor",
+      "generic Signature",
+      "superclass",
+      "interface",
+      "ldc class literal",
+      "checkcast",
+      "instanceof",
+      "anewarray or multianewarray",
+      "Exceptions attribute",
+      "annotations",
+      "LocalVariableTable",
+      "LocalVariableTypeTable",
+      "StackMap local",
+      "StackMap non-handler or other stack slot",
+      "other owner",
+      "other method",
+      "unused or duplicate CP"
+    ],
+    "cleanupRestrictions": {
+      "fiveContiguousInstructions": true,
+      "sameCapturedAndRethrownSlot": true,
+      "resourceDistinctFromExceptionSlot": true,
+      "onlyExactCloseTuple": true,
+      "extraBranchesCallsWritesReturns": false,
+      "extraHandlers": false,
+      "sourceCleanupMayBeRemoved": false
+    },
+    "closeSemantics": "close normal -> rethrow original; close throws -> its abrupt completion replaces original as current finally semantics; no automatic suppression, no try-with-resources permission",
+    "threatModel": "bounded structural predicate for trusted first-party build; not universal/interprocedural semantic proof, not protection against hostile JVM/dependency/reflection",
+    "composition": "Add this one contextual role to static policy after ADR011/ADR012, never to generic allowed-types. ADR012 Exception/Deprecated and all existing loader calls remain byte-for-byte policy-identical. Retention candidate graph unchanged by ADR014.",
+    "evidence": {
+      "classification": "tests/results/M-004-static-closure-002/loader-throwable-unapproved.json",
+      "classificationSha256": "203a232e7d928416e323f76543d90b8cd587f7fa35999324c54563eacfadfc75",
+      "source": "tests/results/M-004-static-closure-002/closure-first-004/src/main/java/com/quickmaster/processing/dynamics/leveler/ConformanceArtifactLoader.java",
+      "sourceSha256": "547289b49a11491889f86d6898f03063a62f8517fda37505c63828ed9774ebc9",
+      "classfile": "tests/results/M-004-static-closure-002/closure-first-004/classes/com/quickmaster/processing/dynamics/leveler/ConformanceArtifactLoader.class",
+      "classfileSha256": "8cce0890ce39e0ae1876ae80c3aa613dd25321c3cf0734232456f3ee9ab327e9"
+    }
+  },
+  "code": {
+    "id": "QM-M004-ADR014-CODE-001",
+    "status": "PROPOSED_EXPLICIT_CODE_CONSTRAINT_NOT_ACCEPTED",
+    "intent_ref": 374,
+    "owner": "com/quickmaster/processing/dynamics/leveler/ConformanceArtifactLoader",
+    "adjudication": "After reading complete preserved source and all210/84 instructions, Architect proposes these two symbolic Code inventories as additional narrow constraints of the metadata role. Observation alone grants no permission. This does not allow other types/calls/fields discovered in the classfile; they still require prior011/012 policy. No subsequent build regenerates these hashes automatically.",
+    "normalization": "verify-proposal.001.py inventory(): javap -c -p -s; list per method [integerPC,opcode,operandString]; CP number replaced by complete javap symbolic comment; preserve all branch targets/string constants/descriptors; aload_0..3/astore_0..3 normalize to opcode and slot string; json UTF8 sorted_keys compact separators; SHA256. All Code instructions included; debug tables and CP numbering excluded.",
+    "methods": {
+      "readBundle": {
+        "descriptor": "()[Ljava/lang/Object;",
+        "instructionCount": 210,
+        "normalizedSha256": "8ef4c5ea8bf2e4178713384d470b72a48217015b24224adeeed00107be5fe06b",
+        "inventorySelector": "methods.readBundle.instructions"
+      },
+      "readEntry": {
+        "descriptor": "(Ljava/util/jar/JarFile;Ljava/util/zip/ZipEntry;I)[B",
+        "instructionCount": 84,
+        "normalizedSha256": "96b5c49ae43219c1f1f1cf04756e8e8b059074da536ed1acd10d14c641988435",
+        "inventorySelector": "methods.readEntry.instructions"
+      }
+    },
+    "literalInventory": {
+      "path": "capture-001/cleanup-code-observed.json",
+      "sha256": "cd9e764fc6eaacafeb86db080402ff9c8e38d1efc3f65c714268e4e3f79a1d63",
+      "historicalStatusPreserved": "OBSERVATION_NOT_AUTHORITY; only the exact two method selectors above are now proposed as constraints"
+    },
+    "recompilationPolicy": "release17 -g and -g:none must reproduce these symbolic instructions and cleanup metadata. A compiler/layout change that does not match is fail-closed and needs explicit future review, not a generic catch/finally whitelist.",
+    "scopeLimit": "A bytecode guard may implement its own binary symbolic normalization rather than invoking javap, but equivalence to these full inventories must be independently tested. This verifier is documentary, not replacement of the product guard."
+  },
+  "instructions": {
+    "readBundle": {
+      "normalizedSha256": "8ef4c5ea8bf2e4178713384d470b72a48217015b24224adeeed00107be5fe06b",
+      "instructions": [
+        [
+          0,
+          "ldc",
+          "class com/quickmaster/processing/dynamics/leveler/ConformanceArtifactLoader"
+        ],
+        [
+          2,
+          "ldc",
+          "String ConformanceArtifactLoader.class"
+        ],
+        [
+          4,
+          "invokevirtual",
+          "Method java/lang/Class.getResource:(Ljava/lang/String;)Ljava/net/URL;"
+        ],
+        [
+          7,
+          "astore",
+          "0"
+        ],
+        [
+          8,
+          "aload",
+          "0"
+        ],
+        [
+          9,
+          "ifnull",
+          "24"
+        ],
+        [
+          12,
+          "ldc",
+          "String jar"
+        ],
+        [
+          14,
+          "aload",
+          "0"
+        ],
+        [
+          15,
+          "invokevirtual",
+          "Method java/net/URL.getProtocol:()Ljava/lang/String;"
+        ],
+        [
+          18,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          21,
+          "ifne",
+          "26"
+        ],
+        [
+          24,
+          "aconst_null",
+          ""
+        ],
+        [
+          25,
+          "areturn",
+          ""
+        ],
+        [
+          26,
+          "aload",
+          "0"
+        ],
+        [
+          27,
+          "invokevirtual",
+          "Method java/net/URL.openConnection:()Ljava/net/URLConnection;"
+        ],
+        [
+          30,
+          "astore",
+          "1"
+        ],
+        [
+          31,
+          "aload",
+          "1"
+        ],
+        [
+          32,
+          "iconst_0",
+          ""
+        ],
+        [
+          33,
+          "invokevirtual",
+          "Method java/net/URLConnection.setUseCaches:(Z)V"
+        ],
+        [
+          36,
+          "aload",
+          "1"
+        ],
+        [
+          37,
+          "instanceof",
+          "class java/net/JarURLConnection"
+        ],
+        [
+          40,
+          "ifne",
+          "53"
+        ],
+        [
+          43,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          46,
+          "dup",
+          ""
+        ],
+        [
+          47,
+          "ldc",
+          "String Expected own JAR connection."
+        ],
+        [
+          49,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          52,
+          "athrow",
+          ""
+        ],
+        [
+          53,
+          "aload",
+          "1"
+        ],
+        [
+          54,
+          "checkcast",
+          "class java/net/JarURLConnection"
+        ],
+        [
+          57,
+          "astore",
+          "2"
+        ],
+        [
+          58,
+          "aload",
+          "2"
+        ],
+        [
+          59,
+          "invokevirtual",
+          "Method java/net/JarURLConnection.getJarFileURL:()Ljava/net/URL;"
+        ],
+        [
+          62,
+          "astore",
+          "3"
+        ],
+        [
+          63,
+          "ldc",
+          "String file"
+        ],
+        [
+          65,
+          "aload",
+          "3"
+        ],
+        [
+          66,
+          "invokevirtual",
+          "Method java/net/URL.getProtocol:()Ljava/lang/String;"
+        ],
+        [
+          69,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          72,
+          "ifeq",
+          "85"
+        ],
+        [
+          75,
+          "aload",
+          "3"
+        ],
+        [
+          76,
+          "invokevirtual",
+          "Method java/net/URL.getHost:()Ljava/lang/String;"
+        ],
+        [
+          79,
+          "invokevirtual",
+          "Method java/lang/String.length:()I"
+        ],
+        [
+          82,
+          "ifeq",
+          "95"
+        ],
+        [
+          85,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          88,
+          "dup",
+          ""
+        ],
+        [
+          89,
+          "ldc",
+          "String Conformance accepts only the local containing JAR."
+        ],
+        [
+          91,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          94,
+          "athrow",
+          ""
+        ],
+        [
+          95,
+          "aload",
+          "2"
+        ],
+        [
+          96,
+          "invokevirtual",
+          "Method java/net/JarURLConnection.getJarFile:()Ljava/util/jar/JarFile;"
+        ],
+        [
+          99,
+          "astore",
+          "4"
+        ],
+        [
+          101,
+          "aload",
+          "4"
+        ],
+        [
+          103,
+          "invokevirtual",
+          "Method java/util/jar/JarFile.getManifest:()Ljava/util/jar/Manifest;"
+        ],
+        [
+          106,
+          "astore",
+          "5"
+        ],
+        [
+          108,
+          "aload",
+          "5"
+        ],
+        [
+          110,
+          "ifnonnull",
+          "117"
+        ],
+        [
+          113,
+          "aconst_null",
+          ""
+        ],
+        [
+          114,
+          "goto",
+          "122"
+        ],
+        [
+          117,
+          "aload",
+          "5"
+        ],
+        [
+          119,
+          "invokevirtual",
+          "Method java/util/jar/Manifest.getMainAttributes:()Ljava/util/jar/Attributes;"
+        ],
+        [
+          122,
+          "astore",
+          "6"
+        ],
+        [
+          124,
+          "aload",
+          "6"
+        ],
+        [
+          126,
+          "ifnonnull",
+          "133"
+        ],
+        [
+          129,
+          "aconst_null",
+          ""
+        ],
+        [
+          130,
+          "goto",
+          "140"
+        ],
+        [
+          133,
+          "aload",
+          "6"
+        ],
+        [
+          135,
+          "ldc",
+          "String QuickMaster-Loudness-Attestation-SHA256"
+        ],
+        [
+          137,
+          "invokevirtual",
+          "Method java/util/jar/Attributes.getValue:(Ljava/lang/String;)Ljava/lang/String;"
+        ],
+        [
+          140,
+          "astore",
+          "7"
+        ],
+        [
+          142,
+          "aload",
+          "6"
+        ],
+        [
+          144,
+          "ifnonnull",
+          "151"
+        ],
+        [
+          147,
+          "aconst_null",
+          ""
+        ],
+        [
+          148,
+          "goto",
+          "158"
+        ],
+        [
+          151,
+          "aload",
+          "6"
+        ],
+        [
+          153,
+          "ldc",
+          "String QuickMaster-Loudness-Runner-SHA256"
+        ],
+        [
+          155,
+          "invokevirtual",
+          "Method java/util/jar/Attributes.getValue:(Ljava/lang/String;)Ljava/lang/String;"
+        ],
+        [
+          158,
+          "astore",
+          "8"
+        ],
+        [
+          160,
+          "aload",
+          "4"
+        ],
+        [
+          162,
+          "ldc",
+          "String META-INF/quickmaster/leveler-conformance.json"
+        ],
+        [
+          164,
+          "invokevirtual",
+          "Method java/util/jar/JarFile.getJarEntry:(Ljava/lang/String;)Ljava/util/jar/JarEntry;"
+        ],
+        [
+          167,
+          "astore",
+          "9"
+        ],
+        [
+          169,
+          "aload",
+          "4"
+        ],
+        [
+          171,
+          "ldc",
+          "String META-INF/quickmaster/leveler-conformance-profile.json"
+        ],
+        [
+          173,
+          "invokevirtual",
+          "Method java/util/jar/JarFile.getJarEntry:(Ljava/lang/String;)Ljava/util/jar/JarEntry;"
+        ],
+        [
+          176,
+          "astore",
+          "10"
+        ],
+        [
+          178,
+          "aload",
+          "7"
+        ],
+        [
+          180,
+          "ifnonnull",
+          "209"
+        ],
+        [
+          183,
+          "aload",
+          "8"
+        ],
+        [
+          185,
+          "ifnonnull",
+          "209"
+        ],
+        [
+          188,
+          "aload",
+          "9"
+        ],
+        [
+          190,
+          "ifnonnull",
+          "209"
+        ],
+        [
+          193,
+          "aload",
+          "10"
+        ],
+        [
+          195,
+          "ifnonnull",
+          "209"
+        ],
+        [
+          198,
+          "aconst_null",
+          ""
+        ],
+        [
+          199,
+          "astore",
+          "11"
+        ],
+        [
+          201,
+          "aload",
+          "4"
+        ],
+        [
+          203,
+          "invokevirtual",
+          "Method java/util/jar/JarFile.close:()V"
+        ],
+        [
+          206,
+          "aload",
+          "11"
+        ],
+        [
+          208,
+          "areturn",
+          ""
+        ],
+        [
+          209,
+          "aload",
+          "7"
+        ],
+        [
+          211,
+          "ifnull",
+          "229"
+        ],
+        [
+          214,
+          "aload",
+          "8"
+        ],
+        [
+          216,
+          "ifnull",
+          "229"
+        ],
+        [
+          219,
+          "aload",
+          "9"
+        ],
+        [
+          221,
+          "ifnull",
+          "229"
+        ],
+        [
+          224,
+          "aload",
+          "10"
+        ],
+        [
+          226,
+          "ifnonnull",
+          "239"
+        ],
+        [
+          229,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          232,
+          "dup",
+          ""
+        ],
+        [
+          233,
+          "ldc",
+          "String Incomplete conformance bundle."
+        ],
+        [
+          235,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          238,
+          "athrow",
+          ""
+        ],
+        [
+          239,
+          "aload",
+          "4"
+        ],
+        [
+          241,
+          "aload",
+          "9"
+        ],
+        [
+          243,
+          "ldc",
+          "int 262144"
+        ],
+        [
+          245,
+          "invokestatic",
+          "Method readEntry:(Ljava/util/jar/JarFile;Ljava/util/zip/ZipEntry;I)[B"
+        ],
+        [
+          248,
+          "astore",
+          "11"
+        ],
+        [
+          250,
+          "aload",
+          "4"
+        ],
+        [
+          252,
+          "aload",
+          "10"
+        ],
+        [
+          254,
+          "ldc",
+          "int 262144"
+        ],
+        [
+          256,
+          "invokestatic",
+          "Method readEntry:(Ljava/util/jar/JarFile;Ljava/util/zip/ZipEntry;I)[B"
+        ],
+        [
+          259,
+          "astore",
+          "12"
+        ],
+        [
+          261,
+          "getstatic",
+          "Field com/quickmaster/processing/dynamics/leveler/ConformanceRequirement.OFFICIAL_LOUDNESS_V1:Lcom/quickmaster/processing/dynamics/leveler/ConformanceRequirement;"
+        ],
+        [
+          264,
+          "astore",
+          "13"
+        ],
+        [
+          266,
+          "aload",
+          "12"
+        ],
+        [
+          268,
+          "aload",
+          "13"
+        ],
+        [
+          270,
+          "invokestatic",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceCodec.profileBytes:(Lcom/quickmaster/processing/dynamics/leveler/ConformanceRequirement;)[B"
+        ],
+        [
+          273,
+          "invokestatic",
+          "Method java/util/Arrays.equals:([B[B)Z"
+        ],
+        [
+          276,
+          "ifeq",
+          "305"
+        ],
+        [
+          279,
+          "aload",
+          "12"
+        ],
+        [
+          281,
+          "invokestatic",
+          "Method hash:([B)Ljava/lang/String;"
+        ],
+        [
+          284,
+          "ldc",
+          "String daad1207ff680b67b64108692a2070be389227ac8ddffa177ae9b8ac39ffbc14"
+        ],
+        [
+          286,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          289,
+          "ifeq",
+          "305"
+        ],
+        [
+          292,
+          "aload",
+          "11"
+        ],
+        [
+          294,
+          "invokestatic",
+          "Method hash:([B)Ljava/lang/String;"
+        ],
+        [
+          297,
+          "aload",
+          "7"
+        ],
+        [
+          299,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          302,
+          "ifne",
+          "315"
+        ],
+        [
+          305,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          308,
+          "dup",
+          ""
+        ],
+        [
+          309,
+          "ldc",
+          "String Profile or attestation bytes mismatch."
+        ],
+        [
+          311,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          314,
+          "athrow",
+          ""
+        ],
+        [
+          315,
+          "aload",
+          "11"
+        ],
+        [
+          317,
+          "invokestatic",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceCodec.decodeArtifact:([B)Lcom/quickmaster/processing/dynamics/leveler/ConformanceRun;"
+        ],
+        [
+          320,
+          "astore",
+          "14"
+        ],
+        [
+          322,
+          "aload",
+          "4"
+        ],
+        [
+          324,
+          "invokestatic",
+          "Method classCone:(Ljava/util/jar/JarFile;)Ljava/lang/String;"
+        ],
+        [
+          327,
+          "astore",
+          "15"
+        ],
+        [
+          329,
+          "aload",
+          "12"
+        ],
+        [
+          331,
+          "invokestatic",
+          "Method hash:([B)Ljava/lang/String;"
+        ],
+        [
+          334,
+          "astore",
+          "16"
+        ],
+        [
+          336,
+          "aload",
+          "15"
+        ],
+        [
+          338,
+          "aload",
+          "14"
+        ],
+        [
+          340,
+          "invokevirtual",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceRun.algorithmSha256:()Ljava/lang/String;"
+        ],
+        [
+          343,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          346,
+          "ifeq",
+          "391"
+        ],
+        [
+          349,
+          "aload",
+          "16"
+        ],
+        [
+          351,
+          "aload",
+          "14"
+        ],
+        [
+          353,
+          "invokevirtual",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceRun.profileSha256:()Ljava/lang/String;"
+        ],
+        [
+          356,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          359,
+          "ifeq",
+          "391"
+        ],
+        [
+          362,
+          "aload",
+          "8"
+        ],
+        [
+          364,
+          "aload",
+          "14"
+        ],
+        [
+          366,
+          "invokevirtual",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceRun.runnerSha256:()Ljava/lang/String;"
+        ],
+        [
+          369,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          372,
+          "ifeq",
+          "391"
+        ],
+        [
+          375,
+          "aload",
+          "13"
+        ],
+        [
+          377,
+          "invokevirtual",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceRequirement.algorithmId:()Ljava/lang/String;"
+        ],
+        [
+          380,
+          "aload",
+          "14"
+        ],
+        [
+          382,
+          "invokevirtual",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceRun.algorithmId:()Ljava/lang/String;"
+        ],
+        [
+          385,
+          "invokevirtual",
+          "Method java/lang/String.equals:(Ljava/lang/Object;)Z"
+        ],
+        [
+          388,
+          "ifne",
+          "401"
+        ],
+        [
+          391,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          394,
+          "dup",
+          ""
+        ],
+        [
+          395,
+          "ldc",
+          "String The running JAR does not match its attestation."
+        ],
+        [
+          397,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          400,
+          "athrow",
+          ""
+        ],
+        [
+          401,
+          "new",
+          "class com/quickmaster/processing/dynamics/leveler/BuildAlgorithmBinding"
+        ],
+        [
+          404,
+          "dup",
+          ""
+        ],
+        [
+          405,
+          "aload",
+          "13"
+        ],
+        [
+          407,
+          "invokevirtual",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceRequirement.algorithmId:()Ljava/lang/String;"
+        ],
+        [
+          410,
+          "aload",
+          "15"
+        ],
+        [
+          412,
+          "aload",
+          "16"
+        ],
+        [
+          414,
+          "aload",
+          "7"
+        ],
+        [
+          416,
+          "aload",
+          "8"
+        ],
+        [
+          418,
+          "aload",
+          "14"
+        ],
+        [
+          420,
+          "invokevirtual",
+          "Method com/quickmaster/processing/dynamics/leveler/ConformanceRun.createdAtEpochSecond:()J"
+        ],
+        [
+          423,
+          "invokespecial",
+          "Method com/quickmaster/processing/dynamics/leveler/BuildAlgorithmBinding.\"<init>\":(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)V"
+        ],
+        [
+          426,
+          "astore",
+          "17"
+        ],
+        [
+          428,
+          "iconst_2",
+          ""
+        ],
+        [
+          429,
+          "anewarray",
+          "class java/lang/Object"
+        ],
+        [
+          432,
+          "dup",
+          ""
+        ],
+        [
+          433,
+          "iconst_0",
+          ""
+        ],
+        [
+          434,
+          "aload",
+          "14"
+        ],
+        [
+          436,
+          "aastore",
+          ""
+        ],
+        [
+          437,
+          "dup",
+          ""
+        ],
+        [
+          438,
+          "iconst_1",
+          ""
+        ],
+        [
+          439,
+          "aload",
+          "17"
+        ],
+        [
+          441,
+          "aastore",
+          ""
+        ],
+        [
+          442,
+          "astore",
+          "18"
+        ],
+        [
+          444,
+          "aload",
+          "4"
+        ],
+        [
+          446,
+          "invokevirtual",
+          "Method java/util/jar/JarFile.close:()V"
+        ],
+        [
+          449,
+          "aload",
+          "18"
+        ],
+        [
+          451,
+          "areturn",
+          ""
+        ],
+        [
+          452,
+          "astore",
+          "19"
+        ],
+        [
+          454,
+          "aload",
+          "4"
+        ],
+        [
+          456,
+          "invokevirtual",
+          "Method java/util/jar/JarFile.close:()V"
+        ],
+        [
+          459,
+          "aload",
+          "19"
+        ],
+        [
+          461,
+          "athrow",
+          ""
+        ]
+      ]
+    },
+    "readEntry": {
+      "normalizedSha256": "96b5c49ae43219c1f1f1cf04756e8e8b059074da536ed1acd10d14c641988435",
+      "instructions": [
+        [
+          0,
+          "aload",
+          "1"
+        ],
+        [
+          1,
+          "invokevirtual",
+          "Method java/util/zip/ZipEntry.getSize:()J"
+        ],
+        [
+          4,
+          "lstore_3",
+          ""
+        ],
+        [
+          5,
+          "lload_3",
+          ""
+        ],
+        [
+          6,
+          "lconst_0",
+          ""
+        ],
+        [
+          7,
+          "lcmp",
+          ""
+        ],
+        [
+          8,
+          "ifle",
+          "18"
+        ],
+        [
+          11,
+          "lload_3",
+          ""
+        ],
+        [
+          12,
+          "iload_2",
+          ""
+        ],
+        [
+          13,
+          "i2l",
+          ""
+        ],
+        [
+          14,
+          "lcmp",
+          ""
+        ],
+        [
+          15,
+          "ifle",
+          "28"
+        ],
+        [
+          18,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          21,
+          "dup",
+          ""
+        ],
+        [
+          22,
+          "ldc",
+          "String Invalid conformance entry size."
+        ],
+        [
+          24,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          27,
+          "athrow",
+          ""
+        ],
+        [
+          28,
+          "lload_3",
+          ""
+        ],
+        [
+          29,
+          "l2i",
+          ""
+        ],
+        [
+          30,
+          "newarray",
+          "byte"
+        ],
+        [
+          32,
+          "astore",
+          "5"
+        ],
+        [
+          34,
+          "ldc",
+          "int 32768"
+        ],
+        [
+          36,
+          "newarray",
+          "byte"
+        ],
+        [
+          38,
+          "astore",
+          "6"
+        ],
+        [
+          40,
+          "aload",
+          "0"
+        ],
+        [
+          41,
+          "aload",
+          "1"
+        ],
+        [
+          42,
+          "invokevirtual",
+          "Method java/util/jar/JarFile.getInputStream:(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;"
+        ],
+        [
+          45,
+          "astore",
+          "7"
+        ],
+        [
+          47,
+          "iconst_0",
+          ""
+        ],
+        [
+          48,
+          "istore",
+          "8"
+        ],
+        [
+          50,
+          "aload",
+          "7"
+        ],
+        [
+          52,
+          "aload",
+          "6"
+        ],
+        [
+          54,
+          "iconst_0",
+          ""
+        ],
+        [
+          55,
+          "aload",
+          "6"
+        ],
+        [
+          57,
+          "arraylength",
+          ""
+        ],
+        [
+          58,
+          "invokevirtual",
+          "Method java/io/InputStream.read:([BII)I"
+        ],
+        [
+          61,
+          "dup",
+          ""
+        ],
+        [
+          62,
+          "istore",
+          "9"
+        ],
+        [
+          64,
+          "iconst_m1",
+          ""
+        ],
+        [
+          65,
+          "if_icmpeq",
+          "116"
+        ],
+        [
+          68,
+          "iload",
+          "9"
+        ],
+        [
+          70,
+          "ifle",
+          "84"
+        ],
+        [
+          73,
+          "iload",
+          "9"
+        ],
+        [
+          75,
+          "aload",
+          "5"
+        ],
+        [
+          77,
+          "arraylength",
+          ""
+        ],
+        [
+          78,
+          "iload",
+          "8"
+        ],
+        [
+          80,
+          "isub",
+          ""
+        ],
+        [
+          81,
+          "if_icmple",
+          "94"
+        ],
+        [
+          84,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          87,
+          "dup",
+          ""
+        ],
+        [
+          88,
+          "ldc",
+          "String Inconsistent JAR entry extent."
+        ],
+        [
+          90,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          93,
+          "athrow",
+          ""
+        ],
+        [
+          94,
+          "aload",
+          "6"
+        ],
+        [
+          96,
+          "iconst_0",
+          ""
+        ],
+        [
+          97,
+          "aload",
+          "5"
+        ],
+        [
+          99,
+          "iload",
+          "8"
+        ],
+        [
+          101,
+          "iload",
+          "9"
+        ],
+        [
+          103,
+          "invokestatic",
+          "Method java/lang/System.arraycopy:(Ljava/lang/Object;ILjava/lang/Object;II)V"
+        ],
+        [
+          106,
+          "iload",
+          "8"
+        ],
+        [
+          108,
+          "iload",
+          "9"
+        ],
+        [
+          110,
+          "iadd",
+          ""
+        ],
+        [
+          111,
+          "istore",
+          "8"
+        ],
+        [
+          113,
+          "goto",
+          "50"
+        ],
+        [
+          116,
+          "iload",
+          "8"
+        ],
+        [
+          118,
+          "aload",
+          "5"
+        ],
+        [
+          120,
+          "arraylength",
+          ""
+        ],
+        [
+          121,
+          "if_icmpeq",
+          "134"
+        ],
+        [
+          124,
+          "new",
+          "class java/lang/IllegalArgumentException"
+        ],
+        [
+          127,
+          "dup",
+          ""
+        ],
+        [
+          128,
+          "ldc",
+          "String Truncated JAR entry."
+        ],
+        [
+          130,
+          "invokespecial",
+          "Method java/lang/IllegalArgumentException.\"<init>\":(Ljava/lang/String;)V"
+        ],
+        [
+          133,
+          "athrow",
+          ""
+        ],
+        [
+          134,
+          "aload",
+          "5"
+        ],
+        [
+          136,
+          "astore",
+          "10"
+        ],
+        [
+          138,
+          "aload",
+          "7"
+        ],
+        [
+          140,
+          "invokevirtual",
+          "Method java/io/InputStream.close:()V"
+        ],
+        [
+          143,
+          "aload",
+          "10"
+        ],
+        [
+          145,
+          "areturn",
+          ""
+        ],
+        [
+          146,
+          "astore",
+          "11"
+        ],
+        [
+          148,
+          "aload",
+          "7"
+        ],
+        [
+          150,
+          "invokevirtual",
+          "Method java/io/InputStream.close:()V"
+        ],
+        [
+          153,
+          "aload",
+          "11"
+        ],
+        [
+          155,
+          "athrow",
+          ""
+        ]
+      ]
+    }
+  }
+}

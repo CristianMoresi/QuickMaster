@@ -1,0 +1,2869 @@
+{
+  "authority": "S001 authorization 878cd9f6863c3e79a075d1e862e2052c9fd6f11a47bed11821ab45e96891b3d0; source-reviewed root-approved active composition; immutable ADR013/014 retained",
+  "bodies": {
+    "ADOPT": "2b | c1:@DLevelerProcessor | 99:[7] | 2b | c0:@DLevelerProcessor | 4d | a7:[12] | bb:java/lang/IllegalArgumentException | 59 | S:Leveler can only adopt a structural Leveler analysis. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2c | 59 | 3a:9 | c2 | 2c | b6:@DLevelerProcessor.publishedGain()L@DPublishedGain; | 4e | 2c | b4:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 3a:4 | 2c | b4:@DLevelerProcessor.levelingD | 39:5 | 2c | b4:@DLevelerProcessor.speedD | 39:7 | 19:9 | c3 | a7:[36] | 3a:10 | 19:9 | c3 | 19:10 | bf | 2a | 59 | 3a:9 | c2 | 2a | b4:@DLevelerProcessor.levelingD | 18:5 | 97 | 9a:[50] | 2a | b4:@DLevelerProcessor.speedD | 18:7 | 97 | 99:[53] | 19:9 | c3 | b1 | 2a | 19:4 | b5:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 2a | 2d | b6:@DLevelerProcessor.adoptPublication(L@DPublishedGain;)V | 19:9 | c3 | a7:[67] | 3a:11 | 19:9 | c3 | 19:11 | bf | b1",
+    "ANALYZE": "2d | c7:[6] | bb:@LCancellationToken | 59 | b7:@LCancellationToken.<init>()V | a7:[7] | 2d | 3a:4 | 19:4 | b6:@LCancellationToken.isCancelled()Z | 99:[18] | 2a | 1 | b5:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 2a | b2:@DAnalysisStatus.CANCELLEDL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | b1 | 2b | c6:[37] | 2b | be | 99:[37] | 1c | I:1 | 9f:[29] | 1c | I:2 | a0:[37] | 2b | be | 1c | 70 | 9a:[37] | 2a | b6:@DLevelerProcessor.analysisRateHz()I | 9d:[44] | 2a | 1 | b5:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 2a | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | b1 | bb:@MAudioFormat | 59 | 2a | b6:@DLevelerProcessor.analysisRateHz()I | 1c | 2b | be | 1c | 6c | 85 | b7:@MAudioFormat.<init>(IIJ)V | 3a:5 | 2b | 1c | 19:4 | b8:@DLevelerProcessor.fingerprint([FIL@LCancellationToken;)[B | 3a:6 | 19:6 | c7:[70] | 2a | 1 | b5:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 2a | b2:@DAnalysisStatus.CANCELLEDL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | b1 | 2a | b4:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 3a:7 | 19:7 | 19:5 | 19:6 | b8:@DLevelerProcessor.matches(L@MShadowAnalysisSnapshot;L@MAudioFormat;[B)Z | 9a:[86] | bb:@LLevelerAnalysisEngine | 59 | b7:@LLevelerAnalysisEngine.<init>()V | 2b | 19:5 | 19:4 | b6:@LLevelerAnalysisEngine.analyzeShadow([FL@MAudioFormat;L@LCancellationToken;)L@MShadowAnalysisSnapshot; | 3a:7 | 2a | 19:7 | b5:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 19:7 | c6:[94] | 19:4 | b6:@LCancellationToken.isCancelled()Z | 99:[103] | 2a | 19:4 | b6:@LCancellationToken.isCancelled()Z | 99:[100] | b2:@DAnalysisStatus.CANCELLEDL@DAnalysisStatus; | a7:[101] | b2:@DAnalysisStatus.INSUFFICIENT_ANALYSISL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | b1 | 2a | b4:@DLevelerProcessor.levelingD | D:0 | 97 | 9a:[112] | 2a | b2:@DAnalysisStatus.UNITL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | b1 | bb:@LLoudnessConformanceGuard | 59 | b7:@LLoudnessConformanceGuard.<init>()V | 19:7 | b6:@MShadowAnalysisSnapshot.diagnostics()L@MShadowDiagnostics; | b6:@MShadowDiagnostics.standardValidation()L@MStandardValidationReport; | b6:@LLoudnessConformanceGuard.authorizesCurrentBuild(L@MStandardValidationReport;)Z | 9a:[124] | 2a | b2:@DAnalysisStatus.STANDARD_VALIDATION_FAILEDL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | b1 | bb:@LGainPlanner | 59 | b7:@LGainPlanner.<init>()V | 19:7 | b6:@MShadowAnalysisSnapshot.cache()L@MShadowAnalysisCache; | bb:@MControlState | 59 | 2a | b4:@DLevelerProcessor.levelingD | 2a | b4:@DLevelerProcessor.speedD | b7:@MControlState.<init>(DD)V | b6:@LGainPlanner.plan(L@MShadowAnalysisCache;L@MControlState;)L@MRampPlan; | 3a:8 | bb:@LTruePeakSafety | 59 | b7:@LTruePeakSafety.<init>()V | 2b | 19:5 | 19:8 | 19:4 | b6:@LTruePeakSafety.constrain([FL@MAudioFormat;L@MRampPlan;L@LCancellationToken;)L@MSafetyResult; | 3a:9 | 19:4 | b6:@LCancellationToken.isCancelled()Z | 99:[154] | 2a | b2:@DAnalysisStatus.CANCELLEDL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | a7:[180] | 19:9 | c6:[165] | 19:9 | b6:@MSafetyResult.proof()L@MSafetyProof; | b6:@MSafetyProof.status()L@MSafetyStatus; | b2:@MSafetyStatus.INFEASIBLE_INPUT_BASELINEL@MSafetyStatus; | a6:[165] | 2a | b2:@DAnalysisStatus.INFEASIBLE_INPUT_BASELINEL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | a7:[180] | 19:9 | c6:[171] | 19:9 | b6:@MSafetyResult.proof()L@MSafetyProof; | b6:@MSafetyProof.proven()Z | 9a:[175] | 2a | b2:@DAnalysisStatus.PEAK_UNSAFEL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | a7:[180] | 2a | 19:9 | b6:@MSafetyResult.schedule()L@DSparseGainSchedule; | 1c | b6:@DLevelerProcessor.publishStructural(L@DSparseGainSchedule;I)V | a7:[188] | 3a:5 | 2a | 1 | b5:@DLevelerProcessor.shadowAnalysisL@MShadowAnalysisSnapshot; | 2a | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b6:@DLevelerProcessor.publishUnit(L@DAnalysisStatus;)V | b1",
+    "ANALYZE_ENTRY": "2a | 2b | 1c | bb:@LCancellationToken | 59 | b7:@LCancellationToken.<init>()V | b6:@DLevelerProcessor.analyze([FIL@LCancellationToken;)V | b1",
+    "AUTHORITY": "2b | c6:[8] | 2b | b8:@LConformanceArtifactLoader.currentBuildBinding()L@LBuildAlgorithmBinding; | b6:@MStandardValidationReport.matches(L@LBuildAlgorithmBinding;)Z | 99:[8] | I:1 | a7:[9] | I:0 | ac",
+    "BASE_<init>": "2a | b7:java/lang/Object.<init>()V | 2a | I:0 | b5:@DAnalysisDynamicsProcessor.enabledZ | 2a | 1 | b5:@DAnalysisDynamicsProcessor.gainEnv[F | 2a | D:0 | b5:@DAnalysisDynamicsProcessor.envRateD | 2a | I:0 | b5:@DAnalysisDynamicsProcessor.envFramesI | 2a | J:0 | b2:@DAnalysisStatus.UNITL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | 2a | J:0 | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 2a | I:0 | b5:@DAnalysisDynamicsProcessor.preparedRateHzI | 2a | J:0 | b5:@DAnalysisDynamicsProcessor.preparedFrameCursorJ | 2a | bb:@DDenseGainCursor | 59 | b7:@DDenseGainCursor.<init>()V | b5:@DAnalysisDynamicsProcessor.denseCursorL@DDenseGainCursor; | 2a | bb:@DSparseGainCursor | 59 | b7:@DSparseGainCursor.<init>()V | b5:@DAnalysisDynamicsProcessor.sparseCursorL@DSparseGainCursor; | 2a | D:0 | b5:@DAnalysisDynamicsProcessor.currentGrDbD | b1",
+    "BASE_adoptEnvelope": "2b | c7:[7] | bb:java/lang/IllegalArgumentException | 59 | S:Source processor must not be null. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2b | b4:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | 4d | 2a | 2c | b6:@DAnalysisDynamicsProcessor.adoptPublication(L@DPublishedGain;)V | b1",
+    "BASE_adoptPublication": "2a | 2b | b6:@DPublishedGain.sourceRateHz()I | 87 | b5:@DAnalysisDynamicsProcessor.envRateD | 2a | 2b | b6:@DPublishedGain.sourceChannels()I | 9a:[11] | I:0 | a7:[15] | 2b | b6:@DPublishedGain.schedule()L@DGainSchedule; | b9:@DGainSchedule.sourceFrames()J | b8:java/lang/Math.toIntExact(J)I | b5:@DAnalysisDynamicsProcessor.envFramesI | 2a | 1 | b5:@DAnalysisDynamicsProcessor.gainEnv[F | 2a | 2a | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | 2b | b6:@DPublishedGain.analysisGeneration()J | b8:java/lang/Math.max(JJ)J | J:1 | 61 | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 2a | bb:@DPublishedGain | 59 | 2b | b6:@DPublishedGain.schedule()L@DGainSchedule; | 2b | b6:@DPublishedGain.sourceRateHz()I | 2b | b6:@DPublishedGain.sourceChannels()I | 2a | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | 2b | b6:@DPublishedGain.status()L@DAnalysisStatus; | b7:@DPublishedGain.<init>(L@DGainSchedule;IIJL@DAnalysisStatus;)V | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
+    "BASE_analysisRateHz": "2a | b4:@DAnalysisDynamicsProcessor.preparedRateHzI | ac",
+    "BASE_analyze": "2a | 59 | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | J:1 | 61 | 5d | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 42 | 2b | 1c | 2a | b4:@DAnalysisDynamicsProcessor.preparedRateHzI | b8:@DAnalysisDynamicsProcessor.validAnalysisInput([FII)Z | 9a:[22] | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 21 | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1 | 2b | be | 1c | 6c | 36:5 | 2a | 2a | b4:@DAnalysisDynamicsProcessor.preparedRateHzI | 87 | b5:@DAnalysisDynamicsProcessor.envRateD | 2a | 15:5 | b5:@DAnalysisDynamicsProcessor.envFramesI | 2a | 1 | b5:@DAnalysisDynamicsProcessor.gainEnv[F | 2a | 2b | 1c | 2a | b4:@DAnalysisDynamicsProcessor.preparedRateHzI | 15:5 | b6:@DAnalysisDynamicsProcessor.computeFeatures([FIII)V | 2a | b6:@DAnalysisDynamicsProcessor.mapFeaturesToSchedule()L@DGainSchedule; | 3a:6 | bb:@DPublishedGain | 59 | 19:6 | 2a | b4:@DAnalysisDynamicsProcessor.preparedRateHzI | 1c | 21 | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | b7:@DPublishedGain.<init>(L@DGainSchedule;IIJL@DAnalysisStatus;)V | 3a:7 | 2a | 19:7 | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | a7:[70] | 3a:6 | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 21 | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
+    "BASE_clearAnalysis": "2a | 59 | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | J:1 | 61 | 5d | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 40 | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 1f | b2:@DAnalysisStatus.CLEAREDL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
+    "BASE_clearLegacyState": "2a | 1 | b5:@DAnalysisDynamicsProcessor.gainEnv[F | 2a | D:0 | b5:@DAnalysisDynamicsProcessor.envRateD | 2a | I:0 | b5:@DAnalysisDynamicsProcessor.envFramesI | b1",
+    "BASE_publishStructural": "bb:@DPublishedGain | 59 | 2b | 2b | b6:@DSparseGainSchedule.sourceRateHz()I | 1c | 2a | 59 | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | J:1 | 61 | 5d | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | b2:@DAnalysisStatus.STRUCTURAL_READYL@DAnalysisStatus; | b7:@DPublishedGain.<init>(L@DGainSchedule;IIJL@DAnalysisStatus;)V | 4e | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 2d | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
+    "BASE_publishUnit": "2a | 59 | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | J:1 | 61 | 5d | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 2b | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | 4d | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 2c | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
+    "BASE_publishedGain": "2a | b4:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b0",
+    "BASE_remap": "2a | b4:@DAnalysisDynamicsProcessor.envFramesI | 9e:[57] | 2a | 59 | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | J:1 | 61 | 5d | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 40 | 2a | b6:@DAnalysisDynamicsProcessor.mapFeaturesToSchedule()L@DGainSchedule; | 4e | 2a | b4:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | 3a:4 | 19:4 | b6:@DPublishedGain.status()L@DAnalysisStatus; | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a6:[24] | 19:4 | b6:@DPublishedGain.sourceChannels()I | a7:[25] | I:0 | 36:5 | 15:5 | 9a:[36] | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 1f | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1 | 2a | bb:@DPublishedGain | 59 | 2d | 2a | b4:@DAnalysisDynamicsProcessor.envRateD | 8e | 15:5 | 1f | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | b7:@DPublishedGain.<init>(L@DGainSchedule;IIJL@DAnalysisStatus;)V | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | a7:[57] | 4e | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 1f | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
+    "CACHE": "2a | c7:[4] | I:0 | ac | 2a | b6:@MShadowAnalysisSnapshot.cache()L@MShadowAnalysisCache; | 4e | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.sampleRateHz()I | 2b | b6:@MAudioFormat.sampleRateHz()I | a0:[53] | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.channels()I | 2b | b6:@MAudioFormat.channels()I | a0:[53] | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.frames()J | 2b | b6:@MAudioFormat.frames()J | 94 | 9a:[53] | 2d | b6:@MShadowAnalysisCache.algorithmId()Ljava/lang/String; | S:QM-LEVELER-S001-COMPARISON-V2 | b6:java/lang/String.equals(Ljava/lang/Object;)Z | 99:[53] | 2d | b6:@MShadowAnalysisCache.profileId()Ljava/lang/String; | b2:@LLevelerCalibrationProfile.V2L@LLevelerCalibrationProfile; | b6:@LLevelerCalibrationProfile.profileId()Ljava/lang/String; | b6:java/lang/String.equals(Ljava/lang/Object;)Z | 99:[53] | 2d | b6:@MShadowAnalysisCache.comparison()L@MComparisonTimeline; | c6:[53] | 2d | b6:@MShadowAnalysisCache.comparison()L@MComparisonTimeline; | b6:@MComparisonTimeline.format()L@MAudioFormat; | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | a6:[53] | 2d | b6:@MShadowAnalysisCache.copyPcmFingerprintSha256()[B | 2c | b8:java/util/Arrays.equals([B[B)Z | 99:[53] | I:1 | a7:[54] | I:0 | ac",
+    "FINGERPRINT": "S:SHA-256 | b8:java/security/MessageDigest.getInstance(Ljava/lang/String;)Ljava/security/MessageDigest; | 4e | I:8192 | bc | 3a:4 | I:0 | 36:5 | I:0 | 36:6 | 15:6 | 2a | be | a2:[81] | 15:6 | I:4096 | 1b | 68 | 70 | 9a:[25] | 2c | b6:@LCancellationToken.isCancelled()Z | 99:[25] | 1 | b0 | 2a | 15:6 | 30 | b8:java/lang/Float.isFinite(F)Z | 9a:[35] | bb:java/lang/IllegalArgumentException | 59 | S:Non-finite Leveler input. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2a | 15:6 | 30 | b8:java/lang/Float.floatToRawIntBits(F)I | 36:7 | 19:4 | 15:5 | 84:5 | 15:7 | I:24 | 7c | 91 | 54 | 19:4 | 15:5 | 84:5 | 15:7 | I:16 | 7c | 91 | 54 | 19:4 | 15:5 | 84:5 | 15:7 | I:8 | 7c | 91 | 54 | 19:4 | 15:5 | 84:5 | 15:7 | 91 | 54 | 15:5 | 19:4 | be | a0:[79] | 2d | 19:4 | b6:java/security/MessageDigest.update([B)V | I:0 | 36:5 | 84:6 | a7:[10] | 2d | 19:4 | I:0 | 15:5 | b6:java/security/MessageDigest.update([BII)V | 2c | b6:@LCancellationToken.isCancelled()Z | 99:[91] | 1 | a7:[93] | 2d | b6:java/security/MessageDigest.digest()[B | b0 | 4e | bb:java/lang/IllegalStateException | 59 | S:SHA-256 is required for analysis identity. | 2d | b7:java/lang/IllegalStateException.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V | bf",
+    "OBSERVE": "2a | b4:@LFiniteTruePeakStream.vendor[Lcom/dspark/analysis/TruePeak; | c6:[11] | 2a | b4:@LFiniteTruePeakStream.vendor[Lcom/dspark/analysis/TruePeak; | 1b | 32 | 28 | b6:com/dspark/analysis/TruePeak.process(D)D | 39:4 | a7:[82] | 2a | b4:@LFiniteTruePeakStream.writePositions[I | 1b | 2e | 36:6 | 2a | b4:@LFiniteTruePeakStream.history[[D | 1b | 32 | 3a:7 | 19:7 | 15:6 | 28 | 52 | 2a | b4:@LFiniteTruePeakStream.writePositions[I | 1b | 15:6 | I:1 | 60 | I:15 | 7e | 4f | 28 | b8:java/lang/StrictMath.abs(D)D | 39:4 | I:0 | 36:8 | 15:8 | I:4 | a2:[82] | D:0 | 39:9 | 15:6 | 36:11 | I:0 | 36:12 | 15:12 | I:12 | a2:[71] | 18:9 | 19:7 | 15:11 | 31 | b2:@LFiniteTruePeakStream.ANNEX2[[D | 15:8 | 32 | 15:12 | 31 | 6b | 63 | 39:9 | 15:11 | I:1 | 64 | I:15 | 7e | 36:11 | 84:12 | a7:[48] | 18:9 | b8:java/lang/StrictMath.abs(D)D | 39:12 | 18:12 | 18:4 | 97 | 9e:[80] | 18:12 | 39:4 | 84:8 | a7:[39] | 18:4 | b8:java/lang/Double.isFinite(D)Z | 99:[89] | 18:4 | D:0 | 98 | 9c:[97] | 2a | I:1 | b5:@LFiniteTruePeakStream.invalidZ | bb:java/lang/IllegalArgumentException | 59 | S:Nonfinite true peak. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 18:4 | 2a | b4:@LFiniteTruePeakStream.lastFramePeakD | 97 | 9e:[105] | 2a | 18:4 | b5:@LFiniteTruePeakStream.lastFramePeakD | 18:4 | 2a | b4:@LFiniteTruePeakStream.maximumD | 97 | 9e:[113] | 2a | 18:4 | b5:@LFiniteTruePeakStream.maximumD | b1",
+    "PUBLICATION_<init>": "2a | b7:java/lang/Record.<init>()V | 2b | S:schedule | b8:java/util/Objects.requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object; | 57 | 19:6 | S:status | b8:java/util/Objects.requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object; | 57 | 16:4 | J:0 | 94 | 9c:[19] | bb:java/lang/IllegalArgumentException | 59 | S:Analysis generation must be non-negative. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2b | c1:@DDenseGainSchedule | 99:[28] | 2b | b9:@DGainSchedule.domain()L@DGainDomain; | b2:@DGainDomain.LEGACY_LINEARL@DGainDomain; | a6:[28] | I:1 | a7:[29] | I:0 | 36:7 | 2b | c1:@DSparseGainSchedule | 99:[39] | 2b | b9:@DGainSchedule.domain()L@DGainDomain; | b2:@DGainDomain.SPARSE_DBL@DGainDomain; | a6:[39] | I:1 | a7:[40] | I:0 | 36:8 | 15:7 | 9a:[50] | 15:8 | 9a:[50] | bb:java/lang/IllegalArgumentException | 59 | S:Schedule type and gain domain must agree. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 19:6 | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a5:[56] | 19:6 | b2:@DAnalysisStatus.STRUCTURAL_READYL@DAnalysisStatus; | a6:[116] | 1c | 9e:[64] | 1d | I:1 | 9f:[69] | 1d | I:2 | 9f:[69] | bb:java/lang/IllegalArgumentException | 59 | S:Ready publication requires a supported source format. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2b | b9:@DGainSchedule.sourceFrames()J | J:0 | 94 | 9d:[79] | bb:java/lang/IllegalArgumentException | 59 | S:Ready publication requires source frames. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 19:6 | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a6:[84] | 15:7 | 99:[89] | 19:6 | b2:@DAnalysisStatus.STRUCTURAL_READYL@DAnalysisStatus; | a6:[94] | 15:8 | 9a:[94] | bb:java/lang/IllegalArgumentException | 59 | S:Ready status and schedule domain must agree. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 15:7 | 99:[100] | 2b | c0:@DDenseGainSchedule | b6:@DDenseGainSchedule.envRateHz()D | a7:[104] | 2b | c0:@DSparseGainSchedule | b6:@DSparseGainSchedule.sourceRateHz()I | 87 | 39:9 | 18:9 | 1c | 87 | 97 | 99:[115] | bb:java/lang/IllegalArgumentException | 59 | S:Schedule rate and source rate must match. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | a7:[125] | 1c | 9a:[120] | 1d | 99:[125] | bb:java/lang/IllegalArgumentException | 59 | S:Unit publication must not claim a source format. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2a | 2b | b5:@DPublishedGain.scheduleL@DGainSchedule; | 2a | 1c | b5:@DPublishedGain.sourceRateHzI | 2a | 1d | b5:@DPublishedGain.sourceChannelsI | 2a | 16:4 | b5:@DPublishedGain.analysisGenerationJ | 2a | 19:6 | b5:@DPublishedGain.statusL@DAnalysisStatus; | b1",
+    "PUBLICATION_isRenderableFor": "2a | b4:@DPublishedGain.statusL@DAnalysisStatus; | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a5:[8] | 2a | b4:@DPublishedGain.statusL@DAnalysisStatus; | b2:@DAnalysisStatus.STRUCTURAL_READYL@DAnalysisStatus; | a6:[14] | 2a | b4:@DPublishedGain.sourceChannelsI | 1b | a0:[14] | I:1 | a7:[15] | I:0 | ac",
+    "PUBLICATION_unit": "2c | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a5:[6] | 2c | b2:@DAnalysisStatus.STRUCTURAL_READYL@DAnalysisStatus; | a6:[11] | bb:java/lang/IllegalArgumentException | 59 | S:A ready publication cannot be unit fallback. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | bb:@DPublishedGain | 59 | b8:@DDenseGainSchedule.unit()L@DDenseGainSchedule; | I:0 | I:0 | 1e | 2c | b7:@DPublishedGain.<init>(L@DGainSchedule;IIJL@DAnalysisStatus;)V | b0"
+  },
+  "classes": {
+    "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor": {
+      "access": 1057,
+      "fields": [
+        {
+          "access": 68,
+          "descriptor": "Z",
+          "name": "enabled"
+        },
+        {
+          "access": 68,
+          "descriptor": "[F",
+          "name": "gainEnv"
+        },
+        {
+          "access": 4,
+          "descriptor": "D",
+          "name": "envRate"
+        },
+        {
+          "access": 4,
+          "descriptor": "I",
+          "name": "envFrames"
+        },
+        {
+          "access": 66,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/PublishedGain;",
+          "name": "published"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "publicationSequence"
+        },
+        {
+          "access": 2,
+          "descriptor": "I",
+          "name": "preparedRateHz"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "preparedFrameCursor"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/DenseGainCursor;",
+          "name": "denseCursor"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/SparseGainCursor;",
+          "name": "sparseCursor"
+        },
+        {
+          "access": 66,
+          "descriptor": "D",
+          "name": "currentGrDb"
+        }
+      ],
+      "interfaces": [
+        "com/quickmaster/processing/AudioProcessor"
+      ],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Z",
+          "name": "usesAnalysis"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "getLatencyFrames"
+        },
+        {
+          "access": 1,
+          "descriptor": "(IJ)V",
+          "name": "prepare"
+        },
+        {
+          "access": 1,
+          "descriptor": "(J)V",
+          "name": "setPlaybackPosition"
+        },
+        {
+          "access": 33,
+          "descriptor": "([FI)V",
+          "name": "analyze"
+        },
+        {
+          "access": 1,
+          "descriptor": "([FI)[F",
+          "name": "process"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Z",
+          "name": "isEnabled"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Z)V",
+          "name": "setEnabled"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "getGainReductionDb"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Z",
+          "name": "isAnalyzed"
+        },
+        {
+          "access": 1028,
+          "descriptor": "([FIII)V",
+          "name": "computeFeatures"
+        },
+        {
+          "access": 1028,
+          "descriptor": "()V",
+          "name": "mapFeaturesToGain"
+        },
+        {
+          "access": 20,
+          "descriptor": "()I",
+          "name": "analysisRateHz"
+        },
+        {
+          "access": 52,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/SparseGainSchedule;I)V",
+          "name": "publishStructural"
+        },
+        {
+          "access": 52,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/AnalysisStatus;)V",
+          "name": "publishUnit"
+        },
+        {
+          "access": 4,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/GainSchedule;",
+          "name": "mapFeaturesToSchedule"
+        },
+        {
+          "access": 36,
+          "descriptor": "()V",
+          "name": "remap"
+        },
+        {
+          "access": 33,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/AnalysisDynamicsProcessor;)V",
+          "name": "adoptEnvelope"
+        },
+        {
+          "access": 48,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/PublishedGain;)V",
+          "name": "adoptPublication"
+        },
+        {
+          "access": 32,
+          "descriptor": "()V",
+          "name": "clearAnalysis"
+        },
+        {
+          "access": 0,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/PublishedGain;",
+          "name": "publishedGain"
+        },
+        {
+          "access": 12,
+          "descriptor": "([FIII)D",
+          "name": "primeLevel"
+        },
+        {
+          "access": 2,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/PublishedGain;[FIIJ)D",
+          "name": "renderDenseLegacy"
+        },
+        {
+          "access": 4,
+          "descriptor": "()F",
+          "name": "minimumLegacyGain"
+        },
+        {
+          "access": 2,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/PublishedGain;[FIIJ)D",
+          "name": "renderSparseDb"
+        },
+        {
+          "access": 10,
+          "descriptor": "([FII)Z",
+          "name": "validAnalysisInput"
+        },
+        {
+          "access": 10,
+          "descriptor": "([F)Z",
+          "name": "finiteBuffer"
+        },
+        {
+          "access": 2,
+          "descriptor": "()V",
+          "name": "clearLegacyState"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/GainSchedule": {
+      "access": 1536,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1025,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/GainDomain;",
+          "name": "domain"
+        },
+        {
+          "access": 1025,
+          "descriptor": "()J",
+          "name": "sourceFrames"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/LevelerProcessor": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 25,
+          "constant": "D:3fe0000000000000",
+          "descriptor": "D",
+          "name": "DEFAULT_LEVELING"
+        },
+        {
+          "access": 25,
+          "constant": "D:0",
+          "descriptor": "D",
+          "name": "MIN_LEVELING"
+        },
+        {
+          "access": 25,
+          "constant": "D:3ff0000000000000",
+          "descriptor": "D",
+          "name": "MAX_LEVELING"
+        },
+        {
+          "access": 25,
+          "constant": "D:3fe0000000000000",
+          "descriptor": "D",
+          "name": "DEFAULT_SPEED"
+        },
+        {
+          "access": 25,
+          "constant": "D:0",
+          "descriptor": "D",
+          "name": "MIN_SPEED"
+        },
+        {
+          "access": 25,
+          "constant": "D:3ff0000000000000",
+          "descriptor": "D",
+          "name": "MAX_SPEED"
+        },
+        {
+          "access": 25,
+          "constant": "D:4020000000000000",
+          "descriptor": "D",
+          "name": "MIN_SECTION_SEC"
+        },
+        {
+          "access": 66,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;",
+          "name": "shadowAnalysis"
+        },
+        {
+          "access": 66,
+          "descriptor": "D",
+          "name": "leveling"
+        },
+        {
+          "access": 66,
+          "descriptor": "D",
+          "name": "speed"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "getLeveling"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "getSpeed"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Ljava/lang/String;",
+          "name": "getAnalysisDiagnostic"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;",
+          "name": "getShadowAnalysis"
+        },
+        {
+          "access": 33,
+          "descriptor": "(D)V",
+          "name": "setLeveling"
+        },
+        {
+          "access": 33,
+          "descriptor": "(D)V",
+          "name": "setSpeed"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "getMedianLufs"
+        },
+        {
+          "access": 33,
+          "descriptor": "(DD)Lcom/quickmaster/processing/dynamics/LevelerProcessor;",
+          "name": "forkForAnalysis"
+        },
+        {
+          "access": 33,
+          "descriptor": "([FI)V",
+          "name": "analyze"
+        },
+        {
+          "access": 33,
+          "descriptor": "([FILcom/quickmaster/processing/dynamics/leveler/CancellationToken;)V",
+          "name": "analyze"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/AnalysisDynamicsProcessor;)V",
+          "name": "adoptEnvelope"
+        },
+        {
+          "access": 32,
+          "descriptor": "()V",
+          "name": "clearAnalysis"
+        },
+        {
+          "access": 4,
+          "descriptor": "([FIII)V",
+          "name": "computeFeatures"
+        },
+        {
+          "access": 4,
+          "descriptor": "()V",
+          "name": "mapFeaturesToGain"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[B)Z",
+          "name": "matches"
+        },
+        {
+          "access": 10,
+          "descriptor": "([FILcom/quickmaster/processing/dynamics/leveler/CancellationToken;)[B",
+          "name": "fingerprint"
+        }
+      ],
+      "superclass": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor"
+    },
+    "com/quickmaster/processing/dynamics/PublishedGain": {
+      "access": 48,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/GainSchedule;",
+          "name": "schedule"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "sourceRateHz"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "sourceChannels"
+        },
+        {
+          "access": 18,
+          "descriptor": "J",
+          "name": "analysisGeneration"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/AnalysisStatus;",
+          "name": "status"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 0,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/GainSchedule;IIJLcom/quickmaster/processing/dynamics/AnalysisStatus;)V",
+          "name": "<init>"
+        },
+        {
+          "access": 8,
+          "descriptor": "(JLcom/quickmaster/processing/dynamics/AnalysisStatus;)Lcom/quickmaster/processing/dynamics/PublishedGain;",
+          "name": "unit"
+        },
+        {
+          "access": 0,
+          "descriptor": "(I)Z",
+          "name": "isRenderableFor"
+        },
+        {
+          "access": 17,
+          "descriptor": "()Ljava/lang/String;",
+          "name": "toString"
+        },
+        {
+          "access": 17,
+          "descriptor": "()I",
+          "name": "hashCode"
+        },
+        {
+          "access": 17,
+          "descriptor": "(Ljava/lang/Object;)Z",
+          "name": "equals"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/GainSchedule;",
+          "name": "schedule"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "sourceRateHz"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "sourceChannels"
+        },
+        {
+          "access": 1,
+          "descriptor": "()J",
+          "name": "analysisGeneration"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/AnalysisStatus;",
+          "name": "status"
+        }
+      ],
+      "superclass": "java/lang/Record"
+    },
+    "com/quickmaster/processing/dynamics/SparseGainCursor": {
+      "access": 48,
+      "fields": [
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "generation"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "nextPreparedFrame"
+        },
+        {
+          "access": 2,
+          "descriptor": "I",
+          "name": "pieceIndex"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 0,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 0,
+          "descriptor": "(J)V",
+          "name": "invalidate"
+        },
+        {
+          "access": 0,
+          "descriptor": "(JJLcom/quickmaster/processing/dynamics/SparseGainSchedule;D)V",
+          "name": "align"
+        },
+        {
+          "access": 0,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/SparseGainSchedule;D)D",
+          "name": "gainDbAt"
+        },
+        {
+          "access": 0,
+          "descriptor": "(J)V",
+          "name": "advanceTo"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/SparseGainSchedule": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "sourceRateHz"
+        },
+        {
+          "access": 18,
+          "descriptor": "J",
+          "name": "sourceFrames"
+        },
+        {
+          "access": 18,
+          "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/GainPiece;",
+          "name": "pieces"
+        }
+      ],
+      "interfaces": [
+        "com/quickmaster/processing/dynamics/GainSchedule"
+      ],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(IJ[Lcom/quickmaster/processing/dynamics/leveler/model/GainPiece;)V",
+          "name": "<init>"
+        },
+        {
+          "access": 9,
+          "descriptor": "(IJ)Lcom/quickmaster/processing/dynamics/SparseGainSchedule;",
+          "name": "unit"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/GainDomain;",
+          "name": "domain"
+        },
+        {
+          "access": 1,
+          "descriptor": "()J",
+          "name": "sourceFrames"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "sourceRateHz"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "pieceCount"
+        },
+        {
+          "access": 1,
+          "descriptor": "(I)Lcom/quickmaster/processing/dynamics/leveler/model/GainPiece;",
+          "name": "pieceAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Z",
+          "name": "isUnit"
+        },
+        {
+          "access": 1,
+          "descriptor": "(D)I",
+          "name": "pieceIndexAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "(D)D",
+          "name": "gainDbAt"
+        },
+        {
+          "access": 0,
+          "descriptor": "(DI)D",
+          "name": "gainDbAtPiece"
+        },
+        {
+          "access": 10,
+          "descriptor": "(D)Z",
+          "name": "validGain"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/BodyContextGate": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(ILcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;)Lcom/quickmaster/processing/dynamics/leveler/BodyEligibility;",
+          "name": "evaluate"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor;Lcom/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "name": "compare"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)[D",
+          "name": "assess"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)D",
+          "name": "contextDistance"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)D",
+          "name": "intentContextDistance"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)Z",
+          "name": "finiteContext"
+        },
+        {
+          "access": 10,
+          "descriptor": "(DD)Z",
+          "name": "ambiguous"
+        },
+        {
+          "access": 10,
+          "descriptor": "(DD)Z",
+          "name": "sameSignClass"
+        },
+        {
+          "access": 10,
+          "descriptor": "(D)I",
+          "name": "signClass"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 26,
+          "constant": "I:96",
+          "descriptor": "I",
+          "name": "DECODED"
+        },
+        {
+          "access": 26,
+          "constant": "D:3d719799812dea11",
+          "descriptor": "D",
+          "name": "TIE"
+        },
+        {
+          "access": 26,
+          "constant": "D:4008151824c7587f",
+          "descriptor": "D",
+          "name": "POWER_DOUBLING_DB"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;",
+          "name": "compare"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;)Z",
+          "name": "validInput"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;",
+          "name": "kernel"
+        },
+        {
+          "access": 10,
+          "descriptor": "(JII)I",
+          "name": "firstCell"
+        },
+        {
+          "access": 10,
+          "descriptor": "(JII)I",
+          "name": "endCell"
+        },
+        {
+          "access": 10,
+          "descriptor": "(JJ)J",
+          "name": "ceilDiv"
+        },
+        {
+          "access": 10,
+          "descriptor": "(IIII)I",
+          "name": "lifted"
+        },
+        {
+          "access": 10,
+          "descriptor": "(IILcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;)J",
+          "name": "center"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;I)I",
+          "name": "nearestLong"
+        },
+        {
+          "access": 10,
+          "descriptor": "(IIJJJ)Z",
+          "name": "eligible"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;ZI[DI)V",
+          "name": "decodeTone"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;II[DI)V",
+          "name": "decode"
+        },
+        {
+          "access": 10,
+          "descriptor": "([DI[DII)D",
+          "name": "tonalDistance"
+        },
+        {
+          "access": 10,
+          "descriptor": "(B)Z",
+          "name": "spectral"
+        },
+        {
+          "access": 10,
+          "descriptor": "(B)Z",
+          "name": "tonal"
+        },
+        {
+          "access": 10,
+          "descriptor": "(BBBB)Z",
+          "name": "validPair"
+        },
+        {
+          "access": 10,
+          "descriptor": "([DBB[DIBBI[D)V",
+          "name": "distance"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+          "name": "cancelled"
+        },
+        {
+          "access": 10,
+          "descriptor": "(D)D",
+          "name": "clamp"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;II)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;",
+          "name": "rejected"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;",
+          "name": "extract"
+        },
+        {
+          "access": 10,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;III[S[BI)Z",
+          "name": "extractBranch"
+        },
+        {
+          "access": 10,
+          "descriptor": "([DIIID[D[DLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+          "name": "tonal"
+        },
+        {
+          "access": 10,
+          "descriptor": "([DII[D[D[DLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+          "name": "timbre"
+        },
+        {
+          "access": 10,
+          "descriptor": "([DIIDD)D",
+          "name": "maximum"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;I)I",
+          "name": "count"
+        },
+        {
+          "access": 10,
+          "descriptor": "(I)I",
+          "name": "fftSize"
+        },
+        {
+          "access": 10,
+          "descriptor": "(II)D",
+          "name": "hann"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+          "name": "cancelled"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/FiniteTruePeakStream": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 25,
+          "constant": "I:6",
+          "descriptor": "I",
+          "name": "TAIL_FRAMES"
+        },
+        {
+          "access": 25,
+          "constant": "I:65536",
+          "descriptor": "I",
+          "name": "MAX_CHUNK_FRAMES"
+        },
+        {
+          "access": 26,
+          "descriptor": "[[D",
+          "name": "ANNEX2"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "channels"
+        },
+        {
+          "access": 18,
+          "descriptor": "[Lcom/dspark/analysis/TruePeak;",
+          "name": "vendor"
+        },
+        {
+          "access": 18,
+          "descriptor": "[[D",
+          "name": "history"
+        },
+        {
+          "access": 18,
+          "descriptor": "[I",
+          "name": "writePositions"
+        },
+        {
+          "access": 2,
+          "descriptor": "J",
+          "name": "framesAccepted"
+        },
+        {
+          "access": 2,
+          "descriptor": "I",
+          "name": "tailFrames"
+        },
+        {
+          "access": 2,
+          "descriptor": "Z",
+          "name": "finished"
+        },
+        {
+          "access": 2,
+          "descriptor": "Z",
+          "name": "invalid"
+        },
+        {
+          "access": 2,
+          "descriptor": "D",
+          "name": "maximum"
+        },
+        {
+          "access": 2,
+          "descriptor": "D",
+          "name": "lastFramePeak"
+        },
+        {
+          "access": 2,
+          "descriptor": "D",
+          "name": "tailMaximum"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(I)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(IZ)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "([FII)V",
+          "name": "accept"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "finish"
+        },
+        {
+          "access": 1,
+          "descriptor": "()J",
+          "name": "framesAccepted"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "tailFrames"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "maximumBeforeFinish"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "lastFramePeak"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "tailMaximum"
+        },
+        {
+          "access": 2,
+          "descriptor": "(ID)V",
+          "name": "observe"
+        },
+        {
+          "access": 8,
+          "descriptor": "()V",
+          "name": "<clinit>"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/GainPlanner": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisCache;Lcom/quickmaster/processing/dynamics/leveler/model/ControlState;)Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;",
+          "name": "plan"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/LevelerAnalysisEngine": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 25,
+          "constant": "S:QM-LEVELER-S001-COMPARISON-V2",
+          "descriptor": "Ljava/lang/String;",
+          "name": "ALGORITHM_ID"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;",
+          "name": "analyzeShadow"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/ProtectionDecision;JI)Lcom/quickmaster/processing/dynamics/leveler/model/ProtectionDecision;",
+          "name": "protectShortTransition"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;",
+          "name": "rejected"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;Lcom/quickmaster/processing/dynamics/leveler/model/StandardValidationReport;)[Ljava/lang/Object;",
+          "name": "diagnostics"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;Lcom/quickmaster/processing/dynamics/leveler/model/GroupingResult;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;)Lcom/quickmaster/processing/dynamics/leveler/model/ShadowMemoryCounters;",
+          "name": "counters"
+        },
+        {
+          "access": 10,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)[B",
+          "name": "fingerprint"
+        },
+        {
+          "access": 10,
+          "descriptor": "(JJ)J",
+          "name": "ceilDiv"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 25,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;",
+          "name": "V1"
+        },
+        {
+          "access": 25,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;",
+          "name": "V2"
+        },
+        {
+          "access": 18,
+          "descriptor": "Ljava/lang/String;",
+          "name": "profileId"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 2,
+          "descriptor": "(Ljava/lang/String;)V",
+          "name": "<init>"
+        },
+        {
+          "access": 8,
+          "descriptor": "()V",
+          "name": "<clinit>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Ljava/lang/String;",
+          "name": "profileId"
+        },
+        {
+          "access": 1,
+          "descriptor": "(JI)Z",
+          "name": "isShortTransition"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "descriptorBins"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "sketchBins"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "maximumSegments"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "minimumValidBins"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "maximumInvalidRun"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "structuralHopSec"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "noveltyMadMultiplier"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "boundaryRadiusSec"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "minimumBoundarySeparationSec"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "durationRatioMinimum"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "durationRatioMaximum"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "groupH"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "groupT"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "groupA"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "groupC"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "groupSeparation"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "pairH"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "pairT"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "pairA"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "pairC"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "pairMargin"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "deadbandLu"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/LoudnessConformanceGuard": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/StandardValidationReport;)Z",
+          "name": "authorizesCurrentBuild"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/ConformanceRequirement;Lcom/quickmaster/processing/dynamics/leveler/ConformanceRun;Lcom/quickmaster/processing/dynamics/leveler/BuildAlgorithmBinding;)Lcom/quickmaster/processing/dynamics/leveler/model/StandardValidationReport;",
+          "name": "verify"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/PeakSafetyProfile": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 25,
+          "constant": "S:BS1770-ANNEX2-4X-12TAP-FINITE6-V1",
+          "descriptor": "Ljava/lang/String;",
+          "name": "KERNEL_ID"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 2,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 9,
+          "descriptor": "()Z",
+          "name": "tileOptimizationEnabled"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/RampAllocator": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;Lcom/quickmaster/processing/dynamics/leveler/model/ControlState;)Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;",
+          "name": "allocate"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;D)Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;",
+          "name": "allocateFixed"
+        },
+        {
+          "access": 10,
+          "descriptor": "([Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;J)[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;",
+          "name": "ordered"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;)Z",
+          "name": "before"
+        },
+        {
+          "access": 10,
+          "descriptor": "([Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;II)Z",
+          "name": "active"
+        },
+        {
+          "access": 10,
+          "descriptor": "([Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;IIID)D",
+          "name": "capacity"
+        },
+        {
+          "access": 10,
+          "descriptor": "([Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;IIIDD[D[D)Z",
+          "name": "fits"
+        },
+        {
+          "access": 10,
+          "descriptor": "([Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;II[DD[D)V",
+          "name": "reservations"
+        },
+        {
+          "access": 10,
+          "descriptor": "([Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;III[D)Z",
+          "name": "fitsReservations"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;[D[DLcom/quickmaster/processing/dynamics/leveler/model/ControlState;I)Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;",
+          "name": "emit"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Ljava/util/ArrayList;DDDD)V",
+          "name": "add"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Ljava/util/ArrayList;I)Z",
+          "name": "postcheck"
+        },
+        {
+          "access": 10,
+          "descriptor": "(D)D",
+          "name": "clamp"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ControlState;Z)Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;",
+          "name": "unit"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;)Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "build"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;)Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;",
+          "name": "contextualLoudness"
+        },
+        {
+          "access": 8,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;J)Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "structuralBins"
+        },
+        {
+          "access": 10,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;)Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;",
+          "name": "sketch"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;I)[D",
+          "name": "loudnessStats"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;II[D[JI)Z",
+          "name": "loudnessQuartile"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;I)[D",
+          "name": "activityStats"
+        },
+        {
+          "access": 10,
+          "descriptor": "([DII)D",
+          "name": "medianRange"
+        },
+        {
+          "access": 10,
+          "descriptor": "([DJJJ)D",
+          "name": "boundaryNovelty"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/StructuralBin;)Z",
+          "name": "valid"
+        },
+        {
+          "access": 10,
+          "descriptor": "(ID)I",
+          "name": "nearestRank"
+        },
+        {
+          "access": 10,
+          "descriptor": "(JJ)J",
+          "name": "ceilDiv"
+        },
+        {
+          "access": 10,
+          "descriptor": "(DDD)D",
+          "name": "clamp"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/TruePeakSafety": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "()V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/SafetyResult;",
+          "name": "constrain"
+        },
+        {
+          "access": 10,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/SparseGainSchedule;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)D",
+          "name": "scan"
+        },
+        {
+          "access": 10,
+          "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/RampPlan;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+          "name": "protectedInputExceedsCeiling"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+          "name": "cancelled"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/SparseGainSchedule;Lcom/quickmaster/processing/dynamics/leveler/model/SafetyStatus;DDDDI)Lcom/quickmaster/processing/dynamics/leveler/model/SafetyResult;",
+          "name": "result"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/SparseGainSchedule;Lcom/quickmaster/processing/dynamics/leveler/model/SafetyStatus;DDDI)Lcom/quickmaster/processing/dynamics/leveler/model/SafetyResult;",
+          "name": "failure"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "previousActivityRatio"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "nextActivityRatio"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "entryLoudness12"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "exitLoudness12"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "leftNoveltyMad"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "rightNoveltyMad"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "loudnessAvailabilityMask"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(DDDDDD)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(DDDDDDI)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "previousActivityRatio"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "nextActivityRatio"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "entryLoudness12"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "exitLoudness12"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "leftNoveltyMad"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "rightNoveltyMad"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "loudnessAvailabilityMask"
+        },
+        {
+          "access": 1,
+          "descriptor": "(I)D",
+          "name": "componentAt"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 18,
+          "descriptor": "[S",
+          "name": "shortValues"
+        },
+        {
+          "access": 18,
+          "descriptor": "[S",
+          "name": "longValues"
+        },
+        {
+          "access": 18,
+          "descriptor": "[B",
+          "name": "shortFlags"
+        },
+        {
+          "access": 18,
+          "descriptor": "[B",
+          "name": "longFlags"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[S[S[B[B)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "shortCount"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "longCount"
+        },
+        {
+          "access": 1,
+          "descriptor": "(I)B",
+          "name": "shortFlagsAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "(I)B",
+          "name": "longFlagsAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "(II)S",
+          "name": "shortValueAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "(II)S",
+          "name": "longValueAt"
+        },
+        {
+          "access": 10,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;I)I",
+          "name": "count"
+        },
+        {
+          "access": 10,
+          "descriptor": "(IIII)I",
+          "name": "index"
+        },
+        {
+          "access": 10,
+          "descriptor": "([S[BI)V",
+          "name": "validate"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/ControlState": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "leveling"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "speed"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(DD)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "leveling"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "speed"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/GainPiece": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "startFrame"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "endFrame"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "startDb"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "endDb"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/GainPieceShape;",
+          "name": "shape"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(DDDDLcom/quickmaster/processing/dynamics/leveler/model/GainPieceShape;)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "startFrame"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "endFrame"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "startDb"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "endDb"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/GainPieceShape;",
+          "name": "shape"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/RampPlan": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/SparseGainSchedule;",
+          "name": "schedule"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 18,
+          "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;",
+          "name": "regions"
+        },
+        {
+          "access": 18,
+          "descriptor": "[D",
+          "name": "targets"
+        },
+        {
+          "access": 18,
+          "descriptor": "[D",
+          "name": "caps"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ControlState;",
+          "name": "controls"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "capacityZeroComponents"
+        },
+        {
+          "access": 18,
+          "descriptor": "Z",
+          "name": "valid"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/SparseGainSchedule;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;[D[DLcom/quickmaster/processing/dynamics/leveler/model/ControlState;IZ)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/SparseGainSchedule;",
+          "name": "schedule"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "regionCount"
+        },
+        {
+          "access": 1,
+          "descriptor": "(I)Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;",
+          "name": "regionAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "()[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;",
+          "name": "regions"
+        },
+        {
+          "access": 1,
+          "descriptor": "(I)D",
+          "name": "targetAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "(I)D",
+          "name": "componentCapAt"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/ControlState;",
+          "name": "controls"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "capacityZeroComponents"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Z",
+          "name": "valid"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/RampRegion": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "J",
+          "name": "startFrame"
+        },
+        {
+          "access": 18,
+          "descriptor": "J",
+          "name": "endFrame"
+        },
+        {
+          "access": 18,
+          "descriptor": "Ljava/lang/String;",
+          "name": "id"
+        },
+        {
+          "access": 18,
+          "descriptor": "Z",
+          "name": "protectedRegion"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "weightedDb"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(JJLjava/lang/String;ZD)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()J",
+          "name": "startFrame"
+        },
+        {
+          "access": 1,
+          "descriptor": "()J",
+          "name": "endFrame"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Ljava/lang/String;",
+          "name": "id"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Z",
+          "name": "protectedRegion"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "weightedDb"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/SafetyProof": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SafetyStatus;",
+          "name": "status"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "inputTp"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "candidateTp"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "ceilingLinear"
+        },
+        {
+          "access": 18,
+          "descriptor": "D",
+          "name": "boostScale"
+        },
+        {
+          "access": 18,
+          "descriptor": "I",
+          "name": "candidatePasses"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/SafetyStatus;DDDDI)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Z",
+          "name": "proven"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/SafetyStatus;",
+          "name": "status"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "inputTp"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "candidateTp"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "ceilingLinear"
+        },
+        {
+          "access": 1,
+          "descriptor": "()D",
+          "name": "boostScale"
+        },
+        {
+          "access": 1,
+          "descriptor": "()I",
+          "name": "candidatePasses"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/SafetyResult": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/SparseGainSchedule;",
+          "name": "schedule"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SafetyProof;",
+          "name": "proof"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/SparseGainSchedule;Lcom/quickmaster/processing/dynamics/leveler/model/SafetyProof;)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/SparseGainSchedule;",
+          "name": "schedule"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/SafetyProof;",
+          "name": "proof"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisCache": {
+      "access": 49,
+      "fields": [
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 18,
+          "descriptor": "[B",
+          "name": "pcmFingerprintSha256"
+        },
+        {
+          "access": 18,
+          "descriptor": "Ljava/lang/String;",
+          "name": "algorithmId"
+        },
+        {
+          "access": 18,
+          "descriptor": "Ljava/lang/String;",
+          "name": "profileId"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;",
+          "name": "loudness"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;",
+          "name": "features"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;",
+          "name": "layout"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "descriptors"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "protections"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;",
+          "name": "similarity"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/GroupingResult;",
+          "name": "grouping"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;",
+          "name": "referencePlan"
+        },
+        {
+          "access": 18,
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;",
+          "name": "comparison"
+        }
+      ],
+      "interfaces": [],
+      "methods": [
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[BLjava/lang/String;Ljava/lang/String;Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;Lcom/quickmaster/processing/dynamics/leveler/model/GroupingResult;Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[BLjava/lang/String;Ljava/lang/String;Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;Lcom/quickmaster/processing/dynamics/leveler/model/GroupingResult;Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;)V",
+          "name": "<init>"
+        },
+        {
+          "access": 2,
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[BLjava/lang/String;Ljava/lang/String;Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;Lcom/quickmaster/processing/dynamics/leveler/model/GroupingResult;Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Z)V",
+          "name": "<init>"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+          "name": "format"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Ljava/lang/String;",
+          "name": "algorithmId"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Ljava/lang/String;",
+          "name": "profileId"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;",
+          "name": "loudness"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;",
+          "name": "features"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;",
+          "name": "layout"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "descriptors"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+          "name": "protections"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityMatrix;",
+          "name": "similarity"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/GroupingResult;",
+          "name": "grouping"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;",
+          "name": "referencePlan"
+        },
+        {
+          "access": 1,
+          "descriptor": "()Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;",
+          "name": "comparison"
+        },
+        {
+          "access": 1,
+          "descriptor": "()[B",
+          "name": "copyPcmFingerprintSha256"
+        }
+      ],
+      "superclass": "java/lang/Object"
+    }
+  },
+  "comparisonCalls": {
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.<init>()V": [
+      "b7:java/lang/Object.<init>()V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z": [
+      "b6:com/quickmaster/processing/dynamics/leveler/CancellationToken.isCancelled()Z"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.ceilDiv(JJ)J": [],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.center(IILcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;)J": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b8:java/lang/Math.min(JJ)J",
+      "b8:java/lang/Math.multiplyExact(JI)J"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.clamp(D)D": [
+      "b8:java/lang/Math.max(DD)D",
+      "b8:java/lang/Math.min(DD)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.compare(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.endExclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.startInclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SimilarityScore.a()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SimilarityScore.chromaRotation()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SimilarityScore.isAccepted()Z",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SimilarityScore.validBins()I",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/FrameRange.<init>(JJ)V",
+      "b7:java/lang/IllegalStateException.<init>(Ljava/lang/String;)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.kernel(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.rejected(Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;II)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.validInput(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;)Z",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.max(JJ)J",
+      "b8:java/lang/Math.min(JJ)J",
+      "b8:java/lang/StrictMath.abs(D)D",
+      "b8:java/lang/StrictMath.round(D)J"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.decode(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;II[DI)V": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.shortValueAt(II)S",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.decodeTone(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;ZI[DI)V",
+      "b8:java/lang/StrictMath.pow(DD)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.decodeTone(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;ZI[DI)V": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.longValueAt(II)S",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.shortValueAt(II)S"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.distance([DBB[DIBBI[D)V": [
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.tonal(B)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.tonalDistance([DI[DII)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.validPair(BBBB)Z",
+      "b8:java/lang/Math.max(DD)D",
+      "b8:java/lang/StrictMath.exp(D)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.eligible(IIJJJ)Z": [
+      "b8:java/lang/Math.multiplyExact(JJ)J",
+      "b8:java/lang/StrictMath.abs(J)J"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.endCell(JII)I": [
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.ceilDiv(JJ)J",
+      "b8:java/lang/Math.multiplyExact(JI)J",
+      "b8:java/lang/Math.toIntExact(J)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.firstCell(JII)I": [
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.ceilDiv(JJ)J",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.multiplyExact(JI)J",
+      "b8:java/lang/Math.toIntExact(J)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.kernel(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.longFlagsAt(I)B",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.shortFlagsAt(I)B",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.endExclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.lengthFrames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.startInclusive()J",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/SimilarityScore.<init>(DDDDIILcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.ceilDiv(JJ)J",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.clamp(D)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.decode(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;II[DI)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.decodeTone(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;ZI[DI)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.distance([DBB[DIBBI[D)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.eligible(IIJJJ)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.endCell(JII)I",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.firstCell(JII)I",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.lifted(IIII)I",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.nearestLong(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;I)I",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.rejected(Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;II)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.tonal(B)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.tonalDistance([DI[DII)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.validPair(BBBB)Z",
+      "b8:java/lang/Double.isFinite(D)Z",
+      "b8:java/lang/Math.addExact(II)I",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.max(DD)D",
+      "b8:java/lang/Math.max(II)I",
+      "b8:java/lang/Math.max(JJ)J",
+      "b8:java/lang/Math.min(DD)D",
+      "b8:java/lang/Math.min(II)I",
+      "b8:java/lang/Math.min(JJ)J",
+      "b8:java/lang/Math.multiplyExact(II)I",
+      "b8:java/lang/Math.multiplyExact(JI)J",
+      "b8:java/lang/Math.multiplyExact(JJ)J",
+      "b8:java/lang/Math.toIntExact(J)I",
+      "b8:java/util/Arrays.fill([DD)V",
+      "b8:java/util/Arrays.fill([JJ)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.lifted(IIII)I": [
+      "b8:java/lang/Math.addExact(II)I",
+      "b8:java/lang/Math.multiplyExact(JI)J",
+      "b8:java/lang/Math.toIntExact(J)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.nearestLong(Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;I)I": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.format()Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.longCount()I",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.center(IILcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;)J",
+      "b8:java/lang/Math.max(II)I",
+      "b8:java/lang/Math.min(II)I",
+      "b8:java/lang/Math.multiplyExact(JJ)J",
+      "b8:java/lang/Math.toIntExact(J)I",
+      "b8:java/lang/StrictMath.abs(J)J"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.rejected(Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;II)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityScore;": [
+      "b7:com/quickmaster/processing/dynamics/leveler/model/SimilarityScore.<init>(DDDDIILcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.spectral(B)Z": [],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.tonal(B)Z": [],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.tonalDistance([DI[DII)D": [
+      "b8:java/lang/StrictMath.abs(D)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.validInput(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;)Z": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.format()Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.endExclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.lengthFrames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.startInclusive()J"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonComparator.validPair(BBBB)Z": [
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.spectral(B)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonComparator.tonal(B)Z"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.<init>()V": [
+      "b7:java/lang/Object.<init>()V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z": [
+      "b6:com/quickmaster/processing/dynamics/leveler/CancellationToken.isCancelled()Z"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.count(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;I)I": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.multiplyExact(JJ)J",
+      "b8:java/lang/Math.toIntExact(J)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.extract([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.channels()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.<init>(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[S[S[B[B)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.count(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;I)I",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.extractBranch([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;III[S[BI)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.fftSize(I)I",
+      "b8:java/lang/Float.isFinite(F)Z",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.max(II)I",
+      "b8:java/lang/Math.multiplyExact(II)I",
+      "b8:java/lang/Math.multiplyExact(JI)J",
+      "b8:java/lang/Math.multiplyExact(JJ)J",
+      "b8:java/lang/Math.toIntExact(J)I",
+      "b8:java/lang/StrictMath.round(D)J"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.extractBranch([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;III[S[BI)Z": [
+      "b6:com/dspark/core/FFTReal.computeMagnitudes([F[F)V",
+      "b6:com/dspark/core/FFTReal.forward([F[F)V",
+      "b6:com/dspark/core/FFTReal.getFrequencyDomainSize()I",
+      "b6:com/dspark/core/FFTReal.getNumBins()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.channels()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b7:com/dspark/core/FFTReal.<init>(I)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.hann(II)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.maximum([DIIDD)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.timbre([DII[D[D[DLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.tonal([DIIID[D[DLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:java/lang/Double.isFinite(D)Z",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.max(JJ)J",
+      "b8:java/lang/Math.min(DD)D",
+      "b8:java/lang/Math.min(JJ)J",
+      "b8:java/lang/Math.multiplyExact(JI)J",
+      "b8:java/lang/Math.toIntExact(J)I",
+      "b8:java/lang/StrictMath.pow(DD)D",
+      "b8:java/lang/StrictMath.round(D)J",
+      "b8:java/util/Arrays.fill([DD)V",
+      "b8:java/util/Arrays.fill([FF)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.fftSize(I)I": [
+      "b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V",
+      "b8:java/lang/Math.multiplyExact(II)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.hann(II)D": [
+      "b8:java/lang/StrictMath.cos(D)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.maximum([DIIDD)D": [
+      "b8:java/lang/Math.max(DD)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.timbre([DII[D[D[DLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z": [
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:java/lang/Double.isFinite(D)Z",
+      "b8:java/lang/Math.max(DD)D",
+      "b8:java/lang/Math.max(II)I",
+      "b8:java/lang/Math.min(DD)D",
+      "b8:java/lang/StrictMath.ceil(D)D",
+      "b8:java/lang/StrictMath.log10(D)D",
+      "b8:java/util/Arrays.sort([DII)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.tonal([DIIID[D[DLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z": [
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.cancelled(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/ComparisonFeatureExtractor.maximum([DIIDD)D",
+      "b8:java/lang/Double.isFinite(D)Z",
+      "b8:java/lang/Math.abs(I)I",
+      "b8:java/lang/Math.max(DD)D",
+      "b8:java/lang/Math.max(II)I",
+      "b8:java/lang/Math.min(DD)D",
+      "b8:java/lang/Math.min(II)I",
+      "b8:java/lang/StrictMath.abs(D)D",
+      "b8:java/lang/StrictMath.ceil(D)D",
+      "b8:java/lang/Math.cos(D)D",
+      "b8:java/lang/StrictMath.floor(D)D",
+      "b8:java/lang/StrictMath.log(D)D",
+      "b8:java/lang/StrictMath.log10(D)D",
+      "b8:java/util/Arrays.sort([DII)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/LevelerAnalysisEngine.fingerprint([FLcom/quickmaster/processing/dynamics/leveler/CancellationToken;)[B": [
+      "b6:com/quickmaster/processing/dynamics/leveler/CancellationToken.isCancelled()Z",
+      "b6:java/security/MessageDigest.digest()[B",
+      "b6:java/security/MessageDigest.update([BII)V",
+      "b8:java/lang/Float.floatToRawIntBits(F)I",
+      "b8:java/security/MessageDigest.getInstance(Ljava/lang/String;)Ljava/security/MessageDigest;"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.<init>(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;[S[S[B[B)V": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V",
+      "b7:java/lang/Object.<init>()V",
+      "b8:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.count(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;I)I",
+      "b8:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.validate([S[BI)V",
+      "b8:java/lang/Math.multiplyExact(II)I",
+      "b8:java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.count(Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;I)I": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.multiplyExact(JJ)J",
+      "b8:java/lang/Math.toIntExact(J)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.format()Lcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;": [],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.index(IIII)I": [
+      "b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V",
+      "b8:java/lang/Math.addExact(II)I",
+      "b8:java/lang/Math.multiplyExact(II)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.longCount()I": [],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.longFlagsAt(I)B": [],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.longValueAt(II)S": [
+      "b8:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.index(IIII)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.shortCount()I": [],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.shortFlagsAt(I)B": [],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.shortValueAt(II)S": [
+      "b8:com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.index(IIII)I"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline.validate([S[BI)V": [
+      "b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V"
+    ]
+  },
+  "comparisonSourceScope": "Source-authored declarations and per-method call inventory; no future method-body grant; source-review-before-bytecode.md in comparison-v2-closure-successor-001",
+  "contextCalls": {
+    "com/quickmaster/processing/dynamics/leveler/BodyContextGate.assess(Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)[D": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.loudnessAvailabilityMask()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/PcmSketch.bins()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/PcmSketch.channels()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/PcmSketch.valueAt(II)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/BodyContextGate.intentContextDistance(Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)D",
+      "b8:java/lang/Double.isFinite(D)Z",
+      "b8:java/lang/Math.max(DD)D",
+      "b8:java/lang/StrictMath.abs(D)D",
+      "b8:java/lang/StrictMath.abs(I)I",
+      "b8:java/lang/StrictMath.sqrt(D)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/BodyContextGate.compare(Lcom/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor;Lcom/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor;)Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;": [
+      "b6:com/quickmaster/processing/dynamics/leveler/BodyContextGate.assess(Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)[D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.entryLoudness12()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.exitLoudness12()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.loudnessAvailabilityMask()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.context()Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.sketch()Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;",
+      "b8:com/quickmaster/processing/dynamics/leveler/BodyContextGate.ambiguous(DD)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/BodyContextGate.contextDistance(Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/BodyContextGate.finiteContext(Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/BodyContextGate.sameSignClass(DD)Z",
+      "b8:java/lang/Double.isFinite(D)Z"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/BodyContextGate.evaluate(ILcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;)Lcom/quickmaster/processing/dynamics/leveler/BodyEligibility;": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.loudnessAvailabilityMask()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrozenList.get(I)Ljava/lang/Object;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrozenList.size()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.present()Z",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ProtectionDecision.flags()Lcom/quickmaster/processing/dynamics/leveler/model/ProtectionFlags;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ProtectionDecision.isBlocked()Z",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/ProtectionFlags.reasonBits()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.activitySlopePerSec()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.activitySpread()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.context()Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.foregroundRatio()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.loudnessDeltaLu()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.loudnessSlopeLuPerSec()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.regionalLoudness()Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;",
+      "b7:com/quickmaster/processing/dynamics/leveler/BodyEligibility.<init>(IZLcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;)V",
+      "b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/BodyContextGate.finiteContext(Lcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;)Z",
+      "b8:java/lang/StrictMath.abs(D)D"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.build([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/SegmentLayout;)Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;": [
+      "b6:com/quickmaster/processing/dynamics/leveler/LoudnessAnalyzer.regionalLoudness(Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;I)Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.frames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.sampleRateHz()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/AudioFormat.validatePcm([F)V",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FeatureTimeline.hopFrames()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.endExclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.startInclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrozenList.get(I)Ljava/lang/Object;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrozenList.size()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.lufs()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.present()Z",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentLayout.regions()Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/SegmentLayout.status()Lcom/quickmaster/processing/dynamics/leveler/model/LayoutStatus;",
+      "b7:com/quickmaster/processing/dynamics/leveler/LoudnessAnalyzer.<init>()V",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.<init>(DDDDDDI)V",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/FrozenList.<init>([Ljava/lang/Object;)V",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/SegmentDescriptor.<init>(Lcom/quickmaster/processing/dynamics/leveler/model/SegmentId;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;JLcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;DDDDDDLcom/quickmaster/processing/dynamics/leveler/model/BodyContextVector;Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;)V",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/SegmentId.<init>(I)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/BoundaryDetector.originalNovelty(Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;JLcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;)[D",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.activityStats(Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;I)[D",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.boundaryNovelty([DJJJ)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.clamp(DDD)D",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.contextualLoudness(Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;)Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.loudnessStats(Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;I)[D",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.sketch([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;)Lcom/quickmaster/processing/dynamics/leveler/model/PcmSketch;",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.structuralBins(Lcom/quickmaster/processing/dynamics/leveler/model/FeatureTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;J)Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;",
+      "b8:com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.valid(Lcom/quickmaster/processing/dynamics/leveler/model/StructuralBin;)Z",
+      "b8:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.absent()Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;",
+      "b8:java/lang/Double.isFinite(D)Z"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder.contextualLoudness(Lcom/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline;Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;)Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;": [
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.endExclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/FrameRange.startInclusive()J",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline.hopFrames()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline.momentaryCount()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline.momentaryPowerAt(I)D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline.momentaryValidAt(I)Z",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/LoudnessTimeline.momentaryWindowFrames()I",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.lufs()D",
+      "b6:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.present()Z",
+      "b7:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.<init>(ZD)V",
+      "b8:com/quickmaster/processing/dynamics/leveler/LoudnessCore.fromPower(D)Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;",
+      "b8:com/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness.absent()Lcom/quickmaster/processing/dynamics/leveler/model/MeasuredLoudness;",
+      "b8:java/lang/Double.isFinite(D)Z",
+      "b8:java/lang/Math.addExact(JJ)J",
+      "b8:java/lang/Math.min(JJ)J",
+      "b8:java/lang/Math.subtractExact(JJ)J",
+      "b8:java/lang/Math.toIntExact(J)I",
+      "b8:java/util/Arrays.sort([DII)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.<init>(DDDDDD)V": [
+      "b7:com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.<init>(DDDDDDI)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.<init>(DDDDDDI)V": [
+      "b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V",
+      "b7:java/lang/Object.<init>()V",
+      "b8:java/lang/Double.isFinite(D)Z"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.componentAt(I)D": [
+      "b7:java/lang/IndexOutOfBoundsException.<init>(Ljava/lang/String;)V"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.entryLoudness12()D": [],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.exitLoudness12()D": [],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.leftNoveltyMad()D": [],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.loudnessAvailabilityMask()I": [],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.nextActivityRatio()D": [],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.previousActivityRatio()D": [],
+    "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector.rightNoveltyMad()D": []
+  },
+  "contextSuccessor": {
+    "mask": {
+      "access": 18,
+      "descriptor": "I",
+      "field": "loudnessAvailabilityMask",
+      "maximum": 7,
+      "minimum": 0,
+      "numericDimension": 6,
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector"
+    },
+    "parentRetentionSha256": "dbd591636e5caca299371ddf26f816066b35e50dbb2c681510b23e6d44ea9968",
+    "parentStaticSha256": "950c093f6e1dd5b0d03852211b3af28b01e89055956f04d0075e40769fa0ba2a",
+    "schemaId": "QM-S001-CONTEXT-CLOSURE-1",
+    "sourceHashes": {
+      "com/quickmaster/processing/dynamics/leveler/BodyContextGate": "35c905ade86cbf75169397f8bfb1059dc5c1ad772ef4425d5554d0df2b6ca1c4",
+      "com/quickmaster/processing/dynamics/leveler/SegmentDescriptorBuilder": "e3f1757fbb2e5fc3f35be7b611c2ba3c1e543c6b1d95f6ad0188c06734b1a131",
+      "com/quickmaster/processing/dynamics/leveler/model/BodyContextVector": "99ed12e04529543cea32747a3b02924800216099e2e382f38a37ddfe71062ed5"
+    }
+  },
+  "enums": {
+    "com/quickmaster/processing/dynamics/AnalysisStatus": [
+      "UNIT",
+      "LEGACY_READY",
+      "INVALID_INPUT",
+      "CLEARED",
+      "STRUCTURAL_READY",
+      "STANDARD_VALIDATION_FAILED",
+      "INSUFFICIENT_ANALYSIS",
+      "PEAK_UNSAFE",
+      "CANCELLED",
+      "INFEASIBLE_INPUT_BASELINE"
+    ],
+    "com/quickmaster/processing/dynamics/GainDomain": [
+      "LEGACY_LINEAR",
+      "SPARSE_DB"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/GainPieceShape": [
+      "HOLD",
+      "SMOOTHSTEP"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/SafetyStatus": [
+      "PROVEN",
+      "BOOST_REDUCED",
+      "PEAK_UNSAFE",
+      "INFEASIBLE_INPUT_BASELINE",
+      "INVALID_INPUT",
+      "CANCELLED"
+    ]
+  },
+  "extraCalls": [
+    {
+      "caller": "com/quickmaster/processing/dynamics/LevelerProcessor",
+      "descriptor": "([DII)V",
+      "method": "getMedianLufs",
+      "name": "sort",
+      "opcode": 184,
+      "owner": "java/util/Arrays"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/LevelerProcessor",
+      "descriptor": "([B[B)Z",
+      "method": "matches",
+      "name": "equals",
+      "opcode": 184,
+      "owner": "java/util/Arrays"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/SparseGainSchedule",
+      "descriptor": "()Ljava/lang/Object;",
+      "method": "<init>",
+      "name": "clone",
+      "opcode": 182,
+      "owner": "[Lcom/quickmaster/processing/dynamics/leveler/model/GainPiece;"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/SparseGainSchedule",
+      "descriptor": "(D)Z",
+      "method": "pieceIndexAt",
+      "name": "isNaN",
+      "opcode": 184,
+      "owner": "java/lang/Double"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()Ljava/lang/Object;",
+      "method": "ordered",
+      "name": "clone",
+      "opcode": 182,
+      "owner": "[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/model/RampPlan",
+      "descriptor": "()Ljava/lang/Object;",
+      "method": "<init>",
+      "name": "clone",
+      "opcode": 182,
+      "owner": "[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/model/RampPlan",
+      "descriptor": "()Ljava/lang/Object;",
+      "method": "regions",
+      "name": "clone",
+      "opcode": 182,
+      "owner": "[Lcom/quickmaster/processing/dynamics/leveler/model/RampRegion;"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/model/RampPlan",
+      "descriptor": "()Ljava/lang/Object;",
+      "method": "<init>",
+      "name": "clone",
+      "opcode": 182,
+      "owner": "[D"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()V",
+      "method": "emit",
+      "name": "<init>",
+      "opcode": 183,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "(Ljava/util/Collection;)Z",
+      "method": "emit",
+      "name": "addAll",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()I",
+      "method": "emit",
+      "name": "size",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "([Ljava/lang/Object;)[Ljava/lang/Object;",
+      "method": "emit",
+      "name": "toArray",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()Z",
+      "method": "add",
+      "name": "isEmpty",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()I",
+      "method": "add",
+      "name": "size",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "(I)Ljava/lang/Object;",
+      "method": "add",
+      "name": "get",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "(ILjava/lang/Object;)Ljava/lang/Object;",
+      "method": "add",
+      "name": "set",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "(Ljava/lang/Object;)Z",
+      "method": "add",
+      "name": "add",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()Ljava/util/Iterator;",
+      "method": "postcheck",
+      "name": "iterator",
+      "opcode": 182,
+      "owner": "java/util/ArrayList"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()Z",
+      "method": "postcheck",
+      "name": "hasNext",
+      "opcode": 185,
+      "owner": "java/util/Iterator"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/RampAllocator",
+      "descriptor": "()Ljava/lang/Object;",
+      "method": "postcheck",
+      "name": "next",
+      "opcode": 185,
+      "owner": "java/util/Iterator"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/GainPlanner",
+      "descriptor": "(I)Ljava/lang/String;",
+      "method": "plan",
+      "name": "toString",
+      "opcode": 184,
+      "owner": "java/lang/Integer"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/FiniteTruePeakStream",
+      "descriptor": "()V",
+      "method": "<init>",
+      "name": "<init>",
+      "opcode": 183,
+      "owner": "com/dspark/analysis/TruePeak"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/FiniteTruePeakStream",
+      "descriptor": "()V",
+      "method": "<init>",
+      "name": "reset",
+      "opcode": 182,
+      "owner": "com/dspark/analysis/TruePeak"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/FiniteTruePeakStream",
+      "descriptor": "(D)D",
+      "method": "observe",
+      "name": "process",
+      "opcode": 182,
+      "owner": "com/dspark/analysis/TruePeak"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/PublishedGain",
+      "descriptor": "()V",
+      "method": "<init>",
+      "name": "<init>",
+      "opcode": 183,
+      "owner": "java/lang/Record"
+    }
+  ],
+  "parentSha256": "93a9a36c0fa09fc3ef0e0935b012817a13471102866a5aacc3b4fbe4098f31c5",
+  "retention": {
+    "forbidden": "additional fields, retained source/output PCM, frame-sized active gain, async, uncontrolled statics/I/O",
+    "processor": "shadowAnalysis immutable cache plus inherited one PublishedGain; gainEnv null for Leveler",
+    "rampPlan": "call-local only; regions,targets,caps exact parallel lengths 0..64; no PCM",
+    "schedule": "pieces GainPiece[0..258], defensive clone; source-clock scalar dB",
+    "truePeak": "call-local only; vendor[C] or history[C][16], positions[C], C1..8; static Annex2 exact 4x12; no PCM"
+  },
+  "schemaVersion": "QM-S001-ACTIVE-STATIC-2-COMPARISON"
+}

@@ -19,6 +19,7 @@ import com.dspark.core.DspMath;
  * <p>
  * The single control is <b>Amount</b> (dB of transient boost).
  */
+@SuppressWarnings("deprecation")
 public final class PunchProcessor extends AnalysisDynamicsProcessor
 {
     /** Default and bounds for the punch amount (dB of transient boost). */

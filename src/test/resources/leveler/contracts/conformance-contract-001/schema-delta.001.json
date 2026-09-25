@@ -1,0 +1,1625 @@
+{
+  "schema_version": "QM-M004-CONFORMANCE-DELTA-1",
+  "status": "PROPOSED_NOT_IMPLEMENTED",
+  "base_semantic_schema": "QM-M004-RETENTION-V1",
+  "proposed_semantic_schema": "QM-M004-RETENTION-V2-CONFORMANCE",
+  "scope": "Only official-conformance deltas; unrelated ADR010 facets not included or approved",
+  "classes": [
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformanceRequirement",
+      "classModifiers": "public final",
+      "instanceOwnership": "shared_static_exact_table",
+      "fields": [
+        {
+          "name": "OFFICIAL_LOUDNESS_V1",
+          "type": "com.quickmaster.processing.dynamics.leveler.ConformanceRequirement",
+          "modifiers": "public static final",
+          "initializer": "exact singleton from this schema and runtime-profile.001.json"
+        },
+        {
+          "name": "E_REQ",
+          "type": "int",
+          "modifiers": "public static final",
+          "constantValue": 94
+        },
+        {
+          "name": "requirementId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ituSetId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ituSetVersion",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ituPinnedManifestSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ebuSetId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ebuSetVersion",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ebuPinnedManifestSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "algorithmId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "requiredReadings",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.FrozenList",
+          "modifiers": "private final"
+        }
+      ],
+      "constructor": "private; no public arbitrary requirement"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformanceRun",
+      "classModifiers": "public final",
+      "instanceOwnership": "transient_never_reachable_from_snapshot_or_statics",
+      "fields": [
+        {
+          "name": "ituManifestSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ebuManifestSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "evidence",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.FrozenList",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ebuTermsAuthorized",
+          "type": "boolean",
+          "modifiers": "private final"
+        },
+        {
+          "name": "attempted",
+          "type": "boolean",
+          "modifiers": "private final"
+        },
+        {
+          "name": "failureReason",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "private final"
+        },
+        {
+          "name": "algorithmId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "algorithmSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "profileSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "runnerSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "createdAtEpochSecond",
+          "type": "long",
+          "modifiers": "private final"
+        }
+      ],
+      "constructor": "public, all fields in listed order; state is never an input"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.BuildAlgorithmBinding",
+      "classModifiers": "public final",
+      "instanceOwnership": "transient_never_reachable_from_snapshot_or_statics",
+      "fields": [
+        {
+          "name": "algorithmId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "algorithmSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "profileSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "attestationSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "runnerSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "createdAtEpochSecond",
+          "type": "long",
+          "modifiers": "private final"
+        }
+      ],
+      "constructor": "package-private, all fields in listed order, four nonempty lowercase SHA-256 and nonnegative timestamp; only production caller ConformanceArtifactLoader"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.OfficialSignalEvidence",
+      "classModifiers": "public final",
+      "instanceOwnership": "owned_snapshot",
+      "fields": [
+        {
+          "name": "setId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "setVersion",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "caseNumber",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "signalId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "signalSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "sampleRateHz",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "channels",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "readingKind",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+          "modifiers": "private final"
+        },
+        {
+          "name": "expectedLufs",
+          "type": "double",
+          "modifiers": "private final"
+        },
+        {
+          "name": "measuredLufs",
+          "type": "double",
+          "modifiers": "private final"
+        },
+        {
+          "name": "toleranceLu",
+          "type": "double",
+          "modifiers": "private final"
+        },
+        {
+          "name": "channelLayout",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+          "modifiers": "private final"
+        },
+        {
+          "name": "readoutMode",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+          "modifiers": "private final"
+        },
+        {
+          "name": "expectedKind",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind",
+          "modifiers": "private final"
+        },
+        {
+          "name": "measuredKind",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind",
+          "modifiers": "private final"
+        },
+        {
+          "name": "minimumLufs",
+          "type": "double",
+          "modifiers": "private final"
+        },
+        {
+          "name": "sourceFramesConsumed",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "firstReadoutEndFrame",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "lastReadoutEndFrame",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "readoutCount",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "minEndFrame",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "maxEndFrame",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "completeGatingBlocks",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "absoluteGateBlocks",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "relativeGateBlocks",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "resetCount",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "eofReached",
+          "type": "boolean",
+          "modifiers": "private final"
+        }
+      ],
+      "constructor": "public, fields in listed order; validates finite/tag/canonical +0 and ranges, not official authorization"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.RequiredOfficialReading",
+      "classModifiers": "public final",
+      "instanceOwnership": "shared_static_exact_table_only",
+      "fields": [
+        {
+          "name": "setId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "setVersion",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "caseNumber",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "signalId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "signalSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "sampleRateHz",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "channels",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "channelLayout",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+          "modifiers": "private final"
+        },
+        {
+          "name": "readingKind",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+          "modifiers": "private final"
+        },
+        {
+          "name": "readoutMode",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+          "modifiers": "private final"
+        },
+        {
+          "name": "expectedKind",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind",
+          "modifiers": "private final"
+        },
+        {
+          "name": "expectedLufs",
+          "type": "double",
+          "modifiers": "private final"
+        },
+        {
+          "name": "toleranceLu",
+          "type": "double",
+          "modifiers": "private final"
+        },
+        {
+          "name": "bitsPerSample",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "waveFormatTag",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "channelMask",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "blockAlign",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "sourceFrames",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "fileBytes",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "dataBytes",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "riffDeclaredEnd",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "firstReadoutEndFrame",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "lastReadoutEndFrame",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "readoutCount",
+          "type": "long",
+          "modifiers": "private final"
+        },
+        {
+          "name": "completeGatingBlocks",
+          "type": "long",
+          "modifiers": "private final"
+        }
+      ],
+      "constructor": "public, fields in listed order; only 94 compiled literal requirements reachable"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.StandardValidationReport",
+      "classModifiers": "public final",
+      "instanceOwnership": "owned_snapshot",
+      "fields": [
+        {
+          "name": "requirementId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "state",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+          "modifiers": "private final"
+        },
+        {
+          "name": "algorithmId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "algorithmSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "profileSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "attestationSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "runnerSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "sets",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.FrozenList",
+          "modifiers": "private final"
+        },
+        {
+          "name": "createdAtEpochSecond",
+          "type": "long",
+          "modifiers": "private final"
+        }
+      ],
+      "constructor": "public existing form extended runnerSha256 in listed order; rejects PASSED; second private constructor may accept PASSED only after verifyBound success"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.RequiredSetReport",
+      "classModifiers": "public final",
+      "instanceOwnership": "owned_snapshot_unchanged",
+      "fields": [
+        {
+          "name": "setId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "setVersion",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "manifestSha256",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        },
+        {
+          "name": "state",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+          "modifiers": "private final"
+        },
+        {
+          "name": "evidence",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.FrozenList",
+          "modifiers": "private final"
+        },
+        {
+          "name": "reason",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "private final"
+        }
+      ]
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessCore",
+      "classModifiers": "public final",
+      "instanceOwnership": "mutable_transient_confined_to_one_synchronous_measurement",
+      "fields": [
+        {
+          "name": "sampleRateHz",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "layout",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+          "modifiers": "private final"
+        },
+        {
+          "name": "momentaryWindowFrames",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "shortTermWindowFrames",
+          "type": "int",
+          "modifiers": "private final"
+        },
+        {
+          "name": "coefficients",
+          "type": "double[]",
+          "modifiers": "private final"
+        },
+        {
+          "name": "shelfZ1",
+          "type": "double[]",
+          "modifiers": "private final"
+        },
+        {
+          "name": "shelfZ2",
+          "type": "double[]",
+          "modifiers": "private final"
+        },
+        {
+          "name": "highPassZ1",
+          "type": "double[]",
+          "modifiers": "private final"
+        },
+        {
+          "name": "highPassZ2",
+          "type": "double[]",
+          "modifiers": "private final"
+        },
+        {
+          "name": "weightedPowerRing",
+          "type": "double[]",
+          "modifiers": "private final"
+        },
+        {
+          "name": "ringCursor",
+          "type": "int",
+          "modifiers": "private"
+        },
+        {
+          "name": "framesSeen",
+          "type": "long",
+          "modifiers": "private"
+        },
+        {
+          "name": "momentarySum",
+          "type": "double",
+          "modifiers": "private"
+        },
+        {
+          "name": "shortTermSum",
+          "type": "double",
+          "modifiers": "private"
+        }
+      ],
+      "constructor": "public LoudnessCore(int sampleRateHz,ChannelLayout); fresh zero state = exactly one reset; no reset method or global reuse",
+      "arrayCaps": {
+        "coefficients": 10,
+        "shelfZ1": "layout.channels()",
+        "shelfZ2": "layout.channels()",
+        "highPassZ1": "layout.channels()",
+        "highPassZ2": "layout.channels()",
+        "weightedPowerRing": "max(1,round(3*sampleRateHz))"
+      },
+      "mutableException": "only four listed scalar fields and elements of six owned primitive arrays; never retained; no input/callback/stream fields"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessConformanceGuard",
+      "classModifiers": "public final",
+      "instanceOwnership": "stateless",
+      "fields": [],
+      "methods": [
+        "public StandardValidationReport verify(ConformanceRequirement,ConformanceRun,BuildAlgorithmBinding): single delegation to StandardValidationReport.verifyBound"
+      ]
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformanceCodec",
+      "classModifiers": "public final",
+      "instanceOwnership": "stateless_pure",
+      "fields": [],
+      "constructor": "private",
+      "methods": [
+        "public static byte[] profileBytes(ConformanceRequirement)",
+        "public static byte[] artifactBytes(ConformanceRequirement,ConformanceRun)",
+        "public static ConformanceRun decodeArtifact(byte[])"
+      ],
+      "localCaps": {
+        "artifactBytes": 262144,
+        "profileBytes": 262144,
+        "cursor": "int[1] transient; no parser object/cache"
+      }
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformanceArtifactLoader",
+      "classModifiers": "final package-private",
+      "instanceOwnership": "stateless_scoped_io_boundary",
+      "fields": [],
+      "constructor": "private",
+      "methods": [
+        "static StandardValidationReport loadCurrent()",
+        "static BuildAlgorithmBinding currentBuildBinding()"
+      ],
+      "localCaps": {
+        "oneClassEntryBytes": 1048576,
+        "streamReadChunkBytes": 32768,
+        "artifactBytes": 262144,
+        "profileBytes": 262144
+      },
+      "failure": "currentBuildBinding returns null if absent/invalid; loadCurrent NOT_RUN unbound for exploded or completely absent bundle (payload/profile/both manifest attributes all absent). Any partial bundle/deletion with remaining metadata or malformed present data is FAILED. No reflection construction."
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.KWeightingAdapter",
+      "classModifiers": "public final",
+      "instanceOwnership": "stateless_unchanged_fields",
+      "fields": [],
+      "methods": [
+        "existing public static fillWindowPowers signature unchanged; delegates actual filtering/windowing to LoudnessCore"
+      ]
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessStandard",
+      "classModifiers": "public final",
+      "instanceOwnership": "shared_static_unchanged_fields",
+      "fields": [
+        {
+          "name": "BS1770_5",
+          "type": "com.quickmaster.processing.dynamics.leveler.LoudnessStandard",
+          "modifiers": "public static final",
+          "initializer": "new LoudnessStandard(\"BS1770-5\")"
+        },
+        {
+          "name": "standardId",
+          "type": "java.lang.String",
+          "modifiers": "private final"
+        }
+      ],
+      "constants": {
+        "standardId": "BS1770-5",
+        "momentaryWindowSec": 0.4,
+        "shortTermWindowSec": 3,
+        "hopSec": 0.1,
+        "absoluteGateLufs": -70,
+        "integratedRelativeGateLu": -10,
+        "regionalRelativeGateLu": -20,
+        "lufsOffset": -0.691
+      }
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+      "classModifiers": "public final enum",
+      "instanceOwnership": "shared_enum",
+      "fields": [
+        {
+          "name": "MONO_MAIN",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "STEREO_LR",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "SURROUND_5_0",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "SURROUND_5_1",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "$VALUES",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout[]",
+          "modifiers": "private static final synthetic"
+        }
+      ],
+      "inheritedFields": [
+        {
+          "name": "name",
+          "type": "java.lang.String",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        },
+        {
+          "name": "ordinal",
+          "type": "int",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        }
+      ],
+      "values": [
+        "MONO_MAIN",
+        "STEREO_LR",
+        "SURROUND_5_0",
+        "SURROUND_5_1"
+      ],
+      "additionalFieldsAllowed": false,
+      "generatedMethods": "canonical Java17 values/valueOf/$values only; existing contextual enum checks retained"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+      "classModifiers": "public final enum",
+      "instanceOwnership": "shared_enum",
+      "fields": [
+        {
+          "name": "EOF_INTEGRATED",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "STEADY_EOF",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "CONSTANT_INTERVAL",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "MAXIMUM_FULL_WINDOWS",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "$VALUES",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode[]",
+          "modifiers": "private static final synthetic"
+        }
+      ],
+      "inheritedFields": [
+        {
+          "name": "name",
+          "type": "java.lang.String",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        },
+        {
+          "name": "ordinal",
+          "type": "int",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        }
+      ],
+      "values": [
+        "EOF_INTEGRATED",
+        "STEADY_EOF",
+        "CONSTANT_INTERVAL",
+        "MAXIMUM_FULL_WINDOWS"
+      ],
+      "additionalFieldsAllowed": false,
+      "generatedMethods": "canonical Java17 values/valueOf/$values only; existing contextual enum checks retained"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind",
+      "classModifiers": "public final enum",
+      "instanceOwnership": "shared_enum",
+      "fields": [
+        {
+          "name": "FINITE",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "NO_LOUDNESS",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "$VALUES",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind[]",
+          "modifiers": "private static final synthetic"
+        }
+      ],
+      "inheritedFields": [
+        {
+          "name": "name",
+          "type": "java.lang.String",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        },
+        {
+          "name": "ordinal",
+          "type": "int",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        }
+      ],
+      "values": [
+        "FINITE",
+        "NO_LOUDNESS"
+      ],
+      "additionalFieldsAllowed": false,
+      "generatedMethods": "canonical Java17 values/valueOf/$values only; existing contextual enum checks retained"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+      "classModifiers": "public final enum",
+      "instanceOwnership": "shared_enum",
+      "fields": [
+        {
+          "name": "MOMENTARY",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "SHORT_TERM",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "INTEGRATED",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "$VALUES",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ReadingKind[]",
+          "modifiers": "private static final synthetic"
+        }
+      ],
+      "inheritedFields": [
+        {
+          "name": "name",
+          "type": "java.lang.String",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        },
+        {
+          "name": "ordinal",
+          "type": "int",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        }
+      ],
+      "values": [
+        "MOMENTARY",
+        "SHORT_TERM",
+        "INTEGRATED"
+      ],
+      "additionalFieldsAllowed": false,
+      "generatedMethods": "canonical Java17 values/valueOf/$values only; existing contextual enum checks retained"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+      "classModifiers": "public final enum",
+      "instanceOwnership": "shared_enum",
+      "fields": [
+        {
+          "name": "NOT_RUN",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "UNAVAILABLE",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "PARTIAL",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "FAILED",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "PASSED",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "$VALUES",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceState[]",
+          "modifiers": "private static final synthetic"
+        }
+      ],
+      "inheritedFields": [
+        {
+          "name": "name",
+          "type": "java.lang.String",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        },
+        {
+          "name": "ordinal",
+          "type": "int",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        }
+      ],
+      "values": [
+        "NOT_RUN",
+        "UNAVAILABLE",
+        "PARTIAL",
+        "FAILED",
+        "PASSED"
+      ],
+      "additionalFieldsAllowed": false,
+      "generatedMethods": "canonical Java17 values/valueOf/$values only; existing contextual enum checks retained"
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+      "classModifiers": "public final enum",
+      "instanceOwnership": "shared_enum",
+      "fields": [
+        {
+          "name": "NONE",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "NOT_RUN",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "CORPUS_UNAVAILABLE",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "CORPUS_PARTIAL",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "MANIFEST_MISMATCH",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "EVIDENCE_MISMATCH",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "DUPLICATE_EVIDENCE",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "INVALID_EVIDENCE",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "BUILD_BINDING_MISMATCH",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "READOUT_MISMATCH",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "LAYOUT_MISMATCH",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "CONTAINER_MISMATCH",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "ATTESTATION_MISMATCH",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+          "modifiers": "public static final enum"
+        },
+        {
+          "name": "$VALUES",
+          "type": "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason[]",
+          "modifiers": "private static final synthetic"
+        }
+      ],
+      "inheritedFields": [
+        {
+          "name": "name",
+          "type": "java.lang.String",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        },
+        {
+          "name": "ordinal",
+          "type": "int",
+          "modifiers": "private final",
+          "declaringOwner": "java.lang.Enum"
+        }
+      ],
+      "values": [
+        "NONE",
+        "NOT_RUN",
+        "CORPUS_UNAVAILABLE",
+        "CORPUS_PARTIAL",
+        "MANIFEST_MISMATCH",
+        "EVIDENCE_MISMATCH",
+        "DUPLICATE_EVIDENCE",
+        "INVALID_EVIDENCE",
+        "BUILD_BINDING_MISMATCH",
+        "READOUT_MISMATCH",
+        "LAYOUT_MISMATCH",
+        "CONTAINER_MISMATCH",
+        "ATTESTATION_MISMATCH"
+      ],
+      "additionalFieldsAllowed": false,
+      "generatedMethods": "canonical Java17 values/valueOf/$values only; existing contextual enum checks retained"
+    }
+  ],
+  "evidenceInvariants": [
+    "FINITEnumeric expected/tolerance are raw-bit equal to compiled requirement; all four doubles finite. NO_LOUDNESS uses raw+0 for expected/measured/minimum/tolerance with tagged nonnumeric meaning.",
+    "sourceFramesConsumed == required.sourceFrames, firstReadoutEndFrame/lastReadoutEndFrame/readoutCount equal literal protocol, resetCount==1 and eofReached==true; these are observed counters, not populated from expected metadata.",
+    "EOF_INTEGRATED: first=last=minEndFrame=maxEndFrame=F, readoutCount1; minimumLufs==measuredLufs by bits; completeGatingBlocks matches requirement; 0<=relativeGateBlocks<=absoluteGateBlocks<=completeGatingBlocks.",
+    "STEADY_EOF: first=last=minEndFrame=maxEndFrame=F,count1, minimumLufs==measuredLufs by bits; all three gating count fields exactly0 (not applicable).",
+    "MAXIMUM_FULL_WINDOWS: first=W,last=F,count=F-W+1; measuredLufs is max over all complete windows, minimumLufs aliases that same scalar value by bits, minEndFrame==maxEndFrame==first argmax inside[W,F]; three gating counts0. Zero-power windows still contribute to observed count but cannot replace a finite maximum.",
+    "CONSTANT_INTERVAL: first144001 for S/case9 or48001 for M/case12, lastF,countF-first+1; minimumLufs<=measuredLufs(max); minEndFrame/maxEndFrame are first argmin/argmax within interval; every required reading must be FINITE. Any missing/NO_LOUDNESS/nonfinite member forces failureReason INVALID_EVIDENCE rather than silently omitting it. Three gating counts0.",
+    "NO_LOUDNESS categorical PASSED only on ITU21/27 after complete EOF Integrated with completeGatingBlocks>0 and absoluteGateBlocks=relativeGateBlocks=0. Missing execution has no row, not an observed category. Numeric required absence FAILED.",
+    "Comparison numeric uses inclusive bounds e-.1/e+.1 with no epsilon or rounding; constant interval compares both extrema. Constructor numeric structure validity never means official PASSED.",
+    "Invalid input payload/order/identity/NaN can be rejected into finite FAILED report with zero offending evidence; never retain raw invalid doubles/unknown Strings/oversized lists. Failed legitimate finite readings may remain under caps. Bound hashes are complete4 or absent0, no fake SHA placeholders."
+  ],
+  "exactAliases": {
+    "evidenceSet": "evidence.setId/setVersion == enclosing set's canonical literal by identity",
+    "requiredTable": "requiredReadings FrozenList has one Object[94]; entry set/version share singleton literals; repeated identical source signal/hash literals share Java literal identity; all values match runtime-profile exactly",
+    "reportHashes": "H_b=4: four distinct owned String and four distinct byte[64]; H_b=0: all four fields == shared empty string; no partially bound report",
+    "evidenceStrings": "two distinct owned ASCII String/byte[] per evidence, even same source for M/S/I; never alias required table or another evidence",
+    "newEnums": "all four new reference fields alias exactly enum constants",
+    "unchanged": "snapshot roots, plan aliases, SegmentId/range aliases, FrozenList/BitSet adapters and all other retained types unchanged"
+  },
+  "staticValues": {
+    "requirementId": "QM-OFFICIAL-LOUDNESS-FILE-V1",
+    "algorithmId": "QM-LOUDNESS-CORE-BS1770-5-V1",
+    "ituSetId": "ITU-R-BS.2217-1",
+    "ituSetVersion": "BS.2217-1",
+    "ituPinnedManifestSha256": "eb33cd80973eeccbb23efc17a71f37cd307fb040e0b7940f0ef4eb3407714280",
+    "ebuSetId": "EBU-TECH-3341-V4",
+    "ebuSetVersion": "LTS-5.0",
+    "ebuPinnedManifestSha256": "73a6e342ae20cc4fd7549d90a8ba5c6437c1e738a97a96b37699999ad0794b29",
+    "requiredReadings": "94 fields-exact entries from runtime-profile.001.json, fixed order; fieldless layouts encode literal channel count/order/weights",
+    "E_REQ": 94,
+    "unchangedEngineAlgorithmId": "QM-LEVELER-SHADOW-M004-V1"
+  },
+  "enums": {
+    "ChannelLayout": [
+      "MONO_MAIN",
+      "STEREO_LR",
+      "SURROUND_5_0",
+      "SURROUND_5_1"
+    ],
+    "ReadoutMode": [
+      "EOF_INTEGRATED",
+      "STEADY_EOF",
+      "CONSTANT_INTERVAL",
+      "MAXIMUM_FULL_WINDOWS"
+    ],
+    "LoudnessValueKind": [
+      "FINITE",
+      "NO_LOUDNESS"
+    ],
+    "ReadingKind": [
+      "MOMENTARY",
+      "SHORT_TERM",
+      "INTEGRATED"
+    ],
+    "ConformanceState": [
+      "NOT_RUN",
+      "UNAVAILABLE",
+      "PARTIAL",
+      "FAILED",
+      "PASSED"
+    ],
+    "ConformanceReason": [
+      "NONE",
+      "NOT_RUN",
+      "CORPUS_UNAVAILABLE",
+      "CORPUS_PARTIAL",
+      "MANIFEST_MISMATCH",
+      "EVIDENCE_MISMATCH",
+      "DUPLICATE_EVIDENCE",
+      "INVALID_EVIDENCE",
+      "BUILD_BINDING_MISMATCH",
+      "READOUT_MISMATCH",
+      "LAYOUT_MISMATCH",
+      "CONTAINER_MISMATCH",
+      "ATTESTATION_MISMATCH"
+    ]
+  },
+  "coreMethods": [
+    "public void acceptFrame(float[] interleaved,int sampleOffset): exactly one complete frame, finite, ascending original order; no retained PCM reference",
+    "public long framesSeen()",
+    "public double momentaryPower(): only queried after framesSeen>=Wm; returns finite nonnegative mean power or fails",
+    "public double shortTermPower(): only queried after framesSeen>=Ws; returns finite nonnegative mean power or fails",
+    "public static MeasuredLoudness integrated(double[] blockPower,int completeBlocks,long[] gateCounts,CancellationToken): gateCounts exactly long[3] complete/absolute/relative, same method for product and runner",
+    "public static MeasuredLoudness fromPower(double): zero gives tagged absence/+0, positive finite gives finite LUFS; negative/nonfinite fails"
+  ],
+  "channelLayoutMethods": [
+    "public int channels()",
+    "public double powerWeight(int channelIndex): range-checked; if/else, no enum-switch synthetic helper"
+  ],
+  "factoryMethods": [
+    "public static StandardValidationReport StandardValidationReport.verifyBound(ConformanceRequirement,ConformanceRun,BuildAlgorithmBinding)",
+    "public boolean StandardValidationReport.matches(BuildAlgorithmBinding)"
+  ],
+  "codec": {
+    "encoding": "canonical sorted ASCII object keys; array order literal; UTF-8 without BOM/whitespace/newline; integer decimal minimal; doubles always 16 lowercase raw-bit hex inside JSON strings",
+    "canonicalEnforcement": "strict closed parser plus byte-for-byte re-encode, reject duplicate/missing/extra keys and array reordering; no generic Map/Gson/reflection",
+    "artifactKeys": [
+      "algorithmId",
+      "algorithmSha256",
+      "attempted",
+      "createdAtEpochSecond",
+      "ebuManifestSha256",
+      "ebuTermsAuthorized",
+      "evidence",
+      "failureReason",
+      "ituManifestSha256",
+      "profileSha256",
+      "requirementId",
+      "runnerSha256",
+      "schemaVersion"
+    ],
+    "artifactSchemaValue": "QM-OFFICIAL-LOUDNESS-ATTESTATION-1",
+    "prohibitedKeys": [
+      "attestationSha256",
+      "state",
+      "jarSha256"
+    ],
+    "profileResource": "META-INF/quickmaster/leveler-conformance-profile.json",
+    "artifactResource": "META-INF/quickmaster/leveler-conformance.json",
+    "profileProjection": "Canonical serialize parsed runtime-profile.001.json using this schema; text-file terminal newline is NOT a runtime resource byte. Only resulting compact bytes are profileSha256; file SHA is separate provenance.",
+    "artifactEvidenceFields": [
+      "absoluteGateBlocks",
+      "caseNumber",
+      "channelLayout",
+      "channels",
+      "completeGatingBlocks",
+      "eofReached",
+      "expectedKind",
+      "expectedLufs",
+      "firstReadoutEndFrame",
+      "lastReadoutEndFrame",
+      "maxEndFrame",
+      "measuredKind",
+      "measuredLufs",
+      "minEndFrame",
+      "minimumLufs",
+      "readingKind",
+      "readoutCount",
+      "readoutMode",
+      "relativeGateBlocks",
+      "resetCount",
+      "sampleRateHz",
+      "setId",
+      "setVersion",
+      "signalId",
+      "signalSha256",
+      "sourceFramesConsumed",
+      "toleranceLu"
+    ],
+    "doubleFields": [
+      "expectedLufs",
+      "measuredLufs",
+      "toleranceLu",
+      "minimumLufs"
+    ],
+    "profileDoubleFields": [
+      "expectedLufs",
+      "toleranceLu",
+      "momentarySeconds",
+      "shortTermSeconds",
+      "integratedBlockSeconds",
+      "integratedHopSeconds",
+      "absoluteGateLufs",
+      "relativeGateLu",
+      "offsetLufs",
+      "mainPowerWeight",
+      "surroundPowerWeight",
+      "lfePowerWeight"
+    ],
+    "invalidRunFailureReasons": "attempted=false requires NONE/evidence empty/manifests empty; attempted=true allows NONE or CORPUS_UNAVAILABLE for missing corpus; other non-NONE reasons force FAILED"
+  },
+  "hashing": {
+    "algorithmDomain": "QM-LOUDNESS-CLASS-CONE-1",
+    "runnerDomain": "QM-LOUDNESS-RUNNER-1",
+    "framing": "ASCII domain bytes (fixed length), u32BE entry count; for each ASCII-sorted binary name converted to slash path + .class: u32BE name byte length, name UTF-8, u64BE class byte length, exact bytes",
+    "algorithmClasses": [
+      "com.quickmaster.processing.dynamics.leveler.BuildAlgorithmBinding",
+      "com.quickmaster.processing.dynamics.leveler.CancellationToken",
+      "com.quickmaster.processing.dynamics.leveler.ConformanceArtifactLoader",
+      "com.quickmaster.processing.dynamics.leveler.ConformanceCodec",
+      "com.quickmaster.processing.dynamics.leveler.ConformanceRequirement",
+      "com.quickmaster.processing.dynamics.leveler.ConformanceRun",
+      "com.quickmaster.processing.dynamics.leveler.KWeightingAdapter",
+      "com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine",
+      "com.quickmaster.processing.dynamics.leveler.LoudnessAnalyzer",
+      "com.quickmaster.processing.dynamics.leveler.LoudnessConformanceGuard",
+      "com.quickmaster.processing.dynamics.leveler.LoudnessCore",
+      "com.quickmaster.processing.dynamics.leveler.LoudnessStandard",
+      "com.quickmaster.processing.dynamics.leveler.model.AudioFormat",
+      "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+      "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason",
+      "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+      "com.quickmaster.processing.dynamics.leveler.model.FrozenList",
+      "com.quickmaster.processing.dynamics.leveler.model.LoudnessTimeline",
+      "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind",
+      "com.quickmaster.processing.dynamics.leveler.model.MeasuredLoudness",
+      "com.quickmaster.processing.dynamics.leveler.model.OfficialSignalEvidence",
+      "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+      "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+      "com.quickmaster.processing.dynamics.leveler.model.RequiredOfficialReading",
+      "com.quickmaster.processing.dynamics.leveler.model.RequiredSetReport",
+      "com.quickmaster.processing.dynamics.leveler.model.StandardValidationReport"
+    ],
+    "runnerClasses": [
+      "com.quickmaster.processing.dynamics.leveler.ConformancePackageAssembler",
+      "com.quickmaster.processing.dynamics.leveler.OfficialLoudnessRunner",
+      "com.quickmaster.processing.dynamics.leveler.OfficialWaveReader"
+    ],
+    "profile": "SHA256(canonical serialization of parsed runtime-profile.001.json; no terminal newline)",
+    "attestation": "SHA256(artifact canonical bytes with no attestationSha256 field)",
+    "manifestAttributes": [
+      "QuickMaster-Loudness-Attestation-SHA256",
+      "QuickMaster-Loudness-Runner-SHA256"
+    ],
+    "generatedManifestExcludedFromOtherHashes": true,
+    "runnerClassFilesForbiddenInProduct": true,
+    "algorithmClassNamesMayNotBeInferredFromClasspath": true
+  },
+  "guard": {
+    "mainUniverseAdditions": [
+      "com.quickmaster.processing.dynamics.leveler.LoudnessCore",
+      "com.quickmaster.processing.dynamics.leveler.ConformanceCodec",
+      "com.quickmaster.processing.dynamics.leveler.ConformanceArtifactLoader",
+      "com.quickmaster.processing.dynamics.leveler.model.RequiredOfficialReading",
+      "com.quickmaster.processing.dynamics.leveler.model.ChannelLayout",
+      "com.quickmaster.processing.dynamics.leveler.model.ReadoutMode",
+      "com.quickmaster.processing.dynamics.leveler.model.LoudnessValueKind"
+    ],
+    "existingOwnersExplicitlyClosed": [
+      "com.quickmaster.processing.dynamics.leveler.ConformanceRequirement",
+      "com.quickmaster.processing.dynamics.leveler.ConformanceRun",
+      "com.quickmaster.processing.dynamics.leveler.BuildAlgorithmBinding",
+      "com.quickmaster.processing.dynamics.leveler.LoudnessConformanceGuard",
+      "com.quickmaster.processing.dynamics.leveler.model.OfficialSignalEvidence",
+      "com.quickmaster.processing.dynamics.leveler.model.RequiredSetReport",
+      "com.quickmaster.processing.dynamics.leveler.model.StandardValidationReport",
+      "com.quickmaster.processing.dynamics.leveler.model.ReadingKind",
+      "com.quickmaster.processing.dynamics.leveler.model.ConformanceState",
+      "com.quickmaster.processing.dynamics.leveler.model.ConformanceReason"
+    ],
+    "putstaticAdditions": "Only canonical enum constants/$VALUES in their <clinit>; existing OFFICIAL_LOUDNESS_V1 replaces its exact initializer; E_REQ uses ConstantValue=94, no extra mutable static; requiredReadings is a final INSTANCE field of that singleton",
+    "transientExceptionOwner": "com.quickmaster.processing.dynamics.leveler.LoudnessCore",
+    "loaderOnlyCalls": [
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/lang/Class",
+        "name": "getResource",
+        "descriptor": "(Ljava/lang/String;)Ljava/net/URL;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/net/URL",
+        "name": "getProtocol",
+        "descriptor": "()Ljava/lang/String;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/net/URL",
+        "name": "getHost",
+        "descriptor": "()Ljava/lang/String;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/net/URL",
+        "name": "openConnection",
+        "descriptor": "()Ljava/net/URLConnection;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/net/URLConnection",
+        "name": "setUseCaches",
+        "descriptor": "(Z)V"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/net/JarURLConnection",
+        "name": "getJarFileURL",
+        "descriptor": "()Ljava/net/URL;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/net/JarURLConnection",
+        "name": "getJarFile",
+        "descriptor": "()Ljava/util/jar/JarFile;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/util/jar/JarFile",
+        "name": "getManifest",
+        "descriptor": "()Ljava/util/jar/Manifest;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/util/jar/Manifest",
+        "name": "getMainAttributes",
+        "descriptor": "()Ljava/util/jar/Attributes;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/util/jar/Attributes",
+        "name": "getValue",
+        "descriptor": "(Ljava/lang/String;)Ljava/lang/String;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/util/jar/JarFile",
+        "name": "getJarEntry",
+        "descriptor": "(Ljava/lang/String;)Ljava/util/jar/JarEntry;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/util/jar/JarFile",
+        "name": "getInputStream",
+        "descriptor": "(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/util/zip/ZipEntry",
+        "name": "getSize",
+        "descriptor": "()J"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/io/InputStream",
+        "name": "read",
+        "descriptor": "([BII)I"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/io/InputStream",
+        "name": "close",
+        "descriptor": "()V"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "java/util/jar/JarFile",
+        "name": "close",
+        "descriptor": "()V"
+      }
+    ],
+    "loaderOnlyClassLiteral": "com.quickmaster.processing.dynamics.leveler.ConformanceArtifactLoader",
+    "loaderOnlyTypeReferences": ["java/lang/Class","java/net/URL","java/net/URLConnection","java/net/JarURLConnection","java/util/jar/JarFile","java/util/jar/JarEntry","java/util/jar/Manifest","java/util/jar/Attributes","java/util/zip/ZipEntry","java/io/InputStream","java/io/IOException"],
+    "loaderIOExceptionRole": "IOException only catch/throws metadata, not a new callable constructor; all I/O type references are allowed solely in the one loader classfile. Exact tuples above govern calls.",
+    "loaderOnlyResourceAnchor": "ConformanceArtifactLoader.class",
+    "loaderBoundaries": "Class.getResource only own literal; URL protocol jar then inner URL protocol file and empty host before getJarFile; no other URL, network, filesystem, ClassLoader, reflection, write or thread calls anywhere",
+    "codecOnlyAdditions": [
+      {
+        "opcode": "invokespecial",
+        "owner": "java/lang/String",
+        "name": "<init>",
+        "descriptor": "([BIILjava/nio/charset/Charset;)V"
+      },
+      {
+        "opcode": "invokestatic",
+        "owner": "java/lang/Double",
+        "name": "longBitsToDouble",
+        "descriptor": "(J)D"
+      }
+    ],
+    "existingStringConstructorForOwnership": "new String(byte[],StandardCharsets.US_ASCII) remains only for the fixed ASCII codec/owned copies; no intern() on evidence",
+    "allPriorNegativesRemain": "async/TL/lambda/callback/static/native/finalize/UNKNOWN/oversized/escape/missing-root/hash probes remain; I/O outside loader or nonliteral entry fails; no general vendor/class/path wildcard"
+  },
+  "dsparkBoundary": {
+    "newLoudnessOwners": [],
+    "artifact": "com.dspark:dspark:0.1.0",
+    "jarSha256": "de368f326f668267d0cba20f34135efb466dafc53f84a4aee32d8af4347e4141",
+    "allowedCalls": [
+      {
+        "opcode": "invokespecial",
+        "owner": "com/dspark/core/FFTReal",
+        "name": "<init>",
+        "descriptor": "(I)V"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "com/dspark/core/FFTReal",
+        "name": "getFrequencyDomainSize",
+        "descriptor": "()I"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "com/dspark/core/FFTReal",
+        "name": "getNumBins",
+        "descriptor": "()I"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "com/dspark/core/FFTReal",
+        "name": "forward",
+        "descriptor": "([F[F)V"
+      },
+      {
+        "opcode": "invokevirtual",
+        "owner": "com/dspark/core/FFTReal",
+        "name": "computeMagnitudes",
+        "descriptor": "([F[F)V"
+      },
+      {
+        "opcode": "invokestatic",
+        "owner": "com/dspark/core/DspMath",
+        "name": "clamp",
+        "descriptor": "(DDD)D",
+        "callers": [
+          "com/quickmaster/processing/dynamics/LevelerProcessor.setLeveling(D)V",
+          "com/quickmaster/processing/dynamics/LevelerProcessor.setSpeed(D)V"
+        ]
+      },
+      {
+        "opcode": "invokestatic",
+        "owner": "com/dspark/core/DspMath",
+        "name": "decibelsToGain",
+        "descriptor": "(D)D",
+        "callers": [
+          "com/quickmaster/processing/dynamics/LevelerProcessor.mapFeaturesToGain()V"
+        ]
+      }
+    ],
+    "context": "FFTReal only current StructuralFeatureExtractor five calls; DspMath two legacy signatures only the three explicit LevelerProcessor methods. Verified source and javap, not promoted from observed schema. No new loudness DSPark usage, no vendor wildcard; TruePeak remains M005. Other CR296 gaps stay for root adjudication.",
+    "exactOwners": [
+      "com/dspark/core/FFTReal",
+      "com/dspark/core/DspMath"
+    ]
+  },
+  "retention": {
+    "dimensionsDelta": {
+      "E_REQ": 94,
+      "H_b": [
+        0,
+        4
+      ],
+      "U": "H_b+J+2*E",
+      "J": "0..2",
+      "E": "0..94",
+      "C": "unchanged 1/2 for snapshot; official C=5/6 never enters AudioFormat/snapshot"
+    },
+    "perChangedField": {
+      "StandardValidationReport_runnerSha256": {
+        "ownedNodes": "0 if empty shared; 2 if present (String+byte[64])",
+        "arrays": "0 or 1",
+        "referenceEdges": 1,
+        "bytePayload": "0 or 64",
+        "shallow": "remeasure JVM"
+      },
+      "OfficialSignalEvidence_channelLayout": {
+        "nodes": 0,
+        "arrays": 0,
+        "referenceEdges": 1,
+        "kind": "shared enum"
+      },
+      "OfficialSignalEvidence_readoutMode": {
+        "nodes": 0,
+        "arrays": 0,
+        "referenceEdges": 1,
+        "kind": "shared enum"
+      },
+      "OfficialSignalEvidence_expectedKind": {
+        "nodes": 0,
+        "arrays": 0,
+        "referenceEdges": 1,
+        "kind": "shared enum"
+      },
+      "OfficialSignalEvidence_measuredKind": {
+        "nodes": 0,
+        "arrays": 0,
+        "referenceEdges": 1,
+        "kind": "shared enum"
+      },
+      "OfficialSignalEvidence_scalars": {
+        "nodes": 0,
+        "arrays": 0,
+        "referenceEdges": 0,
+        "addedLogicalPrimitiveBytes": 85,
+        "derivation": "double minimumLufs 8 + nine long 72 + int resetCount 4 + boolean eofReached 1; actual shallow aligned by JVM, never guessed"
+      }
+    },
+    "identities": "48+3*N+13*S+3*S*L+S*C+P+3*G+R+D+E+2*U",
+    "arrays": "18+2*N+2*S+2*S*L+S*C+2*G+U",
+    "edges": "70+3*N+17*S+3*S*L+S*C+2*P+3*G+R+2*D+10*E+U",
+    "stringPayloadCap": "64*H_b+64*J+192*E",
+    "unchangedAudioPayloads": [
+      "8*(M+ceilDiv(M,64)+Q+ceilDiv(Q,64))",
+      "8*N*d",
+      "8*S*L*d",
+      "8*S*C*B"
+    ],
+    "goldens": {
+      "MIN_BOUND": {
+        "M": 1,
+        "Q": 1,
+        "N": 1,
+        "S": 1,
+        "L": 32,
+        "C": 1,
+        "P": 0,
+        "G": 0,
+        "R": 0,
+        "D": 0,
+        "E": 0,
+        "J": 0,
+        "H_b": 4,
+        "U": 4,
+        "identities": 169,
+        "arrays": 91,
+        "edges": 191,
+        "state": "UNAVAILABLE structural graph only; four SHA-format fixturestrings for reachability, never claimed actual official run binding"
+      },
+      "MIN_UNBOUND": {
+        "M": 1,
+        "Q": 1,
+        "N": 1,
+        "S": 1,
+        "L": 32,
+        "C": 1,
+        "P": 0,
+        "G": 0,
+        "R": 0,
+        "D": 0,
+        "E": 0,
+        "J": 0,
+        "H_b": 0,
+        "U": 0,
+        "identities": 161,
+        "arrays": 87,
+        "edges": 187,
+        "state": "NOT_RUN with all binding hash slots == shared empty"
+      },
+      "MAX60M_BOUND": {
+        "M": 36000,
+        "Q": 36000,
+        "N": 7200,
+        "S": 64,
+        "L": 32,
+        "C": 2,
+        "P": 2016,
+        "G": 21,
+        "R": 0,
+        "D": 576,
+        "E": 94,
+        "J": 2,
+        "H_b": 4,
+        "U": 194,
+        "identities": 31889,
+        "arrays": 19006,
+        "edges": 35411,
+        "state": "FAILED structural fixture with94 evidence nodes and deliberately out-of-tolerance synthetic values; never a packaged official proof"
+      }
+    },
+    "semanticHashRecipe": "Canonicalize only classes fields/modifiers, enums, exactAliases, evidenceInvariants, staticValues (table reference replaced by canonical 94 entries), retention formulas/caps and existing unchanged V1 schema. Exclude this report text, runtime classfile digests, measured shallow bytes and semantic hash field. Root composes with independently accepted ADR010 then hashes the one resulting schema. No digest asserted before that controlled merge.",
+    "budgetsUnchanged": "RSS shadow <256MiB and growth<64/<128, p95<0.5 duration, all roots/probes/accounting/UNKNOWN checks unchanged; no new F-dependent retained payload"
+  }
+}

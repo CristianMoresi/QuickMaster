@@ -1,0 +1,1888 @@
+{
+  "schema_version": "1",
+  "id": "QM-M004-ADR012-STATIC-BASELINE-001",
+  "status": "PROPUESTO",
+  "intent_ref": 326,
+  "authority": "Ninguna entrada es activa antes de aceptación y sincronización explícitas de root. Anexo fijo adjudicado manualmente; nunca generar permisos desde el siguiente build ni desde fixtures/provenance.",
+  "scope": "Delta estático de ADR007 sobre actual08 que ya contiene ADR010. No es versión nueva del esquema de retención. ADR011 conserva conformidad y binding DSPark.",
+  "evidence": {
+    "guardInventory": {
+      "path": "tests/results/M-004-classfile-guard-001/product-9800288743728014039/guard-result.json",
+      "sha256": "67bb113b3d441c511975b7751dce8c03746e86f2b3768b967eac814b83204309",
+      "violationCount": 120,
+      "historicFileHashMatches": 68
+    },
+    "observedFieldInventory": {
+      "path": "milestones/M-004/classfile-guard-001/field-provenance-NOT-APPROVED.json",
+      "sha256": "54ad9a355d8be6c76ed2daac5effa39526baaf8cc40ab590dae07e449738824a",
+      "authority": "OBSERVACION_NO_APROBADA",
+      "partition108": {
+        "adr012ExplicitFields": 80,
+        "helperRejected": 1,
+        "adr011ConformanceFields": 27
+      }
+    },
+    "historicalClassRoot": "tests/results/M-004-foundation-002/recovery-20260906-seq284/clean-package/product-classes",
+    "historicalSourceRoot": "tests/results/M-004-foundation-002/recovery-20260906-seq284/source-snapshot",
+    "historicalContract": {
+      "path": "tests/results/M-004-ADR010-contract-sync-20260906/preimages/08-architecture.md",
+      "sha256": "04bae2be147d7b81b1ab665f312daaa4ec5ce479f0182b3a4988f7b53c208815"
+    },
+    "current08Sha256": "fe8f684900f9a90866c2e7e872fc0fa7c45f6edeef1482ac711b7ae87a7bc858",
+    "acceptedM003": {
+      "manifest": "tests/results/M-003-installed-delivery.json",
+      "manifestSha256": "6b7c30253616709aee68d64a53ed43a08749930a36927a51ffa0f621f2e85f18",
+      "jar": "C:/Program Files/QuickMaster/app/quickmaster.jar",
+      "jarSha256": "7fda545afa0ff85fd71549f04d36009e294e5a2c9b6c6338ebebf4186ce2ec23",
+      "classes": [
+        {
+          "owner": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor",
+          "sha256": "29bf7e4653c6b1f98f656f7e415460fd75afc5ba3e6e66c8f64e895edb803b3e"
+        },
+        {
+          "owner": "com/quickmaster/processing/dynamics/LevelerProcessor",
+          "sha256": "acfb6350e5b3b6fd9b8d136d65f5ebb2ec7017ef6cb7f992bb78aac953939548"
+        },
+        {
+          "owner": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor$1",
+          "sha256": "5a6e92ef46ec69a38f43dc07336e2a92390ba79a9aa3dcfbd2aa60a44a96060a"
+        }
+      ]
+    },
+    "fixtureAuthority": "NONE; javap demuestra existencia, no legitimidad. La autoridad propuesta es cada decisión SB y sus límites contrastados con M003/08."
+  },
+  "baselineViolationMatrix": {
+    "indexing": "Índice zero-based del array violations del inventario fijado por hash; cada índice aparece una vez. Offsets/sites/SHA se resuelven allí, no desde target.",
+    "rows": [
+      {
+        "decision": "SB-01",
+        "classification": "LEGADO_LEGITIMO",
+        "disposition": "ADR012_ALLOW_EXACT",
+        "count": 3,
+        "violationIndexesZeroBased": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "decision": "SB-02",
+        "classification": "DEFECTO_PRODUCTIVO",
+        "disposition": "REMOVE_HELPER_NOT_ALLOW",
+        "count": 7,
+        "violationIndexesZeroBased": [
+          0,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "decision": "SB-03",
+        "classification": "LEGADO_LEGITIMO_Y_UNICO_FIELD_M004",
+        "disposition": "ADR012_CLOSE_FIELD_SET",
+        "count": 2,
+        "violationIndexesZeroBased": [
+          4,
+          12
+        ]
+      },
+      {
+        "decision": "SB-04",
+        "classification": "DOCUMENTACION_INCOMPLETA_TEMPORAL",
+        "disposition": "ADR012_CLOSE_FIELD_SET",
+        "count": 1,
+        "violationIndexesZeroBased": [
+          17
+        ]
+      },
+      {
+        "decision": "SB-05",
+        "classification": "DOCUMENTACION_INCOMPLETA_ENUMS",
+        "disposition": "ADR012_CLOSE_ENUMS",
+        "count": 45,
+        "violationIndexesZeroBased": [
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116
+        ]
+      },
+      {
+        "decision": "SB-06",
+        "classification": "METADATOS_NO_CAPACIDAD",
+        "disposition": "ADR012_ALLOW_ROLE_ONLY",
+        "count": 2,
+        "violationIndexesZeroBased": [
+          6,
+          24
+        ]
+      },
+      {
+        "decision": "SB-07",
+        "classification": "JDK_FINITO_SIN_ESCAPE",
+        "disposition": "ADR012_ALLOW_EIGHT_TUPLES",
+        "count": 33,
+        "violationIndexesZeroBased": [
+          19,
+          23,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          42,
+          50,
+          51,
+          52,
+          75,
+          76,
+          77,
+          87,
+          88,
+          89,
+          90,
+          91,
+          117,
+          118,
+          119
+        ]
+      },
+      {
+        "decision": "SB-08",
+        "classification": "CONFORMIDAD_FUERA_DE_SCOPE",
+        "disposition": "REFERENCE_ADR011_ONLY",
+        "count": 15,
+        "violationIndexesZeroBased": [
+          18,
+          20,
+          21,
+          22,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63
+        ]
+      },
+      {
+        "decision": "SB-09",
+        "classification": "DSPARK_FUERA_DE_SCOPE",
+        "disposition": "REFERENCE_ADR011_ONLY",
+        "count": 12,
+        "violationIndexesZeroBased": [
+          13,
+          14,
+          15,
+          16,
+          41,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49
+        ]
+      }
+    ],
+    "totals": {
+      "baseline": 120,
+      "adr012PermissionsOrDocumentary": 86,
+      "adr012RepairConsequences": 7,
+      "adr011Conformance": 15,
+      "adr011Dspark": 12
+    },
+    "outcome": "Inventario cerrado de decisiones, no reporte de tests verde. ADR010 y ADR011 producen deltas futuros distintos; no se anticipa su número de violaciones."
+  },
+  "fieldTableRules": {
+    "exactClosedSets": true,
+    "match": "owner + name + descriptor + accessHex + ConstantValue presencia/tag/valor (double raw bits). Ninguna omisión, field adicional, array extra, cambio de visibilidad/static/final/volatile ni ConstantValue inventado.",
+    "constantValue": "attribute=absent significa ausencia del atributo, no valor Java null. Instance final String IDs y singleton references NO son ConstantValue. Los campos double +0 exigen 0000000000000000.",
+    "declarationOrder": "Lista preserva el orden histórico para contraste. Los enums además exigen este orden como ordinal e inicialización; no inferir layout físico de memoria desde field_info.",
+    "m003Comparison": {
+      "analysisFieldsEqual": 10,
+      "levelerFieldsEqual": 25,
+      "onlyNewAlreadyApprovedField": "LevelerProcessor.shadowAnalysis:Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot; private volatile 0x0042",
+      "additionalLegacyFieldsAllowed": false
+    },
+    "totalComparedFields": 85,
+    "adr012AuthorityFields": 83,
+    "adr011ReferenceOnlyFields": 2,
+    "retention": "Completar field schema estático no convierte objetos temporales/legacy en raíces owned."
+  },
+  "classes": [
+    {
+      "owner": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x0421",
+      "superclass": "java/lang/Object",
+      "interfaces": [
+        "com/quickmaster/processing/AudioProcessor"
+      ],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "legacy_boundary_not_shadow_owned",
+      "historicClassfileSha256": "29bf7e4653c6b1f98f656f7e415460fd75afc5ba3e6e66c8f64e895edb803b3e",
+      "fields": [
+        {
+          "name": "enabled",
+          "descriptor": "Z",
+          "accessHex": "0x0044",
+          "modifiers": "protected volatile",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "gainEnv",
+          "descriptor": "[F",
+          "accessHex": "0x0044",
+          "modifiers": "protected volatile",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "envRate",
+          "descriptor": "D",
+          "accessHex": "0x0004",
+          "modifiers": "protected",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "envFrames",
+          "descriptor": "I",
+          "accessHex": "0x0004",
+          "modifiers": "protected",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "published",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/PublishedGain;",
+          "accessHex": "0x0042",
+          "modifiers": "private volatile",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "publicationSequence",
+          "descriptor": "J",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "preparedRateHz",
+          "descriptor": "I",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "preparedFrameCursor",
+          "descriptor": "J",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "denseCursor",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/DenseGainCursor;",
+          "accessHex": "0x0012",
+          "modifiers": "private final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "currentGrDb",
+          "descriptor": "D",
+          "accessHex": "0x0042",
+          "modifiers": "private volatile",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/LevelerProcessor",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x0031",
+      "superclass": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "legacy_boundary_not_shadow_owned",
+      "historicClassfileSha256": "cae2ccb73e906888eb69e3d22f0746fd783401fb1c9535e12400f9afd2665fca",
+      "fields": [
+        {
+          "name": "shadowAnalysis",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;",
+          "accessHex": "0x0042",
+          "modifiers": "private volatile",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "DEFAULT_LEVELING",
+          "descriptor": "D",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "0.5",
+            "rawBitsHex": "3fe0000000000000"
+          }
+        },
+        {
+          "name": "MIN_LEVELING",
+          "descriptor": "D",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "0.0",
+            "rawBitsHex": "0000000000000000"
+          }
+        },
+        {
+          "name": "MAX_LEVELING",
+          "descriptor": "D",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "1.0",
+            "rawBitsHex": "3ff0000000000000"
+          }
+        },
+        {
+          "name": "DEFAULT_SPEED",
+          "descriptor": "D",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "0.5",
+            "rawBitsHex": "3fe0000000000000"
+          }
+        },
+        {
+          "name": "MIN_SPEED",
+          "descriptor": "D",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "0.0",
+            "rawBitsHex": "0000000000000000"
+          }
+        },
+        {
+          "name": "MAX_SPEED",
+          "descriptor": "D",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "1.0",
+            "rawBitsHex": "3ff0000000000000"
+          }
+        },
+        {
+          "name": "MIN_SECTION_SEC",
+          "descriptor": "D",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "8.0",
+            "rawBitsHex": "4020000000000000"
+          }
+        },
+        {
+          "name": "HOP_FRAMES",
+          "descriptor": "I",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Integer",
+            "value": 2048
+          }
+        },
+        {
+          "name": "SLOW_RESPONSE_SEC",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "2.0",
+            "rawBitsHex": "4000000000000000"
+          }
+        },
+        {
+          "name": "FAST_RESPONSE_SEC",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "0.3",
+            "rawBitsHex": "3fd3333333333333"
+          }
+        },
+        {
+          "name": "TOLERANCE_DB",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "2.0",
+            "rawBitsHex": "4000000000000000"
+          }
+        },
+        {
+          "name": "MAX_CUT_DB",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "12.0",
+            "rawBitsHex": "4028000000000000"
+          }
+        },
+        {
+          "name": "MAX_BOOST_DB",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "6.0",
+            "rawBitsHex": "4018000000000000"
+          }
+        },
+        {
+          "name": "BOOST_FULL_BELOW_DB",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "8.0",
+            "rawBitsHex": "4020000000000000"
+          }
+        },
+        {
+          "name": "BOOST_ZERO_BELOW_DB",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "20.0",
+            "rawBitsHex": "4034000000000000"
+          }
+        },
+        {
+          "name": "SILENCE_FLOOR_LUFS",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "-55.0",
+            "rawBitsHex": "c04b800000000000"
+          }
+        },
+        {
+          "name": "LUFS_OFFSET",
+          "descriptor": "D",
+          "accessHex": "0x001a",
+          "modifiers": "private static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_Double",
+            "literal": "-0.691",
+            "rawBitsHex": "bfe61cac083126e9"
+          }
+        },
+        {
+          "name": "leveling",
+          "descriptor": "D",
+          "accessHex": "0x0042",
+          "modifiers": "private volatile",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "speed",
+          "descriptor": "D",
+          "accessHex": "0x0042",
+          "modifiers": "private volatile",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "sectionLoud",
+          "descriptor": "[F",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "sectionPeak",
+          "descriptor": "[F",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "trackMaxPeak",
+          "descriptor": "D",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "hopFrames",
+          "descriptor": "I",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "totalFrames",
+          "descriptor": "I",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "medianLufs",
+          "descriptor": "D",
+          "accessHex": "0x0002",
+          "modifiers": "private",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/BodyEligibility",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x0031",
+      "superclass": "java/lang/Object",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "call_local_not_a_retained_root",
+      "historicClassfileSha256": "ddb17d463f4c9c9b94499e7dd0d3f4c9f313273d7c422d723fc7cf570194987c",
+      "fields": [
+        {
+          "name": "segmentOrdinal",
+          "descriptor": "I",
+          "accessHex": "0x0012",
+          "modifiers": "private final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "eligible",
+          "descriptor": "Z",
+          "accessHex": "0x0012",
+          "modifiers": "private final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "rejectionReason",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x0012",
+          "modifiers": "private final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/DiagnosticCode",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x4031",
+      "superclass": "java/lang/Enum",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "shared_static_exact_identity",
+      "historicClassfileSha256": "01309599d1597c32ee95a75c8320b93896d32eac0abedb0739dcef3e9dfc8d55",
+      "fields": [
+        {
+          "name": "INSUFFICIENT_LOUDNESS",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "PROTECTED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "BODY_INELIGIBLE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "DEGENERATE_SKETCH",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "INTENT_UNIDENTIFIABLE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "SIMILARITY_REJECTED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "AMBIGUOUS",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "NOT_COMPARABLE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "STANDARD_VALIDATION_FAILED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "$VALUES",
+          "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+          "accessHex": "0x101a",
+          "modifiers": "private static final synthetic",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/ReferenceReason",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x4031",
+      "superclass": "java/lang/Enum",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "shared_static_exact_identity",
+      "historicClassfileSha256": "9dc3d3540ed73ee51fe8ef3041cf5cdfc3833258a882d00ba9897d5aff3f5c9f",
+      "fields": [
+        {
+          "name": "GROUP_REFERENCE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "PAIR_REFERENCE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "NOT_COMPARABLE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "PROTECTED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "INSUFFICIENT_LOUDNESS",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "AMBIGUOUS",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "STANDARD_VALIDATION_FAILED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "$VALUES",
+          "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+          "accessHex": "0x101a",
+          "modifiers": "private static final synthetic",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x4031",
+      "superclass": "java/lang/Enum",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "shared_static_exact_identity",
+      "historicClassfileSha256": "c9f7c7f87397ed659c9c5e63b2319e2e5cb6cd2003980e784dc2894e5b460183",
+      "fields": [
+        {
+          "name": "SHADOW_READY",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "DONE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "INVALID_INPUT",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "CANCELLED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "INSUFFICIENT_FEATURES",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "TOO_MANY_SEGMENTS",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "MEMORY_BUDGET",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "ANALYSIS_FAILED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "$VALUES",
+          "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+          "accessHex": "0x101a",
+          "modifiers": "private static final synthetic",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x4031",
+      "superclass": "java/lang/Enum",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "shared_static_exact_identity",
+      "historicClassfileSha256": "df763e8821c9a7b65294d6039445dcb2d0025853cdbcd7115a46130e4b5d8bb2",
+      "fields": [
+        {
+          "name": "NONE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "PROTECTED",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "BODY_INELIGIBLE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "DURATION_RATIO",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "INSUFFICIENT_VALID_BINS",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "INVALID_BIN_RUN",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "DEGENERATE_VECTOR",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "DEGENERATE_SKETCH",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "INTENT_UNIDENTIFIABLE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "CONTEXT_MISMATCH",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "UNSTABLE_BOUNDARY",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "NON_FINITE",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "AMBIGUOUS",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x4019",
+          "modifiers": "public static final enum",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "$VALUES",
+          "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+          "accessHex": "0x101a",
+          "modifiers": "private static final synthetic",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x0031",
+      "superclass": "java/lang/Object",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "shared_static_exact_identity",
+      "historicClassfileSha256": "2776b0894250c968f8b719b90c241321a9021730bf6b1db81703a34da841c461",
+      "fields": [
+        {
+          "name": "V1",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile;",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "profileId",
+          "descriptor": "Ljava/lang/String;",
+          "accessHex": "0x0012",
+          "modifiers": "private final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/LoudnessStandard",
+      "authority": "ADR011_REFERENCE_ONLY",
+      "classAccessHex": "0x0031",
+      "superclass": "java/lang/Object",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "shared_static_exact_identity",
+      "historicClassfileSha256": "e5b10658b3e70207b8c0158d3cc58104013e89a8d1f3e0950d2a48f6eaa1d9bd",
+      "fields": [
+        {
+          "name": "BS1770_5",
+          "descriptor": "Lcom/quickmaster/processing/dynamics/leveler/LoudnessStandard;",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        },
+        {
+          "name": "standardId",
+          "descriptor": "Ljava/lang/String;",
+          "accessHex": "0x0012",
+          "modifiers": "private final",
+          "constantValue": {
+            "attribute": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/LevelerAnalysisEngine",
+      "authority": "ADR012_PROPOSED",
+      "classAccessHex": "0x0031",
+      "superclass": "java/lang/Object",
+      "interfaces": [],
+      "additionalDeclaredFieldsAllowed": false,
+      "ownership": "stateless_engine_shared_string_atom",
+      "historicClassfileSha256": "3d8ec43c791de721494294823e7fe73277e96ba165ad5d8968b019a7972a4b61",
+      "fields": [
+        {
+          "name": "ALGORITHM_ID",
+          "descriptor": "Ljava/lang/String;",
+          "accessHex": "0x0019",
+          "modifiers": "public static final",
+          "constantValue": {
+            "attribute": "present",
+            "tag": "CONSTANT_String",
+            "value": "QM-LEVELER-SHADOW-M004-V1"
+          }
+        }
+      ]
+    }
+  ],
+  "legacyAbstract": {
+    "owner": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor",
+    "classAccessHex": "0x0421",
+    "methods": [
+      {
+        "name": "computeFeatures",
+        "descriptor": "([FIII)V",
+        "accessHex": "0x0404",
+        "modifiers": "protected abstract",
+        "codeAttribute": "absent"
+      },
+      {
+        "name": "mapFeaturesToGain",
+        "descriptor": "()V",
+        "accessHex": "0x0404",
+        "modifiers": "protected abstract",
+        "codeAttribute": "absent"
+      }
+    ],
+    "otherAbstractMembersAllowed": false,
+    "exclusions": "La excepción no se hereda por package, nombre parcial, subclass ni owner modificable. Las excepciones M003 previamente hasheadas no se amplían. Todo ACC_NATIVE y todo método instancia finalize()V fallan incluso en este owner."
+  },
+  "helperRepair": {
+    "soleProductOwner": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor",
+    "method": "process([FI)[F",
+    "forbiddenBinary": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor$1",
+    "forbiddenDependency": "java/lang/NoSuchFieldError",
+    "forbiddenStaticField": "$SwitchMap$com$quickmaster$processing$dynamics$GainDomain:[I",
+    "strategy": "Sustituir únicamente switch(domain) de dos ramas por lectura local única, requireNonNull ya permitido y comparaciones de identidad; no otra clase/helper/field.",
+    "replacementInsideExistingGuard": [
+      "GainDomain domain = blockPublication.schedule().domain();",
+      "java.util.Objects.requireNonNull(domain);",
+      "if (domain == GainDomain.LEGACY_LINEAR) {",
+      "    meterDb = renderDenseLegacy(blockPublication, buffer, channels, frames, startPreparedFrame);",
+      "} else if (domain == GainDomain.SPARSE_DB) {",
+      "    meterDb = 0.0;",
+      "}"
+    ],
+    "existingCallNotNinthAddition": {
+      "opcode": 184,
+      "owner": "java/util/Objects",
+      "name": "requireNonNull",
+      "descriptor": "(Ljava/lang/Object;)Ljava/lang/Object;"
+    },
+    "preserve": [
+      "Una lectura de published al inicio; no releer publicación entre guard, domain y render.",
+      "Null buffer: meter +0 y retorno null, sin avanzar cursor. Canales<1 o longitud no divisible: buffer intacto/meter +0, sin avanzar cursor.",
+      "Mismo orden de guard enabled, rate>0, isRenderableFor(channels), finiteBuffer; no evaluar domain fuera del guard.",
+      "Válidos Dense: mismos args/arithmetic/clamps/interpolación/orden/multiplicaciones; raw bits de buffer y meter idénticos, mismo avance temporal/seek/oversampling/adopción.",
+      "Buffer no finito, disabled, rate no preparado o publicación no renderizable: no render, +0 y mismo avance final de cursores que baseline.",
+      "SPARSE_DB: no render en M004 y meter +0; PublishedGain solo admite Dense, nunca autorizar nuevo schedule. Domain null, si alcanzable, conserva NPE antes de writes finales mediante requireNonNull (mensaje/stacktrace no contrato).",
+      "Después de clean autorizado no existe helper en ninguna salida escaneada ni referencia CP a helper/NoSuchFieldError. No basta borrar classfile viejo o ignorarlo.",
+      "No cambia ningún otro owner productivo por ADR012; integración con owners de ADR010/011 solo bajo asignación root."
+    ]
+  },
+  "bodyEligibility": {
+    "owner": "com/quickmaster/processing/dynamics/leveler/BodyEligibility",
+    "invariant": "0<=segmentOrdinal<64, rejectionReason no null y eligible iff reason==NONE; no constructor permisivo.",
+    "lifetime": "Resultado de BodyContextGate.evaluate, como máximo S<=64 elementos locales de la llamada; ninguna arista retenida de snapshot/cache/diagnostics/statics/externals hacia BodyEligibility o su array.",
+    "noNewRetainedRule": true
+  },
+  "enums": [
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/DiagnosticCode",
+      "namesInOrdinalOrder": [
+        "INSUFFICIENT_LOUDNESS",
+        "PROTECTED",
+        "BODY_INELIGIBLE",
+        "DEGENERATE_SKETCH",
+        "INTENT_UNIDENTIFIABLE",
+        "SIMILARITY_REJECTED",
+        "AMBIGUOUS",
+        "NOT_COMPARABLE",
+        "STANDARD_VALIDATION_FAILED"
+      ],
+      "ordinalStartsAt": 0,
+      "constantFieldAccessHex": "0x4019",
+      "valuesField": {
+        "name": "$VALUES",
+        "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/DiagnosticCode;",
+        "accessHex": "0x101a",
+        "constantValue": {
+          "attribute": "absent"
+        }
+      },
+      "additionalConstantsFieldsMethodsAllowed": false
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/ReferenceReason",
+      "namesInOrdinalOrder": [
+        "GROUP_REFERENCE",
+        "PAIR_REFERENCE",
+        "NOT_COMPARABLE",
+        "PROTECTED",
+        "INSUFFICIENT_LOUDNESS",
+        "AMBIGUOUS",
+        "STANDARD_VALIDATION_FAILED"
+      ],
+      "ordinalStartsAt": 0,
+      "constantFieldAccessHex": "0x4019",
+      "valuesField": {
+        "name": "$VALUES",
+        "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/ReferenceReason;",
+        "accessHex": "0x101a",
+        "constantValue": {
+          "attribute": "absent"
+        }
+      },
+      "additionalConstantsFieldsMethodsAllowed": false
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus",
+      "namesInOrdinalOrder": [
+        "SHADOW_READY",
+        "DONE",
+        "INVALID_INPUT",
+        "CANCELLED",
+        "INSUFFICIENT_FEATURES",
+        "TOO_MANY_SEGMENTS",
+        "MEMORY_BUDGET",
+        "ANALYSIS_FAILED"
+      ],
+      "ordinalStartsAt": 0,
+      "constantFieldAccessHex": "0x4019",
+      "valuesField": {
+        "name": "$VALUES",
+        "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus;",
+        "accessHex": "0x101a",
+        "constantValue": {
+          "attribute": "absent"
+        }
+      },
+      "additionalConstantsFieldsMethodsAllowed": false
+    },
+    {
+      "owner": "com/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason",
+      "namesInOrdinalOrder": [
+        "NONE",
+        "PROTECTED",
+        "BODY_INELIGIBLE",
+        "DURATION_RATIO",
+        "INSUFFICIENT_VALID_BINS",
+        "INVALID_BIN_RUN",
+        "DEGENERATE_VECTOR",
+        "DEGENERATE_SKETCH",
+        "INTENT_UNIDENTIFIABLE",
+        "CONTEXT_MISMATCH",
+        "UNSTABLE_BOUNDARY",
+        "NON_FINITE",
+        "AMBIGUOUS"
+      ],
+      "ordinalStartsAt": 0,
+      "constantFieldAccessHex": "0x4019",
+      "valuesField": {
+        "name": "$VALUES",
+        "descriptor": "[Lcom/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason;",
+        "accessHex": "0x101a",
+        "constantValue": {
+          "attribute": "absent"
+        }
+      },
+      "additionalConstantsFieldsMethodsAllowed": false
+    }
+  ],
+  "enumProtocol": {
+    "appliesOnlyTo": [
+      "com/quickmaster/processing/dynamics/leveler/model/DiagnosticCode",
+      "com/quickmaster/processing/dynamics/leveler/model/ReferenceReason",
+      "com/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisStatus",
+      "com/quickmaster/processing/dynamics/leveler/model/SimilarityRejectionReason"
+    ],
+    "superclass": "java/lang/Enum",
+    "inheritedEnumAtoms": "name:String private final y ordinal:int private final ya definidos por Enum; no declararlos otra vez ni permitir fields propios de instancia.",
+    "valueOf": {
+      "name": "valueOf",
+      "accessHex": "0x0009",
+      "descriptorTemplate": "(Ljava/lang/String;)L<ownE>;",
+      "instructions": [
+        "ldc/ldc_w CONSTANT_Class ownE",
+        "aload_0",
+        "invokestatic java/lang/Enum.valueOf(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;",
+        "checkcast ownE",
+        "areturn"
+      ],
+      "exceptionHandlers": 0,
+      "extraInstructionsAllowed": false
+    },
+    "values": {
+      "name": "values",
+      "accessHex": "0x0009",
+      "descriptorTemplate": "()[L<ownE>;",
+      "instructions": [
+        "getstatic ownE.$VALUES:[LownE;",
+        "invokevirtual [LownE;.clone()Ljava/lang/Object;",
+        "checkcast [LownE;",
+        "areturn"
+      ],
+      "exceptionHandlers": 0
+    },
+    "constructor": {
+      "name": "<init>",
+      "accessHex": "0x0002",
+      "descriptor": "(Ljava/lang/String;I)V",
+      "instructions": [
+        "aload_0",
+        "aload_1",
+        "iload_2",
+        "invokespecial java/lang/Enum.<init>(Ljava/lang/String;I)V",
+        "return"
+      ],
+      "exceptionHandlers": 0
+    },
+    "valuesBuilder": {
+      "name": "$values",
+      "accessHex": "0x100a",
+      "descriptorTemplate": "()[L<ownE>;",
+      "grammar": "push exact K; anewarray ownE; por ordinal i ascendente: dup, push i, getstatic ownE.NAMES[i]:LownE;, aastore; areturn. Push usa solo iconst/bipush/sipush/ldc equivalente al entero literal. Ningún handler, call/field ajeno ni slot vacío/duplicado."
+    },
+    "clinit": {
+      "name": "<clinit>",
+      "accessHex": "0x0008",
+      "descriptor": "()V",
+      "grammar": "Para cada NAMES[i] en orden: new ownE; dup; ldc nombre String exacto; push ordinal i; invokespecial ownE.<init>(String,int); putstatic ownE.NAMES[i]:LownE;. Luego invokestatic ownE.$values()[LownE;, putstatic ownE.$VALUES:[LownE;, return. Solo esas K+1 escrituras, una cada una, desde este <clinit>; cero handlers/side effects extra."
+    },
+    "runtime": "Cada static constant es el singleton ownE con name/ordinal exactos; $VALUES contiene exactamente los K singletons, mismo orden/sin null/duplicados, compartido static. values() devuelve clon, nunca backing array. Retention de shared atoms original permanece.",
+    "negative": "No conceder putstatic por regex de nombre, flags o método llamado <clinit>. Invertir nombre/ordinal, sustituir literal/cast de E, modificar descriptor/contexto, añadir write/call/handler/field o exponer $VALUES falla.",
+    "semanticNames": "INVALID_BIN_RUN fija la razón ya usada para racha inválida>4; DEGENERATE_VECTOR para vector/norma degenerado. Las etiquetas exploratorias DEGENERATE_RUN/DEGENERATE_DESCRIPTOR no son miembros nuevos ni cambian predicados. Todas las razones distintas de NONE siguen veto; no se reabre ADR010."
+  },
+  "jdkAdditionalCalls": [
+    {
+      "opcodeName": "invokestatic",
+      "opcode": 184,
+      "owner": "java/lang/Math",
+      "name": "toIntExact",
+      "descriptor": "(J)I",
+      "rationale": "Conversion comprobada long->int de tamaños; ADR009 admite expresamente range-check/conversión segura. Conserva ArithmeticException fuera de rango; no truncación. O(1), sin referencia retenida.",
+      "negativeDescriptor": "(J)J"
+    },
+    {
+      "opcodeName": "invokestatic",
+      "opcode": 184,
+      "owner": "java/lang/StrictMath",
+      "name": "signum",
+      "descriptor": "(D)D",
+      "rationale": "Signo primitivo O(1), conserva ceros firmados; las validaciones de finitud de los algoritmos no se relajan.",
+      "negativeDescriptor": "(F)F"
+    },
+    {
+      "opcodeName": "invokestatic",
+      "opcode": 184,
+      "owner": "java/lang/StrictMath",
+      "name": "copySign",
+      "descriptor": "(DD)D",
+      "rationale": "Signo de delta/contorno O(1), sin asignación ni callbacks; no convierte NaN o degeneración en autorización.",
+      "negativeDescriptor": "(FF)F"
+    },
+    {
+      "opcodeName": "invokestatic",
+      "opcode": 184,
+      "owner": "java/lang/StrictMath",
+      "name": "log1p",
+      "descriptor": "(D)D",
+      "rationale": "08 exige log1p de energía espectral. Mantiene fórmula/orden de operaciones, O(1) por componente.",
+      "negativeDescriptor": "(F)F"
+    },
+    {
+      "opcodeName": "invokevirtual",
+      "opcode": 182,
+      "owner": "java/lang/String",
+      "name": "isEmpty",
+      "descriptor": "()Z",
+      "rationale": "Valida IDs ya acotados; lectura pura O(1) sin construir ni publicar String.",
+      "negativeDescriptor": "(I)Z"
+    },
+    {
+      "opcodeName": "invokevirtual",
+      "opcode": 182,
+      "owner": "java/lang/String",
+      "name": "compareTo",
+      "descriptor": "(Ljava/lang/String;)I",
+      "rationale": "Orden lexicográfico UTF-16 determinista; IDs de protocolo acotados/ASCII. Sin locale ni Comparator/Comparable ajeno; O(longitud de los IDs).",
+      "negativeDescriptor": "(Ljava/lang/Object;)I"
+    },
+    {
+      "opcodeName": "invokevirtual",
+      "opcode": 182,
+      "owner": "java/security/MessageDigest",
+      "name": "update",
+      "descriptor": "([BII)V",
+      "rationale": "Receptor SHA-256 ya autorizado; fingerprint(float[]) usa un único byte[8192] local reutilizado y update del tramo lleno/cola. Float.floatToRawIntBits, orden big-endian y digest[32] intactos; O(F*C) y auxiliar fijo, nada retenido salvo fingerprint autorizado.",
+      "negativeDescriptor": "(Ljava/nio/ByteBuffer;)V"
+    },
+    {
+      "opcodeName": "invokespecial",
+      "opcode": 183,
+      "owner": "java/lang/IndexOutOfBoundsException",
+      "name": "<init>",
+      "descriptor": "(Ljava/lang/String;)V",
+      "rationale": "Bounds de FrozenList.get(I)Object y BodyContextVector.componentAt(I)D. Excepción local lanzada, sin field/callback/root nuevo. No autoriza otros constructores ni Throwable APIs.",
+      "negativeDescriptor": "()V"
+    }
+  ],
+  "jdkNegativeBoundary": {
+    "exactTupleOnly": true,
+    "neighborOwnersDenied": [
+      "java/lang/Math para signum/copySign/log1p",
+      "java/lang/StrictMath para toIntExact",
+      "java/lang/ArrayIndexOutOfBoundsException para <init>(String)"
+    ],
+    "neighborMethodsDenied": [
+      "String.compareToIgnoreCase(String)",
+      "MessageDigest.update(ByteBuffer)",
+      "IndexOutOfBoundsException.<init>()V/(I)V/(J)V"
+    ],
+    "stillForbidden": "familias de owner/package, reflection/Class APIs, handles, threading/TL, callbacks, otros providers/algoritmos de digest, capturas/escapes, bootstraps nuevos. CP prohibido aun no usado sigue prohibido.",
+    "negativeFixtureNote": "Vecinos que no existen en JDK pueden probarse como mutación estructural del classfile sin ejecutar ni presentarlos como código JVM válido."
+  },
+  "classMetadataRoles": [
+    {
+      "owner": "java/lang/Deprecated",
+      "contextOwner": "com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor",
+      "field": "gainEnv:[F",
+      "allowedRoles": [
+        "Deprecated attribute",
+        "RuntimeVisibleAnnotations @java.lang.Deprecated sin element-value pairs"
+      ],
+      "executableOrDescriptorUseAllowed": false,
+      "rationale": "Anotación exacta de M003; ninguna obtención reflectiva, instancia, field/método, superclass/interface, class literal ni llamada."
+    },
+    {
+      "owner": "java/lang/Exception",
+      "contextOwner": "com/quickmaster/processing/dynamics/leveler/LevelerAnalysisEngine",
+      "method": "analyzeShadow([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;",
+      "allowedRoles": [
+        "join type de StackMapTable del multi-catch existente",
+        "LocalVariableTable ex:Ljava/lang/Exception; si hay debug"
+      ],
+      "actualCatchTypes": [
+        "java/lang/IllegalArgumentException",
+        "java/lang/IllegalStateException",
+        "java/lang/ArithmeticException",
+        "java/security/NoSuchAlgorithmException"
+      ],
+      "generalExceptionCatchAllowed": false,
+      "executableOrDescriptorUseAllowed": false,
+      "rationale": "CR dice catch Exception, pero fuente/javap muestran cuatro handlers tipados; Exception es su join compilado. Registrar roles al parsear atributos, no poner Exception en allowlist de clases general."
+    }
+  ],
+  "fixedIdsAndProfile": {
+    "engine": {
+      "owner": "com/quickmaster/processing/dynamics/leveler/LevelerAnalysisEngine",
+      "field": "ALGORITHM_ID",
+      "value": "QM-LEVELER-SHADOW-M004-V1",
+      "storage": "CONSTANT_String in public static final field 0x0019; no productive putstatic"
+    },
+    "profile": {
+      "owner": "com/quickmaster/processing/dynamics/leveler/LevelerCalibrationProfile",
+      "singleton": {
+        "name": "V1",
+        "initializer": "new LevelerCalibrationProfile(\"QM-LEVELER-V1\")",
+        "constructor": "private <init>(Ljava/lang/String;)V",
+        "onlyStaticWrite": "V1 desde propio <clinit>; un singleton exacto, sin dependencias/side effects adicionales"
+      },
+      "instanceId": {
+        "field": "profileId",
+        "value": "QM-LEVELER-V1",
+        "storage": "private final String; ConstantValue ausente, asignado solo en constructor"
+      },
+      "accessor": {
+        "name": "profileId",
+        "descriptor": "()Ljava/lang/String;",
+        "accessHex": "0x0001",
+        "behavior": "getfield profileId y areturn"
+      },
+      "shortTransition": {
+        "name": "isShortTransition",
+        "descriptor": "(JI)Z",
+        "accessHex": "0x0001",
+        "predicate": "lengthFrames < 3L * sourceSampleRateHz",
+        "note": "Callers conservan formato/rangos validados; no nuevo field sampleRate ni recalibración."
+      },
+      "constantReturningMethods": [
+        {
+          "name": "structuralHopSec",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.5,
+          "rawBitsHex": "3fe0000000000000"
+        },
+        {
+          "name": "descriptorBins",
+          "descriptor": "()I",
+          "accessHex": "0x0001",
+          "value": 32
+        },
+        {
+          "name": "sketchBins",
+          "descriptor": "()I",
+          "accessHex": "0x0001",
+          "value": 2048
+        },
+        {
+          "name": "maximumSegments",
+          "descriptor": "()I",
+          "accessHex": "0x0001",
+          "value": 64
+        },
+        {
+          "name": "noveltyMadMultiplier",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 3,
+          "rawBitsHex": "4008000000000000"
+        },
+        {
+          "name": "boundaryRadiusSec",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 2,
+          "rawBitsHex": "4000000000000000"
+        },
+        {
+          "name": "minimumBoundarySeparationSec",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 2,
+          "rawBitsHex": "4000000000000000"
+        },
+        {
+          "name": "durationRatioMinimum",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.75,
+          "rawBitsHex": "3fe8000000000000"
+        },
+        {
+          "name": "durationRatioMaximum",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 1.33,
+          "rawBitsHex": "3ff547ae147ae148"
+        },
+        {
+          "name": "minimumValidBins",
+          "descriptor": "()I",
+          "accessHex": "0x0001",
+          "value": 24
+        },
+        {
+          "name": "maximumInvalidRun",
+          "descriptor": "()I",
+          "accessHex": "0x0001",
+          "value": 4
+        },
+        {
+          "name": "groupH",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.85,
+          "rawBitsHex": "3feb333333333333"
+        },
+        {
+          "name": "groupT",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.8,
+          "rawBitsHex": "3fe999999999999a"
+        },
+        {
+          "name": "groupA",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.82,
+          "rawBitsHex": "3fea3d70a3d70a3d"
+        },
+        {
+          "name": "groupC",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.85,
+          "rawBitsHex": "3feb333333333333"
+        },
+        {
+          "name": "groupSeparation",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.08,
+          "rawBitsHex": "3fb47ae147ae147b"
+        },
+        {
+          "name": "pairH",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.92,
+          "rawBitsHex": "3fed70a3d70a3d71"
+        },
+        {
+          "name": "pairT",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.9,
+          "rawBitsHex": "3feccccccccccccd"
+        },
+        {
+          "name": "pairA",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.9,
+          "rawBitsHex": "3feccccccccccccd"
+        },
+        {
+          "name": "pairC",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.92,
+          "rawBitsHex": "3fed70a3d70a3d71"
+        },
+        {
+          "name": "pairMargin",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 0.12,
+          "rawBitsHex": "3fbeb851eb851eb8"
+        },
+        {
+          "name": "deadbandLu",
+          "descriptor": "()D",
+          "accessHex": "0x0001",
+          "value": 1,
+          "rawBitsHex": "3ff0000000000000"
+        }
+      ],
+      "normativeCorrespondence": "08 constantes/perfil y segmentación: hop.5, L32,B2048,S64,Q multiplier3/radius2/separation2; ratio.75..1.33,bins>=24/run<=4; grupos/par/deadband literales; transición<3s. IDs exactos completan los shared atoms ya exigidos en08, no una versión nueva. Valores de retorno NO son fields ConstantValue."
+    },
+    "loudnessStandardReference": {
+      "authority": "ADR011_REFERENCE_ONLY; root deduplica por identidad exacta al merge, no dos autorizaciones.",
+      "path": "milestones/M-004/conformance-contract-001/schema-delta.001.json",
+      "sha256": "59e4ad48616254d9d61a83793488790dfb85385416893b26578b84a1226396df",
+      "selector": "classes[name=com.quickmaster.processing.dynamics.leveler.LoudnessStandard]",
+      "literalFieldsMatched": 2,
+      "matchedTupleOrder": [
+        "BS1770_5:Lcom/quickmaster/processing/dynamics/leveler/LoudnessStandard;:0x0019:ConstantValue absent",
+        "standardId:Ljava/lang/String;:0x0012:ConstantValue absent"
+      ],
+      "initializer": "new LoudnessStandard(\"BS1770-5\")",
+      "methodConstants": {
+        "standardId": "BS1770-5",
+        "momentaryWindowSec": 0.4,
+        "shortTermWindowSec": 3,
+        "hopSec": 0.1,
+        "absoluteGateLufs": -70,
+        "integratedRelativeGateLu": -10,
+        "regionalRelativeGateLu": -20,
+        "lufsOffset": -0.691
+      },
+      "correspondence": "400ms,3s,100ms,-70,-10,-20,-.691 coinciden con08 y baseline. No introducir fields constantes para métodos ni nuevo schema normativo. Ante divergencia literal root no fusiona automáticamente.",
+      "explicitNoReopen": "No altera ConformanceReason/Requirement/Run/Binding, enums de conformance, corpus, PASSED ni schema retained propuesto por ADR011."
+    }
+  },
+  "dsparkReference": {
+    "authority": "ADR011_REFERENCE_ONLY",
+    "path": "milestones/M-004/conformance-contract-001/schema-delta.001.json",
+    "sha256": "59e4ad48616254d9d61a83793488790dfb85385416893b26578b84a1226396df",
+    "selector": "dsparkBoundary",
+    "statusAtReview": "PROPUESTO; composición pendiente de preflight/aceptación root, no bloqueo de esta propuesta.",
+    "bindingIdentity": "com.dspark:dspark:0.1.0; SHA256 de368f326f668267d0cba20f34135efb466dafc53f84a4aee32d8af4347e4141",
+    "exactOwnerNamesForIdentityCheck": [
+      "com/dspark/core/DspMath",
+      "com/dspark/core/FFTReal"
+    ],
+    "rule": "Firmas y restricciones de callers solo las del selector de ADR011; no copiarlas como permisos propios ni wildcard com/dspark. Nuevos owners de loudness DSPark=0.",
+    "matrixIndexes": [
+      13,
+      14,
+      15,
+      16,
+      41,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ]
+  },
+  "verificationDesign": {
+    "executionStatus": "DISEÑO_NO_EJECUTADO_EN_ESTA_MISION; no Maven, target, mutaciones de tests/producto ni despliegue.",
+    "positiveGroups": [
+      {
+        "id": "SB-P1",
+        "oracle": "Baseline M003: 10 fields A y 25 fields Leveler iguales; nuevo Leveler solo shadowAnalysis. Class A 0x0421 y abstract2 exactos sin Code pasan."
+      },
+      {
+        "id": "SB-P2",
+        "oracle": "Cuatro enums compilados --release 17 pasan campos exactos + cinco métodos canónicos + runtime name/ordinal/identidad/$VALUES clone."
+      },
+      {
+        "id": "SB-P3",
+        "oracle": "Ocho fixtures JDK exactos pasan; numerics cubren Math.toIntExact min/max int y +/-1 overflow, signum +/-0/NaN, copySign signo +/-0, log1p(0)/valores finitos; validación de caller sigue fail-closed."
+      },
+      {
+        "id": "SB-P4",
+        "oracle": "String vacía/no vacía y compareTo empates/prefijos/orden determinista; SHA-256 chunk8192 con entrada vacía, tramo completo y cola da mismo fingerprint32 que oracle independiente por raw bits; FrozenList/BodyContextVector límites retornan componente o lanzan excepción String exacta."
+      },
+      {
+        "id": "SB-P5",
+        "oracle": "Fields85 (83 ADR012/2 referencia011), flags y ConstantValue exactos incluyendo +0.0; profile y norma methods/ID/singletons idénticos; BodyEligibility solo call-local."
+      },
+      {
+        "id": "SB-P6",
+        "oracle": "Anotación gainEnv y join metadata Exception pasan solo contextos fijados, sin exigir que compilación conserve debug opcional."
+      },
+      {
+        "id": "SB-P7",
+        "oracle": "Retiro del switch: AnalysisDynamicsProcessorTest, DenseGainScheduleCompatibilityTest, AnalysisDynamicsCompatibilityTest, LevelerProcessorTest, ProcessingPipelineDynamicsTest y LevelerShadowIsolationTest congelados siguen raw-bit. Nuevos dirigidos cubren guards/cursores null/invalid/NaN/disabled/unprepared/unrenderable, mono/estéreo, 1x/2x/4x, seek/negative seek/adopción y pipeline acumulativo. Harness mínimo del bloque distingue null-domain NPE y SPARSE unidad sin falsificar PublishedGain ni ampliar API."
+      }
+    ],
+    "negativeGroups": [
+      {
+        "id": "SB-N1",
+        "oracle": "Otro owner abstract, tercer abstract, descriptor/access incorrecto, Code en abstract, cualquier native y finalize()V incluso synthetic/private/sin Code fallan."
+      },
+      {
+        "id": "SB-N2",
+        "oracle": "Helper original/reintroducido o CP a helper/NoSuchFieldError, switch-map field o putstatic adicional falla; limpieza física sin cambio source no es solución."
+      },
+      {
+        "id": "SB-N3",
+        "oracle": "En cada clase: add/remove/rename field, cambio descriptor/static/final/volatile/access o CV ausente/valor/tipo/+0->-0 falla aunque RSS pase. Un BodyEligibility/array anclado a root/statics falla ownership."
+      },
+      {
+        "id": "SB-N4",
+        "oracle": "Enum nombre/orden/ordinal/owner/descriptor/$VALUES length/identity/write/clinit/clone/valueOf literal/cast/contexto/call/handler alterados fallan. Método valueOf impostor no gana excepción."
+      },
+      {
+        "id": "SB-N5",
+        "oracle": "Por cada una de las ocho calls alterar opcode, owner, nombre o descriptor falla; vecinos explícitos no pasan. Digest no SHA-256, provider extra, callback/escape y API de Exception/Deprecated fallan."
+      },
+      {
+        "id": "SB-N6",
+        "oracle": "Exception usado en catch_type general, new, field/method signature, superclass/interface, literal o call; Deprecated fuera de gainEnv/anotación vacía falla. Otros CP prohibidos aun no usados siguen fallando."
+      },
+      {
+        "id": "SB-N7",
+        "oracle": "Cambiar singleton/ID/profile threshold/norma raw bits o ALGORITHM_ID, añadir field storage de constantes, escrituras nuevas, reemplazar/sacar $VALUES backing o loosening de cap/alias falla."
+      }
+    ],
+    "ruleSensitivity": "Para cada permiso/regla individual: positivo debe fallar si se retira ese permiso exacto; mutante específico debe pasar al desactivar solo su guard y por eso fallar el control de sensibilidad. El control nunca cambia política activa para obtener verde. Conservar los 42 controles existentes, sin skips, y los negativos ADR007/009/010.",
+    "integration": "Root asignará una corrida limpia por owners autorizados; reejecutar guard positivo real, Foundation/legacy, suite completa y AC10 separado. Esta adjudicación no predice PASS de integración ni M004."
+  },
+  "retentionAndHashes": {
+    "addedProductFields": 0,
+    "addedRetainedRoots": 0,
+    "changedProductArraysOrObjectsInShadow": 0,
+    "algorithmOrThresholdChanges": false,
+    "derivation": "Fields legacy ya M003 (+shadowAnalysis previamente permitido); BodyEligibility no retenido; enums/perfil/IDs son los mismos shared atoms. Eliminar helper reduce un static int[] ajeno a shadow. Calls JDK no capturan/publican; buffer digest8192 ya existe. No cambia la topología owned, payload, alias, cap, MIN/MAX ni shallow sizes por ADR012.",
+    "goldens": "No rebaselinar goldens generales ni MIN/MAX. Deltas de conformance ADR011 son independientes y solo root puede componerlos; no atribuir cambios de sus edges a ADR012.",
+    "hashesToRefreshAfterAcceptedImplementation": [
+      "AnalysisDynamicsProcessor.class por migración del switch",
+      "agregado SCANNED/classfiles del build integrado",
+      "política/fixtures estáticos y tests efectivamente modificados"
+    ],
+    "unchangedByThisDecision": [
+      "profileId",
+      "ALGORITHM_ID simbólico",
+      "valores normativos y V1",
+      "grafo/schema semántico de retención ADR007 y sus caps",
+      "authority PublishedGain/Dense"
+    ],
+    "caveat": "Si ADR011 cambia norm/core/attestation, aplica exclusivamente su algoritmo de hash y nueva evidencia. Nunca reutilizar SHA de implementación anterior solo porque los IDs coincidan."
+  }
+}
