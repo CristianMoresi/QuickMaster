@@ -1,7 +1,7 @@
 name: Release
 
-# Build a portable bundle (Java runtime embedded) for Windows, macOS and Linux
-# whenever a version tag is pushed, and attach them to the GitHub Release.
+# Package the already-validated JAR for each platform. The author creates a draft
+# release and uploads its core JAR before pushing the version tag.
 on:
   push:
     tags:
@@ -36,13 +36,28 @@ jobs:
         shell: bash
         run: echo "v=$(echo "${GITHUB_REF_NAME#v}" | sed 's/-.*//')" >> "$GITHUB_OUTPUT"
 
-      - name: Install the vendored DSPark engine, then build
+      - name: Resolve platform dependencies and download the validated JAR
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           mvn -B -ntp install:install-file -Dfile=libs/dspark-0.1.0.jar -DpomFile=libs/dspark-0.1.0.pom
-          mvn -B -ntp -DskipTests clean package
           mvn -B -ntp dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/app
-          cp target/quickmaster.jar target/app/
+          gh release download "$GITHUB_REF_NAME" --pattern "QuickMaster-core-${{ steps.ver.outputs.v }}.jar" --dir target/release
+          cp "target/release/QuickMaster-core-${{ steps.ver.outputs.v }}.jar" target/app/quickmaster.jar
+
+      - name: Verify version, hash and bound loudness evidence
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ steps.ver.outputs.v }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $record = Get-Content "docs/releases/$env:RELEASE_VERSION.json" -Raw | ConvertFrom-Json
+          if ($record.version -ne $env:RELEASE_VERSION -or $record.jarAsset -ne "QuickMaster-core-$env:RELEASE_VERSION.jar") {
+            throw 'Release record does not match the tag'
+          }
+          java tools/VerifyReleaseJar.java target/app/quickmaster.jar $record.version $record.jarSha256
+          if ($LASTEXITCODE -ne 0) { throw 'Validated release JAR check failed' }
 
       - name: Build the macOS icon
         if: runner.os == 'macOS'
@@ -84,6 +99,7 @@ jobs:
         run: (cd dist && zip -ry "../QuickMaster-${{ matrix.label }}-${{ steps.ver.outputs.v }}.zip" .)
 
       - name: Attach to the release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: QuickMaster-${{ matrix.label }}-${{ steps.ver.outputs.v }}.zip
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" "QuickMaster-${{ matrix.label }}-${{ steps.ver.outputs.v }}.zip"

@@ -2,6 +2,26 @@
 
 Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está implementada, validada, publicada en GitHub y entregada en Program Files, con hash y arranque comprobados. Este es el registro vigente; no se utilizan skills de orquestación.
 
+## Release 1.3.1
+
+- Preparación desde `origin/main`, sin crear ramas adicionales. La antigua rama
+  `codex/leveler-beat-zoom` fue eliminada localmente y en GitHub por indicación
+  del usuario; el worktree de integración se conserva en HEAD separado.
+- Versión Maven y changelog actualizados a 1.3.1. Notas públicas en
+  `docs/releases/1.3.1.md`; procedimiento en `docs/VALIDATION.md`.
+- El empaquetado multiplataforma usa el JAR validado localmente y comprueba su
+  SHA-256, versión e informe de conformidad ligado a sus propias clases. No se
+  suben corpus oficiales ni autorizaciones a GitHub.
+- Build limpio 1.3.1 completado: 677 pruebas, 0 fallos, 0 errores y 0 omitidas
+  en 94 informes; 106 variantes musicales aprobadas. Conformidad de archivo
+  ITU/EBU `PASSED`, 94 mediciones. Las 165 clases de producto son idénticas a
+  la entrega anterior: cambia la versión y el empaquetado, no el DSP.
+- JAR de release: `25f11f5681fdfb470a9ddd705507e42d2cf01a308fac8eb69592979461726770`.
+  Imagen Windows local en `dist/release-1.3.1/QuickMaster`, generada con Temurin
+  25.0.4.7; EXE con versión de archivo y producto 1.3.1.
+- El verificador de release acepta el JAR validado y rechaza por separado
+  hash incorrecto, versión incorrecta y evidencia de sonoridad ausente.
+
 ## Resultado buscado
 
 1. Leveler offline que ajuste diferencias de nivel entre secciones comparables, conservando intros, breaks, outros y crescendos intencionales.
@@ -26,7 +46,8 @@ Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está impl
 
 ## Fuente e integración
 
-- Rama: `codex/leveler-beat-zoom`, worktree `E:\Code\Projects\JA-DAW\QuickMaster-Integration`.
+- Única rama: `main`. Worktree de integración conservado en HEAD separado:
+  `E:\Code\Projects\JA-DAW\QuickMaster-Integration`.
 - Commit de implementación: `9b06e16` — `[FIX] add structural leveling, bounded Beat Comp and waveform zoom`.
 - El repositorio principal y sus cambios locales se conservan en `E:\Code\Projects\JA-DAW\QuickMaster`.
 - GitHub se comprobó el 25 de septiembre: `HEAD...origin/main = 0/0`; no había cambios remotos para incorporar.
@@ -74,7 +95,7 @@ Hallazgos de la revisión final ya corregidos y aprobados en pruebas focales:
 
 - La versión de uso está en `C:\Program Files\QuickMaster\QuickMaster.exe`; la imagen fuente queda en `dist/QuickMaster` dentro de este worktree.
 - Para cambios futuros, trabajar en `QuickMaster-Integration`, consultar este documento y seguir `docs/VALIDATION.md` y `AGENTS.md`. Repetir suite, paquete, imagen y entrega cuando cambie la aplicación.
-- La publicación definitiva es `origin/main`; se conserva también la rama de integración `codex/leveler-beat-zoom`. El checkout principal local, con cambios pendientes, se mantiene intacto: no se fuerza su actualización ni se mezclan sus archivos sin guardar.
+- La publicación definitiva es `origin/main`; no existen ramas auxiliares. El checkout principal local, con cambios pendientes, se mantiene intacto: no se fuerza su actualización ni se mezclan sus archivos sin guardar.
 - No se han incorporado a Git audio oficial, autorizaciones personales ni resultados temporales.
 
 ## Criterio de fin

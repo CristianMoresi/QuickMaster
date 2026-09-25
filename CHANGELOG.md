@@ -7,7 +7,21 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-09-25
+
+### Added
+- Horizontal waveform navigation: scroll to pan the view without affecting
+  playback; Ctrl + wheel (Command on macOS) zooms around the pointer.
+
 ### Changed
+- The offline Leveler compares sustained, musically similar sections and uses
+  smooth, bounded gain transitions. It protects intros, outros, breaks and
+  build-ups, and leaves ambiguous or peak-unsafe material unchanged.
+- Fade-curve editing now uses Alt + wheel over a fade handle, leaving the plain
+  wheel available for waveform navigation.
+- Portable releases share the exact JAR validated against the official loudness
+  test signals. Packaging checks its SHA-256, version and bound conformance
+  report; test audio and personal authorizations are not distributed.
 - **DSP engine (dspark) synchronized with the upstream DSPark library and
   re-audited end to end.** Loudness measurement now uses the exact ITU-R
   BS.1770-5 K-weighting (readings were about 0.26 LU low before) with the
@@ -20,6 +34,15 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   target bit depth. The whole library is hardened against non-finite parameter
   and signal values. Verified against EBU-style conformance vectors and the
   library's published quality tables (114 dspark tests).
+
+### Fixed
+- Beat Comp respects its maximum gain reduction, including parameter changes
+  while analysis is pending, with continuous stereo-linked processing.
+- Tempo detection no longer cancels out-of-phase stereo attacks or overweights
+  weak subdivisions. Uncertain estimates are marked `auto?`; incompatible
+  tempo sections do not force a false global BPM, and manual BPM remains available.
+- Leveler analysis avoids unnecessary allocations and uses sparse gain schedules
+  to keep memory usage bounded for long tracks.
 
 ## [1.3.0] - 2026-07-21
 
