@@ -47,7 +47,7 @@ You dial the dB of reduction (or boost) you want; the analysis derives the thres
 
 ### Waveform zoom
 
-Hold **Ctrl** and scroll over the waveform to zoom in or out on Windows/Linux; use **Command** on macOS. The time under the pointer stays anchored. Selection, seeking, playhead and fade handles use the same zoomed timeline. Scroll outward to return to the full track; an unmodified wheel over a fade handle continues to change its curve.
+Scroll over the waveform to move the visible timeline horizontally, without seeking, pausing or changing playback. Wheel up reveals earlier audio; wheel down reveals later audio. Panning follows the current zoom level and stops at the track edges. Hold **Ctrl** while scrolling to zoom in or out on Windows/Linux; use **Command** on macOS. The time under the pointer stays anchored. Selection, playhead and fade handles use the same view coordinates. Zoom outward to return to the full track. **Alt + wheel** over a fade handle changes its curve; the unmodified wheel only moves the view, including over handles.
 
 ### Clip (saturation and hard clip)
 

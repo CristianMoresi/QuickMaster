@@ -85,6 +85,20 @@ public record WaveformViewport(double durationSec, double startSec, double visib
         return new WaveformViewport(durationSec, nextStart, nextVisible);
     }
 
+    /** Translates only the visible window, without changing its duration or zoom. */
+    public WaveformViewport panByWheel(double wheelDelta)
+    {
+        if (durationSec == 0.0 || visibleSec == durationSec
+                || !Double.isFinite(wheelDelta) || wheelDelta == 0.0) return this;
+        // Match zoom's wheel scale: one 40-unit step moves 10% of the view.
+        // Positive/up scroll reveals earlier audio; negative/down reveals later audio.
+        double steps = Math.max(-8.0, Math.min(8.0, wheelDelta / 40.0));
+        double nextStart = Math.max(0.0,
+                Math.min(durationSec - visibleSec, startSec - (steps * 0.1) * visibleSec));
+        if (nextStart == startSec) return this;
+        return new WaveformViewport(durationSec, nextStart, visibleSec);
+    }
+
     /** Maps a pixel to absolute seconds, clamping the pixel to the useful width. */
     public OptionalDouble timeAtX(double x, double width)
     {

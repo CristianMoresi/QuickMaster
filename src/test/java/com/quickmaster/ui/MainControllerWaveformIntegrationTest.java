@@ -78,17 +78,24 @@ class MainControllerWaveformIntegrationTest
     }
 
     @Test
-    @DisplayName("Platform shortcut zoom takes precedence over unmodified fade-wheel gestures")
+    @DisplayName("Wheel pans, platform shortcut zooms, and only Alt-wheel can edit fade curves")
     void zoomGestureAndFadeWheelDoNotConflict() throws IOException
     {
         String source = Files.readString(CONTROLLER);
         String scroll = method(source, "onWaveformScroll(ScrollEvent e)");
-        assertTrue(scroll.contains("fadeDragMode != 0 || nearHandle"));
+        assertTrue(scroll.contains("e.isAltDown() && (fadeDragMode != 0 || nearHandle)"));
         assertTrue(scroll.contains("fade.cycleFadeType()"));
         assertTrue(scroll.contains("e.consume()"));
         assertTrue(scroll.contains("e.isShortcutDown()"));
         assertTrue(scroll.contains("waveformViewport.zoomAt("));
+        assertTrue(scroll.contains("waveformViewport.panByWheel(delta)"));
+        assertTrue(scroll.contains("e.getDeltaX()"), "Horizontal trackpad scrolling must work too");
         assertTrue(scroll.indexOf("e.isShortcutDown()") < scroll.indexOf("fade.cycleFadeType()"));
+        assertFalse(scroll.contains("player."));
+        assertFalse(scroll.contains("seekFromMouseX"));
+        assertFalse(scroll.contains("seekTo"));
+        assertFalse(scroll.contains("selStartSec ="));
+        assertFalse(scroll.contains("selEndSec ="));
         assertTrue(source.contains("WaveformPeakIndex"));
         assertFalse(source.contains("TimelineEditRebaser"));
         assertFalse(source.contains("WaveformGestureAdapter"));

@@ -1864,31 +1864,42 @@ public class MainController
         setStatus("Fade out: " + formatSec(fade.getFadeOutSec()));
     }
 
-    /** Mouse wheel over a fade handle cycles the fade curve type. */
+    /** Wheel pans the view only; shortcut-wheel zooms, Alt-wheel edits a fade curve. */
     private void onWaveformScroll(ScrollEvent e)
     {
         if (loadedFile == null) return;
         double dur = loadedFile.getDuration();
         if (dur <= 0.0 || waveformCanvas.getWidth() <= 0.0) return;
+        double delta = e.getDeltaY() != 0.0 ? e.getDeltaY() : e.getDeltaX();
+        if (!Double.isFinite(delta) || delta == 0.0) return;
+        WaveformViewport next;
         if (e.isShortcutDown())
         {
-            waveformViewport = waveformViewport.zoomAt(e.getX(), waveformCanvas.getWidth(), e.getDeltaY());
+            next = waveformViewport.zoomAt(e.getX(), waveformCanvas.getWidth(), delta);
+        }
+        else
+        {
+            double inX  = waveformXAtTime(fade.getFadeInSec());
+            double outX = waveformXAtTime(dur - fade.getFadeOutSec());
+            boolean nearHandle = e.getY() <= 24.0
+                    && (Math.abs(e.getX() - inX) <= 18.0 || Math.abs(e.getX() - outX) <= 18.0);
+            if (e.isAltDown() && (fadeDragMode != 0 || nearHandle))
+            {
+                FadeProcessor.FadeType t = fade.cycleFadeType();
+                drawWaveform();
+                setStatus("Fade curve: " + t.name().toLowerCase(Locale.US));
+                e.consume();
+                return;
+            }
+            next = waveformViewport.panByWheel(delta);
+        }
+        if (next != waveformViewport)
+        {
+            waveformViewport = next;
             downsampleForDisplay();
             drawWaveform();
-            e.consume();
-            return;
         }
-        double inX  = waveformXAtTime(fade.getFadeInSec());
-        double outX = waveformXAtTime(dur - fade.getFadeOutSec());
-        boolean nearHandle = e.getY() <= 24.0
-                && (Math.abs(e.getX() - inX) <= 18.0 || Math.abs(e.getX() - outX) <= 18.0);
-        if (fadeDragMode != 0 || nearHandle)
-        {
-            FadeProcessor.FadeType t = fade.cycleFadeType();
-            drawWaveform();
-            setStatus("Fade curve: " + t.name().toLowerCase(Locale.US));
-            e.consume();
-        }
+        e.consume();
     }
 
     /**
@@ -6086,7 +6097,7 @@ public class MainController
                     gc.fillText(formatSec(fade.getFadeOutSec()), Math.max(outX - 46, 4), 16);
                 gc.setFill(Color.web("#8a8a93"));
                 gc.setFont(Font.font(9));
-                gc.fillText("fade: " + ft.name().toLowerCase(Locale.US) + " (wheel over a handle to change)",
+                gc.fillText("fade: " + ft.name().toLowerCase(Locale.US) + " (Alt+wheel over a handle to change)",
                         4, h - 4);
             }
         }

@@ -123,7 +123,61 @@ class WaveformViewportTest
     }
 
     @Test
-    @DisplayName("The pure viewport source has no JavaFX dependency or gesture policy")
+    @DisplayName("Wheel panning moves only the view origin, in either direction at the current zoom")
+    void wheelPanningPreservesDurationAndZoom()
+    {
+        WaveformViewport viewport = new WaveformViewport(120, 40, 20);
+        WaveformViewport earlier = viewport.panByWheel(40);
+        WaveformViewport later = viewport.panByWheel(-40);
+        assertEquals(new WaveformViewport(120, 38, 20), earlier);
+        assertEquals(new WaveformViewport(120, 42, 20), later);
+        assertEquals(viewport, earlier.panByWheel(-40));
+        assertEquals(39.95, viewport.panByWheel(1).startSec(), 1e-12);
+        assertEquals(41.0, new WaveformViewport(120, 40, 10).panByWheel(-40).startSec());
+    }
+
+    @Test
+    @DisplayName("Panning clamps to track edges and leaves empty/full views unchanged")
+    void panningClampsAndIgnoresInvalidDeltas()
+    {
+        WaveformViewport viewport = new WaveformViewport(120, 40, 20);
+        assertEquals(24, viewport.panByWheel(Double.MAX_VALUE).startSec());
+        assertEquals(56, viewport.panByWheel(-Double.MAX_VALUE).startSec());
+        WaveformViewport left = viewport, right = viewport;
+        for (int i = 0; i < 100; i++)
+        {
+            left = left.panByWheel(120);
+            right = right.panByWheel(-120);
+        }
+        assertEquals(new WaveformViewport(120, 0, 20), left);
+        assertEquals(new WaveformViewport(120, 100, 20), right);
+        assertEquals(WaveformViewport.fullView(120), WaveformViewport.fullView(120).panByWheel(-120));
+        assertEquals(WaveformViewport.empty(), WaveformViewport.empty().panByWheel(-120));
+        for (double delta : new double[] {0, Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY})
+            assertEquals(viewport, viewport.panByWheel(delta));
+    }
+
+    @Test
+    @DisplayName("Fractional wheel gestures are reversible and shift every overlay by the same transform")
+    void panningCoordinateTransformIsReversible()
+    {
+        WaveformViewport viewport = new WaveformViewport(120, 40, 20);
+        Random random = new Random(0x50414eL);
+        for (int i = 0; i < 1_000; i++)
+        {
+            double delta = (random.nextDouble() - 0.5) * 240;
+            WaveformViewport moved = viewport.panByWheel(delta);
+            assertEquals(viewport.startSec(), moved.panByWheel(-delta).startSec(), 1e-12);
+            assertEquals(viewport.visibleSec(), moved.visibleSec());
+            double shift = moved.startSec() - viewport.startSec();
+            for (double time : new double[] {30, 45, 52, 70})
+                assertEquals(-shift * 50, moved.xAtTime(time, 1_000).orElseThrow()
+                        - viewport.xAtTime(time, 1_000).orElseThrow(), 1e-10);
+        }
+    }
+
+    @Test
+    @DisplayName("The pure viewport source has no JavaFX or playback dependency")
     void remainsPure() throws IOException
     {
         Path source = Path.of("src", "main", "java", "com", "quickmaster", "ui",
@@ -132,6 +186,7 @@ class WaveformViewportTest
         assertFalse(text.contains("javafx."));
         assertFalse(text.contains("ScrollEvent"));
         assertFalse(text.contains("isShortcutDown"));
-        assertFalse(text.contains("pan("));
+        assertFalse(text.contains("AudioPlayer"));
+        assertFalse(text.contains("seekTo"));
     }
 }

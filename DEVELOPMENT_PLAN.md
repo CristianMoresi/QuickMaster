@@ -1,13 +1,25 @@
 # QuickMaster — desarrollo y cierre
 
-Actualizado: 2026-09-25, 06:40 (Europe/Madrid). **Entrega técnica completada y verificada.** Este es el registro vigente; no se utilizan skills de orquestación.
+Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está implementada y validada; su copia a Program Files está pendiente porque Windows canceló la elevación. Este es el registro vigente; no se utilizan skills de orquestación.
 
 ## Resultado buscado
 
 1. Leveler offline que ajuste diferencias de nivel entre secciones comparables, conservando intros, breaks, outros y crescendos intencionales.
 2. Beat Comp con límite real de reducción, tempo fiable, incertidumbre visible y comportamiento continuo y enlazado entre canales.
-3. Zoom horizontal de waveform con Ctrl + rueda en Windows/Linux y el modificador de acceso rápido de macOS, anclado al cursor.
+3. Zoom horizontal de waveform con Ctrl + rueda en Windows/Linux y el modificador de acceso rápido de macOS, anclado al cursor. Rueda sin modificador para desplazar solo la vista, sin alterar la reproducción.
 4. Entrega del árbol portable completo en `C:\Program Files\QuickMaster`, con hash y arranque verificados. No se usa instalador.
+
+## Ampliación: desplazamiento de la vista con la rueda
+
+- Rueda arriba hacia el inicio y abajo hacia el final, a un 10 % de la duración visible por paso normal; admite scroll horizontal y fracciones de paso, con límites en ambos extremos.
+- Ctrl/Command + rueda conserva el zoom. La rueda normal no cambia los fades aunque pase por sus tiradores; esa edición pasa a Alt + rueda y se indica en la waveform y en README.
+- Añadidas pruebas de dirección, límites, entradas inválidas, reversibilidad y transformación coherente de coordenadas. Las 15 pruebas focales de waveform pasan.
+- La prueba JavaFX falló antes de implementar el cambio y pasa después: la vista pasa de 2,660408 s a 1,052898 s conservando 5,358368 s visibles, la selección y el transporte. Un reproductor de prueba rechaza cualquier llamada a seek/play/pause/stop; no se utiliza una salida de audio física.
+- Suite completa limpia y empaquetado aprobados: **677 pruebas, 0 fallos, 0 errores, 0 omitidas**, en 94 informes, con 106 variantes de la matriz musical. Conformidad ITU/EBU de archivo: `PASSED`, 94 mediciones.
+- Imagen portable generada con Temurin 25.0.4.7, 201 archivos. SHA-256 de JAR e imagen: `F1207AAA1A4CF7C638F8B9E3453038A31BF6E024260D5D398B53C135E86F16F6`. La imagen anterior se conserva en `dist/QuickMaster-before-pan-20260925`.
+- La prueba JavaFX también pasa sobre el paquete final (`WAVEFORM_PAN_PASS`), con transporte protegido, dirección, límites, scroll horizontal, zoom y Alt + rueda sobre fades comprobados. Las 131 clases de audio, DSP y reproducción son idénticas a la entrega anterior.
+- Copia instalada: la solicitud de elevación lanzada a las 07:24 terminó con «El usuario ha cancelado la operación». No se volvió a solicitar ni se intentó evitar ese control. La carpeta de uso sigue intacta con el JAR anterior `1196DE105D24FF8E3B094627EA33719709314DB3BE75C1171063E566C1BC7603`; la nueva imagen no está entregada allí. `target/deployment-result.json` conserva `IMAGE_VALIDATED`, no `DEPLOYED_AND_VERIFIED`. Para terminar, autorizar una nueva ejecución de `tools/Deploy-Portable.ps1` con el hash F1207… indicado arriba y verificar el arranque instalado.
+- Publicación solicitada: commit `[FEAT] pan waveform with mouse wheel without seeking` y push de la rama `codex/leveler-beat-zoom`. Se conserva intacto el checkout principal con cambios pendientes.
 
 ## Fuente e integración
 
@@ -18,7 +30,7 @@ Actualizado: 2026-09-25, 06:40 (Europe/Madrid). **Entrega técnica completada y 
 - Los 288 archivos iniciales de `src` y `pom.xml` se copiaron desde la versión validada de `QuickMaster-Rapid/product` con identidad de hashes. La integración añade recursos portables de pruebas, documentación y entrega, además de las correcciones de contrafase y ponderación rítmica encontradas en la revisión final.
 - Los commits seguirán `[TIPO] resumen breve`, máximo dos líneas. La directiva queda también en `AGENTS.md`.
 
-## Verificado en la entrega integrada
+## Entrega anterior verificada (06:40)
 
 - Suite completa limpia y empaquetado Maven terminados con código de salida 0: **674 pruebas, 0 fallos, 0 errores, 0 omitidas**, en 94 informes. Incluye 106 variantes de la matriz musical.
 - JAR final, imagen portable e instalación: SHA-256 idéntico `1196DE105D24FF8E3B094627EA33719709314DB3BE75C1171063E566C1BC7603`.
@@ -64,4 +76,4 @@ Hallazgos de la revisión final ya corregidos y aprobados en pruebas focales:
 
 ## Criterio de fin
 
-No quedan tareas de implementación o entrega conocidas pendientes dentro de este alcance. La suite, el JAR, la imagen portable y el arranque instalado están verificados. Cualquier defecto nuevo reproducible se tratará como una nueva regresión; la escucha musical por parte del usuario sigue siendo una valoración distinta de estas comprobaciones técnicas.
+La ampliación está implementada y validada. La entrega local sigue pendiente por la cancelación de la elevación de Windows; no se debe presentar como instalada hasta completar la copia y su comprobación. La publicación Git se realiza como paso separado. La escucha musical por parte del usuario sigue siendo una valoración distinta de las comprobaciones técnicas.
