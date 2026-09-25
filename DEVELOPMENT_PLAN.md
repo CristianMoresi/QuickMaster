@@ -22,6 +22,7 @@ Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está impl
 - EXE de Program Files probado también como usuario normal durante siete segundos: log nuevo a las 08:09:26–27 con inicio JavaFX, controlador inicializado y restricción nativa de aspecto activada, sin errores. Solo se cerró el proceso abierto para esta comprobación.
 - Prueba JavaFX repetida contra los JAR instalados: `WAVEFORM_PAN_PASS`, `WAVEFORM_UI_PASS` y `TEMPO_UI_PASS`. Conserva transporte y selección; las cuatro capturas de desplazamiento, zoom, vista restaurada y Dynamics coinciden por SHA-256 con las del paquete validado.
 - Publicación completada: commit `8ccff3c` — `[FEAT] pan waveform with mouse wheel without seeking`, enviado a `origin/codex/leveler-beat-zoom`. Se conserva intacto el checkout principal con cambios pendientes.
+- Destino definitivo solicitado por el usuario: `origin/main`, mediante avance directo desde la rama validada, sin reescribir historial. Autor y committer únicos: Cristian Moresi; sin coautores ni atribución a asistentes. Mensajes breves `[TIPO] resumen`, máximo dos líneas.
 
 ## Fuente e integración
 
@@ -73,7 +74,7 @@ Hallazgos de la revisión final ya corregidos y aprobados en pruebas focales:
 
 - La versión de uso está en `C:\Program Files\QuickMaster\QuickMaster.exe`; la imagen fuente queda en `dist/QuickMaster` dentro de este worktree.
 - Para cambios futuros, trabajar en `QuickMaster-Integration`, consultar este documento y seguir `docs/VALIDATION.md` y `AGENTS.md`. Repetir suite, paquete, imagen y entrega cuando cambie la aplicación.
-- El código está guardado y publicado en `origin/codex/leveler-beat-zoom`. No se ha intentado mezclar la rama con los cambios pendientes del checkout principal.
+- La publicación definitiva es `origin/main`; se conserva también la rama de integración `codex/leveler-beat-zoom`. El checkout principal local, con cambios pendientes, se mantiene intacto: no se fuerza su actualización ni se mezclan sus archivos sin guardar.
 - No se han incorporado a Git audio oficial, autorizaciones personales ni resultados temporales.
 
 ## Criterio de fin

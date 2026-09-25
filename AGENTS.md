@@ -13,4 +13,6 @@ Do not consider a change complete when it exists only in the source tree or unde
 
 ## Commit messages
 
-All local and GitHub commit messages must start with a bracketed type, followed by a brief summary, for example `[FIX] preserve intentional dynamics in the Leveler`. Use at most two lines.
+All local and GitHub commit messages must start with a bracketed type such as `[FIX]` or `[DOC]`, followed by a brief summary. Use at most two lines.
+
+Use the repository's configured Cristian Moresi identity as the sole author and committer. Do not add assistant, bot, or AI contributor credits, co-author trailers, or generated-by attribution.
