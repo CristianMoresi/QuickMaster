@@ -1,6 +1,6 @@
 # QuickMaster — desarrollo y cierre
 
-Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está implementada y validada; su copia a Program Files está pendiente porque Windows canceló la elevación. Este es el registro vigente; no se utilizan skills de orquestación.
+Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está implementada, validada, publicada en GitHub y entregada en Program Files, con hash y arranque comprobados. Este es el registro vigente; no se utilizan skills de orquestación.
 
 ## Resultado buscado
 
@@ -18,8 +18,10 @@ Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está impl
 - Suite completa limpia y empaquetado aprobados: **677 pruebas, 0 fallos, 0 errores, 0 omitidas**, en 94 informes, con 106 variantes de la matriz musical. Conformidad ITU/EBU de archivo: `PASSED`, 94 mediciones.
 - Imagen portable generada con Temurin 25.0.4.7, 201 archivos. SHA-256 de JAR e imagen: `F1207AAA1A4CF7C638F8B9E3453038A31BF6E024260D5D398B53C135E86F16F6`. La imagen anterior se conserva en `dist/QuickMaster-before-pan-20260925`.
 - La prueba JavaFX también pasa sobre el paquete final (`WAVEFORM_PAN_PASS`), con transporte protegido, dirección, límites, scroll horizontal, zoom y Alt + rueda sobre fades comprobados. Las 131 clases de audio, DSP y reproducción son idénticas a la entrega anterior.
-- Copia instalada: la solicitud de elevación lanzada a las 07:24 terminó con «El usuario ha cancelado la operación». No se volvió a solicitar ni se intentó evitar ese control. La carpeta de uso sigue intacta con el JAR anterior `1196DE105D24FF8E3B094627EA33719709314DB3BE75C1171063E566C1BC7603`; la nueva imagen no está entregada allí. `target/deployment-result.json` conserva `IMAGE_VALIDATED`, no `DEPLOYED_AND_VERIFIED`. Para terminar, autorizar una nueva ejecución de `tools/Deploy-Portable.ps1` con el hash F1207… indicado arriba y verificar el arranque instalado.
-- Publicación solicitada: commit `[FEAT] pan waveform with mouse wheel without seeking` y push de la rama `codex/leveler-beat-zoom`. Se conserva intacto el checkout principal con cambios pendientes.
+- Copia instalada: tras la cancelación inicial de la elevación, el usuario autorizó expresamente reintentar. Entrega completada a las 08:07 mediante la elevación normal de Windows, sin instalador: `target/deployment-result.json` registra `DEPLOYED_AND_VERIFIED`, 201 archivos y el JAR instalado con el SHA-256 F1207… indicado arriba. Respaldo recuperable de la versión anterior: `C:\Program Files\QuickMaster-backup-20260925-080705`, con JAR `1196DE105D24FF8E3B094627EA33719709314DB3BE75C1171063E566C1BC7603`.
+- EXE de Program Files probado también como usuario normal durante siete segundos: log nuevo a las 08:09:26–27 con inicio JavaFX, controlador inicializado y restricción nativa de aspecto activada, sin errores. Solo se cerró el proceso abierto para esta comprobación.
+- Prueba JavaFX repetida contra los JAR instalados: `WAVEFORM_PAN_PASS`, `WAVEFORM_UI_PASS` y `TEMPO_UI_PASS`. Conserva transporte y selección; las cuatro capturas de desplazamiento, zoom, vista restaurada y Dynamics coinciden por SHA-256 con las del paquete validado.
+- Publicación completada: commit `8ccff3c` — `[FEAT] pan waveform with mouse wheel without seeking`, enviado a `origin/codex/leveler-beat-zoom`. Se conserva intacto el checkout principal con cambios pendientes.
 
 ## Fuente e integración
 
@@ -71,9 +73,9 @@ Hallazgos de la revisión final ya corregidos y aprobados en pruebas focales:
 
 - La versión de uso está en `C:\Program Files\QuickMaster\QuickMaster.exe`; la imagen fuente queda en `dist/QuickMaster` dentro de este worktree.
 - Para cambios futuros, trabajar en `QuickMaster-Integration`, consultar este documento y seguir `docs/VALIDATION.md` y `AGENTS.md`. Repetir suite, paquete, imagen y entrega cuando cambie la aplicación.
-- El código está guardado en la rama local indicada. No se ha hecho push ni se ha intentado mezclar la rama con los cambios pendientes del checkout principal.
+- El código está guardado y publicado en `origin/codex/leveler-beat-zoom`. No se ha intentado mezclar la rama con los cambios pendientes del checkout principal.
 - No se han incorporado a Git audio oficial, autorizaciones personales ni resultados temporales.
 
 ## Criterio de fin
 
-La ampliación está implementada y validada. La entrega local sigue pendiente por la cancelación de la elevación de Windows; no se debe presentar como instalada hasta completar la copia y su comprobación. La publicación Git se realiza como paso separado. La escucha musical por parte del usuario sigue siendo una valoración distinta de las comprobaciones técnicas.
+La ampliación está implementada, validada, publicada y entregada en la carpeta de uso. La rueda desplaza únicamente la vista y Ctrl/Command + rueda conserva el zoom; las pruebas de eventos JavaFX comprueban que el transporte no cambia. La escucha musical por parte del usuario sigue siendo una valoración distinta de las comprobaciones técnicas.
