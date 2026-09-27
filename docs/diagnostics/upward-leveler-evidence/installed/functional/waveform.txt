@@ -1,0 +1,9 @@
+sept 28, 2026 12:52:52 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @5ce33a58'
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by com.sun.marlin.OffHeapArray (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Please consider reporting this to the maintainers of class com.sun.marlin.OffHeapArray
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+TEMPO_UI_PASS ambiguous=auto? manual=97 unknown=250ms
+WAVEFORM_UI_PASS full=WaveformViewport[durationSec=16.0, startSec=0.0, visibleSec=16.0] zoomed=WaveformViewport[durationSec=16.0, startSec=2.660408093278463, visibleSec=5.358367626886148] anchorSec=4.0 canvas=1360.0x140.0 screenshots=E:\Code\Projects\JA-DAW\QuickMaster-Integration\dist\installed-audit-functional-20260928-005227-fb36df13
+WAVEFORM_PAN_PASS start=2.660408093278463 -> 1.0528978052126186 visibleSec=5.358367626886148 playbackUnchanged=true selectionUnchanged=true

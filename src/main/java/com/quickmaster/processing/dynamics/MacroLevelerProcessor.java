@@ -2,6 +2,7 @@ package com.quickmaster.processing.dynamics;
 
 import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 import com.quickmaster.processing.dynamics.macro.MacroLevelerEngine;
+import com.quickmaster.processing.dynamics.macro.LevelerExclusions;
 import java.util.concurrent.CancellationException;
 
 /** Product Leveler: continuous offline macro RMS automation, not cohort matching. */
@@ -9,6 +10,17 @@ public final class MacroLevelerProcessor extends AnalysisDynamicsProcessor {
     public static final double DEFAULT_LEVELING = .5, MIN_LEVELING = 0, MAX_LEVELING = 1;
     public static final double DEFAULT_SPEED = .5, MIN_SPEED = 0, MAX_SPEED = 1;
     private volatile double leveling = DEFAULT_LEVELING, speed = DEFAULT_SPEED;
+    private volatile LevelerExclusions exclusions = LevelerExclusions.EMPTY;
+    private volatile int exclusionRate;
+
+    public LevelerExclusions getExclusions() { return exclusions; }
+    public synchronized void setExclusions(LevelerExclusions value) {
+        setExclusions(value,0);
+    }
+    public synchronized void setExclusions(LevelerExclusions value,int sourceRate) {
+        java.util.Objects.requireNonNull(value);
+        if (!value.equals(exclusions)||sourceRate!=exclusionRate) { exclusions=value;exclusionRate=sourceRate; clearAnalysis(); }
+    }
     private record Publication(MacroLevelerEngine.Result result, String status) { }
     private volatile Publication publication = new Publication(null, "UNIT");
     private int rate;
@@ -46,6 +58,7 @@ public final class MacroLevelerProcessor extends AnalysisDynamicsProcessor {
         fork.setLeveling(amount);
         fork.setSpeed(speed);
         fork.setEnabled(isEnabled());
+        fork.setExclusions(exclusions,exclusionRate);
         return fork;
     }
 
@@ -65,7 +78,7 @@ public final class MacroLevelerProcessor extends AnalysisDynamicsProcessor {
     @Override public synchronized void analyze(float[] samples, int channels, CancellationToken token) {
         publication = new Publication(null, "UNIT");
         try {
-            var result = new MacroLevelerEngine().analyze(samples, channels, rate, leveling, speed, token);
+            var result = new MacroLevelerEngine().analyze(samples, channels, rate, leveling, speed, exclusions.atRate(exclusionRate,rate), token);
             publication = new Publication(result, result.report().status());
         } catch (CancellationException ex) {
             publication = new Publication(null, "CANCELLED");
@@ -94,7 +107,9 @@ public final class MacroLevelerProcessor extends AnalysisDynamicsProcessor {
             return buffer;
         }
         int frames = buffer.length / channels;
-        if (start < 0 || start > Long.MAX_VALUE - frames) { meter = 0; return buffer; }
+        // Oversampling starts at negative source time while the interpolation
+        // FIR warms up. Advance through it; the curve is unity before frame 0.
+        if (start > Long.MAX_VALUE - frames) { meter = 0; return buffer; }
         cursor = start + frames;
         if (!enabled || rate <= 0 || snapshot.result() == null || snapshot.result().channels() != channels) {
             meter = 0;

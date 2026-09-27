@@ -1,0 +1,1 @@
+EXPORT_SRC_PASS cases=50 maxPassbandErrorDb=0.001981851 maxDbtp=-0.999999562 aliasRejectionDb=-161.117

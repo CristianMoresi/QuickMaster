@@ -1,0 +1,37 @@
+{
+  "source": "By Now.wav",
+  "jarSha256": "0000ce9c21a4c38f47c361ea41e3762cfd50b22622240a9b9cef728f26f9079a",
+  "latency-leveler": {
+    "audioReadySeconds": [
+      1.3489,
+      1.363923,
+      1.348208
+    ],
+    "medianSeconds": 1.3489
+  },
+  "latency-full-chain": {
+    "audioReadySeconds": [
+      4.836153,
+      4.727544,
+      4.758314
+    ],
+    "medianSeconds": 4.758314
+  },
+  "ab": {
+    "firstIdenticalBSeconds": 0.009182,
+    "uncachedBSeconds": [
+      4.637547,
+      4.66814,
+      4.629864
+    ],
+    "uncachedMedianSeconds": 4.637547,
+    "rawBitDifferences": 0
+  },
+  "memory": {
+    "repeats": 30,
+    "firstRetainedMiB": 1276.349,
+    "lastRetainedMiB": 1276.368,
+    "rangeMinMiB": 1276.348,
+    "rangeMaxMiB": 1276.368
+  }
+}

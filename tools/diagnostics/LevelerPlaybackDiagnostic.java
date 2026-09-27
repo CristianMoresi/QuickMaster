@@ -119,7 +119,7 @@ public class LevelerPlaybackDiagnostic {
                 if (!player.isPlaying() || writes.get() <= before) throw new AssertionError("No playback at " + second);
                 double pcmGain = 10 * Math.log10(outputPower / originalPower);
                 if (pcmGain > 1) positiveWindows++;
-                if (pcmGain < -1) negativeWindows++;
+                if (pcmGain < -.00001) negativeWindows++;
                 double expectedMeter = fx(() -> ((MacroLevelerProcessor)field(c, "leveler"))
                         .getGainDbAtPosition(player.getPositionSamples()));
                 double displayed = Double.parseDouble(meter.replace("dB", "").strip());
@@ -130,8 +130,8 @@ public class LevelerPlaybackDiagnostic {
                         player.getPositionSamples() / (double)song.getSampleRate());
             }
             if (args.length > 2 && args[2].equals("--assert")) {
-                if (positiveWindows < 3 || negativeWindows < 3)
-                    throw new AssertionError("Expected several audible boosts and cuts, not just changed samples");
+                if (positiveWindows < 3 || negativeWindows != 0)
+                    throw new AssertionError("Expected several audible boosts and no cuts");
                 System.out.println("MACRO_PLAYBACK_PASS positiveWindows=" + positiveWindows
                         + " negativeWindows=" + negativeWindows + " hardwareSimulated=true");
             }

@@ -39,12 +39,28 @@ public final class MacroLevelerAcceptance {
                     || Math.abs(outSpread-inSpread*(1-amount))>1.5))
                 throw new AssertionError("Partial Amount does not proportionally reduce macro contrast");
             if(args[0].endsWith("By Now.wav")&&amount>=.5&&positive<5)throw new AssertionError("Several positive musical corrections required");
-            if(TruePeak.measureMax(out,ch)>1)throw new AssertionError("Unsafe output");
+            for(int i=0;i<out.length;i++)if(!Float.isFinite(out[i])||Math.abs(out[i])+1e-30<Math.abs(source[i]))
+                throw new AssertionError("Upward-only/finite contract violated at sample "+i);
+            double maximumInput=maxMacro(source,ch,rate),maximumOutput=maxMacro(out,ch,rate);
+            if(maximumOutput>maximumInput+.00001)throw new AssertionError("Strongest input macro RMS exceeded");
+            System.out.printf("UPWARD_RMS_PASS maximumInput=%.6f maximumOutput=%.6f globalTrimDb=%.6f%n",maximumInput,maximumOutput,p.getAnalysisReport().headroomOffsetDb());
             if(!Arrays.equals(sourceHash,hash(Path.of(args[0]))))throw new AssertionError("Source file changed");
             System.out.println("MACRO_ACCEPTANCE_PASS fixedTimeGrid=true sourceUnchanged=true");
         }
     }
     private static double rms(float[] pcm,int from,int to,int ch){double e=0;for(int i=from*ch;i<to*ch;i++)e+=(double)pcm[i]*pcm[i];return 10*Math.log10(Math.max(1e-100,e/((to-from)*(double)ch)));}
+    private static double maxMacro(float[] pcm,int ch,int rate) {
+        int window=3*rate*ch,hop=rate/10*ch;
+        double energy=0;
+        for(int i=0;i<window;i++)energy+=(double)pcm[i]*pcm[i];
+        double max=energy;
+        for(int start=hop;start+window<=pcm.length;start+=hop) {
+            for(int i=start-hop;i<start;i++)energy-=(double)pcm[i]*pcm[i];
+            for(int i=start+window-hop;i<start+window;i++)energy+=(double)pcm[i]*pcm[i];
+            max=Math.max(max,energy);
+        }
+        return 10*Math.log10(max/window);
+    }
     private static double quantile(List<Double> values,double q){return values.isEmpty()?Double.NaN:values.get((int)((values.size()-1)*q));}
     private static byte[] hash(Path path)throws Exception{var digest=MessageDigest.getInstance("SHA-256");try(var in=Files.newInputStream(path)){byte[] block=new byte[65536];int n;while((n=in.read(block))!=-1)digest.update(block,0,n);}return digest.digest();}
 }

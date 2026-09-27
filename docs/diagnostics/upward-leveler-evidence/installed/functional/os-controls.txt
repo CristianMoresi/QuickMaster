@@ -1,0 +1,15 @@
+E:\Code\Projects\JA-DAW\QuickMaster-Integration\tools\diagnostics\OversamplingUiAudit.java:47: warning: [unchecked] unchecked cast
+                ((ComboBox<String>)field("osCombo")).setValue("2x");
+                                        ^
+  required: ComboBox<String>
+  found:    Object
+E:\Code\Projects\JA-DAW\QuickMaster-Integration\tools\diagnostics\OversamplingUiAudit.java:71: warning: [unchecked] unchecked cast
+                ((ComboBox<String>)field("osCombo")).setValue("8x");
+                                        ^
+  required: ComboBox<String>
+  found:    Object
+2 warnings
+sept 28, 2026 12:52:50 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @3e6f3f28'
+OS_UI_PASS factor=8 sourceRate=32000 peak=-0.999999709 meter=-1.0 dBTP gain=1.787016599 generation=5
+OS_UI_PASS factor=2 sourceRate=32000 peak=-1.000000290 meter=-1.0 dBTP gain=1.748974579 generation=7

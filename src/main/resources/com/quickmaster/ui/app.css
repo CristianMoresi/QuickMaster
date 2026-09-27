@@ -647,3 +647,16 @@
 .export-card .progress-bar {
     -fx-pref-height: 14;
 }
+.leveler-exclude-toggle {
+    -fx-border-color: #89505a;
+    -fx-border-radius: 4;
+    -fx-text-fill: #ffc2c6;
+}
+.leveler-exclude-toggle:selected {
+    -fx-background-color: #713641;
+    -fx-border-color: #ff858b;
+    -fx-text-fill: #ffffff;
+}
+.leveler-exclude-toggle:focused {
+    -fx-border-color: #ffc2c6;
+}

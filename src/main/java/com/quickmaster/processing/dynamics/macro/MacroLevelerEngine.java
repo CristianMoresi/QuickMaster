@@ -12,7 +12,6 @@ import java.util.concurrent.CancellationException;
  */
 public final class MacroLevelerEngine {
     public static final double MAX_CORRECTION_DB = 24;
-    private static final double CEILING = .999;
     public record Report(String status, double targetRmsDb, double headroomOffsetDb,
                          double minimumGainDb, double maximumGainDb, double outputTruePeak,
                          int boundaries, int limitedPoints, int controlPoints) { }
@@ -20,6 +19,10 @@ public final class MacroLevelerEngine {
 
     public Result analyze(float[] pcm, int channels, int rate, double amount, double speed,
                           CancellationToken token) {
+        return analyze(pcm,channels,rate,amount,speed,LevelerExclusions.EMPTY,token);
+    }
+    public Result analyze(float[] pcm, int channels, int rate, double amount, double speed,
+                          LevelerExclusions exclusions, CancellationToken token) {
         checkCancellation(token);
         if (pcm == null || pcm.length == 0 || (channels != 1 && channels != 2)
                 || pcm.length % channels != 0 || rate < 1
@@ -56,23 +59,21 @@ public final class MacroLevelerEngine {
         double floorPower = Math.pow(10, activityFloor / 10);
         double[] active = new double[bins]; int activeCount = 0;
         for (double p : powers) if (p > floorPower) active[activeCount++] = p;
-        if (activeCount == 0 || amount == 0) {
+        boolean allExcluded=exclusions.regions().size()==1&&exclusions.regions().get(0).start()==0&&exclusions.regions().get(0).end()>=frames;
+        if (activeCount == 0 || amount == 0 || allExcluded) {
             double[] unit = new double[bins + 1]; Arrays.fill(unit, 1);
             return result(new MacroGainCurve(rate, frames, hop, unit), channels,
-                    activeCount == 0 ? "NO_MUSICAL_ACTIVITY" : "WITHIN_TOLERANCE",
+                    allExcluded ? "ALL_REGIONS_EXCLUDED" : activeCount == 0 ? "NO_MUSICAL_ACTIVITY" : "WITHIN_TOLERANCE",
                     Double.NaN, 0, Double.NaN, 0, 0);
         }
 
-        // The reference is independent of Speed. Percentile of 3 s musical power
-        // suppresses beat phase / single-transient bias without requiring recurrence.
-        int refRadius = Math.max(1, (int)Math.round(1.5 * rate / hop));
-        int refCount = 0;
-        for (int i = 0; i < bins; i++) if (powers[i] > floorPower) {
-            double p = mean(prefix, frameCounts, Math.max(0, i - refRadius), Math.min(bins, i + refRadius));
-            active[refCount++] = p;
-        }
-        Arrays.sort(active, 0, refCount);
-        double target = db(active[(int)((refCount - 1) * .75)]);
+        // One fixed 3 s macro scale: the strongest sustained input window is
+        // the reference, never a sample peak. Short files use the whole file.
+        int macroBins=Math.min(bins,Math.max(1,(int)Math.round(3.0*rate/hop)));
+        double targetPower=0;
+        for(int i=0;i+macroBins<=bins;i++)
+            targetPower=Math.max(targetPower,mean(prefix,frameCounts,i,i+macroBins));
+        double target = db(targetPower);
 
         // Abrupt, persistent changes: compare homogeneous 1 s contexts. A
         // boundary changes estimation support, never whether leveling is allowed.
@@ -109,8 +110,8 @@ public final class MacroLevelerEngine {
             if (to <= from) { from=Math.max(0,Math.min(i,bins-1)); to=from+1; }
             double level = db(mean(prefix,frameCounts,from,to));
             double correction = target - level;
-            boolean exceedsLimit = Math.abs(correction) > MAX_CORRECTION_DB;
-            correction = Math.max(-MAX_CORRECTION_DB,Math.min(MAX_CORRECTION_DB,correction));
+            boolean exceedsLimit = correction > MAX_CORRECTION_DB;
+            correction = Math.max(0,Math.min(MAX_CORRECTION_DB,correction));
             // Local activity prevents the macro window lifting an adjacent noise
             // tail. A 6 dB soft knee avoids a hard gain switch at the floor.
             double local = db(powers[Math.min(i,bins-1)]);
@@ -127,28 +128,57 @@ public final class MacroLevelerEngine {
                 double w=smoothRadius+1-Math.abs(j);
                 sum+=w*desired[Math.max(0,Math.min(bins,i+j))]; weight+=w;
             }
-            gains[i]=Math.pow(10,sum/weight/20);
+            gains[i]=Math.pow(10,Math.min(desired[i],sum/weight)/20);
         }
-        MacroGainCurve curve = new MacroGainCurve(rate, frames, hop, gains);
-        // Bound sample peaks before the FIR scan, avoiding float overflow even
-        // for otherwise finite malformed/high-level input. This is a common
-        // scalar, never a section-specific gain clamp or peak limiter.
-        double bound = 0;
-        for(int b=0;b<bins;b++) bound=Math.max(bound,peaks[b]*Math.max(gains[b],gains[b+1]));
-        double offset = bound > CEILING ? 20*Math.log10(CEILING/bound) : 0;
-        if(offset<0)curve=curve.scaled(Math.pow(10,offset/20));
+        // Bound each 3 s output window by the strongest 3 s INPUT window.
+        // A bin's maximum endpoint gain conservatively bounds interpolation.
+        // Only retract EXTRA gain towards unity: never attenuate the source.
+        // Later reductions cannot invalidate an earlier window's upper bound.
+        for(int b=0;b<bins;b++) {
+            double safe=peaks[b]>0?Math.max(1,Float.MAX_VALUE/peaks[b]):Double.MAX_VALUE;
+            gains[b]=Math.min(gains[b],safe);gains[b+1]=Math.min(gains[b+1],safe);
+        }
+        for(int start=0;start+macroBins<=bins;start++) {
+            checkCancellation(token);
+            int end=start+macroBins;
+            double c=prefix[end]-prefix[start],a=0,b=0;
+            for(int j=start;j<end;j++) {
+                double energy=prefix[j+1]-prefix[j];
+                double extra=Math.max(gains[j],gains[j+1])-1;
+                a+=energy*extra*extra;b+=2*energy*extra;
+            }
+            double budget=Math.max(0,targetPower*(frameCounts[end]-frameCounts[start])-c);
+            if(a+b>budget && a+b>0) {
+                // Stable positive root of a*x*x + b*x = budget.
+                double scale=a==0?budget/b:2*budget/(b+Math.sqrt(b*b+4*a*budget));
+                scale=Math.max(0,Math.min(1,scale));
+                for(int j=start;j<=end;j++)gains[j]=1+(gains[j]-1)*scale;
+            }
+        }
+        // Smooth bound-induced corners, projected below the proven envelope.
+        // Eroding every neighbourhood first would spread a local unity bound
+        // across neighbouring quiet passages and needlessly defeat slow leveling.
+        double[] lower=gains.clone();
+        for(int i=0;i<gains.length;i++)
+            lower[i]=Math.min(gains[i],Math.min(gains[Math.max(0,i-1)],gains[Math.min(bins,i+1)]));
+        for(int i=0;i<gains.length;i++) {
+            double sum=0,weight=0;
+            for(int j=-smoothRadius;j<=smoothRadius;j++) {
+                double w=smoothRadius+1-Math.abs(j);
+                sum+=w*lower[Math.max(0,Math.min(bins,i+j))];weight+=w;
+            }
+            gains[i]=Math.max(1,Math.min(gains[i],sum/weight));
+        }
+        MacroGainCurve curve = new MacroGainCurve(rate,frames,hop,gains,exclusions,
+                Math.max(.1,smoothRadius*hop/(double)rate)*rate);
+        // Floating-point DSP may exceed 0 dBFS; final output limiting is a
+        // separate module. Do not silently lower the song or cancel leveling
+        // to preserve the original sample/true peak. Report required headroom.
         double peak=scan(pcm,channels,curve,token);
-        if(peak>CEILING) {
-            double scale=CEILING/peak;
-            curve=curve.scaled(scale);offset+=20*Math.log10(scale);
-            peak=scan(pcm,channels,curve,token);
-        }
-        // The safety margin exceeds float rounding. Do not publish an unproved
-        // result if a future interpolator change invalidates that assumption.
-        if(!Double.isFinite(peak)||peak>1)throw new IllegalStateException("Macro peak safety not verified.");
+        if(!Double.isFinite(peak))throw new IllegalStateException("Non-finite macro output.");
         String status = limited>0 ? "MACRO_LIMITED" : "MACRO_READY";
         if(Math.max(Math.abs(curve.minimumDb()),Math.abs(curve.maximumDb()))<.01)status="WITHIN_TOLERANCE";
-        return result(curve,channels,status,target,offset,peak,edgeCount-2,limited);
+        return result(curve,channels,status,target,0,peak,edgeCount-2,limited);
     }
     private static Result result(MacroGainCurve curve,int channels,String status,double target,
                                  double offset,double peak,int boundaries,int limited) {

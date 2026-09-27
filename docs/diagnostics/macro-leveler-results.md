@@ -1,5 +1,11 @@
 # Leveler macro — entrega y verificación
 
+**Registro histórico:** estos resultados pertenecen al motor bidireccional de
+la entrega del 27-09-2026. El contrato posterior exige subida solamente, sin
+atenuación global, y exclusiones manuales. Véase
+[el registro vigente](upward-leveler-exclusions.md); no utilizar los valores de
+true peak o ganancia negativa de este documento para describir esa revisión.
+
 ## Resultado y alcance
 
 **Entregado localmente el 27-09-2026**, con el contrato revisado de

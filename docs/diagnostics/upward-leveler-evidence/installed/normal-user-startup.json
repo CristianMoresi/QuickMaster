@@ -1,0 +1,8 @@
+{
+  "status": "NORMAL_USER_STARTUP_VERIFIED",
+  "installedFilesMatched": 201,
+  "executable": "C:/Program Files/QuickMaster/QuickMaster.exe",
+  "jarSha256": "0000ce9c21a4c38f47c361ea41e3762cfd50b22622240a9b9cef728f26f9079a",
+  "startupLog": "2026-09-28 00:51:10 INFO  Application starting (JavaFX).\r\n2026-09-28 00:51:11 INFO  Controller initialised.\r\n2026-09-28 00:51:11 INFO  Native WM_SIZING aspect-ratio constraint enabled.",
+  "completedAt": "2026-09-28T00:51:14.3683829+02:00"
+}

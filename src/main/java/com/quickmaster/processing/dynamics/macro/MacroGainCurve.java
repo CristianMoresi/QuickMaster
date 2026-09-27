@@ -4,9 +4,15 @@ package com.quickmaster.processing.dynamics.macro;
 public final class MacroGainCurve {
     private final double[] gains;
     private final int rate, frames, hop;
+    private final LevelerExclusions exclusions;
+    private final double featherFrames;
 
     MacroGainCurve(int rate, int frames, int hop, double[] gains) {
+        this(rate,frames,hop,gains,LevelerExclusions.EMPTY,0);
+    }
+    MacroGainCurve(int rate, int frames, int hop, double[] gains, LevelerExclusions exclusions, double featherFrames) {
         this.rate = rate; this.frames = frames; this.hop = hop;
+        this.exclusions=exclusions; this.featherFrames=featherFrames;
         this.gains = gains.clone();
         for (double g : this.gains) if (!Double.isFinite(g) || g <= 0)
             throw new IllegalArgumentException("Invalid macro gain.");
@@ -20,11 +26,14 @@ public final class MacroGainCurve {
         int index = (int)position;
         if (index >= gains.length - 1) return gains[gains.length - 1];
         double a = gains[index], b = gains[index + 1];
-        return a + (b - a) * (position - index);
+        double gain=a + (b - a) * (position - index);
+        // An external 25 ms unity guard also covers the resampler FIR support,
+        // so changes just outside a region cannot bleed into it on downsampling.
+        return 1+(gain-1)*exclusions.weight(frame,featherFrames,Math.max(2,rate*.025));
     }
     public double dbAt(double frame) { return 20 * Math.log10(linearAt(frame)); }
     public double minimumDb() {
-        double min = Double.POSITIVE_INFINITY;
+        double min = exclusions.regions().isEmpty()?Double.POSITIVE_INFINITY:1;
         for (double g : gains) min = Math.min(min, g);
         return 20 * Math.log10(min);
     }
@@ -36,6 +45,6 @@ public final class MacroGainCurve {
     MacroGainCurve scaled(double factor) {
         double[] copy = gains.clone();
         for (int i = 0; i < copy.length; i++) copy[i] *= factor;
-        return new MacroGainCurve(rate, frames, hop, copy);
+        return new MacroGainCurve(rate, frames, hop, copy, exclusions, featherFrames);
     }
 }

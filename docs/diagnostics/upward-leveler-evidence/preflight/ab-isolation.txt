@@ -1,0 +1,12 @@
+sept 27, 2026 11:52:59 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @42721fe'
+AB_ISOLATION_CASE dynamics-only prefixHit=true factor=1 bitExact=true
+AB_ISOLATION_CASE auto-eq-amount prefixHit=false factor=1 bitExact=true
+AB_ISOLATION_CASE eq-gain prefixHit=false factor=1 bitExact=true
+AB_ISOLATION_CASE fade prefixHit=false factor=1 bitExact=true
+AB_ISOLATION_CASE oversampling-2x prefixHit=true factor=2 bitExact=true
+AB_ISOLATION_CASE oversampling-8x prefixHit=true factor=8 bitExact=true
+AB_ISOLATION_CASE exclusions prefixHit=true factor=2 bitExact=true
+AB_ISOLATION_CASE source-same-length prefixHit=false factor=2 bitExact=true
+AB_ISOLATION_CASE chain-reorder prefixHit=false factor=2 bitExact=true
+AB_CACHE_ISOLATION_PASS cases=9 allRawBitExact=true

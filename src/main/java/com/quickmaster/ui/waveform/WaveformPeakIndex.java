@@ -1,6 +1,6 @@
 package com.quickmaster.ui.waveform;
 
-/** Peak lookup for repeated waveform redraws. Source audio remains the authority. */
+/** Peak lookup over an immutable original or processed PCM buffer. No audio copy. */
 public final class WaveformPeakIndex
 {
     private static final int BLOCK_FRAMES = 256;
@@ -18,9 +18,12 @@ public final class WaveformPeakIndex
         this.channels = channels;
         this.frames = samples.length / channels;
         this.blockPeaks = new float[frames == 0 ? 0 : (frames - 1) / BLOCK_FRAMES + 1];
-        for (int block = 0; block < blockPeaks.length; block++)
+        for (int block = 0; block < blockPeaks.length; block++) {
+            if ((block & 255) == 0 && Thread.currentThread().isInterrupted())
+                throw new java.util.concurrent.CancellationException("Waveform preparation cancelled");
             blockPeaks[block] = scan(block * BLOCK_FRAMES,
                     (int) Math.min(frames, (long) (block + 1) * BLOCK_FRAMES));
+        }
     }
 
     public int frames() { return frames; }

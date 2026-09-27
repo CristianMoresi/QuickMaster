@@ -77,12 +77,13 @@ class MacroLevelerProcessorTest {
         for(int i=0;i<2*RATE;i++)assertEquals(0,out[i],0);
         assertTrue(rms(out,1,35,36)<=rms(in,1,35,36)+.01);
     }
-    @Test void peakSafetyUsesCommonAttenuationNotASelectiveBoostVeto() {
+    @Test void upwardContractUsesRmsReferenceNotOriginalPeakOrGlobalAttenuation() {
         float[] in=song(1);for(int i=0;i<in.length;i++)in[i]*=8;
         var p=processor(in,1,1,.5);float[] out=p.process(in.clone(),1);
-        assertTrue(TruePeak.measureMax(out,1)<=1);
+        assertTrue(TruePeak.measureMax(out,1)>1,"Float headroom is not an RMS ceiling");
         assertEquals(rms(out,1,3,9),rms(out,1,15,21),.3);
-        assertTrue(p.getAnalysisReport().headroomOffsetDb()<0);
+        assertEquals(0,p.getAnalysisReport().headroomOffsetDb());
+        for(int i=0;i<in.length;i++)assertTrue(Math.abs(out[i])>=Math.abs(in[i]));
     }
     @Test void fullRenderBlocksAndSeekAreIdentical() {
         float[] in=song(2);var p=processor(in,2,1,.5);float[] full=p.process(in.clone(),2);
@@ -164,7 +165,7 @@ class MacroLevelerProcessorTest {
             for(int f=0;f<in.length;f++)in[f]=(float)(scale*Math.sin(2*Math.PI*.249*f+.7));
             var p=processor(in,1,1,.5);float[] out=p.process(in.clone(),1);
             for(float x:out)assertTrue(Float.isFinite(x));
-            assertTrue(TruePeak.measureMax(out,1)<=1);
+            assertTrue(Double.isFinite(TruePeak.measureMax(out,1)));
         }
     }
     @Test void resetBypassAndMismatchedLayoutDoNotApplyOldGain() {
@@ -212,5 +213,74 @@ class MacroLevelerProcessorTest {
         var p=processor(pcm,1,1,.5);
         assertEquals(p.getGainDbAtPosition(6L*RATE),p.getGainDbAtPosition(pcm.length-1),.005,
                 "A final single sample must not be assigned the power weight of a full 100 ms block");
+    }
+    @Test void exclusionIsRawExactAndDoesNotChangeReference() {
+        float[] in=song(2);var p=processor(in,2,1,.5);
+        double target=p.getAnalysisReport().targetRmsDb();
+        var mask=com.quickmaster.processing.dynamics.macro.LevelerExclusions.EMPTY.add(2L*RATE,8L*RATE);
+        p.setExclusions(mask);assertFalse(p.isAnalyzed());p.analyze(in,2);
+        assertEquals(target,p.getAnalysisReport().targetRmsDb());
+        float[] out=p.process(in.clone(),2);
+        for(int i=4*RATE;i<16*RATE;i++)assertEquals(Float.floatToRawIntBits(in[i]),Float.floatToRawIntBits(out[i]));
+        assertTrue(p.getGainDbAtPosition(10L*RATE)>3);
+        for(int f=0;f<in.length/2;f++)assertTrue(p.getGainDbAtPosition(f)>=0);
+        var fork=p.forkForAnalysis(1,.5);assertEquals(mask,fork.getExclusions());
+    }
+    @Test void strongestThreeSecondRmsIsNeverExceededOnFixedTimeGrid() {
+        float[] in=song(1);var random=new java.util.Random(84);
+        for(int i=0;i<in.length;i++)in[i]*=(float)(.5+random.nextDouble());
+        double reference=-100;
+        for(int i=0;i+3*RATE<=in.length;i+=RATE/10)reference=Math.max(reference,rms(in,1,i/(double)RATE,i/(double)RATE+3));
+        for(double amount:new double[]{.25,.5,1}) for(double speed:new double[]{0,.5,1}) {
+            var p=processor(in,1,amount,speed);float[] out=p.process(in.clone(),1);
+            for(int i=0;i+3*RATE<=in.length;i+=RATE/10)
+                assertTrue(rms(out,1,i/(double)RATE,i/(double)RATE+3)<=reference+.00001);
+        }
+    }
+    @Test void fullTrackExclusionIsUnitAndHasAnExplicitDiagnostic() {
+        float[] in=song(1);var p=processor(in,1,1,.5);
+        p.setExclusions(com.quickmaster.processing.dynamics.macro.LevelerExclusions.EMPTY.add(0,in.length),RATE);
+        p.analyze(in,1);assertEquals("ALL_REGIONS_EXCLUDED",p.getAnalysisDiagnostic());
+        assertArrayEquals(in,p.process(in.clone(),1));assertEquals(0,p.getAnalysisReport().maximumGainDb());
+    }
+    @Test void exclusionSourceRateAndOversampledAnalysisStayAligned() {
+        for(int factor:new int[]{2,4,8}) {
+            float[] in=song(1);float[] high=com.dspark.core.Oversampler.upsample(in,1,factor,com.dspark.core.Oversampler.Quality.HIGH);
+            var p=new MacroLevelerProcessor();p.setEnabled(true);p.setLeveling(1);
+            p.setExclusions(com.quickmaster.processing.dynamics.macro.LevelerExclusions.EMPTY.add(2L*RATE,8L*RATE),RATE);
+            p.prepare(RATE*factor,high.length);p.analyze(high,1);float[] out=p.process(high.clone(),1);
+            for(int i=2*RATE*factor;i<8*RATE*factor;i++)assertEquals(high[i],out[i],0);
+            float[] baseline=com.dspark.core.Oversampler.downsample(high,1,factor,com.dspark.core.Oversampler.Quality.HIGH);
+            float[] rendered=com.dspark.core.Oversampler.downsample(out,1,factor,com.dspark.core.Oversampler.Quality.HIGH);
+            for(int i=2*RATE;i<8*RATE;i++)assertEquals(Float.floatToRawIntBits(baseline[i]),Float.floatToRawIntBits(rendered[i]),"FIR bleed into protected region");
+        }
+    }
+    @Test void protectionEdgesAreContinuousAndNeverAttenuate() {
+        float[] in=song(1);var p=processor(in,1,1,.5);
+        p.setExclusions(com.quickmaster.processing.dynamics.macro.LevelerExclusions.EMPTY.add(3L*RATE,5L*RATE),RATE);p.analyze(in,1);
+        for(int f=2*RATE;f<6*RATE;f++) {
+            double gain=p.getGainDbAtPosition(f);assertTrue(gain>=0);
+            assertTrue(Math.abs(gain-p.getGainDbAtPosition(f-1))<.03,"No gain step at exclusion edges");
+        }
+    }
+    @Test void negativeOversamplerPrerollAdvancesIntoTheMusicalCurve() {
+        float[] in=song(1);var p=processor(in,1,1,.5);p.setPlaybackPosition(-5);
+        float[] block=new float[20];Arrays.fill(block,.1f);p.process(block,1);
+        for(int i=0;i<5;i++)assertEquals(.1f,block[i]);
+        assertTrue(block[19]>.2,"Preroll must not disable all subsequent Leveler blocks");
+    }
+    @Test void realStreamingOversampledPipelineLevelsAndPreservesProtectedPcm() {
+        for(int factor:new int[]{2,4,8}) {
+            float[] in=song(1);
+            var mask=com.quickmaster.processing.dynamics.macro.LevelerExclusions.EMPTY.add(2L*RATE,4L*RATE);
+            var p=new MacroLevelerProcessor();p.setEnabled(true);p.setLeveling(1);p.setExclusions(mask,RATE);
+            var chain=new com.quickmaster.processing.ProcessingPipeline();chain.addProcessor(p);
+            var audio=new com.quickmaster.audio.WavFile("generated",RATE,1,in.clone(),32,true);
+            chain.processOversampled(audio,factor,null);
+            var baseline=new com.quickmaster.audio.WavFile("generated",RATE,1,in.clone(),32,true);
+            new com.quickmaster.processing.ProcessingPipeline().processOversampled(baseline,factor,null);
+            for(int i=2*RATE;i<4*RATE;i++)assertEquals(Float.floatToRawIntBits(baseline.getSamples()[i]),Float.floatToRawIntBits(audio.getSamples()[i]),"Streaming FIR bleed into exclusion");
+            assertTrue(rms(audio.getSamples(),1,6,8)-rms(baseline.getSamples(),1,6,8)>8,"Leveler must act with oversampling on");
+        }
     }
 }

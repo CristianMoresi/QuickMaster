@@ -1,6 +1,32 @@
 # QuickMaster — desarrollo y cierre
 
-## Encargo vigente: Leveler macro, contrato revisado
+## Encargo vigente: Leveler ascendente, exclusiones y comparación A/B
+
+Contrato: acercar los pasajes débiles al RMS sostenido más fuerte sin superarlo,
+sin reducciones ni trim global dentro del Leveler. Exclusiones pintadas en rojo
+en la waveform, interfaz en inglés, límites editables, deshacer/rehacer y
+persistencia por fuente. La comparación A/B debe reutilizar PCM exacto válido,
+nunca una aproximación ni un resultado obsoleto. Sin skills de orquestación.
+Añadido: waveform del PCM realmente publicado, original con Bypass, actualización
+al completar cada render y escala fija; no una visualización perpetua de la fuente.
+
+**Implementado, verificado y entregado localmente el 28-09-2026.** Suite completa:
+831 tests de aplicación y 129 DSPark aprobados. En el JAR instalado: 29 sondas
+funcionales (281 tests), 48 casos macro y 4 sondas de rendimiento aprobados.
+Waveform contrastado con el PCM publicado, incluyendo limitador, Bypass y A/B;
+exclusiones verificadas con By Now y capturas a tamaño normal/compacto.
+
+Primer B idéntico: 9 ms; B sin caché: mediana 4,638 s. Edición de Leveler aislado:
+1,349 s; cadena completa: 4,758 s. Memoria estable en 30 cambios. Los resultados
+coinciden muestra a muestra con renders completos; no se afirma escucha humana.
+
+Portable en `C:/Program Files/QuickMaster`, 201 archivos comparados y arranque
+limpio del EXE. JAR: `0000ce9c21a4c38f47c361ea41e3762cfd50b22622240a9b9cef728f26f9079a`.
+Respaldo anterior: `C:/Program Files/QuickMaster-backup-20260928-005026`.
+Plan, contrato, límites y evidencia: `docs/diagnostics/upward-leveler-exclusions.md`.
+No hay nueva publicación autorizada. El checkout principal conserva sus cambios.
+
+## Entrega anterior: Leveler macro bidireccional (histórico)
 
 El usuario exige que Amount 100 % iguale el RMS de los pasajes musicales
 sostenidos, incluidos intros y breaks musicales. Esto reemplaza la protección
@@ -16,7 +42,7 @@ aprobados; 26 sondas funcionales instaladas (269 tests reejecutados), 48 casos
 macro y tres sondas de rendimiento aprobados. Mediana 1,505 s hasta audio con
 Leveler aislado y 4,656 s con cadena completa; memoria estable en 30 cambios.
 
-JAR **actual**: `f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04`.
+JAR de aquella entrega: `f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04`.
 Imagen Java 25 copiada en `C:/Program Files/QuickMaster`, 201 archivos idénticos
 y EXE con arranque limpio. Respaldo: `C:/Program Files/QuickMaster-backup-20260927-224205`.
 Checkout principal preservado; no se ha hecho push, release ni creado otra rama.

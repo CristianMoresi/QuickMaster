@@ -40,7 +40,7 @@ Four automatic look-ahead compressors. QuickMaster analyses the track and prepar
 
 - **Peak Comp (micro-dynamics).** The classic "shave the peaks" compressor: a fast attack and a short release (around 60 ms, short but long enough to avoid distortion). Since the transients are known in advance, it touches **only** the loudest transients and leaves the body untouched.
 - **Beat Comp (beat-level).** Turns down transients louder than the median transient, with a stereo-linked gain envelope. The reduction target is a maximum, including while a previous analysis is being replaced. Release follows the selected note value and detected or manual BPM. `auto?` marks an uncertain estimate; disable Auto to enter the intended musical tempo. If no reliable single tempo is available, release falls back to 250 ms.
-- **Leveler (macro-dynamics).** Reduces RMS differences across sustained musical passages, even when their instrumentation differs. **Leveling** scales the correction in dB: 50% retains roughly half the original macro contrast; 100% makes sustained passages converge, including musical intros, breaks and outros. It does not flatten individual transients or normalize silence/noise. **Speed** changes the macro response (6-second context at minimum, 2 seconds at maximum). Correction is bounded to ±24 dB before a common peak-safe output reduction; the Dynamics card reports a reached limit and headroom adjustment. This common attenuation preserves the relative leveling without adding a peak limiter. RMS equality is measured over seconds, not instantaneous samples, and does not imply identical LUFS for different spectra.
+- **Leveler (macro-dynamics).** Raises quieter sustained passages toward the strongest 3-second RMS in the input, never attenuating them or boosting above that macro RMS reference. **Leveling** scales the intended correction in dB; 100% makes sustained passages converge where the activity floor, +24 dB boost limit and smooth transitions permit. **Speed** changes the macro response (6-second context at minimum, 2 seconds at maximum). It does not flatten transients or normalize silence/noise. To preserve an intro, break or outro, use **Exclude regions** and paint it red on the waveform (see below). Peaks can require extra headroom: use the separate Limit/Peak Normalizer stages for a delivery ceiling. The Leveler does not hide a global attenuation or a peak limiter. RMS is measured over seconds and does not imply identical LUFS for different spectra.
 - **Punch.** Raises **only** the transients (transient expansion), which is only possible because the onsets are declared up front.
 
 You dial the dB of reduction (or boost) you want; the analysis derives the thresholds, sensitivity and timing.
@@ -56,9 +56,38 @@ Analysis is still offline computation, not an instantaneous operation. Measured
 latencies, test conditions and limits are recorded in
 [the performance validation](docs/diagnostics/performance-p1-validation.md).
 
+The A/B settings switch reuses each slot's completed, source-aligned PCM. A new
+slot with identical settings shares the already approved audio immediately.
+When a variant needs rendering, its unchanged EQ/fade prefix is reused; the
+remaining stages and any oversampling still run at full quality. Changing the
+source, parameters or exclusion regions invalidates the affected cached audio.
+No lower-quality preview is substituted for either slot.
+
 ### Waveform zoom
 
+The waveform shows the **actual processed audio**, updated when a completed
+render becomes audible. It follows the active A/B render; **Bypass** shows the
+original. While new settings are being computed, the last approved waveform
+remains visible with an updating label. The vertical scale stays fixed at
+0 dBFS so gain and limiting changes remain visible; red tips mark samples
+above that level. Zoom/pan redraws reuse peak indexes, without rerunning DSP.
+
 Scroll over the waveform to move the visible timeline horizontally, without seeking, pausing or changing playback. Wheel up reveals earlier audio; wheel down reveals later audio. Panning follows the current zoom level and stops at the track edges. Hold **Ctrl** while scrolling to zoom in or out on Windows/Linux; use **Command** on macOS. The time under the pointer stays anchored. Selection, playhead and fade handles use the same view coordinates. Zoom outward to return to the full track. **Alt + wheel** over a fade handle changes its curve; the unmodified wheel only moves the view, including over handles.
+
+### Excluding passages from the Leveler
+
+In Dynamics → Leveler, enable **Exclude regions**, then drag over the waveform.
+Red regions receive exactly zero Leveler gain; EQ and the other effects still
+apply. Drag a region edge to resize it, or right-click for **Edit exclusion
+times…** and **Remove exclusion**. **Clear all** removes every region; undo/redo
+restores edits. Press **Esc** to cancel a drag or leave exclusion mode. Exclusion
+gestures do not seek or change the loop, and waveform pan/zoom still work.
+
+Regions belong to the track and are shared by A/B. They are saved separately in
+your user settings and restored when the unchanged source file is loaded again;
+the original audio is never edited. Crop/delete remap regions on the edited
+timeline, and undo restores them. Edited timelines remain session-only. Generic
+chain presets and batch processing do not carry exclusions into unrelated tracks.
 
 ### Clip (saturation and hard clip)
 

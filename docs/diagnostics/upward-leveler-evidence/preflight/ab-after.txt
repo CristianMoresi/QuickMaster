@@ -1,0 +1,13 @@
+Sep 27, 2026 11:49:59 PM com.sun.javafx.application.PlatformImpl startup
+WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @5669c5fb'
+AB_READY first-identical-B audioSec=0.007492 rendered=false
+AB_COLD_EXACT edited-B coldSec=4.365955 rawBitDifferences=0 changedSamples=26880002
+AB_READY cached-A audioSec=0.004140 rendered=false
+AB_READY uncached-B-0 audioSec=4.300762 rendered=true
+AB_COLD_EXACT uncached-B coldSec=4.221742 rawBitDifferences=0 changedSamples=26880002
+AB_READY cached-A-0 audioSec=0.003051 rendered=false
+AB_READY uncached-B-1 audioSec=4.274022 rendered=true
+AB_READY cached-A-1 audioSec=0.003207 rendered=false
+AB_READY uncached-B-2 audioSec=4.239036 rendered=true
+AB_READY cached-A-2 audioSec=0.002759 rendered=false
+AB_PREPARATION_PASS coldFreshController=true bitExact=true

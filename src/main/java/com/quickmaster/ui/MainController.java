@@ -17,6 +17,9 @@ import com.quickmaster.processing.dynamics.BeatCompProcessor;
 import com.quickmaster.processing.eq.EqualizerProcessor;
 import com.quickmaster.processing.FadeProcessor;
 import com.quickmaster.processing.dynamics.MacroLevelerProcessor;
+import com.quickmaster.processing.dynamics.macro.LevelerExclusions;
+import com.quickmaster.config.LevelerExclusionStore;
+import com.quickmaster.ui.waveform.LevelerRegionEditor;
 import com.quickmaster.processing.limit.MultibandLimiterProcessor;
 import com.quickmaster.processing.limit.BroadbandLimiterProcessor;
 import com.quickmaster.processing.clip.HardClipProcessor;
@@ -363,6 +366,10 @@ public class MainController
     private final PeakCompProcessor peakComp = new PeakCompProcessor();
     private final BeatCompProcessor beatComp = new BeatCompProcessor();
     private final MacroLevelerProcessor leveler = new MacroLevelerProcessor();
+    private LevelerRegionEditor levelerRegionEditor;
+    private String exclusionSourceKey, originalExclusionSourceKey;
+    private boolean exclusionsPending;
+    private boolean fileLoadPending;
     private final PunchProcessor punch = new PunchProcessor();
     /** Mutable order of the four compressors (the user can reorder them); this
         is the live processor list of the Dynamics chain module. */
@@ -395,6 +402,8 @@ public class MainController
     private AudioFile loadedFile;
     private float[] waveformDownsampled;
     private WaveformPeakIndex waveformPeakIndex;
+    private WaveformPeakIndex sourceWaveformPeakIndex;
+    private char auditionSettingsSlot = 'A';
     private WaveformViewport waveformViewport = WaveformViewport.empty();
 
     /**
@@ -403,15 +412,19 @@ public class MainController
      * Both carry the full chain configuration of the moment, so undo also
      * restores knob positions.
      */
-    private static final class EditState
+    private final class EditState
     {
         final float[] samples;            // null = parameter-only entry
         final com.quickmaster.config.ChainPreset params;
+        final LevelerExclusions exclusions;
+        final String sourceKey;
 
         EditState(float[] samples, com.quickmaster.config.ChainPreset params)
         {
             this.samples = samples;
             this.params = params;
+            this.exclusions = leveler.getExclusions();
+            this.sourceKey = exclusionSourceKey;
         }
 
         long bytes() { return (samples != null) ? samples.length * 4L : 4096L; }
@@ -447,11 +460,12 @@ public class MainController
     private OutputAnalysis.Result outputSlotA, outputSlotB;
     private float[] auditionSource;
     private EqualizerProcessor tonalEqMeters;
+    private AutoEqProcessor tonalAutoEqCache;
 
     /** Tonal-prefix cache: the analysed signal after the EQ block, so a
      *  dynamics / clip / limit gesture skips re-rendering the (expensive)
      *  tonal stages when they did not change. */
-    private long tonalSigCache = 0L;
+    private String tonalSigCache;
     private float[] tonalBufCache = null;
     private float[] tonalSourceCache = null;
     private int tonalStagesCache = -1;
@@ -624,6 +638,8 @@ public class MainController
                 newS.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, ev ->
                 {
                     if (exporting) return;   // window is locked during export
+                    if (ev.getCode() == javafx.scene.input.KeyCode.ESCAPE && levelerRegionEditor != null
+                            && levelerRegionEditor.escape()) { ev.consume(); return; }
                     if (ev.getCode() == javafx.scene.input.KeyCode.SPACE
                             && !(newS.getFocusOwner() instanceof javafx.scene.control.TextInputControl))
                     {
@@ -1149,12 +1165,17 @@ public class MainController
     {
         if (closing) return;
         final long loadGeneration = ++fileLoadGeneration;
+        fileLoadPending=true;
+        if(levelerRegionEditor!=null)levelerRegionEditor.resetGesture();
+        updateLevelerDiagnostic();
         playWhenReady = false;
         ++sourceAnalysisGeneration;
         sourceAnalysisPending = false;
         deferredAudioReady = null;
         sourceAnalysisExecutor.cancel();
         final String path = file.getAbsolutePath();
+        var loadedKey = new java.util.concurrent.atomic.AtomicReference<String>();
+        var loadedExclusions = new java.util.concurrent.atomic.AtomicReference<>(LevelerExclusions.EMPTY);
         setStatus("Loading " + file.getName() + " …");
 
         Task<AudioFile> task = new Task<>()
@@ -1164,6 +1185,11 @@ public class MainController
             {
                 AudioFile loaded = AudioFormatDetector.loadAuto(path);
                 loaded.load();
+                try {
+                    String key=LevelerExclusionStore.identity(file.toPath());
+                    loadedKey.set(key);
+                    loadedExclusions.set(exclusionStore().load(key,loaded.getSampleRate(),loaded.getSamples().length/loaded.getChannels()));
+                } catch(IOException ex) { AppLogger.warn("Could not restore Leveler exclusions: "+ex.getMessage()); }
                 return loaded;
             }
         };
@@ -1171,12 +1197,18 @@ public class MainController
         task.setOnSucceeded(ev ->
         {
             if (closing || loadGeneration != fileLoadGeneration) return;
+            fileLoadPending=false;
             loadedFile = task.getValue();
+            exclusionSourceKey=originalExclusionSourceKey=loadedKey.get();
+            leveler.setExclusions(loadedExclusions.get(),loadedFile.getSampleRate());
+            levelerRegionEditor.resetGesture();
             onAudioReady(file);
         });
         task.setOnFailed(ev ->
         {
             if (closing || loadGeneration != fileLoadGeneration) return;
+            fileLoadPending=false;
+            updateLevelerDiagnostic();
             Throwable cause = task.getException();
             AppLogger.error("Failed to load " + path, cause);
             setStatus("Load failed.");
@@ -1280,6 +1312,10 @@ public class MainController
         if (loadedFile == null) return;
         invalidateOutputAnalysis();
         loadedFile.reset();
+        exclusionSourceKey=originalExclusionSourceKey;
+        leveler.setExclusions(LevelerExclusions.EMPTY,loadedFile.getSampleRate());
+        levelerRegionEditor.resetGesture();
+        saveLevelerExclusions();
         clearSelectionState();
         clearHistory();
         invalidateAllSlotRenders();
@@ -1382,6 +1418,8 @@ public class MainController
     {
         if (loadedFile == null) return;
         player.toggleAB();
+        downsampleForDisplay();
+        drawWaveform();
         setStatus(player.isAbMode() ? "Bypass: original audio" : "Bypass off: processed master");
     }
 
@@ -1571,6 +1609,7 @@ public class MainController
         exportOverlay.setVisible(false);
         exportOverlay.setManaged(false);
         rootPane.setDisable(false);
+        updateLevelerDiagnostic();
     }
 
     /** Updates the overlay's percentage and remaining-time labels from progress in [0, 1]. */
@@ -1809,9 +1848,45 @@ public class MainController
      * seek to the click position. The user can then drag to
      * continue scrubbing without releasing the button.
      */
+    private LevelerExclusionStore exclusionStore()
+    {
+        return new LevelerExclusionStore(java.nio.file.Path.of(config.getConfigFilePath()).toAbsolutePath()
+                .getParent().resolve("leveler-exclusions"));
+    }
+
+    private void saveLevelerExclusions()
+    {
+        if(loadedFile==null||exclusionSourceKey==null)return;
+        try {
+            exclusionStore().save(exclusionSourceKey,loadedFile.getSampleRate(),
+                    loadedFile.getSamples().length/loadedFile.getChannels(),leveler.getExclusions());
+        } catch(IOException ex) {
+            AppLogger.warn("Could not save Leveler exclusions: "+ex.getMessage());
+            setStatus("Exclusions are active, but could not be saved to the user settings folder.");
+        }
+    }
+
+    private void commitLevelerExclusions(LevelerExclusions next)
+    {
+        if(loadedFile==null||exporting||next.equals(leveler.getExclusions()))return;
+        if(dynRefreshDebounce!=null)dynRefreshDebounce.stop();
+        commitParamGesture();
+        undoStack.push(new EditState(null,capturePreset()));
+        trimUndoHistory();redoStack.clear();updateUndoRedoButtons();
+        leveler.setExclusions(next,loadedFile.getSampleRate());
+        exclusionsPending=true;
+        invalidateAllSlotRenders(); // Regions belong to this track, shared by both A/B settings.
+        syncLiveAnalysis();
+        updateLevelerDiagnostic();drawWaveform();
+        setStatus("Applying Leveler exclusions… Other effects still apply.");
+        saveLevelerExclusions();
+    }
+
     private void onWaveformMousePressed(MouseEvent e)
     {
         if (loadedFile == null) return;
+        if (exporting) return;
+        if (levelerRegionEditor.press(e)) return;
 
         // Shift-drag selects a range (for Crop / Delete).
         if (e.isShiftDown())
@@ -1851,6 +1926,8 @@ public class MainController
     private void onWaveformMouseDragged(MouseEvent e)
     {
         if (loadedFile == null) return;
+        if (exporting) return;
+        if (levelerRegionEditor.drag(e)) return;
         if (selecting)
         {
             selEndSec = secAtX(e.getX());
@@ -1867,6 +1944,7 @@ public class MainController
     /** Mouse released: end scrubbing / fade-drag / selection. */
     private void onWaveformMouseReleased(MouseEvent e)
     {
+        if (levelerRegionEditor.release(e)) return;
         scrubbing = false;
         if (fadeDragMode != 0)
         {
@@ -2093,6 +2171,8 @@ public class MainController
         int i2 = sampleIndexAt(Math.max(selStartSec, selEndSec));
         if (i2 <= i1) return;
         pushUndo();
+        leveler.setExclusions(leveler.getExclusions().crop(i1/loadedFile.getChannels(),i2/loadedFile.getChannels()),loadedFile.getSampleRate());
+        exclusionSourceKey=null; // A trimmed timeline is not the unchanged source file.
         loadedFile.setSamples(java.util.Arrays.copyOfRange(s, i1, i2));
         afterTrim("Cropped to selection.");
     }
@@ -2107,6 +2187,8 @@ public class MainController
         int i2 = sampleIndexAt(Math.max(selStartSec, selEndSec));
         if (i2 <= i1) return;
         pushUndo();
+        leveler.setExclusions(leveler.getExclusions().delete(i1/loadedFile.getChannels(),i2/loadedFile.getChannels()),loadedFile.getSampleRate());
+        exclusionSourceKey=null;
         float[] out = new float[s.length - (i2 - i1)];
         System.arraycopy(s, 0, out, 0, i1);
         System.arraycopy(s, i2, out, i1, s.length - i2);
@@ -2118,6 +2200,7 @@ public class MainController
     private void afterTrim(String message)
     {
         invalidateOutputAnalysis();
+        levelerRegionEditor.resetGesture();
         clearSelectionState();
         invalidateAllSlotRenders();   // the timeline changed: cached A/B renders are stale
         // Clamp fades to the new (shorter) duration.
@@ -2208,6 +2291,10 @@ public class MainController
     /** Restores one history entry: parameters always, samples when present. */
     private void restoreEditState(EditState state, String message)
     {
+        levelerRegionEditor.resetGesture();
+        leveler.setExclusions(state.exclusions,loadedFile.getSampleRate());
+        exclusionSourceKey=state.sourceKey;
+        invalidateAllSlotRenders();
         if (state.params != null) applyPreset(state.params);
         if (state.samples != null)
         {
@@ -2219,6 +2306,8 @@ public class MainController
             scheduleDynamicsRefreshAfterPresetApply();
             setStatus(message);
         }
+        saveLevelerExclusions();
+        drawWaveform();
     }
 
     /* =========================================================
@@ -3911,7 +4000,7 @@ public class MainController
         Label grLabel = new Label("0.0 dB");
         grLabel.getStyleClass().add("value");
         grLabel.setMinWidth(58);
-        Label grCap = new Label("GR");
+        Label grCap = new Label(proc==leveler?"Gain":"GR");
         grCap.getStyleClass().add("caption");
         grCap.setMinWidth(58);                 // match grLabel so the bar centres under the knob
         grCap.setAlignment(Pos.CENTER_RIGHT);
@@ -4103,6 +4192,7 @@ public class MainController
             if (on) trackAnalysis.clearManualBpm();
             else if (trackAnalysis.getBpm() > 0) trackAnalysis.setManualBpm(trackAnalysis.getBpm());
             updateBpmUi();
+            invalidateAllSlotRenders(); // Tempo belongs to the track, not to one A/B preset.
             scheduleDynamicsRefresh();
         });
 
@@ -4123,7 +4213,7 @@ public class MainController
     {
         Knob lev = dynKnob("Leveling", MacroLevelerProcessor.MIN_LEVELING, MacroLevelerProcessor.MAX_LEVELING,
                 leveler.getLeveling(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
-                "Reduces macro RMS differences between all musical passages. At 100%, sustained passages converge, including musical intros and breaks; transients and silence are not flattened. Correction is limited to 24 dB before common peak-safe attenuation.",
+                "Raises quieter passages toward the strongest sustained RMS, never above it and never reducing gain. At 100%, sustained passages converge where possible; transients and silence are not flattened. Maximum boost: 24 dB. Red regions are excluded.",
                 leveler::setLeveling);
         Knob speed = dynKnob("Speed", MacroLevelerProcessor.MIN_SPEED, MacroLevelerProcessor.MAX_SPEED,
                 leveler.getSpeed(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
@@ -4137,13 +4227,18 @@ public class MainController
         levelerDiagnosticLabel.getStyleClass().add("value-muted");
         levelerDiagnosticLabel.setWrapText(true);
         levelerDiagnosticLabel.setMaxWidth(270);
+        levelerDiagnosticLabel.setMinHeight(Region.USE_PREF_SIZE);
         levelerDiagnosticLabel.setTooltip(new Tooltip(
-                "Shows the current macro gain plan. A common output reduction preserves peak headroom without cancelling the leveling of quieter passages."));
-        VBox controls = new VBox(7, knobs, levelerDiagnosticLabel);
+                "Upward-only RMS leveling. Peaks may require the separate output limiter; this module never attenuates the song."));
+        levelerRegionEditor=new LevelerRegionEditor(waveformCanvas,()->waveformViewport,leveler::getExclusions,
+                ()->loadedFile==null?1:loadedFile.getSampleRate(),
+                ()->loadedFile==null?0L:loadedFile.getSamples().length/loadedFile.getChannels(),
+                this::commitLevelerExclusions,this::drawWaveform);
+        VBox controls = new VBox(7, knobs, levelerRegionEditor.controls(), levelerDiagnosticLabel);
         controls.setAlignment(Pos.CENTER);
         updateLevelerDiagnostic();
         return buildSquare(leveler, "Leveler",
-                "Offline macro RMS leveling across musical passages, preserving transients and stereo balance.",
+                "Upward-only macro RMS leveling. Paint red regions on the waveform to exclude them.",
                 "#54d98c", 24.0, controls);
     }
 
@@ -4159,6 +4254,7 @@ public class MainController
             case "MACRO_READY" -> "Leveling · macro RMS";
             case "MACRO_LIMITED" -> "Leveling · 24 dB correction limit reached";
             case "NO_MUSICAL_ACTIVITY" -> "Unchanged · no music above activity floor";
+            case "ALL_REGIONS_EXCLUDED" -> "Unchanged · all audio excluded";
             case "STRUCTURAL_READY" -> "Leveling · comparable sections";
             case "NO_COMPARABLE_SECTIONS" -> "Unchanged · no comparable sections found";
             case "WITHIN_TOLERANCE" -> "Unchanged · levels within tolerance";
@@ -4181,9 +4277,11 @@ public class MainController
                 leveler.isEnabled(), leveler.getLeveling(), outputAnalysisGeneration,
                 levelerStartedGeneration, levelerReadyGeneration, levelerFailedGeneration, levelerCancelledGeneration);
         var report = leveler.getAnalysisReport();
-        if (text.startsWith("Leveling ·") && report != null && report.headroomOffsetDb() < -.05)
-            text += String.format(Locale.US, " · %.1f dB output trim", report.headroomOffsetDb());
+        if (text.startsWith("Leveling ·") && report != null && report.outputTruePeak() > 1)
+            text += "\nPeak headroom needed · use Limit";
         if (!text.equals(levelerDiagnosticLabel.getText())) levelerDiagnosticLabel.setText(text);
+        if(levelerRegionEditor!=null)levelerRegionEditor.update(loadedFile!=null&&!exporting&&!fileLoadPending,
+                exclusionsPending && levelerReadyGeneration!=outputAnalysisGeneration);
     }
 
     private static String levelerDiagnosticForGeneration(String diagnostic, boolean hasAudio,
@@ -4207,8 +4305,10 @@ public class MainController
             tonalBufCache = null;
             tonalSourceCache = null;
             tonalEqMeters = null;
+            tonalAutoEqCache = null;
         }
         updateLevelerDiagnostic();
+        if (waveformCanvas != null) drawWaveform();
     }
 
     private void cancelOutputAnalysis()
@@ -4278,6 +4378,7 @@ public class MainController
             {
                 trackAnalysis.setManualBpm(v);
                 updateBpmUi();
+                invalidateAllSlotRenders();
                 scheduleDynamicsRefresh();
             }
         }
@@ -4672,31 +4773,13 @@ public class MainController
         final CancellationToken cancellation = new CancellationToken();
         outputAnalysisCancellation = cancellation;
 
-        // Tonal-prefix cache: when the EQ block (and the source) are unchanged,
-        // start the pass from the cached post-EQ signal.
-        final int tonalStages = tonalStageCount(s);
-        final long sig = tonalSignature(src, sr, ch, tonalStages);
-        final boolean useCache = tonalStages > 0
-                && tonalSourceCache == src
-                && tonalStagesCache == tonalStages
-                && tonalSigCache == sig
-                && tonalBufCache != null
-                && tonalBufCache.length == src.length;
-        final float[] startBuf = useCache ? tonalBufCache : null;
-        if (useCache && tonalEqMeters != null)
-            ((EqualizerProcessor)s.copies.get(eq)).adoptMeters(tonalEqMeters);
-        final float[][] tonalTap = { null };
+        final AuditionRender preparation = new AuditionRender(s, src, sr, ch, os);
 
         Task<OutputAnalysis.Result> task = new Task<>()
         {
             @Override protected OutputAnalysis.Result call()
             {
-                s.pipeline.prepare(sr, src.length);
-                float[] render = s.pipeline.analyzeAndRender(src, ch,
-                        useCache ? tonalStages : 0, startBuf, null,
-                        (buf, idx) -> { if (idx == tonalStages - 1) tonalTap[0] = buf; }, cancellation);
-                if (os > 1)
-                    render = s.pipeline.renderAnalyzedOversampled(src, ch, os, null, cancellation);
+                float[] render = preparation.render(null, cancellation);
 
                 if (cancellation.isCancelled()) throw new java.util.concurrent.CancellationException();
 
@@ -4705,12 +4788,8 @@ public class MainController
                 final float[] approvedRender = render;
                 javafx.application.Platform.runLater(() -> {
                     if (closing || cancellation.isCancelled() || generation != outputAnalysisGeneration) return;
-                    publishAudioPlan(s, generation, !useCache, onDone, src, approvedRender);
-                    if (generation == outputAnalysisGeneration && tonalTap[0] != null) {
-                        tonalBufCache = tonalTap[0]; tonalSourceCache = src;
-                        tonalSigCache = sig; tonalStagesCache = tonalStages;
-                        tonalEqMeters = (EqualizerProcessor)s.copies.get(eq);
-                    }
+                    publishAudioPlan(s, generation, true, onDone, src, approvedRender);
+                    if (generation == outputAnalysisGeneration) preparation.cacheTonalPrefix();
                 });
 
                 // LUFS, LRA, true peak, stereo image and static spectrum all
@@ -4774,9 +4853,14 @@ public class MainController
         if (!player.publishRender(source, render)) return;
         auditionSnapshot = s;
         auditionSource = source;
+        auditionSettingsSlot = activeSettingsSlot;
         setSlotRender(activeSettingsSlot, render);
         if (activeSettingsSlot == 'A') snapshotSlotA = s; else snapshotSlotB = s;
         levelerReadyGeneration = generation;
+        downsampleForDisplay();
+        drawWaveform();
+        if(exclusionsPending)setStatus("Leveler exclusions applied. Other effects still apply.");
+        exclusionsPending=false;
         updateLevelerDiagnostic();
         player.setAnalysisValid(true);
         if (onDone != null) onDone.run();
@@ -4867,57 +4951,71 @@ public class MainController
         return n;
     }
 
-    /** Cache key for the tonal prefix: source identity + every tonal parameter. */
-    private long tonalSignature(float[] src, int sr, int ch, int tonalStages)
+    /** Exact parameter serialization, not a lossy hash. Source identity is checked separately. */
+    private String tonalSignature(int sr, int ch, int tonalStages)
     {
-        long h = 1125899906842597L;
-        h = h * 31 + tonalStages;
-        h = h * 31 + sr;
-        h = h * 31 + ch;
-        h = h * 31 + src.length;
-        int stride = Math.max(1, src.length / 512);
-        for (int i = 0; i < src.length; i += stride)
-            h = h * 1099511628211L + Float.floatToIntBits(src[i]);
+        var preset = new com.google.gson.Gson().toJsonTree(capturePreset()).getAsJsonObject();
+        var key = new com.google.gson.JsonObject();
+        for (String name : new String[]{"autoEqOn", "autoEqAmount", "autoEqTarget", "autoEqAttackSec",
+                "autoEqReleaseSec", "eqOn", "bands", "fadeInSec", "fadeOutSec", "fadeType"})
+            key.add(name, preset.get(name));
+        key.addProperty("fadeOn", fade.isEnabled());
+        key.addProperty("sampleRate", sr);
+        key.addProperty("channels", ch);
+        key.addProperty("stages", tonalStages);
+        return key.toString();
+    }
 
-        h = h * 31 + (autoEq.isEnabled() ? 1 : 0);
-        h = h * 31 + Double.hashCode(autoEq.getAmount());
-        h = h * 31 + autoEq.getTarget().ordinal();
-        h = h * 31 + Double.hashCode(autoEq.getAttackSec());
-        h = h * 31 + Double.hashCode(autoEq.getReleaseSec());
+    /**
+     * One exact rendering path for live edits and uncached A/B slots. Construct
+     * on FX, render on a worker, publish the prefix on FX only after validation.
+     * Oversampling still renders the entire high-rate chain; only the identical
+     * base-rate analysis prefix is skipped. Buffers are immutable after creation.
+     */
+    private final class AuditionRender
+    {
+        final Snapshot snapshot;
+        final float[] source, prefix;
+        final int rate, channels, factor, tonalStages;
+        final String signature;
+        float[] tonalTap;
 
-        h = h * 31 + (eq.isEnabled() ? 1 : 0);
-        h = h * 31 + eq.getNumBands();
-        for (int i = 0; i < eq.getNumBands(); i++)
-        {
-            MasterEqualizer.Band b = eq.getBand(i);
-            if (b == null) continue;
-            h = h * 31 + b.type.ordinal();
-            h = h * 31 + b.channel.ordinal();
-            h = h * 31 + b.phase.ordinal();
-            h = h * 31 + Double.hashCode(b.frequency);
-            h = h * 31 + Double.hashCode(b.gainDb);
-            h = h * 31 + Double.hashCode(b.q);
-            h = h * 31 + b.slope;
-            h = h * 31 + (b.enabled ? 1 : 0);
-            h = h * 31 + (b.dynamic ? 1 : 0);
-            h = h * 31 + Double.hashCode(b.threshold);
-            h = h * 31 + Double.hashCode(b.aboveRatio);
-            h = h * 31 + Double.hashCode(b.aboveRangeDb);
-            h = h * 31 + Double.hashCode(b.aboveAttackMs);
-            h = h * 31 + Double.hashCode(b.aboveReleaseMs);
-            h = h * 31 + (b.aboveBoost ? 1 : 0);
-            h = h * 31 + Double.hashCode(b.belowRatio);
-            h = h * 31 + Double.hashCode(b.belowRangeDb);
-            h = h * 31 + Double.hashCode(b.belowAttackMs);
-            h = h * 31 + Double.hashCode(b.belowReleaseMs);
-            h = h * 31 + (b.belowBoost ? 1 : 0);
+        AuditionRender(Snapshot snapshot, float[] source, int rate, int channels, int factor) {
+            this.snapshot = snapshot; this.source = source; this.rate = rate;
+            this.channels = channels; this.factor = factor;
+            tonalStages = tonalStageCount(snapshot);
+            signature = tonalSignature(rate, channels, tonalStages);
+            prefix = tonalStages > 0 && tonalSourceCache == source && tonalStagesCache == tonalStages
+                    && signature.equals(tonalSigCache) && tonalBufCache != null
+                    && tonalBufCache.length == source.length ? tonalBufCache : null;
+            if (prefix != null) {
+                if (tonalEqMeters != null) ((EqualizerProcessor)snapshot.copies.get(eq)).adoptMeters(tonalEqMeters);
+                if (tonalAutoEqCache != null) ((AutoEqProcessor)snapshot.copies.get(autoEq)).adopt(tonalAutoEqCache);
+            }
         }
 
-        h = h * 31 + (fade.isEnabled() ? 1 : 0);
-        h = h * 31 + Double.hashCode(fade.getFadeInSec());
-        h = h * 31 + Double.hashCode(fade.getFadeOutSec());
-        h = h * 31 + fade.getFadeType().ordinal();
-        return h;
+        float[] render(DoubleConsumer progress, CancellationToken cancellation) {
+            snapshot.pipeline.prepare(rate, source.length);
+            DoubleConsumer analysisProgress = progress == null ? null
+                    : value -> progress.accept(factor > 1 ? value * .35 : value);
+            float[] result = snapshot.pipeline.analyzeAndRender(source, channels,
+                    prefix != null ? tonalStages : 0, prefix, analysisProgress,
+                    (buffer, index) -> { if (index == tonalStages - 1) tonalTap = buffer; }, cancellation);
+            if (factor > 1) result = snapshot.pipeline.renderAnalyzedOversampled(source, channels, factor,
+                    progress == null ? null : value -> progress.accept(.35 + .65 * value), cancellation);
+            // Build once off the UI thread, from the exact final PCM. Cached
+            // A/B switches reuse this same index; no second DSP render or copy.
+            snapshot.waveform = new WaveformPeakIndex(result, channels);
+            return result;
+        }
+
+        void cacheTonalPrefix() {
+            if (tonalTap == null) return;
+            tonalBufCache = tonalTap; tonalSourceCache = source;
+            tonalSigCache = signature; tonalStagesCache = tonalStages;
+            tonalEqMeters = (EqualizerProcessor)snapshot.copies.get(eq);
+            tonalAutoEqCache = (AutoEqProcessor)snapshot.copies.get(autoEq);
+        }
     }
 
     private void adoptLive(AnalysisDynamicsProcessor live, Snapshot s)
@@ -4948,8 +5046,10 @@ public class MainController
         final ProcessingPipeline pipeline;
         final java.util.Map<AudioProcessor, AudioProcessor> copies;
         final PeakNormalizer normalizer;
-        Snapshot(ProcessingPipeline p, java.util.Map<AudioProcessor, AudioProcessor> c, PeakNormalizer n)
-        { this.pipeline = p; this.copies = c; this.normalizer = n; }
+        final String settingsKey;
+        WaveformPeakIndex waveform; // worker-owned until this snapshot is published
+        Snapshot(ProcessingPipeline p, java.util.Map<AudioProcessor, AudioProcessor> c, PeakNormalizer n, String settingsKey)
+        { this.pipeline = p; this.copies = c; this.normalizer = n; this.settingsKey = settingsKey; }
     }
 
     /**
@@ -4995,6 +5095,7 @@ public class MainController
         obeat.setNote(beatComp.getNote());
         obeat.setEnabled(beatComp.isEnabled());
         MacroLevelerProcessor olev = leveler.forkForAnalysis(leveler.getLeveling(), leveler.getSpeed());
+        if(analysis!=trackAnalysis)olev.setExclusions(LevelerExclusions.EMPTY); // Batch tracks never inherit current-track regions.
         PunchProcessor opunch = new PunchProcessor();
         opunch.setTrackAnalysis(analysis);
         opunch.setAmountDb(punch.getAmountDb());
@@ -5041,7 +5142,7 @@ public class MainController
 
         ProcessingPipeline snap = new ProcessingPipeline();
         for (AudioProcessor p : snapOrder) snap.addProcessor(p);
-        return new Snapshot(snap, copies, onorm);
+        return new Snapshot(snap, copies, onorm, new com.google.gson.Gson().toJson(capturePreset()));
     }
 
     /* =========================================================
@@ -5486,12 +5587,24 @@ public class MainController
         com.quickmaster.config.ChainPreset recalled = (target == 'A') ? settingsSlotA : settingsSlotB;
         final com.quickmaster.config.ChainPreset targetPreset =
                 (recalled != null) ? recalled : leavingPreset;
+        final Snapshot approved = leaving == 'A' ? snapshotSlotA : snapshotSlotB;
+        final boolean canShare = levelerReadyGeneration == outputAnalysisGeneration
+                && auditionSource == loadedFile.getSamples() && slotRender(leaving) != null && approved != null;
         invalidateOutputAnalysis();
         final long generation = outputAnalysisGeneration;
         final float[] source = loadedFile.getSamples();
         activeSettingsSlot = target;
         applyPreset(targetPreset, false);
         syncSlotButtons();
+        // A new B starts as an exact copy of A. Reuse approved PCM and meters,
+        // never a render belonging to pending controls, another source or mask.
+        if (slotRender(target) == null && canShare
+                && approved.settingsKey.equals(new com.google.gson.Gson().toJson(capturePreset()))
+                && ((MacroLevelerProcessor)approved.copies.get(leveler)).getExclusions().equals(leveler.getExclusions())) {
+            setSlotRender(target, slotRender(leaving));
+            if (target == 'A') snapshotSlotA = approved; else snapshotSlotB = approved;
+            setSlotOutput(target, leaving == 'A' ? outputSlotA : outputSlotB);
+        }
         // The prior approved PCM keeps playing while the target is prepared.
         ensureSlotRender(target, () -> {
             Snapshot snapshot = target == 'A' ? snapshotSlotA : snapshotSlotB;
@@ -5524,17 +5637,20 @@ public class MainController
         final float[] src = loadedFile.getSamples();
         final long generation = outputAnalysisGeneration;
         final int os = oversampling;
+        final AuditionRender preparation = new AuditionRender(snap, src, sr, ch, os);
+        final CancellationToken cancellation = new CancellationToken();
 
         Task<float[]> task = new Task<>()
         {
             @Override protected float[] call()
             {
-                return renderOversampled(snap.pipeline, src, sr, ch, os, frac ->
+                return preparation.render(frac ->
                 {
                     if (isCancelled()) throw new java.util.concurrent.CancellationException();
                     updateProgress(frac, 1.0);
-                });
+                }, cancellation);
             }
+            @Override protected void cancelled() { cancellation.cancel(); }
         };
         task.setOnSucceeded(e ->
         {
@@ -5543,6 +5659,7 @@ public class MainController
                     || loadedFile.getSamples() != src) return;
             setSlotRender(slot, task.getValue());
             if (slot == 'A') snapshotSlotA = snap; else snapshotSlotB = snap;
+            preparation.cacheTonalPrefix();
             onReady.run();
         });
         task.setOnFailed(e ->
@@ -6216,14 +6333,39 @@ public class MainController
             return;
         }
 
-        if (waveformPeakIndex == null) waveformPeakIndex = new WaveformPeakIndex(src, channels);
+        if (showingProcessedWaveform()) waveformPeakIndex = auditionSnapshot.waveform;
+        else {
+            if (sourceWaveformPeakIndex == null) sourceWaveformPeakIndex = new WaveformPeakIndex(src, channels);
+            waveformPeakIndex = sourceWaveformPeakIndex;
+        }
         waveformDownsampled = waveformPeakIndex.columns(waveformViewport, sampleRate, width);
+    }
+
+    private boolean showingProcessedWaveform()
+    {
+        return loadedFile != null && !player.isAbMode() && player.hasPublishedRender()
+                && auditionSource == loadedFile.getSamples() && auditionSnapshot != null
+                && auditionSnapshot.waveform != null;
+    }
+
+    private String waveformCaption()
+    {
+        if (player.isAbMode()) return "Original · Bypass";
+        boolean pending = levelerReadyGeneration != outputAnalysisGeneration;
+        String label = showingProcessedWaveform() ? "Processed " + auditionSettingsSlot : "Original";
+        if (pending) {
+            if (levelerFailedGeneration == outputAnalysisGeneration) return label + " · render failed";
+            if (levelerCancelledGeneration == outputAnalysisGeneration) return label + " · update cancelled";
+            return label + " · preparing updated audio…";
+        }
+        return label;
     }
 
     /** A new timeline invalidates the peak cache and returns to full view. */
     private void resetWaveformViewport()
     {
         waveformPeakIndex = null;
+        sourceWaveformPeakIndex = null;
         waveformViewport = (loadedFile == null)
                 ? WaveformViewport.empty()
                 : WaveformViewport.fullView(loadedFile.getDuration());
@@ -6258,10 +6400,18 @@ public class MainController
         double mid = h / 2.0;
         for (int x = 0; x < waveformDownsampled.length; x++)
         {
-            float amp = waveformDownsampled[x];
+            float amp = Math.min(1, waveformDownsampled[x]);
             double yTop    = mid - amp * mid * 0.92;
             double yBottom = mid + amp * mid * 0.92;
             gc.strokeLine(x, yTop, x, yBottom);
+            if (waveformDownsampled[x] > 1) {
+                // Fixed 0 dBFS vertical scale: do not normalize away changes.
+                // Red tips disclose float headroom instead of overflowing UI.
+                gc.setStroke(Color.web("#ff858b"));
+                gc.strokeLine(x, yTop, x, yTop + 3);
+                gc.strokeLine(x, yBottom - 3, x, yBottom);
+                gc.setStroke(Color.web("#4a9eff"));
+            }
         }
 
         // Fade envelope: ramps + prominent draggable handles (drag on the wave).
@@ -6332,6 +6482,19 @@ public class MainController
                 if (x2 <= w) gc.strokeLine(x2, 0, x2, h);
             }
         }
+
+        if (levelerRegionEditor != null) levelerRegionEditor.draw(gc,w,h);
+
+        gc.save();
+        String caption = waveformCaption();
+        double captionWidth = Math.min(w - 32, caption.length() * 6.3 + 16);
+        gc.setFill(Color.web("#14141a", .90));
+        gc.fillRect((w - captionWidth) / 2, 1, captionWidth, 20);
+        gc.setFill(Color.web("#b8c8dc"));
+        gc.setFont(javafx.scene.text.Font.font(11));
+        gc.setTextAlign(javafx.scene.text.TextAlignment.CENTER);
+        gc.fillText(caption, w / 2, 15, Math.max(1, captionWidth - 12));
+        gc.restore();
 
         if (loadedFile != null)
         {

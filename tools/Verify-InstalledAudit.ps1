@@ -65,11 +65,13 @@ try {
         Run-Probe 'junit' 'PackagedTestAudit' (@('--jar',$jar)+$classes) @('0 tests failed','PACKAGED_TEST_CLASS') $classpath
         Run-Probe 'live-edit' 'LiveEditPublicationAudit' @() @('LIVE_EDIT_PUBLICATION_PASS')
         Run-Probe 'slots' 'SlotPublicationAudit' @() @('SLOT_PUBLICATION_PASS.*metersFollowPcm=true')
+        Run-Probe 'ab-cache-isolation' 'AbCacheIsolationAudit' @() @('AB_CACHE_ISOLATION_PASS cases=9 allRawBitExact=true')
         Run-Probe 'presets' 'PresetAudit' @() @('PRESET_AUDIT failures=0')
         Run-Probe 'controls' 'ControlWiringAudit' @() @('CONTROL_AUDIT failures=0')
         Run-Probe 'eq-controls' 'EqControlAudit' @() @('EQ_CONTROL_AUDIT failures=0')
         Run-Probe 'os-controls' 'OversamplingUiAudit' @($run) @('OS_UI_PASS factor=8','OS_UI_PASS factor=2')
         Run-Probe 'waveform' 'WaveformUiProbe' @($run) @('WAVEFORM_UI_PASS','WAVEFORM_PAN_PASS','TEMPO_UI_PASS')
+        Run-Probe 'processed-waveform' 'ProcessedWaveformAudit' @((Join-Path $run 'processed-waveform')) @('PROCESSED_WAVEFORM_PASS.*exactPixelPeaks=true.*transportUnchanged=true')
         Run-Probe 'source-races' 'SourceAnalysisRaceProbe' @($run,'--failure') @('SOURCE_LOAD_PASS','SOURCE_EDIT_PASS','SOURCE_FAILURE_RECOVERY_PASS','SOURCE_CLOSE_PASS')
         Run-Probe 'adversarial-chain' 'FullChainAdversarialAudit' @() @('CHAIN_BOUNDARY_SUMMARY cases=120')
         Run-Probe 'spectrum' 'SpectrumAudit' @() @('SPECTRUM_AUDIT failures=0')
@@ -78,7 +80,8 @@ try {
         Run-Probe 'export-src-spectral' 'ExportSrcSpectralAudit' @() @('EXPORT_SRC_SPECTRAL failures=0')
         Run-Probe 'export-src-band' 'ExportSrcBandAudit' @() @('EXPORT_SRC_BAND cases=135 failures=0')
         Run-Probe 'export-src' 'ExportResamplingAudit' @() @('EXPORT_SRC_PASS cases=50')
-        Run-Probe 'leveler-ui' 'LevelerUiAcceptance' @($byNow,(Join-Path $run 'leveler-ui.png')) @('UI_PASS actualAsyncFileLoad=true.*audiblePcmBitExact=true','UI_ZERO_PASS audiblePcmRawExact=true','UI_MACRO_PASS publishedPcm=true')
+        Run-Probe 'leveler-ui' 'LevelerUiAcceptance' @($byNow,(Join-Path $run 'leveler-ui.png')) @('UI_PASS actualAsyncFileLoad=true','audiblePcmBitExact=true','UI_ZERO_PASS audiblePcmRawExact=true','UI_MACRO_PASS publishedPcm=true')
+        Run-Probe 'leveler-exclusions-ui' 'LevelerExclusionUiAudit' @($byNow,(Join-Path $run 'exclusions-ui')) @('EXCLUSION_UI_PASS.*sourceUnchanged=true','EXCLUSION_PCM_PASS.*gainNeverNegative=true')
         # Macro acceptance measures a fixed temporal grid, not regions selected
         # by the Leveler. Historical cohort probes do not validate the new engine.
         Run-Probe 'by-now' 'MacroLevelerAcceptance' @($byNow,'1','.5','--assert') @('MACRO_ACCEPTANCE_PASS')
@@ -116,6 +119,7 @@ try {
         Run-Probe 'memory-30' 'InteractionLatencyProbe' @($byNow,'--full-chain','--repeats=30','--heap-checkpoints') @('LATEST_FULL_AUDIO_PASS publishedAuditionPcm=true.*bitExact=true')
         Run-Probe 'latency-leveler' 'InteractionLatencyProbe' @($byNow,'--repeats=3') @('LATEST_AUDIO_PASS publishedAuditionPcm=true.*bitExactToColdReference=true')
         Run-Probe 'latency-full-chain' 'InteractionLatencyProbe' @($byNow,'--full-chain','--repeats=3') @('LATEST_FULL_AUDIO_PASS publishedAuditionPcm=true.*bitExact=true')
+        Run-Probe 'ab-preparation' 'AbPreparationProbe' @($byNow,'--assert-fast') @('AB_PREPARATION_PASS coldFreshController=true bitExact=true','AB_READY first-identical-B.*rendered=false')
     }
     if ((Get-FileHash -LiteralPath $jar).Hash -ne $ExpectedJarSha256) { throw 'Installed JAR changed during acceptance' }
     if ((Get-FileHash -LiteralPath $vendor[0].FullName).Hash -ne '4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382') { throw 'Installed DSPark changed during acceptance' }

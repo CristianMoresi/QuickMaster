@@ -39,7 +39,11 @@ public class SlotPublicationAudit {
                 call(c[0],"syncLiveAnalysis");return null;
             });ready(c[0]);
             Object[] a={null},b={null};
-            fx(()->{a[0]=get(c[0],"renderSlotA");check(a[0]!=null,"Initial approved render must populate A");call(c[0],"onSelectSlotB");return null;});ready(c[0]);
+            fx(()->{
+                a[0]=get(c[0],"renderSlotA");check(a[0]!=null,"Initial approved render must populate A");call(c[0],"onSelectSlotB");
+                check(get(c[0],"exportTask")==null,"Identical initial B must not render again");
+                check(get(c[0],"renderSlotB")==a[0],"Identical slots must share exact immutable PCM");return null;
+            });ready(c[0]);
             fx(()->{
                 ((Slider)get(c[0],"peakTarget")).setValue(-7);
                 if(get(c[0],"dynRefreshDebounce") instanceof PauseTransition pause)pause.stop();
@@ -62,8 +66,37 @@ public class SlotPublicationAudit {
                 check((char)get(c[0],"activeSettingsSlot")=='B',"Cancelled comparison must restore B");
                 check(((Slider)get(c[0],"peakTarget")).getValue()==-7,"Cancelled comparison must restore parameters");
                 check(((AudioPlayer)get(c[0],"player")).hasPublishedRender(),"Cancellation must keep an approved render");
-                System.out.println("SLOT_PUBLICATION_PASS cachedA=true cachedB=true metersFollowPcm=true cancelRestoresControls=true");return null;
+                // The controls now request a new plan. It is NOT safe to share
+                // the old audible buffer just because another slot requests it too.
+                ((Slider)get(c[0],"peakTarget")).setValue(-9);
+                if(get(c[0],"dynRefreshDebounce") instanceof PauseTransition pause)pause.stop();
+                Method capture=MainController.class.getDeclaredMethod("capturePreset");capture.setAccessible(true);
+                set(c[0],"settingsSlotA",capture.invoke(c[0]));
+                set(c[0],"renderSlotA",null);set(c[0],"snapshotSlotA",null);
+                call(c[0],"onSelectSlotA");check(get(c[0],"exportTask")!=null,"Pending controls must not share stale PCM");return null;
             });
+            ready(c[0]);
+            fx(()->{
+                check(get(c[0],"renderSlotA")!=b[0],"Pending edit reused the old buffer");
+                check(((Label)get(c[0],"meterPeak")).getText().equals("-9.0 dBTP"),"Pending edit did not render requested settings");
+                call(c[0],"onSelectSlotB");return null;
+            });
+            ready(c[0]);
+            fx(()->{
+                check(get(c[0],"renderSlotA")!=null&&get(c[0],"renderSlotB")!=null,"Tempo precondition requires both cached slots");
+                ((CheckBox)get(c[0],"bpmAuto")).setSelected(false);
+                ((javafx.scene.control.TextField)get(c[0],"beatBpmField")).setText("97");call(c[0],"commitManualBpm");
+                check(get(c[0],"renderSlotA")==null&&get(c[0],"renderSlotB")==null,"Shared tempo edit must invalidate BOTH A/B slots");
+                if(get(c[0],"dynRefreshDebounce") instanceof PauseTransition pause)pause.stop();call(c[0],"syncLiveAnalysis");return null;
+            });ready(c[0]);
+            fx(()->{call(c[0],"onSelectSlotA");return null;});ready(c[0]);
+            fx(()->{
+                check(get(c[0],"renderSlotA")!=null&&get(c[0],"renderSlotB")!=null,"Auto-tempo precondition requires cached slots");
+                ((CheckBox)get(c[0],"bpmAuto")).setSelected(true);
+                check(get(c[0],"renderSlotA")==null&&get(c[0],"renderSlotB")==null,"Auto tempo must invalidate BOTH slots");
+                if(get(c[0],"dynRefreshDebounce") instanceof PauseTransition pause)pause.stop();call(c[0],"syncLiveAnalysis");return null;
+            });ready(c[0]);
+            System.out.println("SLOT_PUBLICATION_PASS cachedA=true cachedB=true metersFollowPcm=true cancelRestoresControls=true identicalInstant=true pendingNeverReused=true sharedTempoInvalidation=true");
         }finally{fx(()->{if(c[0]!=null)c[0].shutdown();return null;});Platform.exit();}
     }
 }

@@ -1,0 +1,994 @@
+{
+  "suite": "complete-clean-package",
+  "tests": 831.0,
+  "failures": 0.0,
+  "errors": 0.0,
+  "skipped": 0.0,
+  "jarSha256": "0000ce9c21a4c38f47c361ea41e3762cfd50b22622240a9b9cef728f26f9079a",
+  "classes": [
+    {
+      "name": "com.quickmaster.audio.AtomicAudioWriteTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.079
+    },
+    {
+      "name": "com.quickmaster.audio.AudioExportTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.024
+    },
+    {
+      "name": "com.quickmaster.audio.AudioFileTrimResetTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.005
+    },
+    {
+      "name": "com.quickmaster.audio.AudioIoAuditTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.199
+    },
+    {
+      "name": "com.quickmaster.audio.ExportResamplingAuditTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.944
+    },
+    {
+      "name": "com.quickmaster.audio.MetadataPreserverTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.044
+    },
+    {
+      "name": "com.quickmaster.audio.Mp3ExportAuditTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.191
+    },
+    {
+      "name": "com.quickmaster.audio.PcmDecoderTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.012
+    },
+    {
+      "name": "com.quickmaster.audio.WavFileRoundTripTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.028
+    },
+    {
+      "name": "com.quickmaster.config.AppConfigTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.048
+    },
+    {
+      "name": "com.quickmaster.config.AppLoggerTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "com.quickmaster.config.JsonFilesTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.016
+    },
+    {
+      "name": "com.quickmaster.config.LevelerExclusionStoreTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.023
+    },
+    {
+      "name": "com.quickmaster.config.PresetValidationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.009
+    },
+    {
+      "name": "com.quickmaster.playback.AudioPlayerSessionTest",
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.437
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.LatestAnalysisExecutorTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.005
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.OnsetTempoEstimatorTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.01
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.OutputAnalysisTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.072
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.SpectralEngineAuditTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.016
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.SpectralEngineTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.015
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.SpectrumAnalysisTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.008
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.SpectrumAuditTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.078
+    },
+    {
+      "name": "com.quickmaster.processing.analysis.TrackAnalysisTempoTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.261
+    },
+    {
+      "name": "com.quickmaster.processing.clip.ClipProcessorsTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.02
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.AnalysisDynamicsCompatibilityTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.834
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.AnalysisDynamicsProcessorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.AnalysisDynamicsSwitchCompatibilityTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.005
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.BeatCompProcessorTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.116
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.DenseGainScheduleCompatibilityTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.074
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ActiveLevelerAcceptanceTest",
+      "tests": 62,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 217.844
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ActiveLevelerGuardTest",
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 8.048
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ArrangementPcmAcceptanceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 14.878
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ArrangementReferencePlannerTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.015
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.AsyncEscapeBytecodeGuardTest",
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.414
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.BodyContextGateTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.016
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.BoundaryDetectorTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.717
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.BoundaryExtentContractTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 73.257
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.BoundaryOriginalNoveltyTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.017
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.BoundaryPersistentContrastTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 45.854
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ComparableGroupBuilderTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ComparisonV2Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.9
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformanceBindingContinuationTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.017
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformanceBindingRemoteTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.014
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformanceCodecTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.041
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ConformancePackageTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.388
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.FiniteTruePeakStreamTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.006
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.GainPlannerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.595
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.HannAllocationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.642
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.HannBitIdentityTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.315
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.HannCancellationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 7.387
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngineIntegrationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.044
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LevelerCalibrationProfileTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.554
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LevelerUiDiagnosticTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.026
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessAnalyzerConformanceTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.404
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessConformanceGuardTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.001
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessCoreChunkEquivalenceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 2.646
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessCorePrecisionTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.369
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessCoreTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 2.373
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessCoreWindowTreeTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.129
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessSharedCoreCancellationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.415
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.LoudnessSharedCoreTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.154
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.M004ClassfileTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.343
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.M004StaticClosureTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 2.106
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.M004StaticSchemaTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.033
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MacroDynamicsProtectionTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.001
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.memory.LoudnessCoreStorageTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.766
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.memory.RuntimeRetentionStageOneTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 17.297
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalBodyRegressionTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.004
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalComparatorRegressionTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.034
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 46.117
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalContextAdversarialTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.013
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalContextComparatorTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.003
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalContextEngineTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 34.631
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalContextMutationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.993
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalContextObservationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 76.442
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalDescriptorRegressionTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.003
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalGroupingRegressionTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.003
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalPcmMatrixTest",
+      "tests": 106,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1093.709
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalReferenceRegressionTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.007
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.MusicalTemporalTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.012
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.OfficialWaveReaderTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.692
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.OwnJarCleanupMetadataTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.833
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.RampAllocatorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.006
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ReferencePlannerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.001
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.SegmentComparatorTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.003
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilderTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.148
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.ShadowSchemaTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.004
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.StructuralActivityWindowTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.053
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.TimbreBandEdgeAllocationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.007
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.TruePeakOfficialTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.275
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.leveler.TruePeakSafetyTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.027
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.LevelerActivePublicationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.115
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.LevelerExclusionsTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.004
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.LevelerProcessorTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 21.561
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.LevelerShadowIsolationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.376
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.LookaheadGainSmootherTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.004
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.MacroLevelerProcessorTest",
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 2.194
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.PeakCompProcessorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.035
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.PunchProcessorTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.036
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.SparseGainLifecycleTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.003
+    },
+    {
+      "name": "com.quickmaster.processing.dynamics.SparseGainScheduleTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "com.quickmaster.processing.eq.AutoEqAuditTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.151
+    },
+    {
+      "name": "com.quickmaster.processing.eq.AutoEqCacheTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.035
+    },
+    {
+      "name": "com.quickmaster.processing.eq.AutoEqProcessorTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.108
+    },
+    {
+      "name": "com.quickmaster.processing.eq.EqMeterTimelineTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.053
+    },
+    {
+      "name": "com.quickmaster.processing.eq.EqualizerProcessorTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "com.quickmaster.processing.FadeProcessorTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.0
+    },
+    {
+      "name": "com.quickmaster.processing.limit.BroadbandLimiterProcessorTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.016
+    },
+    {
+      "name": "com.quickmaster.processing.limit.LimiterPublicationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.143
+    },
+    {
+      "name": "com.quickmaster.processing.limit.MultibandLimiterProcessorTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.119
+    },
+    {
+      "name": "com.quickmaster.processing.limit.MultibandTailAuditTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.024
+    },
+    {
+      "name": "com.quickmaster.processing.OfflineRenderBufferTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.014
+    },
+    {
+      "name": "com.quickmaster.processing.OversamplingCeilingAuditTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 1.039
+    },
+    {
+      "name": "com.quickmaster.processing.PeakNormalizerTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.001
+    },
+    {
+      "name": "com.quickmaster.processing.PipelinePositionAuditTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.006
+    },
+    {
+      "name": "com.quickmaster.processing.PipelinePublicationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.001
+    },
+    {
+      "name": "com.quickmaster.processing.ProcessingPipelineBypassTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "com.quickmaster.processing.ProcessingPipelineDynamicsTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.001
+    },
+    {
+      "name": "com.quickmaster.processing.ProcessingPipelineRenderTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.023
+    },
+    {
+      "name": "com.quickmaster.ui.MainControllerDefaultsTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "com.quickmaster.ui.MainControllerWaveformIntegrationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.012
+    },
+    {
+      "name": "com.quickmaster.ui.waveform.WaveformPeakIndexTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.017
+    },
+    {
+      "name": "com.quickmaster.ui.waveform.WaveformViewportTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.006
+    }
+  ]
+}
