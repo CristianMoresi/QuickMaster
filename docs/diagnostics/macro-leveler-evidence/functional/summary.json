@@ -1,0 +1,172 @@
+{
+  "status": "PASSED",
+  "mode": "Functional",
+  "installedJar": "C:\\Program Files\\QuickMaster\\app\\quickmaster.jar",
+  "sha256": "f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04",
+  "probes": [
+    {
+      "name": "junit",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\junit.log"
+    },
+    {
+      "name": "live-edit",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\live-edit.log"
+    },
+    {
+      "name": "slots",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\slots.log"
+    },
+    {
+      "name": "presets",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\presets.log"
+    },
+    {
+      "name": "controls",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\controls.log"
+    },
+    {
+      "name": "eq-controls",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\eq-controls.log"
+    },
+    {
+      "name": "os-controls",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\os-controls.log"
+    },
+    {
+      "name": "waveform",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\waveform.log"
+    },
+    {
+      "name": "source-races",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\source-races.log"
+    },
+    {
+      "name": "adversarial-chain",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\adversarial-chain.log"
+    },
+    {
+      "name": "spectrum",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\spectrum.log"
+    },
+    {
+      "name": "auto-eq",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\auto-eq.log"
+    },
+    {
+      "name": "os-ceiling",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\os-ceiling.log"
+    },
+    {
+      "name": "export-src-spectral",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\export-src-spectral.log"
+    },
+    {
+      "name": "export-src-band",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\export-src-band.log"
+    },
+    {
+      "name": "export-src",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\export-src.log"
+    },
+    {
+      "name": "leveler-ui",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\leveler-ui.log"
+    },
+    {
+      "name": "by-now",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\by-now.log"
+    },
+    {
+      "name": "quiet-gold",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\quiet-gold.log"
+    },
+    {
+      "name": "billie-jean",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\billie-jean.log"
+    },
+    {
+      "name": "wicked-game",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\wicked-game.log"
+    },
+    {
+      "name": "by-now-half",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\by-now-half.log"
+    },
+    {
+      "name": "leveler-meter",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\leveler-meter.log"
+    },
+    {
+      "name": "leveler-noise",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\leveler-noise.log"
+    },
+    {
+      "name": "beat-1024",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\beat-1024.log"
+    },
+    {
+      "name": "beat-257",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2\\beat-257.log"
+    }
+  ],
+  "output": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-functional-20260927-224259-8287cad2",
+  "sourceOnlyClassesValidatedByMaven": [
+    "AnalysisDynamicsCompatibilityTest.java",
+    "LevelerActivePublicationTest.java",
+    "LevelerProcessorTest.java",
+    "LevelerShadowIsolationTest.java"
+  ],
+  "completedAt": "2026-09-27T22:44:18.8522084+02:00"
+}

@@ -1,0 +1,14 @@
+Sep 27, 2026 9:30:01 PM com.sun.javafx.application.PlatformImpl startup
+WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @6a55299e'
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+DIAGNOSTIC amount=1.0 status=STRUCTURAL_READY
+WINDOW second=10.0 pcmGainDb=0.000000 changed=0 animatedMeter=+0.0 dB playerSecond=10.171
+WINDOW second=20.0 pcmGainDb=0.000000 changed=0 animatedMeter=+0.0 dB playerSecond=20.149
+WINDOW second=40.0 pcmGainDb=0.000000 changed=0 animatedMeter=+0.0 dB playerSecond=40.171
+WINDOW second=80.0 pcmGainDb=0.000000 changed=0 animatedMeter=+0.0 dB playerSecond=80.235
+WINDOW second=130.0 pcmGainDb=0.000000 changed=0 animatedMeter=+0.0 dB playerSecond=130.235
+WINDOW second=180.0 pcmGainDb=-0.313162 changed=96000 animatedMeter=-0.3 dB playerSecond=180.235
+WINDOW second=200.0 pcmGainDb=-0.313162 changed=96000 animatedMeter=-0.3 dB playerSecond=200.235
+WINDOW second=240.0 pcmGainDb=-0.313162 changed=96000 animatedMeter=-0.3 dB playerSecond=240.235
+WINDOW second=270.0 pcmGainDb=0.000000 changed=0 animatedMeter=+0.0 dB playerSecond=270.235
+DIAGNOSTIC_COMPLETE hardwareSimulated=true musicalAcceptance=false

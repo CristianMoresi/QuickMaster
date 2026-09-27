@@ -1,0 +1,153 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Users/cris_/.m2/wrapper/dists/apache-maven-3.9.11/03d7e36a140982eea48e22c1dcac01d8862b2550b2939e09a0809bbc5182a5bc/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO]
+[INFO] -------------------------< com.dspark:dspark >--------------------------
+[INFO] Building DSPark for Java 0.2.1
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ dspark ---
+[INFO] skip non existing resourceDirectory E:\Code\Projects\JA-DAW\QuickMaster-Integration\vendor\dspark-java\src\main\resources
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dspark ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dspark ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dspark ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- surefire:3.2.5:test (default-test) @ dspark ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.dspark.analysis.LevelFollowerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in com.dspark.analysis.LevelFollowerTest
+[INFO] Running com.dspark.analysis.LoudnessMeterTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.122 s -- in com.dspark.analysis.LoudnessMeterTest
+[INFO] Running com.dspark.analysis.OnsetDetectorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 s -- in com.dspark.analysis.OnsetDetectorTest
+[INFO] Running com.dspark.analysis.TempoEstimatorTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s -- in com.dspark.analysis.TempoEstimatorTest
+[INFO] Running com.dspark.analysis.TruePeakTailTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.dspark.analysis.TruePeakTailTest
+[INFO] Running com.dspark.analysis.TruePeakTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.dspark.analysis.TruePeakTest
+[INFO] Running com.dspark.core.BiquadCoeffsTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.dspark.core.BiquadCoeffsTest
+[INFO] Running com.dspark.core.BiquadTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.dspark.core.BiquadTest
+[INFO] Running com.dspark.core.DitherTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.dspark.core.DitherTest
+[INFO] Running com.dspark.core.DsparkFftAcceptanceTest
+DSPARK_SOURCE file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/vendor/dspark-java/target/classes/
+COMPLEX_DFT_PASS size=2 repetition=0 maxAbsError=0.00000000 relativeRms=0.00000000
+COMPLEX_DFT_PASS size=2 repetition=1 maxAbsError=0.00000000 relativeRms=0.00000000
+COMPLEX_DFT_PASS size=2 repetition=2 maxAbsError=0.00000000 relativeRms=0.00000000
+COMPLEX_DFT_PASS size=4 repetition=0 maxAbsError=7.77156117e-16 relativeRms=2.49631026e-16
+COMPLEX_DFT_PASS size=4 repetition=1 maxAbsError=1.19209290e-07 relativeRms=3.91601891e-08
+COMPLEX_DFT_PASS size=4 repetition=2 maxAbsError=5.55111512e-16 relativeRms=2.25667937e-16
+COMPLEX_DFT_PASS size=8 repetition=0 maxAbsError=1.19209291e-07 relativeRms=1.88046710e-08
+COMPLEX_DFT_PASS size=8 repetition=1 maxAbsError=6.52946497e-08 relativeRms=1.22342022e-08
+COMPLEX_DFT_PASS size=8 repetition=2 maxAbsError=1.19209290e-07 relativeRms=3.36396497e-08
+COMPLEX_DFT_PASS size=16 repetition=0 maxAbsError=1.19209291e-07 relativeRms=2.33915988e-08
+COMPLEX_DFT_PASS size=16 repetition=1 maxAbsError=2.38418577e-07 relativeRms=2.93906816e-08
+COMPLEX_DFT_PASS size=16 repetition=2 maxAbsError=2.36968884e-07 relativeRms=2.86503924e-08
+COMPLEX_DFT_PASS size=32 repetition=0 maxAbsError=3.46515064e-07 relativeRms=2.76934035e-08
+COMPLEX_DFT_PASS size=32 repetition=1 maxAbsError=2.34368027e-07 relativeRms=2.39128966e-08
+COMPLEX_DFT_PASS size=32 repetition=2 maxAbsError=2.36706144e-07 relativeRms=2.59840407e-08
+COMPLEX_DFT_PASS size=64 repetition=0 maxAbsError=4.57482047e-07 relativeRms=2.46901967e-08
+COMPLEX_DFT_PASS size=64 repetition=1 maxAbsError=4.76837155e-07 relativeRms=2.72682310e-08
+COMPLEX_DFT_PASS size=64 repetition=2 maxAbsError=4.27155287e-07 relativeRms=2.61862745e-08
+COMPLEX_DFT_PASS size=128 repetition=0 maxAbsError=6.38065419e-07 relativeRms=2.49883140e-08
+COMPLEX_DFT_PASS size=128 repetition=1 maxAbsError=7.17118169e-07 relativeRms=2.46214296e-08
+COMPLEX_DFT_PASS size=128 repetition=2 maxAbsError=4.76707095e-07 relativeRms=2.43411156e-08
+COMPLEX_DFT_PASS size=256 repetition=0 maxAbsError=9.44884274e-07 relativeRms=2.64701468e-08
+COMPLEX_DFT_PASS size=256 repetition=1 maxAbsError=1.43896174e-06 relativeRms=2.63473654e-08
+COMPLEX_DFT_PASS size=256 repetition=2 maxAbsError=1.22102450e-06 relativeRms=2.44374577e-08
+COMPLEX_DFT_PASS size=512 repetition=0 maxAbsError=1.89501905e-06 relativeRms=2.48230374e-08
+COMPLEX_DFT_PASS size=512 repetition=1 maxAbsError=1.80507277e-06 relativeRms=2.47528570e-08
+COMPLEX_DFT_PASS size=512 repetition=2 maxAbsError=1.47513288e-06 relativeRms=2.47106191e-08
+COMPLEX_DFT_PASS size=1024 repetition=0 maxAbsError=1.90488376e-06 relativeRms=2.53723112e-08
+COMPLEX_DFT_PASS size=1024 repetition=1 maxAbsError=1.88891720e-06 relativeRms=2.52969578e-08
+COMPLEX_DFT_PASS size=1024 repetition=2 maxAbsError=3.64266933e-06 relativeRms=2.48685683e-08
+REAL_ANALYTIC_PASS size=4
+REAL_ANALYTIC_PASS size=8
+REAL_ANALYTIC_PASS size=16
+REAL_ANALYTIC_PASS size=32
+REAL_ANALYTIC_PASS size=64
+REAL_ANALYTIC_PASS size=128
+REAL_ANALYTIC_PASS size=256
+REAL_ANALYTIC_PASS size=512
+REAL_ANALYTIC_PASS size=1024
+REAL_ANALYTIC_PASS size=2048
+REAL_ANALYTIC_PASS size=4096
+REAL_ANALYTIC_PASS size=8192
+REAL_ANALYTIC_PASS size=16384
+REAL_ANALYTIC_PASS size=32768
+REAL_ANALYTIC_PASS size=65536
+FFT_ACCEPTANCE_PASS independentDft=true analyticEndpoints=true repeatedInstance=true
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.129 s -- in com.dspark.core.DsparkFftAcceptanceTest
+[INFO] Running com.dspark.core.DspMathTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.dspark.core.DspMathTest
+[INFO] Running com.dspark.core.FFTRealTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.dspark.core.FFTRealTest
+[INFO] Running com.dspark.core.OversamplerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.dspark.core.OversamplerTest
+[INFO] Running com.dspark.core.OversamplingEngineTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.dspark.core.OversamplingEngineTest
+[INFO] Running com.dspark.core.OversamplingPartitionTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.424 s -- in com.dspark.core.OversamplingPartitionTest
+[INFO] Running com.dspark.core.ResamplerDeliveryTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.367 s -- in com.dspark.core.ResamplerDeliveryTest
+[INFO] Running com.dspark.core.ResamplerTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 s -- in com.dspark.core.ResamplerTest
+[INFO] Running com.dspark.core.RingBufferTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.dspark.core.RingBufferTest
+[INFO] Running com.dspark.core.SmoothedValueTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.dspark.core.SmoothedValueTest
+[INFO] Running com.dspark.core.SmoothedValueTimingTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.dspark.core.SmoothedValueTimingTest
+[INFO] Running com.dspark.core.UpstreamVectorTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.094 s -- in com.dspark.core.UpstreamVectorTest
+[INFO] Running com.dspark.core.WindowFunctionsTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.dspark.core.WindowFunctionsTest
+[INFO] Running com.dspark.effects.AutoGainTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.dspark.effects.AutoGainTest
+[INFO] Running com.dspark.effects.ClipperTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.dspark.effects.ClipperTest
+[INFO] Running com.dspark.effects.DcBlockerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.dspark.effects.DcBlockerTest
+[INFO] Running com.dspark.effects.EqualizerTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.dspark.effects.EqualizerTest
+[INFO] Running com.dspark.effects.LimiterEnvelopeTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.dspark.effects.LimiterEnvelopeTest
+[INFO] Running com.dspark.effects.LimiterTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in com.dspark.effects.LimiterTest
+[INFO] Running com.dspark.effects.MasterEqualizerTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s -- in com.dspark.effects.MasterEqualizerTest
+[INFO] Running com.dspark.effects.MultibandCrossoverTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s -- in com.dspark.effects.MultibandCrossoverTest
+[INFO] Running com.dspark.effects.NormalizerTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.dspark.effects.NormalizerTest
+[INFO] Running com.dspark.effects.SaturationTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.dspark.effects.SaturationTest
+[INFO] Running com.dspark.effects.StereoWidthTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.dspark.effects.StereoWidthTest
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 129, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.574 s
+[INFO] Finished at: 2026-09-27T22:10:37+02:00
+[INFO] ------------------------------------------------------------------------

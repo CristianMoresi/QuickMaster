@@ -1,0 +1,24 @@
+PACKAGED_TEST_CLASS com.quickmaster.audio.WavFile C:\Program Files\QuickMaster\app\quickmaster.jar
+PACKAGED_TEST_CLASS com.quickmaster.processing.ProcessingPipeline C:\Program Files\QuickMaster\app\quickmaster.jar
+PACKAGED_TEST_CLASS com.quickmaster.processing.dynamics.MacroLevelerProcessor C:\Program Files\QuickMaster\app\quickmaster.jar
+PACKAGED_TEST_CLASS com.quickmaster.processing.analysis.SpectrumAnalysis C:\Program Files\QuickMaster\app\quickmaster.jar
+PHASE_PREVIEW factor=1, ch=1, worst=4.437565803527832E-5, frame=575
+PHASE_PREVIEW factor=1, ch=2, worst=4.419684410095215E-5, frame=6796
+PHASE_PREVIEW factor=2, ch=1, worst=4.3779611587524414E-5, frame=1614
+PHASE_PREVIEW factor=2, ch=2, worst=4.357099533081055E-5, frame=2938
+PHASE_PREVIEW factor=4, ch=1, worst=4.380941390991211E-5, frame=6187
+PHASE_PREVIEW factor=4, ch=2, worst=4.419684410095215E-5, frame=5537
+
+Test run finished after 6529 ms
+[        56 containers found      ]
+[         0 containers skipped    ]
+[        56 containers started    ]
+[         0 containers aborted    ]
+[        56 containers successful ]
+[         0 containers failed     ]
+[       269 tests found           ]
+[         0 tests skipped         ]
+[       269 tests started         ]
+[         0 tests aborted         ]
+[       269 tests successful      ]
+[         0 tests failed          ]

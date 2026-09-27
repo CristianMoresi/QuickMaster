@@ -13,6 +13,7 @@ public class PackagedTestAudit {
             Path expected = Path.of(args[1]).toAbsolutePath().normalize();
             for (Class<?> type : new Class<?>[]{com.quickmaster.audio.WavFile.class,
                     com.quickmaster.processing.ProcessingPipeline.class,
+                    com.quickmaster.processing.dynamics.MacroLevelerProcessor.class,
                     com.quickmaster.processing.analysis.SpectrumAnalysis.class}) {
                 try {
                     Path loaded = Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toAbsolutePath().normalize();

@@ -1,7 +1,20 @@
 # Auditoría integral de QuickMaster
 
-Estado: **auditoría técnica completada dentro del alcance verificado**:
-A01–A16 entregados; aceptación funcional y rendimiento instalados aprobados.
+Actualización posterior: el contrato macro revisado del Leveler está
+implementado y entregado localmente. Véanse [plan](macro-leveler-plan.md) y
+[resultados instalados](macro-leveler-results.md) para el estado actual.
+El registro siguiente conserva la auditoría anterior, incluido su fallo de
+aceptación: no se borran ni se convierten sus pruebas en evidencia del motor nuevo.
+
+Estado histórico: **REABIERTO: aceptación de producto del Leveler retirada** tras la
+reclamación del usuario de las 21:24. Los resultados mecánicos A01–A16 que siguen
+se conservan como evidencia histórica, pero NO acreditan que el Leveler cumpla
+su finalidad musical. La reproducción nueva confirma ausencia de corrección
+en los primeros 175 s de By Now, incluida la estrofa señalada por el usuario.
+Diagnóstico: [Leveler sin corrección útil](leveler-product-failure-20260927.md).
+
+A01–A16 están desplegados; las suites y sondas descritas pasaron, pero su criterio
+de aceptación del Leveler fue insuficiente. No considerar el producto cerrado.
 Encargo posterior a 1.3.1,
 27-09-2026. Base de código: `0981c71`; instalado auditado `cb874287…`.
 No se utilizan skills de orquestación. No se publicará otra release como efecto

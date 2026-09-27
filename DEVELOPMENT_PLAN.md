@@ -1,6 +1,37 @@
 # QuickMaster — desarrollo y cierre
 
-## Encargo vigente: auditoría integral posterior a 1.3.1
+## Encargo vigente: Leveler macro, contrato revisado
+
+El usuario exige que Amount 100 % iguale el RMS de los pasajes musicales
+sostenidos, incluidos intros y breaks musicales. Esto reemplaza la protección
+incondicional anterior. Se conserva silencio y microdinámica. Casos de uso,
+arquitectura, fuentes técnicas y pruebas independientes en
+`docs/diagnostics/macro-leveler-plan.md`. **Implementado y entregado localmente**
+el 27-09-2026. Resultados y límites: `docs/diagnostics/macro-leveler-results.md`.
+
+By Now al 100 %: dispersión central RMS de 9,954 a 0,561 dB, 87 ventanas de
+3 s con subida >1 dB; al 50 % queda en 5,155 dB. No se afirma igualdad exacta
+en transiciones/fades ni escucha humana. 819 tests de aplicación y 129 DSPark
+aprobados; 26 sondas funcionales instaladas (269 tests reejecutados), 48 casos
+macro y tres sondas de rendimiento aprobados. Mediana 1,505 s hasta audio con
+Leveler aislado y 4,656 s con cadena completa; memoria estable en 30 cambios.
+
+JAR **actual**: `f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04`.
+Imagen Java 25 copiada en `C:/Program Files/QuickMaster`, 201 archivos idénticos
+y EXE con arranque limpio. Respaldo: `C:/Program Files/QuickMaster-backup-20260927-224205`.
+Checkout principal preservado; no se ha hecho push, release ni creado otra rama.
+
+## Registro anterior: diagnóstico de la auditoría posterior a 1.3.1
+
+Este bloque registra el estado previo al reemplazo macro descrito arriba.
+
+**REABIERTO — Leveler no aceptado como producto.** El usuario confirma que la
+primera estrofa de By Now sigue sin nivelarse. Reproducido sobre el mismo JAR
+instalado: ganancia exactamente cero hasta 175 s; solo −0,313162 dB en el bloque
+final al 100 %. El criterio anterior de «alguna muestra cambia» no cubría esta
+necesidad y se retira el cierre de producto. Diagnóstico y evidencia:
+`docs/diagnostics/leveler-product-failure-20260927.md`.
+No se ha modificado la aplicación ni desplegado otra corrección en este diagnóstico.
 
 Las correcciones A01–A16 están entregadas en Program Files. Suite limpia:
 798 tests de aplicación, 129 de DSPark, 106 variantes musicales y 94 lecturas
@@ -9,7 +40,7 @@ aprobadas. Se conserva el alcance limitado de cada prueba, no se afirma
 perfección absoluta ni escucha humana. Plan, cobertura, resultados y recibos:
 `docs/diagnostics/product-audit-20260927.md`.
 
-JAR instalado vigente:
+JAR instalado en aquella auditoría (ya sustituido):
 `cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564`;
 DSPark Java 0.2.1. Portable Java 25 de 201 archivos, todos idénticos al instalado,
 arranque limpio del EXE como usuario normal. Respaldo:

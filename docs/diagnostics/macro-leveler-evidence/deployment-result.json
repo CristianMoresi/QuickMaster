@@ -1,0 +1,11 @@
+{
+  "status": "DEPLOYED_AND_VERIFIED",
+  "source": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\macro-leveler-20260927\\image\\QuickMaster",
+  "install": "C:\\Program Files\\QuickMaster",
+  "expectedJarSha256": "f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04",
+  "backup": "C:\\Program Files\\QuickMaster-backup-20260927-224205",
+  "sourceFiles": 201,
+  "installedJarSha256": "F801964AA7CD6DE73999EDFA8F5DFB0C5605B781C613AECC58E4DF74129A4C04",
+  "startupLog": "2026-09-27 22:42:07 INFO  Application starting (JavaFX).\r\n2026-09-27 22:42:08 INFO  Controller initialised.",
+  "completedAt": "2026-09-27T22:42:13.4263296+02:00"
+}

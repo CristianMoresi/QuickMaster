@@ -17,12 +17,15 @@ class LevelerUiDiagnosticTest {
         method.setAccessible(true);
         return (String) method.invoke(null, diagnostic, audio, enabled, amount);
     }
-    @Test void noUnconditionalPromiseToFlattenAllParts() throws Exception {
+    @Test void macroContractReplacesInertComparabilityGateWithoutPromisingSampleCompression() throws Exception {
         String body=source();
         assertFalse(body.contains("100% = no difference between parts"),
-                "QM_LEVELER_UI_OVERPROMISE: protected sections/confidence/caps do not disappear at 100%");
-        assertTrue(body.contains("comparable sections"));
-        assertTrue(body.contains("intros, outros and breaks"));
+                "RMS over seconds is not sample-by-sample compression");
+        assertTrue(body.contains("new MacroLevelerProcessor()"));
+        assertFalse(body.contains("new LevelerProcessor()"));
+        assertTrue(body.contains("At 100%, sustained passages converge"));
+        assertTrue(body.contains("transients and silence are not flattened"));
+        assertFalse(body.contains("Matches loudness only between confidently comparable sections"));
     }
     @Test void currentDiagnosticIsActuallyWired() throws Exception {
         String body=source();
@@ -32,6 +35,9 @@ class LevelerUiDiagnosticTest {
         assertTrue(body.contains("updateLevelerDiagnostic();"));
     }
     @Test void gainAndNoChangeOutcomesAreDistinct() throws Exception {
+        assertEquals("Leveling · macro RMS", text("MACRO_READY",true,true,1));
+        assertEquals("Leveling · 24 dB correction limit reached", text("MACRO_LIMITED",true,true,1));
+        assertEquals("Unchanged · no music above activity floor", text("NO_MUSICAL_ACTIVITY",true,true,1));
         assertEquals("Leveling · comparable sections", text("STRUCTURAL_READY",true,true,1));
         assertEquals("Unchanged · no comparable sections found", text("NO_COMPARABLE_SECTIONS",true,true,1));
         assertEquals("Unchanged · levels within tolerance", text("WITHIN_TOLERANCE",true,true,1));

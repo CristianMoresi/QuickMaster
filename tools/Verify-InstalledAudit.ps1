@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory)][ValidatePattern('^[0-9a-fA-F]{64}$')][string]$ExpectedJarSha256,
     [Parameter(Mandatory)][string]$PrivateAudioDirectory,
-    [ValidateSet('Functional', 'Performance')][string]$Mode = 'Functional',
+    [ValidateSet('Functional', 'Performance', 'MacroMatrix')][string]$Mode = 'Functional',
     [string]$Java = 'C:/Program Files/Eclipse Adoptium/jdk-25.0.4.7-hotspot/bin/java.exe'
 )
 
@@ -78,11 +78,16 @@ try {
         Run-Probe 'export-src-spectral' 'ExportSrcSpectralAudit' @() @('EXPORT_SRC_SPECTRAL failures=0')
         Run-Probe 'export-src-band' 'ExportSrcBandAudit' @() @('EXPORT_SRC_BAND cases=135 failures=0')
         Run-Probe 'export-src' 'ExportResamplingAudit' @() @('EXPORT_SRC_PASS cases=50')
-        Run-Probe 'leveler-ui' 'LevelerUiAcceptance' @($byNow,(Join-Path $run 'leveler-ui.png')) @('UI_PASS actualAsyncFileLoad=true.*audiblePcmBitExact=true','UI_ZERO_PASS audiblePcmRawExact=true')
-        Run-Probe 'by-now' 'LevelerCorpusAcceptance' @($byNow,'--positive') @('PASS actualPackagedRender=true.*sourceUnchanged=true')
-        Run-Probe 'quiet-gold' 'LevelerCorpusAcceptance' @($quiet) @('PASS actualPackagedRender=true.*sourceUnchanged=true')
-        Run-Probe 'billie-jean' 'LevelerCorpusAcceptance' @((Join-Path $PrivateAudioDirectory 'Billie Jean (80s Glam Metal).wav'),'--positive') @('PASS actualPackagedRender=true.*sourceUnchanged=true')
-        Run-Probe 'wicked-game' 'LevelerCorpusAcceptance' @((Join-Path $PrivateAudioDirectory 'Wicked Game (80s Synthwave).wav'),'--positive') @('PASS actualPackagedRender=true.*sourceUnchanged=true')
+        Run-Probe 'leveler-ui' 'LevelerUiAcceptance' @($byNow,(Join-Path $run 'leveler-ui.png')) @('UI_PASS actualAsyncFileLoad=true.*audiblePcmBitExact=true','UI_ZERO_PASS audiblePcmRawExact=true','UI_MACRO_PASS publishedPcm=true')
+        # Macro acceptance measures a fixed temporal grid, not regions selected
+        # by the Leveler. Historical cohort probes do not validate the new engine.
+        Run-Probe 'by-now' 'MacroLevelerAcceptance' @($byNow,'1','.5','--assert') @('MACRO_ACCEPTANCE_PASS')
+        Run-Probe 'quiet-gold' 'MacroLevelerAcceptance' @($quiet,'1','.5','--assert') @('MACRO_ACCEPTANCE_PASS')
+        Run-Probe 'billie-jean' 'MacroLevelerAcceptance' @((Join-Path $PrivateAudioDirectory 'Billie Jean (80s Glam Metal).wav'),'1','.5','--assert') @('MACRO_ACCEPTANCE_PASS')
+        Run-Probe 'wicked-game' 'MacroLevelerAcceptance' @((Join-Path $PrivateAudioDirectory 'Wicked Game (80s Synthwave).wav'),'1','.5','--assert') @('MACRO_ACCEPTANCE_PASS')
+        Run-Probe 'by-now-half' 'MacroLevelerAcceptance' @($byNow,'.5','.5','--assert') @('MACRO_ACCEPTANCE_PASS')
+        Run-Probe 'leveler-meter' 'LevelerPlaybackDiagnostic' @($byNow,'1','--assert') @('MACRO_PLAYBACK_PASS')
+        Run-Probe 'leveler-noise' 'MacroLevelerAdversarial' @('--assert') @('RESIDUAL_NOISE.*gain=0.000000')
         Run-Probe 'beat-1024' 'QuietGoldBeatProbe' @($quiet,'1024') @('SOURCE_UNCHANGED=true')
         Run-Probe 'beat-257' 'QuietGoldBeatProbe' @($quiet,'257') @('SOURCE_UNCHANGED=true')
         $beatA = Get-Content -LiteralPath (Join-Path $run 'beat-1024.log') -Raw
@@ -90,6 +95,21 @@ try {
         $hashA = [regex]::Match($beatA,'(?i)outputSha=([0-9a-f]{64})')
         $hashB = [regex]::Match($beatB,'(?i)outputSha=([0-9a-f]{64})')
         if (!$hashA.Success -or !$hashB.Success -or $hashA.Groups[1].Value -ne $hashB.Groups[1].Value) { throw 'Beat partition outputs differ or output hashes are missing' }
+    } elseif ($Mode -eq 'MacroMatrix') {
+        $corpus = [ordered]@{
+            'by-now' = 'By Now.wav'
+            'quiet-gold' = 'Quiet Gold.wav'
+            'billie-jean' = 'Billie Jean (80s Glam Metal).wav'
+            'wicked-game' = 'Wicked Game (80s Synthwave).wav'
+        }
+        foreach ($song in $corpus.GetEnumerator()) {
+            foreach ($amount in @('0.25', '0.5', '0.75', '1')) {
+                foreach ($speed in @('0', '0.5', '1')) {
+                    $name = $song.Key + '-amount-' + $amount + '-speed-' + $speed
+                    Run-Probe $name 'MacroLevelerAcceptance' @((Join-Path $PrivateAudioDirectory $song.Value), $amount, $speed, '--assert') @('MACRO_ACCEPTANCE_PASS')
+                }
+            }
+        }
     } else {
         # Run without another suite or benchmark competing for CPU. Forced GC
         # belongs only to the separate memory probe, never the timing probes.

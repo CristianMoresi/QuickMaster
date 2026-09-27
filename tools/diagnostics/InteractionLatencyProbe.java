@@ -1,5 +1,5 @@
 import com.quickmaster.processing.ProcessingPipeline;
-import com.quickmaster.processing.dynamics.LevelerProcessor;
+import com.quickmaster.processing.dynamics.MacroLevelerProcessor;
 import com.quickmaster.audio.AudioFile;
 import com.quickmaster.ui.MainController;
 import javafx.application.Platform;
@@ -67,12 +67,11 @@ public final class InteractionLatencyProbe {
                     && field(controller, "outputAnalysisGeneration").equals(field(controller, "levelerReadyGeneration"))
                     && (int)field(controller, "analyzeJobs") == 0;
             if (!current) { after(50, () -> awaitReady(scenario, next)); return; }
-            LevelerProcessor verifiedLeveler = (LevelerProcessor)field(controller, "leveler");
-            if (!verifiedLeveler.isEnabled() || verifiedLeveler.getShadowAnalysis() == null
-                    || verifiedLeveler.getShadowAnalysis().diagnostics().standardValidation().state()
-                       != com.quickmaster.processing.dynamics.leveler.model.ConformanceState.PASSED
-                    || "STANDARD_VALIDATION_FAILED".equals(verifiedLeveler.getAnalysisDiagnostic()))
-                throw new AssertionError("Timing is invalid without an authenticated active Leveler: "
+            MacroLevelerProcessor verifiedLeveler = (MacroLevelerProcessor)field(controller, "leveler");
+            if (!verifiedLeveler.isEnabled() || !verifiedLeveler.isAnalyzed()
+                    || verifiedLeveler.getAnalysisReport() == null
+                    || !verifiedLeveler.getAnalysisDiagnostic().startsWith("MACRO_"))
+                throw new AssertionError("Timing is invalid without the active macro Leveler: "
                         + verifiedLeveler.getAnalysisDiagnostic());
             long now = System.nanoTime();
             System.out.printf(Locale.ROOT, "INTERACTION %s totalSec=%.6f lastEditToSettledSec=%.6f maxJobs=%d maxWorkers=%d maxFxPulseDelayMs=%.3f generation=%s%n",
@@ -127,7 +126,7 @@ public final class InteractionLatencyProbe {
         Platform.runLater(()->{
             try {
                 pulse.stop();
-                if(((LevelerProcessor)field(controller,"leveler")).getLeveling()!=.8) throw new AssertionError("Wrong latest amount");
+                if(((MacroLevelerProcessor)field(controller,"leveler")).getLeveling()!=.8) throw new AssertionError("Wrong latest amount");
                 AudioFile song=(AudioFile)field(controller,"loadedFile");
                 // Verify what the device will consume, not a second render made
                 // from the adopted mutable processors (which could mask a stale PCM).
@@ -175,7 +174,7 @@ public final class InteractionLatencyProbe {
         Platform.runLater(() -> {
             try {
                 pulse.stop();
-                LevelerProcessor live = (LevelerProcessor)field(controller, "leveler");
+                MacroLevelerProcessor live = (MacroLevelerProcessor)field(controller, "leveler");
                 if (live.getLeveling() != .80 || !live.isEnabled()) throw new AssertionError("Not the latest requested control");
                 AudioFile song = (AudioFile)field(controller, "loadedFile");
                 ProcessingPipeline pipeline = (ProcessingPipeline)field(controller, "pipeline");
@@ -188,7 +187,7 @@ public final class InteractionLatencyProbe {
             } catch (Throwable ex) { captured.completeExceptionally(ex); }
         });
         Applied actual = captured.get(30, TimeUnit.SECONDS);
-        LevelerProcessor reference = new LevelerProcessor();
+        MacroLevelerProcessor reference = new MacroLevelerProcessor();
         reference.setEnabled(true); reference.setLeveling(.80); reference.setSpeed(actual.speed());
         reference.prepare(actual.rate(), actual.source().length);
         reference.analyze(actual.source(), actual.channels());

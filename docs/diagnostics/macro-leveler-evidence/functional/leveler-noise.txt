@@ -1,0 +1,1 @@
+RESIDUAL_NOISE input=-60.001041 output=-60.001041 gain=0.000000

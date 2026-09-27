@@ -1,0 +1,17 @@
+sept 27, 2026 10:43:19 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @52045dbe'
+SOURCE_LOAD_PASS latestFile=true sampleRate=44100 duration=12s
+SOURCE_EDIT_PASS latestArray=true isolatedTrackAnalysis=true latestManualBpm=143 queuedPlayCancelled=true
+2026-09-27 22:43:21 ERROR Failed to load E:\Code\Projects\JA-DAW\QuickMaster-Integration\dist\installed-audit-functional-20260927-224259-8287cad2\source-race-13129441147500457844\deliberately-missing.wav
+com.quickmaster.audio.AudioFileException: File does not exist: E:\Code\Projects\JA-DAW\QuickMaster-Integration\dist\installed-audit-functional-20260927-224259-8287cad2\source-race-13129441147500457844\deliberately-missing.wav
+	at com.quickmaster.audio.AudioFormatDetector.detect(AudioFormatDetector.java:51)
+	at com.quickmaster.audio.AudioFormatDetector.loadAuto(AudioFormatDetector.java:94)
+	at com.quickmaster.ui.MainController$1.call(MainController.java:1165)
+	at com.quickmaster.ui.MainController$1.call(MainController.java:1161)
+	at javafx.concurrent.Task$TaskCallable.call(Task.java:1399)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+SOURCE_FAILURE_RECOVERY_PASS retainedFile=true latestEditedPcm=true freshAnalysis=true
+SOURCE_CLOSE_PASS noPublicationAfterClose=true

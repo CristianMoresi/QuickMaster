@@ -1,0 +1,38 @@
+[
+  {
+    "name": "latency-leveler",
+    "repeatedEditAudioReadySeconds": [
+      1.599656,
+      1.151609,
+      1.504514
+    ],
+    "medianSeconds": 1.504514,
+    "minimumSeconds": 1.151609,
+    "maximumSeconds": 1.599656,
+    "forcedGcDuringTimedEdits": false
+  },
+  {
+    "name": "latency-full-chain",
+    "repeatedEditAudioReadySeconds": [
+      4.656398,
+      4.863739,
+      4.431907
+    ],
+    "medianSeconds": 4.656398,
+    "minimumSeconds": 4.431907,
+    "maximumSeconds": 4.863739,
+    "forcedGcDuringTimedEdits": false
+  },
+  {
+    "name": "interaction-old",
+    "repeatedEditAudioReadySeconds": [
+      4.635117,
+      4.66738,
+      4.605788
+    ],
+    "medianSeconds": 4.635117,
+    "minimumSeconds": 4.605788,
+    "maximumSeconds": 4.66738,
+    "forcedGcDuringTimedEdits": false
+  }
+]

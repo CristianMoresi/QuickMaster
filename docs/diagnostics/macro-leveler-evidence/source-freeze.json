@@ -1,0 +1,26 @@
+[
+  {
+    "path": "src/main/java/com/quickmaster/processing/dynamics/MacroLevelerProcessor.java",
+    "sha256": "312554dd7e9d0d12d49e14ef50bd9410b83673b2b9548a3ce775c445b3693da2"
+  },
+  {
+    "path": "src/main/java/com/quickmaster/processing/dynamics/macro/MacroLevelerEngine.java",
+    "sha256": "8b794a94654d0cef6e4c65607556345da6d3eb2312cbec0998075fa573402bd0"
+  },
+  {
+    "path": "src/main/java/com/quickmaster/processing/dynamics/macro/MacroGainCurve.java",
+    "sha256": "3e1160d983a5cd5a4f05eee7e569ae32ab21c425cb5bf0bcf6c7d82b6ca3ebcd"
+  },
+  {
+    "path": "src/main/java/com/quickmaster/ui/MainController.java",
+    "sha256": "c2261e517b9918f4c23d86aff5dc9659cce1818f41f59ce0238ad285a15776de"
+  },
+  {
+    "path": "src/test/java/com/quickmaster/processing/dynamics/MacroLevelerProcessorTest.java",
+    "sha256": "c134135e57779f55c6f0e8840e4c476ea9d07449ed0f585c2b347cfacfbb7c8b"
+  },
+  {
+    "path": "src/test/java/com/quickmaster/processing/dynamics/leveler/LevelerUiDiagnosticTest.java",
+    "sha256": "25216579c15597b96ee8d9b5203d703ea89a8dca9ac8702e00c98d69bae9d9bd"
+  }
+]

@@ -4,7 +4,7 @@ import com.quickmaster.processing.ProcessingPipeline;
 import com.quickmaster.processing.FadeProcessor;
 import com.quickmaster.processing.analysis.OutputAnalysis;
 import com.quickmaster.processing.analysis.TrackAnalysis;
-import com.quickmaster.processing.dynamics.LevelerProcessor;
+import com.quickmaster.processing.dynamics.AnalysisDynamicsProcessor;
 import com.quickmaster.ui.MainController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -112,8 +112,9 @@ public final class PipelineLatencyProbe {
                 Platform.runLater(() -> {
                     try {
                         ProcessingPipeline live = (ProcessingPipeline)field(controller, "pipeline");
+                        AudioProcessor leveler = (AudioProcessor)field(controller, "leveler");
                         for (AudioProcessor p : live.getProcessors())
-                            p.setEnabled(mode.equals("all-active") || (!mode.equals("bypassed") && p instanceof LevelerProcessor));
+                            p.setEnabled(mode.equals("all-active") || (!mode.equals("bypassed") && p == leveler));
                         snapshot.complete(call(controller, "buildSnapshot"));
                     } catch (Throwable ex) { snapshot.completeExceptionally(ex); }
                 });
@@ -133,8 +134,10 @@ public final class PipelineLatencyProbe {
                 System.out.printf("PCM %s samples=%d sha256=%s%n", mode, render.length, pcmSha(render));
                 for (Timed t : stages) System.out.printf("STAGE %s enabled=%s analysisSec=%.6f renderSec=%.6f prepareSec=%.6f%n",
                         t.delegate.getClass().getSimpleName(), t.isEnabled(), t.analysisNanos/1e9, t.processNanos/1e9, t.prepareNanos/1e9);
-                LevelerProcessor live = (LevelerProcessor)field(controller, "leveler");
-                for (Timed t : stages) if (t.delegate instanceof LevelerProcessor p) live.adoptEnvelope(p);
+                AnalysisDynamicsProcessor live = (AnalysisDynamicsProcessor)field(controller, "leveler");
+                for (Timed t : stages) if (t.delegate.getClass() == live.getClass())
+                    live.adoptEnvelope((AnalysisDynamicsProcessor)t.delegate);
+                System.out.printf("LEVELER_DIAGNOSTIC %s %s%n",mode,call(live,"getAnalysisDiagnostic"));
             }
             if (!sourceHash.equals(sha(input))) throw new AssertionError("Source changed");
             System.out.println("SOURCE_UNCHANGED=true");

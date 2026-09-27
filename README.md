@@ -1,6 +1,6 @@
 # QuickMaster
 
-**QuickMaster uses whole-track analysis to prepare its processing before playback.** It measures loudness, peaks and spectral content, estimates musical structure and tempo, and prepares gain envelopes with advance knowledge of the signal. Musical classification is not infallible: uncertain comparisons and unsafe corrections are rejected rather than treated as certain.
+**QuickMaster uses whole-track analysis to prepare its processing before playback.** It measures loudness, peaks and spectral content, estimates tempo, and prepares gain envelopes with advance knowledge of the signal. The Leveler follows macro RMS across musical passages; it does not need to classify a passage as a verse or chorus before correcting its level.
 
 From that, it masters: shape tone and stereo image, compress and level dynamics, clip and saturate, and limit to a true-peak ceiling, then export the result without opening a full DAW. QuickMaster is a JavaFX desktop application.
 
@@ -40,7 +40,7 @@ Four automatic look-ahead compressors. QuickMaster analyses the track and prepar
 
 - **Peak Comp (micro-dynamics).** The classic "shave the peaks" compressor: a fast attack and a short release (around 60 ms, short but long enough to avoid distortion). Since the transients are known in advance, it touches **only** the loudest transients and leaves the body untouched.
 - **Beat Comp (beat-level).** Turns down transients louder than the median transient, with a stereo-linked gain envelope. The reduction target is a maximum, including while a previous analysis is being replaced. Release follows the selected note value and detected or manual BPM. `auto?` marks an uncertain estimate; disable Auto to enter the intended musical tempo. If no reliable single tempo is available, release falls back to 250 ms.
-- **Leveler (macro-dynamics).** Compares sustained sections with similar musical content, then adjusts their level differences with smooth transitions. It protects intros, outros, breaks and build-ups instead of lifting every quiet passage. **Leveling** controls the correction amount and **Speed** controls the transition rate. If the comparison is ambiguous or the peak-safety checks fail, it leaves the audio unchanged and reports the reason in the Dynamics card.
+- **Leveler (macro-dynamics).** Reduces RMS differences across sustained musical passages, even when their instrumentation differs. **Leveling** scales the correction in dB: 50% retains roughly half the original macro contrast; 100% makes sustained passages converge, including musical intros, breaks and outros. It does not flatten individual transients or normalize silence/noise. **Speed** changes the macro response (6-second context at minimum, 2 seconds at maximum). Correction is bounded to ±24 dB before a common peak-safe output reduction; the Dynamics card reports a reached limit and headroom adjustment. This common attenuation preserves the relative leveling without adding a peak limiter. RMS equality is measured over seconds, not instantaneous samples, and does not imply identical LUFS for different spectra.
 - **Punch.** Raises **only** the transients (transient expansion), which is only possible because the onsets are declared up front.
 
 You dial the dB of reduction (or boost) you want; the analysis derives the thresholds, sensitivity and timing.

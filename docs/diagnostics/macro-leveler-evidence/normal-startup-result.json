@@ -1,0 +1,9 @@
+{
+  "status": "CLEAN_STARTUP_VERIFIED",
+  "executable": "C:/Program Files/QuickMaster/QuickMaster.exe",
+  "sha256": "f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04",
+  "startedAs": "normal user",
+  "startupLog": "normal-startup.txt",
+  "cleanup": "Only owned hidden startup-check process terminated after CloseMainWindow returned no visible main window",
+  "audioLoaded": false
+}

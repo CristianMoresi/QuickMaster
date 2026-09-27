@@ -28,12 +28,13 @@ public class FullChainAdversarialAudit {
                 FadeProcessor fade=new FadeProcessor();fade.setFadeInSec(.015);fade.setFadeOutSec(.01);
                 PeakCompProcessor peak=new PeakCompProcessor();peak.setTrackAnalysis(analysis);peak.setTargetDb(-3);
                 BeatCompProcessor beat=new BeatCompProcessor();beat.setTrackAnalysis(analysis);beat.setTargetDb(-1);
+                MacroLevelerProcessor leveler=new MacroLevelerProcessor();leveler.setLeveling(1);
                 PunchProcessor punch=new PunchProcessor();punch.setTrackAnalysis(analysis);punch.setAmountDb(3);
                 SoftClipProcessor soft=new SoftClipProcessor();soft.setSatDb(6);
                 HardClipProcessor hard=new HardClipProcessor();hard.setClipDb(6);
                 MultibandLimiterProcessor mb=new MultibandLimiterProcessor();for(int b=0;b<4;b++)mb.setPushDb(b,6);
                 BroadbandLimiterProcessor bb=new BroadbandLimiterProcessor();bb.setPushDb(6);
-                List<AudioProcessor> stages=new ArrayList<>(List.of(auto,eq,fade,peak,beat,punch,soft,hard,mb,bb));
+                List<AudioProcessor> stages=new ArrayList<>(List.of(auto,eq,fade,peak,beat,leveler,punch,soft,hard,mb,bb));
                 if(order==1)Collections.rotate(stages,4);
                 for(AudioProcessor stage:stages){stage.setEnabled(true);pipeline.addProcessor(stage);}
                 PeakNormalizer norm=new PeakNormalizer();norm.setEnabled(true);norm.setTargetDbfs(-1);pipeline.addProcessor(norm);

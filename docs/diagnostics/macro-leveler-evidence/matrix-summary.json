@@ -1,0 +1,298 @@
+{
+  "status": "PASSED",
+  "mode": "MacroMatrix",
+  "installedJar": "C:\\Program Files\\QuickMaster\\app\\quickmaster.jar",
+  "sha256": "f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04",
+  "probes": [
+    {
+      "name": "by-now-amount-0.25-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.25-speed-0.log"
+    },
+    {
+      "name": "by-now-amount-0.25-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.25-speed-0.5.log"
+    },
+    {
+      "name": "by-now-amount-0.25-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.25-speed-1.log"
+    },
+    {
+      "name": "by-now-amount-0.5-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.5-speed-0.log"
+    },
+    {
+      "name": "by-now-amount-0.5-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.5-speed-0.5.log"
+    },
+    {
+      "name": "by-now-amount-0.5-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.5-speed-1.log"
+    },
+    {
+      "name": "by-now-amount-0.75-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.75-speed-0.log"
+    },
+    {
+      "name": "by-now-amount-0.75-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.75-speed-0.5.log"
+    },
+    {
+      "name": "by-now-amount-0.75-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-0.75-speed-1.log"
+    },
+    {
+      "name": "by-now-amount-1-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-1-speed-0.log"
+    },
+    {
+      "name": "by-now-amount-1-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-1-speed-0.5.log"
+    },
+    {
+      "name": "by-now-amount-1-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\by-now-amount-1-speed-1.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.25-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.25-speed-0.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.25-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.25-speed-0.5.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.25-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.25-speed-1.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.5-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.5-speed-0.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.5-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.5-speed-0.5.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.5-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.5-speed-1.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.75-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.75-speed-0.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.75-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.75-speed-0.5.log"
+    },
+    {
+      "name": "quiet-gold-amount-0.75-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-0.75-speed-1.log"
+    },
+    {
+      "name": "quiet-gold-amount-1-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-1-speed-0.log"
+    },
+    {
+      "name": "quiet-gold-amount-1-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-1-speed-0.5.log"
+    },
+    {
+      "name": "quiet-gold-amount-1-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\quiet-gold-amount-1-speed-1.log"
+    },
+    {
+      "name": "billie-jean-amount-0.25-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.25-speed-0.log"
+    },
+    {
+      "name": "billie-jean-amount-0.25-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.25-speed-0.5.log"
+    },
+    {
+      "name": "billie-jean-amount-0.25-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.25-speed-1.log"
+    },
+    {
+      "name": "billie-jean-amount-0.5-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.5-speed-0.log"
+    },
+    {
+      "name": "billie-jean-amount-0.5-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.5-speed-0.5.log"
+    },
+    {
+      "name": "billie-jean-amount-0.5-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.5-speed-1.log"
+    },
+    {
+      "name": "billie-jean-amount-0.75-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.75-speed-0.log"
+    },
+    {
+      "name": "billie-jean-amount-0.75-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.75-speed-0.5.log"
+    },
+    {
+      "name": "billie-jean-amount-0.75-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-0.75-speed-1.log"
+    },
+    {
+      "name": "billie-jean-amount-1-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-1-speed-0.log"
+    },
+    {
+      "name": "billie-jean-amount-1-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-1-speed-0.5.log"
+    },
+    {
+      "name": "billie-jean-amount-1-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\billie-jean-amount-1-speed-1.log"
+    },
+    {
+      "name": "wicked-game-amount-0.25-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.25-speed-0.log"
+    },
+    {
+      "name": "wicked-game-amount-0.25-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.25-speed-0.5.log"
+    },
+    {
+      "name": "wicked-game-amount-0.25-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.25-speed-1.log"
+    },
+    {
+      "name": "wicked-game-amount-0.5-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.5-speed-0.log"
+    },
+    {
+      "name": "wicked-game-amount-0.5-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.5-speed-0.5.log"
+    },
+    {
+      "name": "wicked-game-amount-0.5-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.5-speed-1.log"
+    },
+    {
+      "name": "wicked-game-amount-0.75-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.75-speed-0.log"
+    },
+    {
+      "name": "wicked-game-amount-0.75-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.75-speed-0.5.log"
+    },
+    {
+      "name": "wicked-game-amount-0.75-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-0.75-speed-1.log"
+    },
+    {
+      "name": "wicked-game-amount-1-speed-0",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-1-speed-0.log"
+    },
+    {
+      "name": "wicked-game-amount-1-speed-0.5",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-1-speed-0.5.log"
+    },
+    {
+      "name": "wicked-game-amount-1-speed-1",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145\\wicked-game-amount-1-speed-1.log"
+    }
+  ],
+  "output": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-macromatrix-20260927-224259-00c87145",
+  "completedAt": "2026-09-27T22:44:26.9947807+02:00"
+}

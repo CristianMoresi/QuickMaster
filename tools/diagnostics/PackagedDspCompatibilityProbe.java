@@ -31,7 +31,7 @@ public final class PackagedDspCompatibilityProbe {
         track.getClass().getMethod("analyze",float[].class,int.class,double.class).invoke(track,input,channels,(double)rate);
         set(track,"setManualBpm",120);
         for(String name:List.of("eq.AutoEqProcessor","eq.EqualizerProcessor","FadeProcessor",
-                "dynamics.PeakCompProcessor","dynamics.BeatCompProcessor","dynamics.LevelerProcessor",
+                "dynamics.PeakCompProcessor","dynamics.BeatCompProcessor","dynamics.MacroLevelerProcessor",
                 "dynamics.PunchProcessor","clip.SoftClipProcessor","clip.HardClipProcessor",
                 "limit.MultibandLimiterProcessor","PeakNormalizer")) {
             Object p=make(loader,base+name);

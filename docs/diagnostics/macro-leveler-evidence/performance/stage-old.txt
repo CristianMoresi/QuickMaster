@@ -1,0 +1,66 @@
+JAR C:\Program Files\QuickMaster-backup-20260927-224205\app\quickmaster.jar sha256=cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564
+SOURCE By Now.wav frames=13440001 sampleRate=48000 channels=2 sha256=dcfb61d5d419bf6044bb0dd42fd7639659f33564c4b7ef9219cbf66798bf8e91
+SOURCE_ANALYSIS seconds=0.280769
+Sep 27, 2026 10:54:53 PM com.sun.javafx.application.PlatformImpl startup
+WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @45815ffc'
+MODE bypassed chainSec=0.507659 metersSec=0.949007 totalSec=1.456666 lufs=-12.749880
+PCM bypassed samples=26880002 sha256=86c36f2841a783b8d69d37225ab28c9fbf8cd9ac22a0bd49e7a5b61e9bfa78b3
+STAGE AutoEqProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000003
+STAGE EqualizerProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.001144
+STAGE FadeProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000003
+STAGE PeakCompProcessor enabled=false analysisSec=0.179793 renderSec=0.000000 prepareSec=0.000006
+STAGE BeatCompProcessor enabled=false analysisSec=0.096279 renderSec=0.000000 prepareSec=0.000001
+STAGE LevelerProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000000
+STAGE PunchProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000000
+STAGE SoftClipProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000013
+STAGE HardClipProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000012
+STAGE MultibandLimiterProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.001702
+STAGE BroadbandLimiterProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000002
+STAGE PeakNormalizer enabled=false analysisSec=0.228368 renderSec=0.000000 prepareSec=0.000001
+LEVELER_DIAGNOSTIC bypassed UNIT
+MODE leveler chainSec=7.479431 metersSec=0.984294 totalSec=8.463726 lufs=-12.824752
+PCM leveler samples=26880002 sha256=ba9a940553b262ebcfb953ff40ac44c839a291b45e23d963f55729a28b204c08
+STAGE AutoEqProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000002
+STAGE EqualizerProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000603
+STAGE FadeProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000002
+STAGE PeakCompProcessor enabled=false analysisSec=0.127581 renderSec=0.000000 prepareSec=0.000004
+STAGE BeatCompProcessor enabled=false analysisSec=0.096231 renderSec=0.000000 prepareSec=0.000001
+STAGE LevelerProcessor enabled=true analysisSec=6.842750 renderSec=0.100989 prepareSec=0.000000
+STAGE PunchProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000001
+STAGE SoftClipProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000011
+STAGE HardClipProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000010
+STAGE MultibandLimiterProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000683
+STAGE BroadbandLimiterProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000002
+STAGE PeakNormalizer enabled=false analysisSec=0.285696 renderSec=0.000000 prepareSec=0.000001
+LEVELER_DIAGNOSTIC leveler STRUCTURAL_READY
+MODE leveler-warm chainSec=1.478760 metersSec=1.049856 totalSec=2.528616 lufs=-12.824752
+PCM leveler-warm samples=26880002 sha256=ba9a940553b262ebcfb953ff40ac44c839a291b45e23d963f55729a28b204c08
+STAGE AutoEqProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000002
+STAGE EqualizerProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000931
+STAGE FadeProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000002
+STAGE PeakCompProcessor enabled=false analysisSec=0.164910 renderSec=0.000000 prepareSec=0.000003
+STAGE BeatCompProcessor enabled=false analysisSec=0.091704 renderSec=0.000000 prepareSec=0.000001
+STAGE LevelerProcessor enabled=true analysisSec=0.818545 renderSec=0.095540 prepareSec=0.000001
+STAGE PunchProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000000
+STAGE SoftClipProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000011
+STAGE HardClipProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000010
+STAGE MultibandLimiterProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.001079
+STAGE BroadbandLimiterProcessor enabled=false analysisSec=0.000000 renderSec=0.000000 prepareSec=0.000001
+STAGE PeakNormalizer enabled=false analysisSec=0.283178 renderSec=0.000000 prepareSec=0.000001
+LEVELER_DIAGNOSTIC leveler-warm STRUCTURAL_READY
+MODE all-active chainSec=13.581932 metersSec=1.022940 totalSec=14.604872 lufs=-11.273998
+PCM all-active samples=26880002 sha256=8bca45bb9bf794d98c8af16d335537c3f64e203f3ed136692a629188d6ff85ca
+STAGE AutoEqProcessor enabled=true analysisSec=2.532404 renderSec=0.035344 prepareSec=0.000003
+STAGE EqualizerProcessor enabled=true analysisSec=0.000000 renderSec=0.012927 prepareSec=0.006639
+STAGE FadeProcessor enabled=true analysisSec=0.000000 renderSec=0.007742 prepareSec=0.000002
+STAGE PeakCompProcessor enabled=true analysisSec=0.102082 renderSec=0.145973 prepareSec=0.000005
+STAGE BeatCompProcessor enabled=true analysisSec=0.071123 renderSec=0.135196 prepareSec=0.000001
+STAGE LevelerProcessor enabled=true analysisSec=6.549827 renderSec=0.023951 prepareSec=0.000001
+STAGE PunchProcessor enabled=true analysisSec=0.137263 renderSec=0.136761 prepareSec=0.000001
+STAGE SoftClipProcessor enabled=true analysisSec=0.097152 renderSec=0.200789 prepareSec=0.000803
+STAGE HardClipProcessor enabled=true analysisSec=0.053622 renderSec=0.105581 prepareSec=0.000717
+STAGE MultibandLimiterProcessor enabled=true analysisSec=1.520994 renderSec=0.886919 prepareSec=0.001076
+STAGE BroadbandLimiterProcessor enabled=true analysisSec=0.396587 renderSec=0.000358 prepareSec=0.000001
+STAGE PeakNormalizer enabled=true analysisSec=0.283261 renderSec=0.007468 prepareSec=0.000001
+LEVELER_DIAGNOSTIC all-active WITHIN_TOLERANCE
+SOURCE_UNCHANGED=true

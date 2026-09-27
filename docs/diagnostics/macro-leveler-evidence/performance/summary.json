@@ -1,0 +1,28 @@
+{
+  "status": "PASSED",
+  "mode": "Performance",
+  "installedJar": "C:\\Program Files\\QuickMaster\\app\\quickmaster.jar",
+  "sha256": "f801964aa7cd6de73999edfa8f5dfb0c5605b781c613aecc58e4df74129a4c04",
+  "probes": [
+    {
+      "name": "memory-30",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-performance-20260927-224522-879770ff\\memory-30.log"
+    },
+    {
+      "name": "latency-leveler",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-performance-20260927-224522-879770ff\\latency-leveler.log"
+    },
+    {
+      "name": "latency-full-chain",
+      "passed": true,
+      "exitCode": 0,
+      "log": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-performance-20260927-224522-879770ff\\latency-full-chain.log"
+    }
+  ],
+  "output": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\installed-audit-performance-20260927-224522-879770ff",
+  "completedAt": "2026-09-27T22:50:24.1412335+02:00"
+}

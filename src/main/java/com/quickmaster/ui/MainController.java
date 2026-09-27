@@ -16,7 +16,7 @@ import com.quickmaster.processing.AudioProcessor;
 import com.quickmaster.processing.dynamics.BeatCompProcessor;
 import com.quickmaster.processing.eq.EqualizerProcessor;
 import com.quickmaster.processing.FadeProcessor;
-import com.quickmaster.processing.dynamics.LevelerProcessor;
+import com.quickmaster.processing.dynamics.MacroLevelerProcessor;
 import com.quickmaster.processing.limit.MultibandLimiterProcessor;
 import com.quickmaster.processing.limit.BroadbandLimiterProcessor;
 import com.quickmaster.processing.clip.HardClipProcessor;
@@ -362,7 +362,7 @@ public class MainController
     // Limiter are always pinned at the end of the chain.
     private final PeakCompProcessor peakComp = new PeakCompProcessor();
     private final BeatCompProcessor beatComp = new BeatCompProcessor();
-    private final LevelerProcessor leveler = new LevelerProcessor();
+    private final MacroLevelerProcessor leveler = new MacroLevelerProcessor();
     private final PunchProcessor punch = new PunchProcessor();
     /** Mutable order of the four compressors (the user can reorder them); this
         is the live processor list of the Dynamics chain module. */
@@ -4121,13 +4121,13 @@ public class MainController
 
     private DynCard buildLevelerCard()
     {
-        Knob lev = dynKnob("Leveling", LevelerProcessor.MIN_LEVELING, LevelerProcessor.MAX_LEVELING,
+        Knob lev = dynKnob("Leveling", MacroLevelerProcessor.MIN_LEVELING, MacroLevelerProcessor.MAX_LEVELING,
                 leveler.getLeveling(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
-                "Matches loudness only between confidently comparable sections. Intros, outros and breaks stay protected; confidence, headroom and correction limits still apply at 100%.",
+                "Reduces macro RMS differences between all musical passages. At 100%, sustained passages converge, including musical intros and breaks; transients and silence are not flattened. Correction is limited to 24 dB before common peak-safe attenuation.",
                 leveler::setLeveling);
-        Knob speed = dynKnob("Speed", LevelerProcessor.MIN_SPEED, LevelerProcessor.MAX_SPEED,
+        Knob speed = dynKnob("Speed", MacroLevelerProcessor.MIN_SPEED, MacroLevelerProcessor.MAX_SPEED,
                 leveler.getSpeed(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
-                "Controls the speed of smooth section-level gain transitions (low = slower, high = faster). Protected passages remain unchanged.",
+                "Controls macro response, not peak compression: low uses a 6-second context, high 2 seconds. Faster follows section changes sooner; slower preserves more phrase movement.",
                 leveler::setSpeed);
         levelingKnob = lev;
         levelerSpeedKnob = speed;
@@ -4138,13 +4138,13 @@ public class MainController
         levelerDiagnosticLabel.setWrapText(true);
         levelerDiagnosticLabel.setMaxWidth(270);
         levelerDiagnosticLabel.setTooltip(new Tooltip(
-                "Shows whether the current analysis produced gain changes, found no comparable sections, or needed no correction. Protected dynamics remain unchanged."));
+                "Shows the current macro gain plan. A common output reduction preserves peak headroom without cancelling the leveling of quieter passages."));
         VBox controls = new VBox(7, knobs, levelerDiagnosticLabel);
         controls.setAlignment(Pos.CENTER);
         updateLevelerDiagnostic();
         return buildSquare(leveler, "Leveler",
-                "Offline level matching between comparable sections, preserving intros, outros and breaks.",
-                "#54d98c", 12.0, controls);
+                "Offline macro RMS leveling across musical passages, preserving transients and stereo balance.",
+                "#54d98c", 24.0, controls);
     }
 
     /** Presentation of the current gain plan, including explicit no-change outcomes. */
@@ -4156,6 +4156,9 @@ public class MainController
         if (diagnostic == null) return "Unchanged · analysis unavailable";
         return switch (diagnostic)
         {
+            case "MACRO_READY" -> "Leveling · macro RMS";
+            case "MACRO_LIMITED" -> "Leveling · 24 dB correction limit reached";
+            case "NO_MUSICAL_ACTIVITY" -> "Unchanged · no music above activity floor";
             case "STRUCTURAL_READY" -> "Leveling · comparable sections";
             case "NO_COMPARABLE_SECTIONS" -> "Unchanged · no comparable sections found";
             case "WITHIN_TOLERANCE" -> "Unchanged · levels within tolerance";
@@ -4177,6 +4180,9 @@ public class MainController
         String text = levelerDiagnosticForGeneration(leveler.getAnalysisDiagnostic(), loadedFile != null,
                 leveler.isEnabled(), leveler.getLeveling(), outputAnalysisGeneration,
                 levelerStartedGeneration, levelerReadyGeneration, levelerFailedGeneration, levelerCancelledGeneration);
+        var report = leveler.getAnalysisReport();
+        if (text.startsWith("Leveling ·") && report != null && report.headroomOffsetDb() < -.05)
+            text += String.format(Locale.US, " · %.1f dB output trim", report.headroomOffsetDb());
         if (!text.equals(levelerDiagnosticLabel.getText())) levelerDiagnosticLabel.setText(text);
     }
 
@@ -4988,7 +4994,7 @@ public class MainController
         obeat.setTargetDb(beatComp.getTargetDb());
         obeat.setNote(beatComp.getNote());
         obeat.setEnabled(beatComp.isEnabled());
-        LevelerProcessor olev = leveler.forkForAnalysis(leveler.getLeveling(), leveler.getSpeed());
+        MacroLevelerProcessor olev = leveler.forkForAnalysis(leveler.getLeveling(), leveler.getSpeed());
         PunchProcessor opunch = new PunchProcessor();
         opunch.setTrackAnalysis(analysis);
         opunch.setAmountDb(punch.getAmountDb());

@@ -1,6 +1,6 @@
 import com.quickmaster.audio.AudioFile;
 import com.quickmaster.processing.ProcessingPipeline;
-import com.quickmaster.processing.dynamics.LevelerProcessor;
+import com.quickmaster.processing.dynamics.MacroLevelerProcessor;
 import com.quickmaster.ui.MainController;
 import javafx.application.Platform;
 import javafx.animation.PauseTransition;
@@ -74,7 +74,7 @@ public class LevelerUiAcceptance {
                             retry.play();
                             return;
                         }
-                        LevelerProcessor leveler = (LevelerProcessor)field(controller, "leveler");
+                        MacroLevelerProcessor leveler = (MacroLevelerProcessor)field(controller, "leveler");
                         String diagnostic = ((Label)field(controller, "levelerDiagnosticLabel")).getText();
                         if (zeroRequested[0]) {
                             AudioFile song = (AudioFile)field(controller, "loadedFile");
@@ -96,7 +96,8 @@ public class LevelerUiAcceptance {
                                 + " current=" + field(controller, "outputAnalysisGeneration")
                                 + " ready=" + field(controller, "levelerReadyGeneration")
                                 + " started=" + field(controller, "levelerStartedGeneration"));
-                        if (!leveler.isEnabled() || !diagnostic.equals("Leveling · comparable sections"))
+                        if (!leveler.isEnabled() || !leveler.getAnalysisDiagnostic().startsWith("MACRO_")
+                                || !diagnostic.startsWith("Leveling ·"))
                             throw new AssertionError("UI did not adopt an active current plan: " + diagnostic);
                         AudioFile song = (AudioFile)field(controller, "loadedFile");
                         if (!((Label)field(controller, "fileNameLabel")).getText().equals(source.getFileName().toString()))
@@ -117,6 +118,7 @@ public class LevelerUiAcceptance {
                         for (int i = 0; i < rendered.length; i++)
                             if (Float.floatToRawIntBits(rendered[i]) != Float.floatToRawIntBits(audible[i]))
                                 throw new AssertionError("Audible PCM differs from the adopted Leveler at sample " + i);
+                        verifyMacroAudio(song, audible);
                         root.applyCss(); root.layout();
                         WritableImage shot = root.snapshot(null, null);
                         BufferedImage png = new BufferedImage((int)shot.getWidth(), (int)shot.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -142,5 +144,28 @@ public class LevelerUiAcceptance {
         catch (Throwable error) { error.printStackTrace(); exit = 1; }
         finally { Platform.exit(); }
         System.exit(exit);
+    }
+
+    /** Product oracle over the actual published PCM, not the planner's chosen regions. */
+    private static void verifyMacroAudio(AudioFile song, float[] audible) {
+        List<Double> before = new ArrayList<>(), after = new ArrayList<>();
+        int rate = song.getSampleRate(), channels = song.getChannels(), positive = 0;
+        float[] source = song.getSamples();
+        for (int sec = 0; (sec + 3L) * rate * channels <= source.length; sec++) {
+            double a = 0, b = 0;
+            for (int i = sec * rate * channels; i < (sec + 3) * rate * channels; i++) {
+                a += (double)source[i] * source[i]; b += (double)audible[i] * audible[i];
+            }
+            double input = 10 * Math.log10(a / (3.0 * rate * channels));
+            double output = 10 * Math.log10(b / (3.0 * rate * channels));
+            if (input > -50) { before.add(input); after.add(output); if (output - input > 1) positive++; }
+        }
+        Collections.sort(before); Collections.sort(after);
+        if (before.size() < 10) throw new AssertionError("No active music in UI acceptance corpus");
+        int low = (int)((before.size()-1)*.1), high = (int)((before.size()-1)*.9);
+        double inputSpread = before.get(high)-before.get(low), outputSpread = after.get(high)-after.get(low);
+        if (positive < 5 || outputSpread > 1.5 || outputSpread > inputSpread*.35)
+            throw new AssertionError("UI published audio fails macro leveling: " + outputSpread);
+        System.out.printf(Locale.ROOT, "UI_MACRO_PASS publishedPcm=true inputP10P90=%.6f outputP10P90=%.6f positiveWindows=%d%n", inputSpread,outputSpread,positive);
     }
 }
