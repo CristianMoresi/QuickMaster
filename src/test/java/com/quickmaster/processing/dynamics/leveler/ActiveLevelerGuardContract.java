@@ -10,9 +10,13 @@ import java.util.*;
 /** Explicit ADR013/014 and named S-001 successors; never grants from observed candidate bytes. */
 final class ActiveLevelerGuardContract
 {
+    // Explicit DSPark 0.2 successor. Numeric/C++ oracles and scope in
+    // docs/diagnostics/dspark-java-0.2-migration.md; historical 0.1 pin is retained.
+    static final String DSPARK_JAR = "libs/dspark-0.2.0.jar";
+    static final String DSPARK_SHA256 = "5a9e6d8e3797bc55d4dcbf462927db6918176c5f06beb942c9ecc2e271d2edc0";
     static final String D = "com/quickmaster/processing/dynamics/", L = D + "leveler/", M = L + "model/";
     private static final class Active {
-        static final JsonObject DELTA = resource("active-schema-delta.json", "0202bcd4b0ab263c14b78b1e035cb3f2361a077d69d11ab777d8f0b5aeea0e00");
+        static final JsonObject DELTA = resource("active-schema-delta.json", "b1ae36d2c90b3060c1986156d332233786075dc59a4b5c4da3ccac2013c59641");
     }
 
     static JsonObject schema(String owner) { return Active.DELTA.getAsJsonObject("classes").getAsJsonObject(owner); }
@@ -30,6 +34,11 @@ final class ActiveLevelerGuardContract
     }
     static Map<String,String> boundaries() {
         Map<String,String> result = new TreeMap<>(M004BytecodePolicy.BOUNDARIES);
+        // Explicit P0 successor: synchronous cancellation delegation and bypass metadata.
+        // Source/bytecode audit: docs/diagnostics/audio-processor-boundary-p0.md.
+        // The historical M004 hash remains unchanged; this is not learned from a candidate.
+        result.put("com/quickmaster/processing/AudioProcessor",
+                "6be57528d72681f3d96f1ae336c006fe193d810d8913b3fa5eb4a754c1a805f3");
         result.keySet().removeAll(Active.DELTA.getAsJsonObject("classes").keySet());
         result.keySet().removeAll(Active.DELTA.getAsJsonObject("enums").keySet());
         return Map.copyOf(result);

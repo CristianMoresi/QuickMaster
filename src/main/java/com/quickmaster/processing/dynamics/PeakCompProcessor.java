@@ -22,6 +22,8 @@ import com.dspark.core.DspMath;
 @SuppressWarnings("deprecation")
 public final class PeakCompProcessor extends AnalysisDynamicsProcessor
 {
+    /** Its measured range configures the control before the user enables it. */
+    @Override public boolean analyzeWhenBypassed() { return true; }
     /** Fixed look-ahead and attack times in ms (near-instant, click-free). */
     public static final double LOOKAHEAD_MS = 2.0;
     public static final double ATTACK_MS = 0.4;

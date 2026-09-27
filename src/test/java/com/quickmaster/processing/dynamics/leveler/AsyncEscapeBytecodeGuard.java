@@ -40,8 +40,8 @@ final class AsyncEscapeBytecodeGuard
 
     /** Explicit S-001 successor entry point; legacy scan retains its original contract. */
     static Result scanActive(Path root) throws Exception {
-        String vendor = sha(Files.readAllBytes(Path.of(System.getProperty("qm.dsparkJar", "libs/dspark-0.1.0.jar"))));
-        if (!vendor.equals("de368f326f668267d0cba20f34135efb466dafc53f84a4aee32d8af4347e4141"))
+        String vendor = sha(Files.readAllBytes(Path.of(System.getProperty("qm.dsparkJar", ActiveLevelerGuardContract.DSPARK_JAR))));
+        if (!vendor.equals(ActiveLevelerGuardContract.DSPARK_SHA256))
             return new Result(List.of(), List.of(new Violation("ACTIVE_DSPARK_PIN", "", "", -1, -1,
                     "com/dspark/analysis/TruePeak", "", "", "Exact independently audited vendor JAR required: " + vendor)));
         return scan(root, Set.of(), true);

@@ -2,6 +2,7 @@ package com.quickmaster.processing.analysis;
 
 import com.dspark.analysis.LoudnessMeter;
 import com.dspark.analysis.TruePeak;
+import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 
 /**
  * Complete user-facing analysis of a fully rendered master.
@@ -26,6 +27,12 @@ public final class OutputAnalysis
     /** Measures loudness, true peak, stereo image and LTAS after the full chain. */
     public static Result measure(float[] rendered, int channels, int sampleRate)
     {
+        return measure(rendered, channels, sampleRate, null);
+    }
+
+    /** Same numerical pass, cancellable between independent measurements. */
+    public static Result measure(float[] rendered, int channels, int sampleRate, CancellationToken cancellation)
+    {
         if (rendered == null)
             throw new IllegalArgumentException("Rendered output must not be null.");
         if (channels <= 0)
@@ -33,11 +40,14 @@ public final class OutputAnalysis
         if (sampleRate <= 0)
             throw new IllegalArgumentException("Sample rate must be positive.");
 
+        checkCancelled(cancellation);
         LoudnessMeter loudness = new LoudnessMeter();
         loudness.prepare(sampleRate);
         loudness.process(rendered, channels);
+        checkCancelled(cancellation);
 
         double truePeak = TruePeak.measureMax(rendered, channels);
+        checkCancelled(cancellation);
         double truePeakDbtp = truePeak <= 0.0
                 ? Double.NEGATIVE_INFINITY : 20.0 * Math.log10(truePeak);
 
@@ -69,11 +79,19 @@ public final class OutputAnalysis
         }
 
         SpectrumAnalysis spectrum = new SpectrumAnalysis();
+        checkCancelled(cancellation);
         spectrum.analyze(rendered, channels, sampleRate);
+        checkCancelled(cancellation);
 
         return new Result(loudness.getIntegratedLufs(),
                 loudness.getShortTermLufs(), loudness.getMomentaryLufs(),
                 loudness.getLoudnessRange(), truePeakDbtp, correlation,
                 midPower, sidePower, spectrum);
+    }
+
+    private static void checkCancelled(CancellationToken token)
+    {
+        if (Thread.currentThread().isInterrupted() || (token != null && token.isCancelled()))
+            throw new java.util.concurrent.CancellationException("Output measurements superseded.");
     }
 }

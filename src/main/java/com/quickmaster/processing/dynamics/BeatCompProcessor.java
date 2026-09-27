@@ -16,6 +16,8 @@ import com.dspark.core.DspMath;
 @SuppressWarnings("deprecation")
 public final class BeatCompProcessor extends AnalysisDynamicsProcessor
 {
+    /** Its measured range configures the control before the user enables it. */
+    @Override public boolean analyzeWhenBypassed() { return true; }
     /** Musical note values for the tempo-synced release. */
     public enum NoteValue
     {

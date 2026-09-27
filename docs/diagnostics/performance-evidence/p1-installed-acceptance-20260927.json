@@ -1,0 +1,35 @@
+{
+  "status": "INSTALLED_ACCEPTANCE_PASSED",
+  "checkedAt": "2026-09-27T09:16:56.6852562+02:00",
+  "install": "C:/Program Files/QuickMaster",
+  "jarSha256": "EC80915FE0E5FC773DE33FFFDE3EB82F9CCAF640E0F38EE2FC137F7C112CA73A",
+  "dsparkSha256": "5A9E6D8E3797BC55D4DCBF462927DB6918176C5F06BEB942C9ECC2E271D2EDC0",
+  "sourceFileCount": 201,
+  "applicationTests": 715,
+  "applicationFailures": 0,
+  "applicationErrors": 0,
+  "applicationSkipped": 0,
+  "libraryTests": 122,
+  "musicalVariants": 106,
+  "officialFileReadings": 94,
+  "sourceLoadRecoveryAndClose": "PASS",
+  "levelerRealCorpus": [
+    "By Now",
+    "Billie Jean (80s Glam Metal)",
+    "Wicked Game (80s Synthwave)",
+    "Quiet Gold (original protected; positive case in memory)"
+  ],
+  "levelerUi": "PASS",
+  "waveformZoomPanAndTransport": "PASS",
+  "beatBlockFrames": [
+    997,
+    4096,
+    65536
+  ],
+  "beatOutputSha256": "6b6bd0bed83231b69c09a0c2b52ecd4dc22e8957b5accf9f280d8ed5a40e0b5d",
+  "fullChainColdReferenceRawBitDifferences": 0,
+  "fullChainSingleEditAudioReadySeconds": 3.735815,
+  "fullChainBurstLastEditAudioReadySeconds": 3.583118,
+  "humanListening": false,
+  "backup": "C:/Program Files/QuickMaster-backup-20260927-091050"
+}

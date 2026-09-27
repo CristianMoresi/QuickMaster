@@ -139,7 +139,7 @@ class MusicalContextObservationTest
     {
         JsonObject child = row.getAsJsonObject("child"), retained = row.getAsJsonObject("retained");
         assertNotNull(retained, "QM_CONTEXT_V2_RETAINED_IDENTITY");
-        assertEquals(ComparisonV2Oracle.V2_ALGORITHM, child.get("algorithm").getAsString(), "QM_CONTEXT_V2_VERSION");
+        assertEquals("QM-LEVELER-S002-ARRANGEMENT-V1", child.get("algorithm").getAsString(), "QM_CONTEXT_V2_VERSION");
         assertEquals(ComparisonV2Oracle.V2_PROFILE, child.get("profile").getAsString(), "QM_CONTEXT_V2_VERSION");
         assertEquals(child.get("algorithm"), retained.get("algorithm"), "QM_CONTEXT_V2_VERSION");
         assertEquals(child.get("profile"), retained.get("profile"), "QM_CONTEXT_V2_VERSION");

@@ -147,13 +147,17 @@ class HannBitIdentityTest
         comparison = HannMutant.replaceOnce(comparison, "hannWindow[n] = hann;", "hannWindow[n] = (float) hann;");
         try (var mutant = HannMutant.compile("ComparisonFeatureExtractor", "HannFloatComparisonMutant", comparison))
         {
-            Fixture discriminating = fixture(8_000, 2, 5_007, 2);
+            // With the double-internal Stockham FFT, the former short stereo
+            // witness rounds to identical packed 16-bit features. This longer
+            // mono witness still distinguishes float-window quantization; keep
+            // exact equality and require the independently located differing cell.
+            Fixture discriminating = fixture(8_000, 1, 24_007, 0);
             ComparisonTimeline reference = new HannBaselineComparisonExtractor().extract(
                     discriminating.pcm(), discriminating.format(), null);
             ComparisonTimeline actual = (ComparisonTimeline) mutant.extract(discriminating.pcm(), discriminating.format(), null);
             AssertionError cause = assertThrows(AssertionError.class,
-                    () -> assertComparison(reference, actual, "float comparison 8000/2"));
-            assertTrue(cause.getMessage().contains("short packed 1/22"), cause.getMessage());
+                    () -> assertComparison(reference, actual, "float comparison 8000/1"));
+            assertTrue(cause.getMessage().contains("short packed 74/37"), cause.getMessage());
             System.out.println("HANN_MUTANT_CAUSE " + cause.getMessage());
         }
     }

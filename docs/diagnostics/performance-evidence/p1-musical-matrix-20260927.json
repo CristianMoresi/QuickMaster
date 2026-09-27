@@ -1,0 +1,1148 @@
+[
+  {
+    "name": "P01_ABA_LEVEL_base_44100_1",
+    "key": "P01_ABA_LEVEL",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.3260589,
+      2.31785,
+      2.3313204
+    ]
+  },
+  {
+    "name": "P01_ABA_LEVEL_base_44100_2",
+    "key": "P01_ABA_LEVEL",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.642801,
+      2.6501856,
+      2.6661996
+    ]
+  },
+  {
+    "name": "P01_ABA_LEVEL_base_48000_1",
+    "key": "P01_ABA_LEVEL",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.4406862,
+      2.4536796,
+      2.4450498
+    ]
+  },
+  {
+    "name": "P01_ABA_LEVEL_base_48000_2",
+    "key": "P01_ABA_LEVEL",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.7492571,
+      2.781618,
+      2.7897981
+    ]
+  },
+  {
+    "name": "P02_REPEAT_OUTLIER_base_44100_1",
+    "key": "P02_REPEAT_OUTLIER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.6874226,
+      2.6923636,
+      2.6928659
+    ]
+  },
+  {
+    "name": "P02_REPEAT_OUTLIER_base_44100_2",
+    "key": "P02_REPEAT_OUTLIER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      3.0432106,
+      3.0682313,
+      3.0516635
+    ]
+  },
+  {
+    "name": "P02_REPEAT_OUTLIER_base_48000_1",
+    "key": "P02_REPEAT_OUTLIER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.8084586,
+      2.7970946,
+      2.8034035
+    ]
+  },
+  {
+    "name": "P02_REPEAT_OUTLIER_base_48000_2",
+    "key": "P02_REPEAT_OUTLIER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      3.1676695,
+      3.1809902,
+      3.1831501
+    ]
+  },
+  {
+    "name": "P03_STEREO_LINKED_base_44100_1",
+    "key": "P03_STEREO_LINKED",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.6754589,
+      2.6713226,
+      2.6788946
+    ]
+  },
+  {
+    "name": "P03_STEREO_LINKED_base_44100_2",
+    "key": "P03_STEREO_LINKED",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      3.0515115,
+      3.0457699,
+      3.0268577
+    ]
+  },
+  {
+    "name": "P03_STEREO_LINKED_base_48000_1",
+    "key": "P03_STEREO_LINKED",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.8149526,
+      2.8094452,
+      2.8055648
+    ]
+  },
+  {
+    "name": "P03_STEREO_LINKED_base_48000_2",
+    "key": "P03_STEREO_LINKED",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      3.1834774,
+      3.1830846,
+      3.1713379
+    ]
+  },
+  {
+    "name": "N01_LONG_INTRO_base_44100_1",
+    "key": "N01_LONG_INTRO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.9296145,
+      0.9367709,
+      0.929104
+    ]
+  },
+  {
+    "name": "N01_LONG_INTRO_base_44100_2",
+    "key": "N01_LONG_INTRO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.0728967,
+      1.0748587,
+      1.0690787
+    ]
+  },
+  {
+    "name": "N01_LONG_INTRO_base_48000_1",
+    "key": "N01_LONG_INTRO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.9788614,
+      0.968536,
+      0.9750397
+    ]
+  },
+  {
+    "name": "N01_LONG_INTRO_base_48000_2",
+    "key": "N01_LONG_INTRO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.1163534,
+      1.1263061,
+      1.1184921
+    ]
+  },
+  {
+    "name": "N02_LONG_BREAK_base_44100_1",
+    "key": "N02_LONG_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.6497228,
+      1.6537556,
+      1.65395
+    ]
+  },
+  {
+    "name": "N02_LONG_BREAK_base_44100_2",
+    "key": "N02_LONG_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9166229,
+      1.9174758,
+      1.9091014
+    ]
+  },
+  {
+    "name": "N02_LONG_BREAK_base_48000_1",
+    "key": "N02_LONG_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.7433455,
+      1.7439891,
+      1.7430228
+    ]
+  },
+  {
+    "name": "N02_LONG_BREAK_base_48000_2",
+    "key": "N02_LONG_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.0181999,
+      2.022822,
+      1.9995278
+    ]
+  },
+  {
+    "name": "N03_SHORT_BREAK_base_44100_1",
+    "key": "N03_SHORT_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.4825595,
+      1.491292,
+      1.4900007
+    ]
+  },
+  {
+    "name": "N03_SHORT_BREAK_base_44100_2",
+    "key": "N03_SHORT_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.6982242,
+      1.6993088,
+      1.6982631
+    ]
+  },
+  {
+    "name": "N03_SHORT_BREAK_base_48000_1",
+    "key": "N03_SHORT_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.5488711,
+      1.5580764,
+      1.5513836
+    ]
+  },
+  {
+    "name": "N03_SHORT_BREAK_base_48000_2",
+    "key": "N03_SHORT_BREAK",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.7748976,
+      1.7769437,
+      1.7804501
+    ]
+  },
+  {
+    "name": "N04_OUTRO_FADE_base_44100_1",
+    "key": "N04_OUTRO_FADE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.0312577,
+      1.0324183,
+      1.0372479
+    ]
+  },
+  {
+    "name": "N04_OUTRO_FADE_base_44100_2",
+    "key": "N04_OUTRO_FADE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.1893673,
+      1.1828682,
+      1.1926748
+    ]
+  },
+  {
+    "name": "N04_OUTRO_FADE_base_48000_1",
+    "key": "N04_OUTRO_FADE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.0859349,
+      1.0877834,
+      1.0845414
+    ]
+  },
+  {
+    "name": "N04_OUTRO_FADE_base_48000_2",
+    "key": "N04_OUTRO_FADE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.2404964,
+      1.2423635,
+      1.2416103
+    ]
+  },
+  {
+    "name": "N05_CRESCENDO_base_44100_1",
+    "key": "N05_CRESCENDO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.9403036,
+      0.9350235,
+      0.9426061
+    ]
+  },
+  {
+    "name": "N05_CRESCENDO_base_44100_2",
+    "key": "N05_CRESCENDO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.0663078,
+      1.0903518,
+      1.0729718
+    ]
+  },
+  {
+    "name": "N05_CRESCENDO_base_48000_1",
+    "key": "N05_CRESCENDO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.9809665,
+      0.9803941,
+      0.9798771
+    ]
+  },
+  {
+    "name": "N05_CRESCENDO_base_48000_2",
+    "key": "N05_CRESCENDO",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.1244119,
+      1.1196761,
+      1.1210323
+    ]
+  },
+  {
+    "name": "N06_UNIQUE_BRIDGE_base_44100_1",
+    "key": "N06_UNIQUE_BRIDGE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8951682,
+      1.8832676,
+      1.8737636
+    ]
+  },
+  {
+    "name": "N06_UNIQUE_BRIDGE_base_44100_2",
+    "key": "N06_UNIQUE_BRIDGE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1496601,
+      2.1492422,
+      2.1556791
+    ]
+  },
+  {
+    "name": "N06_UNIQUE_BRIDGE_base_48000_1",
+    "key": "N06_UNIQUE_BRIDGE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9684894,
+      1.9815592,
+      1.9699694
+    ]
+  },
+  {
+    "name": "N06_UNIQUE_BRIDGE_base_48000_2",
+    "key": "N06_UNIQUE_BRIDGE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.2578874,
+      2.2487171,
+      2.2504293
+    ]
+  },
+  {
+    "name": "N07_SILENCE_SPARSE_base_44100_1",
+    "key": "N07_SILENCE_SPARSE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.2602142,
+      1.2539518,
+      1.2625274
+    ]
+  },
+  {
+    "name": "N07_SILENCE_SPARSE_base_44100_2",
+    "key": "N07_SILENCE_SPARSE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.4475333,
+      1.4378776,
+      1.4515138
+    ]
+  },
+  {
+    "name": "N07_SILENCE_SPARSE_base_48000_1",
+    "key": "N07_SILENCE_SPARSE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.326963,
+      1.3182554,
+      1.3192194
+    ]
+  },
+  {
+    "name": "N07_SILENCE_SPARSE_base_48000_2",
+    "key": "N07_SILENCE_SPARSE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.515927,
+      1.5195427,
+      1.5205269
+    ]
+  },
+  {
+    "name": "N08_GAIN_SCALED_INTENT_base_44100_1",
+    "key": "N08_GAIN_SCALED_INTENT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8131821,
+      1.8242822,
+      1.8299187
+    ]
+  },
+  {
+    "name": "N08_GAIN_SCALED_INTENT_base_44100_2",
+    "key": "N08_GAIN_SCALED_INTENT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.0745679,
+      2.0732225,
+      2.072081
+    ]
+  },
+  {
+    "name": "N08_GAIN_SCALED_INTENT_base_48000_1",
+    "key": "N08_GAIN_SCALED_INTENT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.038439,
+      1.9001768,
+      1.9545873
+    ]
+  },
+  {
+    "name": "N08_GAIN_SCALED_INTENT_base_48000_2",
+    "key": "N08_GAIN_SCALED_INTENT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1676408,
+      2.1789264,
+      2.1631558
+    ]
+  },
+  {
+    "name": "N09_FLAT_INTRO_REPEAT_base_44100_1",
+    "key": "N09_FLAT_INTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.461256,
+      1.4691142,
+      1.4632502
+    ]
+  },
+  {
+    "name": "N09_FLAT_INTRO_REPEAT_base_44100_2",
+    "key": "N09_FLAT_INTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.6917382,
+      1.6794793,
+      1.6791097
+    ]
+  },
+  {
+    "name": "N09_FLAT_INTRO_REPEAT_base_48000_1",
+    "key": "N09_FLAT_INTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.5456326,
+      1.5382075,
+      1.5405172
+    ]
+  },
+  {
+    "name": "N09_FLAT_INTRO_REPEAT_base_48000_2",
+    "key": "N09_FLAT_INTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.7566828,
+      1.7566325,
+      1.7632784
+    ]
+  },
+  {
+    "name": "N10_FLAT_OUTRO_REPEAT_base_44100_1",
+    "key": "N10_FLAT_OUTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.4655484,
+      1.4907277,
+      1.4801518
+    ]
+  },
+  {
+    "name": "N10_FLAT_OUTRO_REPEAT_base_44100_2",
+    "key": "N10_FLAT_OUTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.6945273,
+      1.704891,
+      1.687415
+    ]
+  },
+  {
+    "name": "N10_FLAT_OUTRO_REPEAT_base_48000_1",
+    "key": "N10_FLAT_OUTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.5437773,
+      1.5347113,
+      1.5377382
+    ]
+  },
+  {
+    "name": "N10_FLAT_OUTRO_REPEAT_base_48000_2",
+    "key": "N10_FLAT_OUTRO_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.7619883,
+      1.7608601,
+      1.7598392
+    ]
+  },
+  {
+    "name": "N11_REPEAT_IN_BUILDUP_base_44100_1",
+    "key": "N11_REPEAT_IN_BUILDUP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.7542332,
+      1.6671484,
+      1.6746869
+    ]
+  },
+  {
+    "name": "N11_REPEAT_IN_BUILDUP_base_44100_2",
+    "key": "N11_REPEAT_IN_BUILDUP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9031227,
+      1.8997451,
+      1.9061108
+    ]
+  },
+  {
+    "name": "N11_REPEAT_IN_BUILDUP_base_48000_1",
+    "key": "N11_REPEAT_IN_BUILDUP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.7539737,
+      1.7821886,
+      1.7543069
+    ]
+  },
+  {
+    "name": "N11_REPEAT_IN_BUILDUP_base_48000_2",
+    "key": "N11_REPEAT_IN_BUILDUP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.0804793,
+      2.0203606,
+      2.0001022
+    ]
+  },
+  {
+    "name": "A01_SHARED_ACCOMP_base_44100_1",
+    "key": "A01_SHARED_ACCOMP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8429868,
+      1.8589983,
+      1.8428369
+    ]
+  },
+  {
+    "name": "A01_SHARED_ACCOMP_base_44100_2",
+    "key": "A01_SHARED_ACCOMP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1062736,
+      2.1050322,
+      2.1072331
+    ]
+  },
+  {
+    "name": "A01_SHARED_ACCOMP_base_48000_1",
+    "key": "A01_SHARED_ACCOMP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9343899,
+      1.9310862,
+      1.9532526
+    ]
+  },
+  {
+    "name": "A01_SHARED_ACCOMP_base_48000_2",
+    "key": "A01_SHARED_ACCOMP",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.2098403,
+      2.2256563,
+      2.2066189
+    ]
+  },
+  {
+    "name": "A02_SAME_CHROMA_TIMBRE_base_44100_1",
+    "key": "A02_SAME_CHROMA_TIMBRE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8520458,
+      1.8560931,
+      1.8589935
+    ]
+  },
+  {
+    "name": "A02_SAME_CHROMA_TIMBRE_base_44100_2",
+    "key": "A02_SAME_CHROMA_TIMBRE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.0980883,
+      2.1047563,
+      2.0952369
+    ]
+  },
+  {
+    "name": "A02_SAME_CHROMA_TIMBRE_base_48000_1",
+    "key": "A02_SAME_CHROMA_TIMBRE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9401386,
+      1.945395,
+      1.9398977
+    ]
+  },
+  {
+    "name": "A02_SAME_CHROMA_TIMBRE_base_48000_2",
+    "key": "A02_SAME_CHROMA_TIMBRE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.2064806,
+      2.2086171,
+      2.2168429
+    ]
+  },
+  {
+    "name": "A03_TRANSPOSED_REPEAT_base_44100_1",
+    "key": "A03_TRANSPOSED_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8054148,
+      1.80167,
+      1.8021764
+    ]
+  },
+  {
+    "name": "A03_TRANSPOSED_REPEAT_base_44100_2",
+    "key": "A03_TRANSPOSED_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.0700663,
+      2.0684466,
+      2.0641241
+    ]
+  },
+  {
+    "name": "A03_TRANSPOSED_REPEAT_base_48000_1",
+    "key": "A03_TRANSPOSED_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9419829,
+      1.9336515,
+      1.9432784
+    ]
+  },
+  {
+    "name": "A03_TRANSPOSED_REPEAT_base_48000_2",
+    "key": "A03_TRANSPOSED_REPEAT",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.2096925,
+      2.2135784,
+      2.2189807
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack-1_44100_1",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.87024,
+      1.854423,
+      1.8542249
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack-1_44100_2",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1168784,
+      2.1107947,
+      2.1219352
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack-1_48000_1",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9639134,
+      1.9405961,
+      1.9371411
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack-1_48000_2",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.2173997,
+      2.2167407,
+      2.2098518
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack0_44100_1",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8646565,
+      1.8540945,
+      1.8549076
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack0_44100_2",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1101939,
+      2.1107779,
+      2.1132485
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack0_48000_1",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9391722,
+      1.9323399,
+      1.9357616
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack0_48000_2",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1995176,
+      2.2095382,
+      2.1963173
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack1_44100_1",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8563071,
+      1.8461631,
+      1.8336012
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack1_44100_2",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1053828,
+      2.0927515,
+      2.1106624
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack1_48000_1",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9247186,
+      1.9344914,
+      1.922447
+    ]
+  },
+  {
+    "name": "A04_BOUNDARY_JITTER_attack1_48000_2",
+    "key": "A04_BOUNDARY_JITTER",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.2115848,
+      2.2170671,
+      2.2254646
+    ]
+  },
+  {
+    "name": "A06_DENSE_NOVELTY_base_44100_1",
+    "key": "A06_DENSE_NOVELTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      4.5036,
+      4.5059144,
+      4.499676
+    ]
+  },
+  {
+    "name": "A06_DENSE_NOVELTY_base_44100_2",
+    "key": "A06_DENSE_NOVELTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      4.7335557,
+      4.7584698,
+      4.7261474
+    ]
+  },
+  {
+    "name": "A06_DENSE_NOVELTY_base_48000_1",
+    "key": "A06_DENSE_NOVELTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      4.8388903,
+      4.8343898,
+      4.8473275
+    ]
+  },
+  {
+    "name": "A06_DENSE_NOVELTY_base_48000_2",
+    "key": "A06_DENSE_NOVELTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      5.0875498,
+      5.0796738,
+      5.0864389
+    ]
+  },
+  {
+    "name": "A07_ANTIPHASE_RATE_partial-antiphase_44100_1",
+    "key": "A07_ANTIPHASE_RATE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.8525545,
+      1.8581002,
+      1.8441023
+    ]
+  },
+  {
+    "name": "A07_ANTIPHASE_RATE_partial-antiphase_44100_2",
+    "key": "A07_ANTIPHASE_RATE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1141888,
+      2.097094,
+      2.0970804
+    ]
+  },
+  {
+    "name": "A07_ANTIPHASE_RATE_partial-antiphase_48000_1",
+    "key": "A07_ANTIPHASE_RATE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      1.9492287,
+      1.9611903,
+      1.9350467
+    ]
+  },
+  {
+    "name": "A07_ANTIPHASE_RATE_partial-antiphase_48000_2",
+    "key": "A07_ANTIPHASE_RATE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      2.1962242,
+      2.2262924,
+      2.2230978
+    ]
+  },
+  {
+    "name": "A07_ANTIPHASE_RATE_partial-antiphase_96000_1",
+    "key": "A07_ANTIPHASE_RATE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      3.829369,
+      3.8053027,
+      3.8036207
+    ]
+  },
+  {
+    "name": "A07_ANTIPHASE_RATE_partial-antiphase_96000_2",
+    "key": "A07_ANTIPHASE_RATE",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      4.3415336,
+      4.4122464,
+      4.3754931
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.0_44100_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": []
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.0_44100_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": []
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.0_48000_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": []
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.0_48000_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": []
+  },
+  {
+    "name": "A08_SHORT_EMPTY_one-frame_44100_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0010731,
+      6.702E-4,
+      6.43E-4
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_one-frame_44100_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      5.161E-4,
+      4.975E-4,
+      4.992E-4
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_one-frame_48000_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      5.604E-4,
+      5.474E-4,
+      5.461E-4
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_one-frame_48000_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      5.954E-4,
+      5.853E-4,
+      5.778E-4
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.1_44100_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0021964,
+      0.0021849,
+      0.0021805
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.1_44100_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0024641,
+      0.0024167,
+      0.002436
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.1_48000_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0024491,
+      0.0024423,
+      0.0024474
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_0.1_48000_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0027962,
+      0.0027736,
+      0.0028243
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_2.99_44100_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0415859,
+      0.0417508,
+      0.0414378
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_2.99_44100_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0483869,
+      0.0483554,
+      0.0488621
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_2.99_48000_1",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0436604,
+      0.0463574,
+      0.0458608
+    ]
+  },
+  {
+    "name": "A08_SHORT_EMPTY_2.99_48000_2",
+    "key": "A08_SHORT_EMPTY",
+    "status": "PROBED_PASS",
+    "failures": [],
+    "elapsedSeconds": [
+      0.0529018,
+      0.0517302,
+      0.0538979
+    ]
+  }
+]

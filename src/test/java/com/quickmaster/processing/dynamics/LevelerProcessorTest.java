@@ -70,24 +70,35 @@ class LevelerProcessorTest {
     @Test void speedChangesTheActualBoundSparseTransition() throws Exception {
         try (var processor = analyzed(positive, 1, 0)) {
             double slow = processor.gainAt(44.5 * RATE);
+            double slowAttack = processor.gainAt(20.5 * RATE);
+            double settled = renderedGain(processor, 56);
+            assertTrue(settled < -.8);
             processor.controls(1, 1);
             processor.analyze(positive, RATE, 1);
             double fast = processor.gainAt(44.5 * RATE);
-            assertTrue(fast < slow - .05, "Faster negative transition must settle sooner: " + slow + " / " + fast);
-            assertEquals(processor.gainAt(56L * RATE), renderedGain(processor, 56), 1e-6);
+            // The verse now also has a valid arrangement reference. The 44 s
+            // boundary releases from a deeper cut, rather than attacking from
+            // unity. Speed must approach the same measured plateau sooner,
+            // regardless of the direction of that transition.
+            assertEquals(settled, renderedGain(processor, 56), 1e-6, "Speed must preserve the steady target");
+            assertTrue(Math.abs(fast - settled) < Math.abs(slow - settled) - .05,
+                    "Faster transition must be closer to its target: " + slow + " / " + fast + " -> " + settled);
+            assertTrue(processor.gainAt(20.5 * RATE) < slowAttack - .05,
+                    "The initial negative attack must also settle sooner");
+            assertEquals(processor.gainAt(56L * RATE), settled, 1e-6);
         }
     }
     @Test void aQuietShortIntroIsNotPromotedToTheLouderBody() throws Exception {
         float[] pcm = twoPart(.22, .8);
         try (var processor = analyzed(pcm, 1, .5)) {
-            assertEquals("STRUCTURAL_READY", processor.status());
+            assertEquals("NO_COMPARABLE_SECTIONS", processor.status());
             rawEquals(pcm, processor.render(pcm, 1, 0));
         }
     }
     @Test void aLoudShortIntroIsNotFlattenedToTheQuieterBody() throws Exception {
         float[] pcm = twoPart(.8, .22);
         try (var processor = analyzed(pcm, 1, .5)) {
-            assertEquals("STRUCTURAL_READY", processor.status());
+            assertEquals("NO_COMPARABLE_SECTIONS", processor.status());
             rawEquals(pcm, processor.render(pcm, 1, 0));
         }
     }

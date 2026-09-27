@@ -1,0 +1,9 @@
+{
+  "status": "IMAGE_VALIDATED",
+  "source": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\performance-p1-fixed-20260927\\QuickMaster",
+  "install": "C:\\Program Files\\QuickMaster",
+  "expectedJarSha256": "ec80915fe0e5fc773de33fffde3eb82f9ccaf640e0f38ee2fc137f7c112ca73a",
+  "backup": null,
+  "sourceFiles": 201,
+  "completedAt": "2026-09-27T06:10:23.7510178+02:00"
+}

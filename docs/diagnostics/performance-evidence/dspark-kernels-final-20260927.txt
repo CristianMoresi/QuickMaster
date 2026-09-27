@@ -1,0 +1,13 @@
+LIMITER_ENVELOPE_PASS cases=60 bitExact=true
+TRUE_PEAK_STREAM_PASS samples=30000 bitExact=true
+OVERSAMPLING_PCM_PASS combinations=84 stereo=true nonlinear=true maxAbsError=0.0
+FFT old size=1024 roundTripUs=10.046
+FFT old size=8192 roundTripUs=99.668
+FFT old size=16384 roundTripUs=214.125
+FFT old size=65536 roundTripUs=1087.308
+FFT new size=1024 roundTripUs=6.236
+FFT new size=8192 roundTripUs=56.005
+FFT new size=16384 roundTripUs=140.321
+FFT new size=65536 roundTripUs=619.932
+OVERSAMPLING old factor=8 stereoFrames=1024 us=583.645
+OVERSAMPLING new factor=8 stereoFrames=1024 us=374.487

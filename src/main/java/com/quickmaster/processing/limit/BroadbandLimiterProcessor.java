@@ -3,6 +3,7 @@ import com.quickmaster.processing.AudioProcessor;
 
 import com.dspark.analysis.TruePeak;
 import com.dspark.effects.LimiterEnvelope;
+import com.quickmaster.processing.analysis.AnalysisInputKey;
 
 /**
  * Second (final) limiting layer: an automatic <b>broadband true-peak limiter</b>.
@@ -27,6 +28,8 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
 
     private volatile boolean enabled = false;
     private volatile double pushDb = 0.0;
+    private double appliedPushDb = 0.0;
+    private AnalysisInputKey featureKey;
 
     private volatile float[] peakMapTp = null;   // cached true-peak per frame (for remap)
     private volatile float[] env = null;         // gain envelope (null = unity)
@@ -47,6 +50,9 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         mapToEnvelope();
     }
 
+    /** UI request only; analysis is mapped off the UI thread before adoption. */
+    public void requestPushDb(double db) { pushDb = clamp(db, 0.0, MAX_PUSH_DB); }
+
     /** Gain reduction (dB, &le; 0) at base-rate position {@code baseFrame}. */
     public double getGrAtPosition(long baseFrame)
     {
@@ -56,7 +62,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         long i = baseFrame;
         if (i < 0) i = 0; else if (i >= e.length) i = e.length - 1;
         double g = e[(int) i];
-        double gr = 20.0 * Math.log10(Math.max(g, 1e-6)) - pushDb;   // remove the make-up
+        double gr = 20.0 * Math.log10(Math.max(g, 1e-6)) - appliedPushDb;
         return Math.max(Math.min(gr, 0.0), -MAX_PUSH_DB);
     }
 
@@ -71,7 +77,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         double minG = Double.MAX_VALUE;
         for (int i = a; i <= b; i++) if (e[i] < minG) minG = e[i];
         if (minG == Double.MAX_VALUE) return 0.0;
-        double gr = 20.0 * Math.log10(Math.max(minG, 1e-6)) - pushDb;   // remove the make-up
+        double gr = 20.0 * Math.log10(Math.max(minG, 1e-6)) - appliedPushDb;
         return Math.max(Math.min(gr, 0.0), -MAX_PUSH_DB);
     }
 
@@ -98,6 +104,11 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
     public void analyze(float[] samples, int channels)
     {
         if (samples == null || channels < 1) return;
+        AnalysisInputKey key = AnalysisInputKey.of(samples, sampleRate, channels);
+        if (key.equals(featureKey) && peakMapTp != null) {
+            mapToEnvelope();
+            return;
+        }
         int frames = samples.length / channels;
         envRate = sampleRate;
         envFrames = frames;
@@ -108,28 +119,27 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         for (int c = 0; c < channels; c++) det[c] = new TruePeak();
         float[] pm = new float[frames];
         double mx = 0.0;
-        for (int f = 0; f < frames; f++)
+        int lag = TruePeak.GROUP_DELAY_FRAMES;
+        for (int f = 0; f < frames + TruePeak.TAIL_FRAMES; f++)
         {
             int base = f * channels;
             double p = 0.0;
             for (int c = 0; c < channels; c++)
             {
-                double tp = det[c].process(samples[base + c]);
+                double sample = f < frames ? samples[base + c] : 0.0;
+                double tp = det[c].process(sample);
                 if (tp > p) p = tp;
+                // Sample peaks have no FIR delay. Preserve their actual position
+                // as well as the latency-aligned interpolation estimate.
+                if (f < frames) pm[f] = Math.max(pm[f], (float) Math.abs(sample));
             }
-            pm[f] = (float) p;
+            int aligned = f - lag;
+            if (aligned >= 0 && aligned < frames) pm[aligned] = Math.max(pm[aligned], (float) p);
             if (p > mx) mx = p;
-        }
-        // The detector's polyphase FIR lags its estimate by a few frames;
-        // shift the map left so the envelope lands on the audio it measured.
-        int lag = TruePeak.GROUP_DELAY_FRAMES;
-        if (frames > lag)
-        {
-            System.arraycopy(pm, lag, pm, 0, frames - lag);
-            java.util.Arrays.fill(pm, frames - lag, frames, pm[frames - lag - 1]);
         }
         peakMapTp = pm;
         peakTp = mx;
+        featureKey = key;
         mapToEnvelope();
     }
 
@@ -137,6 +147,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
     {
         float[] pm = peakMapTp;
         if (pm == null) return;
+        appliedPushDb = pushDb;
         if (pushDb <= 1e-6 || peakTp <= 1e-9)
         {
             env = null;
@@ -181,13 +192,31 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
     /** Adopts the analysis (true-peak map + peak) from a background re-render copy. */
     public void adoptAnalysis(BroadbandLimiterProcessor other)
     {
+        reuseAnalysisFeatures(other);
+        if (pushDb == other.appliedPushDb) {
+            this.appliedPushDb = other.appliedPushDb;
+            this.env = other.env;
+        } else mapToEnvelope();
+    }
+
+    /** Publishes the worker result without recalculation, also for bypass snapshots. */
+    public void adoptPreparedAnalysis(BroadbandLimiterProcessor other)
+    {
+        reuseAnalysisFeatures(other);
+        this.appliedPushDb = other.appliedPushDb;
+        this.env = other.env;
+    }
+
+    /** Shares one immutable feature set; worker verifies rate, channels and every sample. */
+    public void reuseAnalysisFeatures(BroadbandLimiterProcessor other)
+    {
         this.envRate = other.envRate;
         this.envFrames = other.envFrames;
         this.atkSamples = other.atkSamples;
         this.relSamples = other.relSamples;
         this.peakTp = other.peakTp;
         this.peakMapTp = other.peakMapTp;
-        mapToEnvelope();
+        this.featureKey = other.featureKey;
     }
 
     /* --- helpers --- */

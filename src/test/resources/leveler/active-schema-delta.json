@@ -16,7 +16,7 @@
     "BASE_publishUnit": "2a | 59 | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | J:1 | 61 | 5d | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 2b | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | 4d | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 2c | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
     "BASE_publishedGain": "2a | b4:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b0",
     "BASE_remap": "2a | b4:@DAnalysisDynamicsProcessor.envFramesI | 9e:[57] | 2a | 59 | b4:@DAnalysisDynamicsProcessor.publicationSequenceJ | J:1 | 61 | 5d | b5:@DAnalysisDynamicsProcessor.publicationSequenceJ | 40 | 2a | b6:@DAnalysisDynamicsProcessor.mapFeaturesToSchedule()L@DGainSchedule; | 4e | 2a | b4:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | 3a:4 | 19:4 | b6:@DPublishedGain.status()L@DAnalysisStatus; | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a6:[24] | 19:4 | b6:@DPublishedGain.sourceChannels()I | a7:[25] | I:0 | 36:5 | 15:5 | 9a:[36] | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 1f | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1 | 2a | bb:@DPublishedGain | 59 | 2d | 2a | b4:@DAnalysisDynamicsProcessor.envRateD | 8e | 15:5 | 1f | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | b7:@DPublishedGain.<init>(L@DGainSchedule;IIJL@DAnalysisStatus;)V | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | a7:[57] | 4e | 2a | b6:@DAnalysisDynamicsProcessor.clearLegacyState()V | 2a | 1f | b2:@DAnalysisStatus.INVALID_INPUTL@DAnalysisStatus; | b8:@DPublishedGain.unit(JL@DAnalysisStatus;)L@DPublishedGain; | b5:@DAnalysisDynamicsProcessor.publishedL@DPublishedGain; | b1",
-    "CACHE": "2a | c7:[4] | I:0 | ac | 2a | b6:@MShadowAnalysisSnapshot.cache()L@MShadowAnalysisCache; | 4e | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.sampleRateHz()I | 2b | b6:@MAudioFormat.sampleRateHz()I | a0:[53] | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.channels()I | 2b | b6:@MAudioFormat.channels()I | a0:[53] | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.frames()J | 2b | b6:@MAudioFormat.frames()J | 94 | 9a:[53] | 2d | b6:@MShadowAnalysisCache.algorithmId()Ljava/lang/String; | S:QM-LEVELER-S001-COMPARISON-V2 | b6:java/lang/String.equals(Ljava/lang/Object;)Z | 99:[53] | 2d | b6:@MShadowAnalysisCache.profileId()Ljava/lang/String; | b2:@LLevelerCalibrationProfile.V2L@LLevelerCalibrationProfile; | b6:@LLevelerCalibrationProfile.profileId()Ljava/lang/String; | b6:java/lang/String.equals(Ljava/lang/Object;)Z | 99:[53] | 2d | b6:@MShadowAnalysisCache.comparison()L@MComparisonTimeline; | c6:[53] | 2d | b6:@MShadowAnalysisCache.comparison()L@MComparisonTimeline; | b6:@MComparisonTimeline.format()L@MAudioFormat; | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | a6:[53] | 2d | b6:@MShadowAnalysisCache.copyPcmFingerprintSha256()[B | 2c | b8:java/util/Arrays.equals([B[B)Z | 99:[53] | I:1 | a7:[54] | I:0 | ac",
+    "CACHE": "2a | c7:[4] | I:0 | ac | 2a | b6:@MShadowAnalysisSnapshot.cache()L@MShadowAnalysisCache; | 4e | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.sampleRateHz()I | 2b | b6:@MAudioFormat.sampleRateHz()I | a0:[53] | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.channels()I | 2b | b6:@MAudioFormat.channels()I | a0:[53] | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | b6:@MAudioFormat.frames()J | 2b | b6:@MAudioFormat.frames()J | 94 | 9a:[53] | 2d | b6:@MShadowAnalysisCache.algorithmId()Ljava/lang/String; | S:QM-LEVELER-S002-ARRANGEMENT-V1 | b6:java/lang/String.equals(Ljava/lang/Object;)Z | 99:[53] | 2d | b6:@MShadowAnalysisCache.profileId()Ljava/lang/String; | b2:@LLevelerCalibrationProfile.V2L@LLevelerCalibrationProfile; | b6:@LLevelerCalibrationProfile.profileId()Ljava/lang/String; | b6:java/lang/String.equals(Ljava/lang/Object;)Z | 99:[53] | 2d | b6:@MShadowAnalysisCache.comparison()L@MComparisonTimeline; | c6:[53] | 2d | b6:@MShadowAnalysisCache.comparison()L@MComparisonTimeline; | b6:@MComparisonTimeline.format()L@MAudioFormat; | 2d | b6:@MShadowAnalysisCache.format()L@MAudioFormat; | a6:[53] | 2d | b6:@MShadowAnalysisCache.copyPcmFingerprintSha256()[B | 2c | b8:java/util/Arrays.equals([B[B)Z | 99:[53] | I:1 | a7:[54] | I:0 | ac",
     "FINGERPRINT": "S:SHA-256 | b8:java/security/MessageDigest.getInstance(Ljava/lang/String;)Ljava/security/MessageDigest; | 4e | I:8192 | bc | 3a:4 | I:0 | 36:5 | I:0 | 36:6 | 15:6 | 2a | be | a2:[81] | 15:6 | I:4096 | 1b | 68 | 70 | 9a:[25] | 2c | b6:@LCancellationToken.isCancelled()Z | 99:[25] | 1 | b0 | 2a | 15:6 | 30 | b8:java/lang/Float.isFinite(F)Z | 9a:[35] | bb:java/lang/IllegalArgumentException | 59 | S:Non-finite Leveler input. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2a | 15:6 | 30 | b8:java/lang/Float.floatToRawIntBits(F)I | 36:7 | 19:4 | 15:5 | 84:5 | 15:7 | I:24 | 7c | 91 | 54 | 19:4 | 15:5 | 84:5 | 15:7 | I:16 | 7c | 91 | 54 | 19:4 | 15:5 | 84:5 | 15:7 | I:8 | 7c | 91 | 54 | 19:4 | 15:5 | 84:5 | 15:7 | 91 | 54 | 15:5 | 19:4 | be | a0:[79] | 2d | 19:4 | b6:java/security/MessageDigest.update([B)V | I:0 | 36:5 | 84:6 | a7:[10] | 2d | 19:4 | I:0 | 15:5 | b6:java/security/MessageDigest.update([BII)V | 2c | b6:@LCancellationToken.isCancelled()Z | 99:[91] | 1 | a7:[93] | 2d | b6:java/security/MessageDigest.digest()[B | b0 | 4e | bb:java/lang/IllegalStateException | 59 | S:SHA-256 is required for analysis identity. | 2d | b7:java/lang/IllegalStateException.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V | bf",
     "OBSERVE": "2a | b4:@LFiniteTruePeakStream.vendor[Lcom/dspark/analysis/TruePeak; | c6:[11] | 2a | b4:@LFiniteTruePeakStream.vendor[Lcom/dspark/analysis/TruePeak; | 1b | 32 | 28 | b6:com/dspark/analysis/TruePeak.process(D)D | 39:4 | a7:[82] | 2a | b4:@LFiniteTruePeakStream.writePositions[I | 1b | 2e | 36:6 | 2a | b4:@LFiniteTruePeakStream.history[[D | 1b | 32 | 3a:7 | 19:7 | 15:6 | 28 | 52 | 2a | b4:@LFiniteTruePeakStream.writePositions[I | 1b | 15:6 | I:1 | 60 | I:15 | 7e | 4f | 28 | b8:java/lang/StrictMath.abs(D)D | 39:4 | I:0 | 36:8 | 15:8 | I:4 | a2:[82] | D:0 | 39:9 | 15:6 | 36:11 | I:0 | 36:12 | 15:12 | I:12 | a2:[71] | 18:9 | 19:7 | 15:11 | 31 | b2:@LFiniteTruePeakStream.ANNEX2[[D | 15:8 | 32 | 15:12 | 31 | 6b | 63 | 39:9 | 15:11 | I:1 | 64 | I:15 | 7e | 36:11 | 84:12 | a7:[48] | 18:9 | b8:java/lang/StrictMath.abs(D)D | 39:12 | 18:12 | 18:4 | 97 | 9e:[80] | 18:12 | 39:4 | 84:8 | a7:[39] | 18:4 | b8:java/lang/Double.isFinite(D)Z | 99:[89] | 18:4 | D:0 | 98 | 9c:[97] | 2a | I:1 | b5:@LFiniteTruePeakStream.invalidZ | bb:java/lang/IllegalArgumentException | 59 | S:Nonfinite true peak. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 18:4 | 2a | b4:@LFiniteTruePeakStream.lastFramePeakD | 97 | 9e:[105] | 2a | 18:4 | b5:@LFiniteTruePeakStream.lastFramePeakD | 18:4 | 2a | b4:@LFiniteTruePeakStream.maximumD | 97 | 9e:[113] | 2a | 18:4 | b5:@LFiniteTruePeakStream.maximumD | b1",
     "PUBLICATION_<init>": "2a | b7:java/lang/Record.<init>()V | 2b | S:schedule | b8:java/util/Objects.requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object; | 57 | 19:6 | S:status | b8:java/util/Objects.requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object; | 57 | 16:4 | J:0 | 94 | 9c:[19] | bb:java/lang/IllegalArgumentException | 59 | S:Analysis generation must be non-negative. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2b | c1:@DDenseGainSchedule | 99:[28] | 2b | b9:@DGainSchedule.domain()L@DGainDomain; | b2:@DGainDomain.LEGACY_LINEARL@DGainDomain; | a6:[28] | I:1 | a7:[29] | I:0 | 36:7 | 2b | c1:@DSparseGainSchedule | 99:[39] | 2b | b9:@DGainSchedule.domain()L@DGainDomain; | b2:@DGainDomain.SPARSE_DBL@DGainDomain; | a6:[39] | I:1 | a7:[40] | I:0 | 36:8 | 15:7 | 9a:[50] | 15:8 | 9a:[50] | bb:java/lang/IllegalArgumentException | 59 | S:Schedule type and gain domain must agree. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 19:6 | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a5:[56] | 19:6 | b2:@DAnalysisStatus.STRUCTURAL_READYL@DAnalysisStatus; | a6:[116] | 1c | 9e:[64] | 1d | I:1 | 9f:[69] | 1d | I:2 | 9f:[69] | bb:java/lang/IllegalArgumentException | 59 | S:Ready publication requires a supported source format. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2b | b9:@DGainSchedule.sourceFrames()J | J:0 | 94 | 9d:[79] | bb:java/lang/IllegalArgumentException | 59 | S:Ready publication requires source frames. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 19:6 | b2:@DAnalysisStatus.LEGACY_READYL@DAnalysisStatus; | a6:[84] | 15:7 | 99:[89] | 19:6 | b2:@DAnalysisStatus.STRUCTURAL_READYL@DAnalysisStatus; | a6:[94] | 15:8 | 9a:[94] | bb:java/lang/IllegalArgumentException | 59 | S:Ready status and schedule domain must agree. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 15:7 | 99:[100] | 2b | c0:@DDenseGainSchedule | b6:@DDenseGainSchedule.envRateHz()D | a7:[104] | 2b | c0:@DSparseGainSchedule | b6:@DSparseGainSchedule.sourceRateHz()I | 87 | 39:9 | 18:9 | 1c | 87 | 97 | 99:[115] | bb:java/lang/IllegalArgumentException | 59 | S:Schedule rate and source rate must match. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | a7:[125] | 1c | 9a:[120] | 1d | 99:[125] | bb:java/lang/IllegalArgumentException | 59 | S:Unit publication must not claim a source format. | b7:java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V | bf | 2a | 2b | b5:@DPublishedGain.scheduleL@DGainSchedule; | 2a | 1c | b5:@DPublishedGain.sourceRateHzI | 2a | 1d | b5:@DPublishedGain.sourceChannelsI | 2a | 16:4 | b5:@DPublishedGain.analysisGenerationJ | 2a | 19:6 | b5:@DPublishedGain.statusL@DAnalysisStatus; | b1",
@@ -332,7 +332,7 @@
           "name": "getSpeed"
         },
         {
-          "access": 1,
+          "access": 33,
           "descriptor": "()Ljava/lang/String;",
           "name": "getAnalysisDiagnostic"
         },
@@ -1035,7 +1035,7 @@
       "fields": [
         {
           "access": 25,
-          "constant": "S:QM-LEVELER-S001-COMPARISON-V2",
+          "constant": "S:QM-LEVELER-S002-ARRANGEMENT-V1",
           "descriptor": "Ljava/lang/String;",
           "name": "ALGORITHM_ID"
         }
@@ -1051,6 +1051,11 @@
           "access": 1,
           "descriptor": "([FLcom/quickmaster/processing/dynamics/leveler/model/AudioFormat;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/ShadowAnalysisSnapshot;",
           "name": "analyzeShadow"
+        },
+        {
+          "access": 10,
+          "descriptor": "(ILcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/ProtectionDecision;)Lcom/quickmaster/processing/dynamics/leveler/model/ProtectionDecision;",
+          "name": "protectBoundaryFragments"
         },
         {
           "access": 10,
@@ -2206,6 +2211,44 @@
         }
       ],
       "superclass": "java/lang/Object"
+    },
+    "com/quickmaster/processing/dynamics/leveler/ArrangementReferencePlanner": {
+      "access": 49,
+      "fields": [],
+      "interfaces": [],
+      "superclass": "java/lang/Object",
+      "methods": [
+        {
+          "access": 1,
+          "name": "<init>",
+          "descriptor": "()V"
+        },
+        {
+          "access": 1,
+          "name": "supplement",
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Lcom/quickmaster/processing/dynamics/leveler/model/ReferencePlan;"
+        },
+        {
+          "access": 10,
+          "name": "eligible",
+          "descriptor": "(ILcom/quickmaster/processing/dynamics/leveler/model/FrozenList;Lcom/quickmaster/processing/dynamics/leveler/model/FrozenList;I)Z"
+        },
+        {
+          "access": 10,
+          "name": "summarize",
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/model/FrameRange;Lcom/quickmaster/processing/dynamics/leveler/model/ComparisonTimeline;Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)[D"
+        },
+        {
+          "access": 10,
+          "name": "confidence",
+          "descriptor": "([D[D)D"
+        },
+        {
+          "access": 10,
+          "name": "cancelled",
+          "descriptor": "(Lcom/quickmaster/processing/dynamics/leveler/CancellationToken;)Z"
+        }
+      ]
     }
   },
   "comparisonCalls": {
@@ -2653,6 +2696,16 @@
       "INFEASIBLE_INPUT_BASELINE",
       "INVALID_INPUT",
       "CANCELLED"
+    ],
+    "com/quickmaster/processing/dynamics/leveler/model/ReferenceReason": [
+      "GROUP_REFERENCE",
+      "PAIR_REFERENCE",
+      "NOT_COMPARABLE",
+      "PROTECTED",
+      "INSUFFICIENT_LOUDNESS",
+      "AMBIGUOUS",
+      "STANDARD_VALIDATION_FAILED",
+      "ARRANGEMENT_REFERENCE"
     ]
   },
   "extraCalls": [
@@ -2855,6 +2908,30 @@
       "name": "<init>",
       "opcode": 183,
       "owner": "java/lang/Record"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/ArrangementReferencePlanner",
+      "method": "supplement",
+      "opcode": 184,
+      "owner": "java/lang/Math",
+      "name": "copySign",
+      "descriptor": "(DD)D"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/ArrangementReferencePlanner",
+      "method": "eligible",
+      "opcode": 184,
+      "owner": "java/lang/Long",
+      "name": "bitCount",
+      "descriptor": "(J)I"
+    },
+    {
+      "caller": "com/quickmaster/processing/dynamics/leveler/ArrangementReferencePlanner",
+      "method": "summarize",
+      "opcode": 184,
+      "owner": "java/lang/Math",
+      "name": "toIntExact",
+      "descriptor": "(J)I"
     }
   ],
   "parentSha256": "93a9a36c0fa09fc3ef0e0935b012817a13471102866a5aacc3b4fbe4098f31c5",

@@ -1,0 +1,14 @@
+state=PASSED
+evidence=94
+algorithmSha256=5adbc7a4151d79c756aeb8b6241250cda1dc8480b3a9e6afc04a413cd72ec248
+profileSha256=daad1207ff680b67b64108692a2070be389227ac8ddffa177ae9b8ac39ffbc14
+attestationSha256=dd1b2745a3a5d58a900505f9ff780aaa3423dbcb5192ce6750e2eed1ce45b0f0
+runnerSha256=e3f78bd9caaa8a8f01c9a470d54625cb821bdc475a5b345610689ff7bf5e5ce8
+createdAtEpochSecond=0
+failureReason=NONE
+ituState=PASSED
+ituReason=NONE
+ebuState=PASSED
+ebuReason=NONE
+claim=QM-OFFICIAL-LOUDNESS-FILE-V1 only; not full EBU Mode, live, LRA or true peak
+EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8

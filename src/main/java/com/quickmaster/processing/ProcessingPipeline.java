@@ -2,6 +2,7 @@ package com.quickmaster.processing;
 
 import com.dspark.core.OversamplingEngine;
 import com.quickmaster.audio.AudioFile;
+import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,11 +60,9 @@ import java.util.function.ObjIntConsumer;
  * processed output, which {@link #process(AudioFile)} stores directly.
  * <p>
  * <b>Disabled processors.</b> Each processor manages its own
- * enabled flag. The pipeline does not skip disabled
- * processors - it still calls their {@code process} method -
- * because each processor is contractually obliged to act as a
- * passthrough when disabled. This keeps the pipeline logic
- * uniform and avoids special-casing.
+ * enabled flag. Offline passes skip their rendering and analysis unless
+ * {@link AudioProcessor#analyzeWhenBypassed()} requests control metadata.
+ * Streaming playback still calls process so position-aware stages advance.
  */
 public class ProcessingPipeline
 {
@@ -239,23 +238,37 @@ public class ProcessingPipeline
                                     DoubleConsumer progress,
                                     ObjIntConsumer<float[]> stageTap)
     {
+        return analyzeAndRender(samples, channels, startStage, startBuffer, progress, stageTap, null);
+    }
+
+    /** As above, with cooperative cancellation between stages and render blocks. */
+    public float[] analyzeAndRender(float[] samples, int channels,
+                                    int startStage, float[] startBuffer,
+                                    DoubleConsumer progress,
+                                    ObjIntConsumer<float[]> stageTap,
+                                    CancellationToken cancellation)
+    {
+        checkCancelled(cancellation);
         int n = processors.size();
         prepare(lastSampleRate, lastTotalSamples);
 
         float[] current = (startStage > 0 && startBuffer != null) ? startBuffer : samples;
         for (int i = Math.max(0, startStage); i < n; i++)
         {
+            checkCancelled(cancellation);
             AudioProcessor p = processors.get(i);
-            if (p.usesAnalysis())
+            if (p.usesAnalysis() && (p.isEnabled() || p.analyzeWhenBypassed()))
             {
-                p.analyze(current, channels);
+                p.analyze(current, channels, cancellation);
             }
+            checkCancelled(cancellation);
             final int stageIndex = i;
             final int stageCount = n - Math.max(0, startStage);
             DoubleConsumer stageProgress = (progress == null) ? null
                     : frac -> progress.accept(
                             (stageIndex - Math.max(0, startStage) + frac) / stageCount);
-            current = renderStage(p, current, channels, stageProgress);
+            if (p.isEnabled()) current = renderStage(p, current, channels, stageProgress, cancellation);
+            else if (stageProgress != null) stageProgress.accept(1.0);
             if (stageTap != null) stageTap.accept(current, i);
         }
         if (progress != null) progress.accept(1.0);
@@ -274,18 +287,24 @@ public class ProcessingPipeline
      * mutates {@code input}.
      */
     private static float[] renderStage(AudioProcessor p, float[] input, int channels,
-                                       DoubleConsumer progress)
+                                       DoubleConsumer progress, CancellationToken cancellation)
     {
         int totalFrames   = input.length / channels;
         int latencyFrames = p.getLatencyFrames();
         int outFrames     = totalFrames + latencyFrames;
-        float[] output    = new float[outFrames * channels];
+        int blockSize = p instanceof OfflineBlockSizing sizing
+                ? Math.max(1, Math.min(65536, sizing.preferredOfflineBlockFrames())) : OFFLINE_BLOCK_FRAMES;
+        // Copy only the latency-aligned interval into the final allocation.
+        // A delayed stage must not temporarily retain two whole output tracks.
+        float[] output    = new float[input.length];
+        float[] block = new float[Math.min(blockSize, outFrames) * channels];
 
         int frameCursor = 0;
         while (frameCursor < outFrames)
         {
-            int blockFrames = Math.min(OFFLINE_BLOCK_FRAMES, outFrames - frameCursor);
-            float[] block = new float[blockFrames * channels];
+            checkCancelled(cancellation);
+            int blockFrames = Math.min(blockSize, outFrames - frameCursor);
+            if (block.length != blockFrames * channels) block = new float[blockFrames * channels];
 
             int copyFrames = Math.min(blockFrames, Math.max(0, totalFrames - frameCursor));
             if (copyFrames > 0)
@@ -293,23 +312,27 @@ public class ProcessingPipeline
                 System.arraycopy(input, frameCursor * channels,
                         block, 0, copyFrames * channels);
             }
-            // Frames past the end of the input stay zero (the flush tail).
+            // Reused blocks contain processed audio from the previous call.
+            // Clear only the flush tail, not the freshly copied source frames.
+            java.util.Arrays.fill(block, copyFrames * channels, block.length, 0.0f);
 
             float[] processed = p.process(block, channels);
-            System.arraycopy(processed, 0, output,
-                    frameCursor * channels, blockFrames * channels);
+            int first = Math.max(frameCursor, latencyFrames);
+            int last = Math.min(frameCursor + blockFrames, outFrames);
+            if (last > first)
+                System.arraycopy(processed, (first - frameCursor) * channels,
+                        output, (first - latencyFrames) * channels, (last - first) * channels);
             frameCursor += blockFrames;
             if (progress != null) progress.accept(frameCursor / (double) outFrames);
         }
 
-        if (latencyFrames == 0)
-        {
-            return output;
-        }
-        float[] aligned = new float[totalFrames * channels];
-        System.arraycopy(output, latencyFrames * channels,
-                aligned, 0, totalFrames * channels);
-        return aligned;
+        return output;
+    }
+
+    private static void checkCancelled(CancellationToken cancellation)
+    {
+        if (Thread.currentThread().isInterrupted() || (cancellation != null && cancellation.isCancelled()))
+            throw new java.util.concurrent.CancellationException("Analysis superseded.");
     }
 
     /**

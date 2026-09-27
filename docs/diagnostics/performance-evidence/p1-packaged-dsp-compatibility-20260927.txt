@@ -1,0 +1,12 @@
+PACKAGED_DSP_COMPAT_PASS rate=44100 channels=1 linear=false peakError=4.17232513e-07 rmsError=3.56402337e-08 changed=396917
+PACKAGED_DSP_COMPAT_PASS rate=44100 channels=1 linear=true peakError=4.17232513e-07 rmsError=4.99449793e-08 changed=396917
+PACKAGED_DSP_COMPAT_PASS rate=44100 channels=2 linear=false peakError=4.76837158e-07 rmsError=3.63166503e-08 changed=793834
+PACKAGED_DSP_COMPAT_PASS rate=44100 channels=2 linear=true peakError=4.17232513e-07 rmsError=4.49585088e-08 changed=793834
+PACKAGED_DSP_COMPAT_PASS rate=48000 channels=1 linear=false peakError=4.76837158e-07 rmsError=4.50252689e-08 changed=432017
+PACKAGED_DSP_COMPAT_PASS rate=48000 channels=1 linear=true peakError=4.76837158e-07 rmsError=4.94858666e-08 changed=432017
+PACKAGED_DSP_COMPAT_PASS rate=48000 channels=2 linear=false peakError=4.17232513e-07 rmsError=4.07553913e-08 changed=864034
+PACKAGED_DSP_COMPAT_PASS rate=48000 channels=2 linear=true peakError=4.76837158e-07 rmsError=5.48730203e-08 changed=864034
+PACKAGED_DSP_COMPAT_PASS rate=96000 channels=1 linear=false peakError=8.34465027e-07 rmsError=6.79513321e-08 changed=864017
+PACKAGED_DSP_COMPAT_PASS rate=96000 channels=1 linear=true peakError=7.74860382e-07 rmsError=8.00331230e-08 changed=864017
+PACKAGED_DSP_COMPAT_PASS rate=96000 channels=2 linear=false peakError=8.34465027e-07 rmsError=8.73186664e-08 changed=1728034
+PACKAGED_DSP_COMPAT_PASS rate=96000 channels=2 linear=true peakError=7.45058060e-07 rmsError=7.73724938e-08 changed=1728034

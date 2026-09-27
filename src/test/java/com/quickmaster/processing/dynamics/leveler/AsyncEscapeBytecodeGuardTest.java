@@ -41,7 +41,7 @@ class AsyncEscapeBytecodeGuardTest
             }
         proposed.put("unadjudicatedFieldSchemas", missingSchemas);
         proposed.put("unadjudicatedCalls", result.violations().stream().filter(v -> v.code().equals("BYTECODE_CALL_NOT_ALLOWED")).toList());
-        proposed.put("vendoredDsparkSha256", AsyncEscapeBytecodeGuard.sha(Files.readAllBytes(Path.of("libs/dspark-0.1.0.jar"))));
+        proposed.put("vendoredDsparkSha256", AsyncEscapeBytecodeGuard.sha(Files.readAllBytes(Path.of(ActiveLevelerGuardContract.DSPARK_JAR))));
         Files.writeString(run.resolve("compatibility-proposals-NOT-APPROVED.json"), gson.toJson(proposed));
         // This is a real positive acceptance test. A contract incompatibility stays red.
         result.requirePassed();
@@ -301,7 +301,8 @@ class AsyncEscapeBytecodeGuardTest
         {
             byte[] bytes = Files.readAllBytes(Path.of(System.getProperty("qm.staticClasses", "target/classes"), boundary.getKey() + ".class"));
             if (ActiveLevelerGuardContract.boundaries().containsKey(boundary.getKey()))
-                assertEquals(boundary.getValue(), AsyncEscapeBytecodeGuard.sha(bytes), boundary.getKey());
+                assertEquals(ActiveLevelerGuardContract.boundaries().get(boundary.getKey()),
+                        AsyncEscapeBytecodeGuard.sha(bytes), boundary.getKey());
             else
                 assertEquals(List.of(), AsyncEscapeBytecodeGuard.inspectActive(bytes), "Explicit active semantic boundary: " + boundary.getKey());
             assertEquals(List.of(), AsyncEscapeBytecodeGuard.inspectControl(bytes, Set.of(), true));

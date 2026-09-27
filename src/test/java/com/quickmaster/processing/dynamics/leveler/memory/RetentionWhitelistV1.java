@@ -64,7 +64,7 @@ public final class RetentionWhitelistV1
             if(contextAvailability()&&(!activeDelta.get("parentSha256").getAsString().equals("dbd591636e5caca299371ddf26f816066b35e50dbb2c681510b23e6d44ea9968")
                     ||!activeDelta.get("parentStaticSha256").getAsString().equals("950c093f6e1dd5b0d03852211b3af28b01e89055956f04d0075e40769fa0ba2a")))throw new IllegalArgumentException("CONTEXT_SCHEMA_PARENT");
             JsonObject atoms=activeDelta.getAsJsonObject("comparisonAtoms");
-            if(!atoms.get("algorithmId").getAsString().equals("QM-LEVELER-S001-COMPARISON-V2")||!atoms.get("profileId").getAsString().equals("QM-LEVELER-V2")
+            if(!atoms.get("algorithmId").getAsString().equals("QM-LEVELER-S002-ARRANGEMENT-V1")||!atoms.get("profileId").getAsString().equals("QM-LEVELER-V2")
                     ||!atoms.get("historicalProfileId").getAsString().equals("QM-LEVELER-V1"))throw new IllegalArgumentException("COMPARISON_SCHEMA_ATOMS");
         }
         for(JsonElement element:activeDelta.getAsJsonArray("classes")) {

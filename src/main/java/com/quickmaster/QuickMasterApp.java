@@ -44,6 +44,7 @@ public class QuickMasterApp extends Application
     private static final Color BACKGROUND = Color.web("#14141a");
 
     private ProportionalWindowResizer proportionalWindowResizer;
+    private com.quickmaster.ui.MainController controller;
 
     public static void main(String[] args)
     {
@@ -67,6 +68,7 @@ public class QuickMasterApp extends Application
         {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             javafx.scene.Parent ui = loader.load();
+            controller = loader.getController();
 
             design = (Region) ui;
             design.setMinSize(DESIGN_WIDTH, DESIGN_HEIGHT);
@@ -269,6 +271,7 @@ public class QuickMasterApp extends Application
     @Override
     public void stop()
     {
+        if (controller != null) controller.shutdown();
         if (proportionalWindowResizer != null)
             proportionalWindowResizer.close();
         AppLogger.info("Application exited normally.");

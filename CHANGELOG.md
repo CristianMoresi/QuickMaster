@@ -7,7 +7,7 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-## [1.3.1] - 2026-09-25
+## [1.3.1] - 2026-09-27
 
 ### Added
 - Horizontal waveform navigation: scroll to pan the view without affecting
@@ -22,8 +22,11 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Portable releases share the exact JAR validated against the official loudness
   test signals. Packaging checks its SHA-256, version and bound conformance
   report; test audio and personal authorizations are not distributed.
-- **DSP engine (dspark) synchronized with the upstream DSPark library and
-  re-audited end to end.** Loudness measurement now uses the exact ITU-R
+- **DSPark Java 0.2 updates the kernels used by QuickMaster**, with compiled C++
+  reference checks for FFT and filter responses. It improves FFT, polyphase
+  decimation, smoothing and true-peak processing while preserving existing EQ
+  voicing and custom offline dynamics. This does not claim complete feature
+  parity with DSPark C++. Loudness measurement now uses the exact ITU-R
   BS.1770-5 K-weighting (readings were about 0.26 LU low before) with the
   loudness range sampled per the EBU Tech 3342 cadence, and true-peak detection
   uses the official BS.1770-5 Annex 2 interpolator everywhere (meters,
@@ -31,9 +34,12 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   fixes a sub-sample timing error in its kernel and gains per-quality
   anti-alias windows, so rate-converted exports are cleaner. Dither now shapes
   the total requantization error and lands exactly on the integer grid of the
-  target bit depth. The whole library is hardened against non-finite parameter
-  and signal values. Verified against EBU-style conformance vectors and the
-  library's published quality tables (114 dspark tests).
+  target bit depth. Parameter and signal validation rejects non-finite values.
+  The DSPark suite contains 122 tests; the packaged application passes 94 official
+  ITU/EBU file-loudness measurements.
+- Updated audio becomes available before output statistics finish. Analysis is
+  bounded and cancelable, obsolete edits are superseded, bypassed stages avoid
+  unnecessary work, and rendering reuses buffers and exact-content caches.
 
 ### Fixed
 - Beat Comp respects its maximum gain reduction, including parameter changes
@@ -43,6 +49,15 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   tempo sections do not force a false global BPM, and manual BPM remains available.
 - Leveler analysis avoids unnecessary allocations and uses sparse gain schedules
   to keep memory usage bounded for long tracks.
+- Leveler no longer protects an entire song because a sustained plateau was
+  mistaken for a continuous build-up. Comparable body sections of different
+  lengths can be corrected while intentional macro-dynamics remain protected.
+- Rapid edits no longer accumulate full-track analysis jobs or exhaust the
+  validation heap. Audio publication and meter updates reject stale results.
+- Failed replacement loads retain the editable current track and manual tempo;
+  Stop cancels pending Play, and closing prevents late analysis publication.
+- Auto EQ cache keys include every PCM sample and the audio format. Fade shapes
+  are retained in processing snapshots.
 
 ## [1.3.0] - 2026-07-21
 

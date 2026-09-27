@@ -1,6 +1,6 @@
 # QuickMaster
 
-**QuickMaster takes advantage of working offline to do what a real-time tool cannot.** Because it analyses the whole track before processing a single sample, it can be automatic and intelligent: it already knows every peak, every transient and the full spectrum, and drives every decision from that complete picture, with zero-latency look-ahead and no guesswork.
+**QuickMaster uses whole-track analysis to prepare its processing before playback.** It measures loudness, peaks and spectral content, estimates musical structure and tempo, and prepares gain envelopes with advance knowledge of the signal. Musical classification is not infallible: uncertain comparisons and unsafe corrections are rejected rather than treated as certain.
 
 From that, it masters: shape tone and stereo image, compress and level dynamics, clip and saturate, and limit to a true-peak ceiling, then export the result without opening a full DAW. QuickMaster is a JavaFX desktop application.
 
@@ -12,9 +12,9 @@ Built by **Cristian Moresi**, backend developer, audio-software developer and mu
 
 A real-time effect only knows the past and the present; it has to guess about the future and pay for any look-ahead with latency. QuickMaster has no such constraint:
 
-- **True zero-latency look-ahead.** The future of the signal is already known, so every transient is caught before it arrives. Attacks are effectively instantaneous, with no pre-delay and no distortion.
-- **Whole-file measurement.** Loudness, peaks, the long-term spectrum, the tempo and every onset are measured over the entire track, so decisions come from complete information, not a short rolling window.
-- **Deterministic processing.** Each stage precomputes a control map and applies it by absolute time position, so live playback, export and oversampled export produce identical results and seeking is always exact. The maps are recomputed in real time as you change the stages above, so what you hear is always current.
+- **Precomputed look-ahead.** Offline gain envelopes can anticipate peaks without adding a real-time look-ahead buffer. Analysis takes time up front; filters and the audio device still have their own latency.
+- **Whole-file measurement.** Loudness, peaks and the long-term spectrum use the whole track. Onsets and tempo are estimated from that signal, with uncertainty exposed in the UI.
+- **Shared processing.** Playback and export use the same processors and position-indexed gain maps. Changing the sample rate or oversampling factor can intentionally change the result; it is not a promise of bit-identical audio across different render settings.
 
 ## Using QuickMaster
 
@@ -36,7 +36,7 @@ So if you want a detailed, manually dialled compressor instead of the automatic 
 
 ### Dynamics (automatic, analysis-driven compression)
 
-Four automatic look-ahead compressors. On load, QuickMaster analyses the whole track (its transients and its peak map) and precomputes each one; it recomputes in real time as you change the stages above, so it always reflects the current signal. Because it reads the entire file, each one targets exactly what it should, at a different time scale:
+Four automatic look-ahead compressors. QuickMaster analyses the track and prepares their envelopes in the background. Upstream changes invalidate affected analysis; superseded requests are cancelled and only the latest completed plan can become current. Each compressor works at a different time scale:
 
 - **Peak Comp (micro-dynamics).** The classic "shave the peaks" compressor: a fast attack and a short release (around 60 ms, short but long enough to avoid distortion). Since the transients are known in advance, it touches **only** the loudest transients and leaves the body untouched.
 - **Beat Comp (beat-level).** Turns down transients louder than the median transient, with a stereo-linked gain envelope. The reduction target is a maximum, including while a previous analysis is being replaced. Release follows the selected note value and detected or manual BPM. `auto?` marks an uncertain estimate; disable Auto to enter the intended musical tempo. If no reliable single tempo is available, release falls back to 250 ms.
@@ -44,6 +44,17 @@ Four automatic look-ahead compressors. On load, QuickMaster analyses the whole t
 - **Punch.** Raises **only** the transients (transient expansion), which is only possible because the onsets are declared up front.
 
 You dial the dB of reduction (or boost) you want; the analysis derives the thresholds, sensitivity and timing.
+
+### Analysis and responsiveness
+
+The first load needs source and structural analysis. Later edits reuse valid
+features, skip unused stages and keep only the latest pending analysis request.
+The current audio plan becomes available before presentation statistics finish;
+stopped-state meters show `…` while those statistics are pending. Pressing Play
+while the plan is being prepared queues playback; Stop cancels that request.
+Analysis is still offline computation, not an instantaneous operation. Measured
+latencies, test conditions and limits are recorded in
+[the performance validation](docs/diagnostics/performance-p1-validation.md).
 
 ### Waveform zoom
 
@@ -95,10 +106,13 @@ Portable builds with a bundled Java runtime (you do **not** need Java installed)
 
 QuickMaster is a Maven project requiring **JDK 17 or newer**.
 
-The DSPark audio engine is vendored in `libs/`. Install it into your local Maven repository once:
+Audited Windows builds use Temurin **25.0.4.7**, including the DSPark build;
+the exact dependency hash is checked by the acceptance suite. See `docs/VALIDATION.md`.
+
+The DSPark Java sources and tests are versioned in `vendor/dspark-java/`. Build and install them first (the audited binary is also retained in `libs/`):
 
 ```bash
-mvn install:install-file -Dfile=libs/dspark-0.1.0.jar -DpomFile=libs/dspark-0.1.0.pom
+mvn -f vendor/dspark-java/pom.xml clean install
 ```
 
 Then, from the project root:
@@ -113,6 +127,12 @@ The complete test and package workflow requires the external ITU/EBU test signal
 ## Built on DSPark
 
 QuickMaster's audio engine is a Java port of **[DSPark](https://github.com/CristianMoresi/DSPark)**, my own C++ DSP library, packaged here as the `com.dspark:dspark` dependency. The port keeps DSPark's filter, FFT, loudness, oversampling and equalizer primitives and adds the analysis pieces this app needs (onset detection and tempo estimation) on top of them.
+
+Java 0.2 incorporates an audited set of kernels from C++ commit `9330f1c`,
+including FFT, oversampling and finite-file true-peak improvements. It preserves
+QuickMaster's existing EQ voicing and offline dynamics; it is not a complete
+feature-for-feature port of every C++ effect. See the
+[migration record](docs/diagnostics/dspark-java-0.2-migration.md).
 
 ## Architecture
 
@@ -130,7 +150,7 @@ com.quickmaster
   ui                   JavaFX controller, FXML view and stylesheet
 ```
 
-Audio flows through a configurable **pipeline** of processors, each following a `prepare`, `analyze`, `process` lifecycle borrowed from professional audio plug-in APIs. The analysis-driven modules precompute their control data in `analyze` and apply it by absolute playback position, so the same processors produce identical output offline (export), per-buffer (real-time playback) and oversampled.
+Audio flows through a configurable **pipeline** of processors, each following a `prepare`, `analyze`, `process` lifecycle borrowed from professional audio plug-in APIs. The analysis-driven modules precompute their control data in `analyze` and apply it by absolute playback position. Partition-equivalence tests cover block processing at fixed settings; oversampling and sample-rate conversion have separate numeric and signal tests.
 
 ## Author
 

@@ -1,9 +1,152 @@
 # QuickMaster — desarrollo y cierre
 
-Actualizado: 2026-09-25. La ampliación de desplazamiento de waveform está implementada, validada, publicada en GitHub y entregada en Program Files, con hash y arranque comprobados. Este es el registro vigente; no se utilizan skills de orquestación.
+Actualizado: 2026-09-27, 09:17. Leveler, optimización P1 y DSPark Java 0.2
+**entregados y comprobados en Program Files**. Suite completa, portable, copia
+de los 201 archivos por hash, arranque normal y aceptación instalada aprobados.
+La autorización «Continúa» permitió resolver la cancelación anterior de UAC.
+Este es el registro vigente; no se utilizan skills de orquestación.
+El usuario ha autorizado ahora `releasepush`: se prepara la publicación corregida
+de 1.3.1 sobre `main`, con el JAR y el portable ya aceptados. El borrador permanecerá
+privado hasta verificar los tres paquetes. El ZIP de Windows será la imagen local
+de 201 archivos validada con Temurin 25, no la imagen alternativa de CI con Java 21.
+
+## Rendimiento y DSPark — entrega completada
+
+- Diagnóstico reproducido en el JAR entregado: 12,282 s de cadena/medición con
+  todos los módulos apagados; carga asíncrona con solo Leveler 16,246 s y un
+  cambio de Leveling 7,347 s. Seis ajustes seguidos agotan el heap de 4 GB del
+  proceso de prueba en el análisis multibanda apagado. No se tocó audio del usuario.
+- En la versión diagnosticada, los trabajos obsoletos no se cancelaban y cada uno conservaba instantáneas y buffers.
+  La FFT y el detector true peak son también puntos calientes del port Java.
+- DSPark C++ remoto inspeccionado en `9330f1c`, con cambios de 1.8.0 y posteriores;
+  P0 utilizaba Java 0.1.0. La entrega actual incorpora Java 0.2.0, con fuentes
+  versionadas y oráculos C++/DFT. No se modifica el checkout C++ ni se afirma
+  paridad de funcionalidades con toda la biblioteca nativa.
+- Plan y evidencias: `docs/diagnostics/performance-and-dspark-plan.md`.
+  Orden: limitar trabajos/memoria y omitir cálculo inútil; acelerar disponibilidad
+  del audio y reutilización; actualizar el port con equivalencia y trazabilidad;
+  suite completa y entrega portable de cada cambio de aplicación.
+- P0 implementado: análisis de salida serializado y cancelable, cola de último
+  ajuste, omisión de análisis/render bypass salvo metadatos de controles y sin
+  clon PCM en cada gesto. Incluye cierre del worker y clave de fuente exacta
+  para la caché tonal. Corregida también la curva de fade omitida en snapshots.
+- P0 entregado el 27 a las 03:48:28: 705 pruebas, cero fallos/errores/omisiones,
+  106 variantes musicales, paquete con 94 mediciones oficiales aprobadas.
+  JAR instalado `b01ed4faf56ac0a275b59a560bef6572378ae29306195b9ff16d5cf8c1fdd5c3`.
+  Copia portable de 201 archivos, hash verificado y arranque normal limpio.
+- UI real: cambio de Leveling pasa de 7,347 s a mediana 3,988 s (tres procesos).
+  Las tres ráfagas que antes agotaban 4 GB terminan con un worker y el audio
+  correcto del último ajuste. Cuatro configuraciones conservan audio bitexacto.
+  Todo apagado pasa de 12,282 a 1,856 s; cadena completa activa aún 22,636 s.
+- Sobre Program Files vuelven a pasar By Now original/+4 dB/0 %, protección,
+  carga asíncrona UI y waveform zoom/pan sin mover reproducción. Respaldo:
+  `C:/Program Files/QuickMaster-backup-20260927-034821`.
+- P1 implementado, validado y entregado: plan de audio antes
+  de estadísticas, controles de limitadores sin remapeo FX, cargas/análisis de
+  fuente acotados y protegidos contra resultados obsoletos, render sin doble
+  buffer entero ni asignación por bloque, multibanda por bloques FFT óptimos y
+  mapas de picos streaming, caché de características con SHA-256 de toda la
+  entrada. Auto EQ ya no acepta una huella parcial que omitía muestras y tasa.
+- DSPark Java 0.2: FFT Stockham/doble precisión, bajada polifásica, latencia de
+  bloques pequeños, suavizado, campana Vicanek (sin alterar presets RBJ), exp/log,
+  true peak optimizado con cola finita. 122 pruebas de biblioteca pasan; 9566 bins
+  y 240 campanas se contrastan con C++ compilado. Suite limpia completa aprobada:
+  715 pruebas, cero fallos/errores/omisiones en 102 informes, 106 variantes
+  musicales y 94 lecturas oficiales en el paquete reabierto. Las 170 clases
+  finales coinciden con las del benchmark. Entrega y QA instalada aprobadas.
+  Detalle: `docs/diagnostics/dspark-java-0.2-migration.md`.
+- Rendimiento P1, By Now/280 s y heap 4 GB: Leveler solo, audio preparado en
+  mediana 1.742 s por ajuste (estadísticas 2.504 s; antes 7.347 s). Cadena completa,
+  veinte ajustes: mediana 3.496 s, p95 3.580 s hasta audio; resultado final
+  bitexacto a controlador frío. Treinta ediciones con memoria retenida estable,
+  sin OOM. Configuración y límites en `performance-p1-validation.md`.
+- JAR final `ec80915fe0e5fc773de33fffde3eb82f9ccaf640e0f38ee2fc137f7c112ca73a`;
+  portable de 201 archivos en `dist/performance-p1-fixed-20260927/QuickMaster`.
+  Validado con Temurin 25.0.4.7; contiene únicamente DSPark 0.2, hash `5a9e6d8e…`.
+- A las 06:12 se canceló UAC y se conservó P0. Tras nueva autorización del usuario,
+  entrega completada a las **09:10:57**, `DEPLOYED_AND_VERIFIED`. Los 201 archivos
+  instalados coinciden con la imagen; JAR `ec80915f…` y DSPark `5a9e6d8e…`.
+  Respaldo recuperable: `C:/Program Files/QuickMaster-backup-20260927-091050`,
+  que conserva el JAR P0 `b01ed4fa…`. No se ha usado instalador ni borrado audio.
+- Arranque adicional del EXE instalado como usuario normal a las 09:11:40–41:
+  JavaFX, controlador y restricción nativa inicializados sin errores. Solo se
+  cerraron los procesos propios de comprobación. Recibo y log en
+  `docs/diagnostics/performance-evidence/p1-deployment-20260927.json` y
+  `p1-installed-startup-20260927.txt`.
+- Las pruebas de UI/Beat antes externas están ahora en `tools/diagnostics`,
+  con instrucciones locales. No se depende de carpetas de orquestación.
+- QA final del portable terminada: cuatro canciones reales, carga fallida/cierre,
+  Leveler UI con corrección real y 0 % idéntico, waveform zoom/pan y Beat Comp
+  aprobados; capturas inspeccionadas y WAV intactos. Todo repetido sobre los JAR
+  instalados. Las capturas instaladas de Leveler y zoom son byte-idénticas a las
+  de la imagen validada. Beat conserva el límite de −1 dB y el mismo hash de PCM
+  con bloques 997/4096/65536. Carga fallida, Stop pendiente y cierre pasan.
+- Cadena completa instalada, un ajuste y seis rápidos: audio listo en 3.736 y
+  3.583 s desde el último gesto; sin OOM ni trabajos de salida solapados. El
+  resultado final es bitexacto a un controlador nuevo (cero diferencias crudas).
+  Recibo final: `performance-evidence/p1-installed-acceptance-20260927.json`.
+- La entrega local precede a la autorización `releasepush`; la publicación de
+  estas correcciones se registra por separado en `docs/releases/1.3.1.md`.
+- Evidencia actual: `docs/diagnostics/performance-p1-validation.md`;
+  historial P0: `docs/diagnostics/performance-p0-validation.md`.
 
 ## Release 1.3.1
 
+### Corrección entregada localmente (27 de septiembre)
+
+- Trabajo autónomo sobre el Leveler general, sin ajustes por nombre de canción,
+  timestamps particulares ni skills de orquestación. La entrega anterior no
+  constituye evidencia suficiente y no se prepara otro release.
+- Implementados: corrección del falso macro-build-up por mesetas; comparación
+  complementaria de distribuciones de arreglo para cuerpos de distinta duración;
+  conservación de protección en bordes con fragmentos residuales; diagnóstico
+  de UI que distingue nivelación efectiva y abstención.
+- Las pruebas nuevas detectaron y permitieron corregir una regresión real:
+  un outro repetido seguido de un solo frame silencioso perdía su protección.
+- El candidato modifica el audio original de By Now, Billie Jean y Wicked Game.
+  El ensayo de +4 dB inyectados exclusivamente en memoria reduce el desnivel en
+  las cuatro canciones ensayadas, incluido Quiet Gold con margen previo.
+  Esto no equivale a una escucha humana ni a reconocimiento perfecto de intención.
+- Verificación: 696 casos en 97 informes, 0 fallos pendientes, 0 errores y 0
+  omisiones; 106 variantes musicales aprobadas. La ejecución completa detectó
+  tres oráculos obsoletos del test del procesador: se corrigieron las expectativas
+  y se repitieron sus ocho casos, sin cambiar código de aplicación. El detalle
+  está en `docs/diagnostics/leveler-correction-validation.md`.
+- Paquete definitivo generado y reabierto con conformidad `PASSED`, 94 mediciones.
+  Las 166 clases son byte-idénticas al candidato usado en los ensayos reales.
+  JAR: `1cc8d872b1436f9554473429c5a77644cc8e1184662db63cb8d3fa980ec96524`.
+  Imagen de 201 archivos: `dist/leveler-fixed-20260925/QuickMaster`, Temurin
+  25.0.4.7, sin instalador. Validación previa `IMAGE_VALIDATED`.
+- Tras la cancelación de UAC del 25 de septiembre, el usuario autorizó reintentar.
+  Entrega completada el 27 a las 02:40:55: `DEPLOYED_AND_VERIFIED`, 201 archivos
+  y hash instalado 1CC8… idéntico al paquete. Respaldo recuperable:
+  `C:\Program Files\QuickMaster-backup-20260927-024046` (JAR F1207…).
+  Arranque adicional como usuario normal a las 02:41:32–33 sin errores.
+  Solo se cerraron los procesos propios de comprobación.
+- Pruebas repetidas sobre el JAR de Program Files: By Now original cambia
+  8.255.793 muestras, ganancia mínima −0,313163 dB; el desnivel artificial de
+  +4 dB baja de 4,962374 a 2,515670 LU. Regiones protegidas exactas, 0 % idéntico
+  y WAV original intacto. La carga asíncrona de UI adopta generación 2 y produce
+  el mismo render. Zoom, desplazamiento sin tocar transporte y UI de tempo pasan.
+  Evidencia: `docs/diagnostics/by-now-evidence/*20260927*`.
+- La imagen portable final también supera la carga asíncrona real de By Now,
+  adopción de generación 2, render con 8.255.793 muestras modificadas y control
+  al 0 %. Evidencia: `dist/leveler-verification-20260925/ui-final-image.log`.
+  Quiet Gold original conserva una restricción independiente: supera 0 dBTP y
+  la protección de picos rechaza el plan; no se ha debilitado esa salvaguarda.
+- Diseño y límites: `docs/diagnostics/leveler-correction-plan.md`.
+  Reproducción con JAR real: `tools/diagnostics/LevelerCorpusAcceptance.java`.
+
+### Historial de la retirada
+
+- **RETIRADO por indicación del usuario.** Eliminados el borrador de GitHub, sus
+  cuatro adjuntos y el tag `v1.3.1` local/remoto. No llegó a publicarse ni a
+  copiarse a Program Files. Código conservado en `main` (`eedf835`) y artefactos
+  locales conservados. El último release público sigue siendo `v1.3.0`.
+- **Regresión funcional confirmada en «By Now» el 25 de septiembre.** El JAR entonces instalado devolvía
+  `STRUCTURAL_READY` con una curva completamente plana: 0 muestras modificadas
+  de 26.880.002. Corregida y entregada localmente el 27; no se ha publicado otro release.
+  Diagnóstico: `docs/diagnostics/by-now-leveler-2026-09-25.md`.
 - Preparación desde `origin/main`, sin crear ramas adicionales. La antigua rama
   `codex/leveler-beat-zoom` fue eliminada localmente y en GitHub por indicación
   del usuario; el worktree de integración se conserva en HEAD separado.
@@ -100,4 +243,9 @@ Hallazgos de la revisión final ya corregidos y aprobados en pruebas focales:
 
 ## Criterio de fin
 
-La ampliación está implementada, validada, publicada y entregada en la carpeta de uso. La rueda desplaza únicamente la vista y Ctrl/Command + rueda conserva el zoom; las pruebas de eventos JavaFX comprueban que el transporte no cambia. La escucha musical por parte del usuario sigue siendo una valoración distinta de las comprobaciones técnicas.
+La regresión del Leveler, la revisión de Beat Comp, zoom/pan, la optimización P1
+y la migración auditada DSPark 0.2 están implementadas, probadas y entregadas
+localmente. Program Files contiene el portable final y supera la aceptación
+instalada. No queda trabajo obligatorio de este alcance pendiente de entrega.
+No hay nuevo release, commit ni push. La escucha humana y el reconocimiento
+infalible de intención musical no se sustituyen ni se afirman mediante estas pruebas.

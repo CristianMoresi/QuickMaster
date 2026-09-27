@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 class RuntimeRetentionStageOneTest
 {
     private static final String SHA="441250987cdeb73fdfa2e78ebb157ea34f786df283d174fdd9ea83c593e2b508";
-    private static final String ACTIVE_SHA="5f635ff7dba75f1866d74ce434d19c743da28ddaee0e6b8e6c6001886cf71db9";
+    private static final String ACTIVE_SHA="2ccf3477d97ce5b5abcdfbfbd385df71c718a133895449d5ec368bda8a344350";
     private static final String HISTORICAL_CONTEXT_SHA="2f8d668c8fcd3c6814dd089d16dd7085d4d3ea21aba331a276cda12fd81ddb08";
     private static Path activeSchema() throws Exception {return Path.of(Objects.requireNonNull(RuntimeRetentionStageOneTest.class.getResource("/leveler/active-retention-schema.json"),"Active schema test resource").toURI());}
     private static Path evidence() throws Exception {

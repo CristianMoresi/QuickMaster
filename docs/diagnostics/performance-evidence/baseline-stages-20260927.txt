@@ -1,0 +1,66 @@
+[0.220s][info][jfr,startup] Started recording 1. No limit specified, using maxsize=250MB as default.
+[0.220s][info][jfr,startup] 
+[0.220s][info][jfr,startup] Use jcmd 24356 JFR.dump name=1 to copy recording data to file.
+JAR C:\Program Files\QuickMaster\app\quickmaster.jar sha256=1cc8d872b1436f9554473429c5a77644cc8e1184662db63cb8d3fa980ec96524
+SOURCE By Now.wav frames=13440001 sampleRate=48000 channels=2 sha256=dcfb61d5d419bf6044bb0dd42fd7639659f33564c4b7ef9219cbf66798bf8e91
+SOURCE_ANALYSIS seconds=0.355679
+Sep 27, 2026 2:47:21 AM com.sun.javafx.application.PlatformImpl startup
+WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @42257bdd'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+MODE bypassed chainSec=11.195620 metersSec=1.086553 totalSec=12.282173 lufs=-12.749880
+STAGE AutoEqProcessor enabled=false analysisSec=0.000002 renderSec=0.000279 prepareSec=0.000003
+STAGE EqualizerProcessor enabled=false analysisSec=0.000000 renderSec=0.000364 prepareSec=0.001254
+STAGE FadeProcessor enabled=false analysisSec=0.000000 renderSec=0.000548 prepareSec=0.000003
+STAGE PeakCompProcessor enabled=false analysisSec=0.173758 renderSec=0.000518 prepareSec=0.000005
+STAGE BeatCompProcessor enabled=false analysisSec=0.125039 renderSec=0.000377 prepareSec=0.000001
+STAGE LevelerProcessor enabled=false analysisSec=7.469422 renderSec=0.000342 prepareSec=0.000001
+STAGE PunchProcessor enabled=false analysisSec=0.104531 renderSec=0.000339 prepareSec=0.000001
+STAGE SoftClipProcessor enabled=false analysisSec=0.089909 renderSec=0.000327 prepareSec=0.000765
+STAGE HardClipProcessor enabled=false analysisSec=0.048470 renderSec=0.000359 prepareSec=0.000696
+STAGE MultibandLimiterProcessor enabled=false analysisSec=1.822569 renderSec=0.000366 prepareSec=0.003395
+STAGE BroadbandLimiterProcessor enabled=false analysisSec=0.521213 renderSec=0.000358 prepareSec=0.000002
+STAGE PeakNormalizer enabled=false analysisSec=0.472308 renderSec=0.000387 prepareSec=0.000001
+MODE leveler chainSec=4.842573 metersSec=1.055928 totalSec=5.898501 lufs=-12.824752
+STAGE AutoEqProcessor enabled=false analysisSec=0.000001 renderSec=0.000334 prepareSec=0.000003
+STAGE EqualizerProcessor enabled=false analysisSec=0.000000 renderSec=0.000338 prepareSec=0.000730
+STAGE FadeProcessor enabled=false analysisSec=0.000000 renderSec=0.000280 prepareSec=0.000003
+STAGE PeakCompProcessor enabled=false analysisSec=0.125060 renderSec=0.000333 prepareSec=0.000004
+STAGE BeatCompProcessor enabled=false analysisSec=0.066011 renderSec=0.000336 prepareSec=0.000001
+STAGE LevelerProcessor enabled=true analysisSec=1.255891 renderSec=0.085385 prepareSec=0.000001
+STAGE PunchProcessor enabled=false analysisSec=0.097024 renderSec=0.000429 prepareSec=0.000001
+STAGE SoftClipProcessor enabled=false analysisSec=0.085735 renderSec=0.000304 prepareSec=0.000751
+STAGE HardClipProcessor enabled=false analysisSec=0.057279 renderSec=0.000411 prepareSec=0.000699
+STAGE MultibandLimiterProcessor enabled=false analysisSec=1.826870 renderSec=0.000295 prepareSec=0.002390
+STAGE BroadbandLimiterProcessor enabled=false analysisSec=0.519669 renderSec=0.000281 prepareSec=0.000004
+STAGE PeakNormalizer enabled=false analysisSec=0.493645 renderSec=0.000276 prepareSec=0.000001
+MODE leveler-warm chainSec=4.992314 metersSec=1.082424 totalSec=6.074737 lufs=-12.824752
+STAGE AutoEqProcessor enabled=false analysisSec=0.000000 renderSec=0.000371 prepareSec=0.000004
+STAGE EqualizerProcessor enabled=false analysisSec=0.000000 renderSec=0.000280 prepareSec=0.000781
+STAGE FadeProcessor enabled=false analysisSec=0.000000 renderSec=0.000347 prepareSec=0.000002
+STAGE PeakCompProcessor enabled=false analysisSec=0.152172 renderSec=0.000392 prepareSec=0.000004
+STAGE BeatCompProcessor enabled=false analysisSec=0.093571 renderSec=0.000404 prepareSec=0.000001
+STAGE LevelerProcessor enabled=true analysisSec=1.298899 renderSec=0.080050 prepareSec=0.000001
+STAGE PunchProcessor enabled=false analysisSec=0.097848 renderSec=0.000318 prepareSec=0.000001
+STAGE SoftClipProcessor enabled=false analysisSec=0.041039 renderSec=0.000280 prepareSec=0.000372
+STAGE HardClipProcessor enabled=false analysisSec=0.037500 renderSec=0.000251 prepareSec=0.000219
+STAGE MultibandLimiterProcessor enabled=false analysisSec=1.716364 renderSec=0.000314 prepareSec=0.001808
+STAGE BroadbandLimiterProcessor enabled=false analysisSec=0.678835 renderSec=0.000331 prepareSec=0.000001
+STAGE PeakNormalizer enabled=false analysisSec=0.542809 renderSec=0.000327 prepareSec=0.000002
+MODE all-active chainSec=21.812185 metersSec=1.251135 totalSec=23.063320 lufs=-11.271693
+STAGE AutoEqProcessor enabled=true analysisSec=2.675669 renderSec=0.025559 prepareSec=0.000002
+STAGE EqualizerProcessor enabled=true analysisSec=0.000000 renderSec=0.010850 prepareSec=0.000798
+STAGE FadeProcessor enabled=true analysisSec=0.000000 renderSec=0.004158 prepareSec=0.000002
+STAGE PeakCompProcessor enabled=true analysisSec=0.100908 renderSec=0.135369 prepareSec=0.000004
+STAGE BeatCompProcessor enabled=true analysisSec=0.068715 renderSec=0.128334 prepareSec=0.000001
+STAGE LevelerProcessor enabled=true analysisSec=7.233016 renderSec=0.034937 prepareSec=0.000001
+STAGE PunchProcessor enabled=true analysisSec=0.147218 renderSec=0.154977 prepareSec=0.000001
+STAGE SoftClipProcessor enabled=true analysisSec=0.046233 renderSec=0.246065 prepareSec=0.000401
+STAGE HardClipProcessor enabled=true analysisSec=0.053810 renderSec=0.123681 prepareSec=0.000243
+STAGE MultibandLimiterProcessor enabled=true analysisSec=1.986245 renderSec=7.177314 prepareSec=0.001731
+STAGE BroadbandLimiterProcessor enabled=true analysisSec=0.601904 renderSec=0.000485 prepareSec=0.000001
+STAGE PeakNormalizer enabled=true analysisSec=0.576015 renderSec=0.013360 prepareSec=0.000001
+SOURCE_UNCHANGED=true

@@ -29,6 +29,8 @@ import com.quickmaster.processing.dynamics.PunchProcessor;
 import com.quickmaster.processing.eq.AutoEqProcessor;
 import com.quickmaster.processing.analysis.LiveSpectrum;
 import com.quickmaster.processing.analysis.OutputAnalysis;
+import com.quickmaster.processing.analysis.LatestAnalysisExecutor;
+import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 import com.quickmaster.processing.analysis.SpectrumAnalysis;
 import com.quickmaster.processing.analysis.TrackAnalysis;
 import com.quickmaster.ui.waveform.WaveformPeakIndex;
@@ -367,11 +369,19 @@ public class MainController
     private final List<AudioProcessor> dynamicsOrder =
             new ArrayList<>(List.of(peakComp, beatComp, leveler, punch));
     /** Per-track tempo + onset analysis, shared by Glue and Punch. */
-    private final TrackAnalysis trackAnalysis = new TrackAnalysis();
+    private TrackAnalysis trackAnalysis = new TrackAnalysis();
+    private final LatestAnalysisExecutor sourceAnalysisExecutor = new LatestAnalysisExecutor();
+    private long sourceAnalysisGeneration, fileLoadGeneration;
+    private boolean sourceAnalysisPending;
+    private Runnable deferredAudioReady;
+    private boolean playWhenReady;
     /** Static analyser curve for the latest fully rendered master. */
     private SpectrumAnalysis spectrumAnalysis = new SpectrumAnalysis();
     /** Rejects background output analyses that finish after a newer request. */
     private long outputAnalysisGeneration = 0L;
+    private final LatestAnalysisExecutor outputAnalysisExecutor = new LatestAnalysisExecutor();
+    private CancellationToken outputAnalysisCancellation;
+    private boolean closing;
     private long levelerStartedGeneration = -1L;
     private long levelerReadyGeneration = -1L;
     private long levelerFailedGeneration = -1L;
@@ -438,6 +448,7 @@ public class MainController
      *  tonal stages when they did not change. */
     private long tonalSigCache = 0L;
     private float[] tonalBufCache = null;
+    private float[] tonalSourceCache = null;
     private int tonalStagesCache = -1;
 
     /** Streaming true-peak detectors for the live PEAK meter (FX thread). */
@@ -1131,6 +1142,13 @@ public class MainController
      */
     private void loadAudioFile(File file)
     {
+        if (closing) return;
+        final long loadGeneration = ++fileLoadGeneration;
+        playWhenReady = false;
+        ++sourceAnalysisGeneration;
+        sourceAnalysisPending = false;
+        deferredAudioReady = null;
+        sourceAnalysisExecutor.cancel();
         final String path = file.getAbsolutePath();
         setStatus("Loading " + file.getName() + " …");
 
@@ -1147,17 +1165,24 @@ public class MainController
 
         task.setOnSucceeded(ev ->
         {
+            if (closing || loadGeneration != fileLoadGeneration) return;
             loadedFile = task.getValue();
             onAudioReady(file);
         });
         task.setOnFailed(ev ->
         {
+            if (closing || loadGeneration != fileLoadGeneration) return;
             Throwable cause = task.getException();
             AppLogger.error("Failed to load " + path, cause);
             setStatus("Load failed.");
+            // The replacement cancelled the shared source worker. If loading
+            // fails, the existing track is still current and may have had an
+            // unfinished edit/tempo analysis; restore its current plan rather
+            // than leaving playback permanently pending or reusing old onsets.
+            if (loadedFile != null) recomputeTrackAnalysis(this::measureOutput);
             showError("Could not load the file", cause.getMessage());
         });
-        runTask(task);
+        sourceAnalysisExecutor.replace(task);
     }
 
     /**
@@ -1276,13 +1301,31 @@ public class MainController
 
         if (player.isPlaying())
         {
+            playWhenReady = false;
             player.pause();
             setStatus("Paused.");
         }
         else
         {
+            if (playWhenReady) { playWhenReady = false; setStatus("Playback request cancelled."); }
+            else requestPlayback();
+        }
+    }
+
+    /** Never start a second whole-file analysis on the live playback processors. */
+    private void requestPlayback()
+    {
+        if (closing || loadedFile == null) return;
+        if (!sourceAnalysisPending && (player.hasFixedRender() || levelerReadyGeneration == outputAnalysisGeneration)) {
+            playWhenReady = false;
             player.play();
             setStatus("Playing.");
+        } else {
+            playWhenReady = true;
+            setStatus("Preparing playback…");
+            if (!sourceAnalysisPending && (levelerStartedGeneration != outputAnalysisGeneration
+                    || levelerFailedGeneration == outputAnalysisGeneration
+                    || levelerCancelledGeneration == outputAnalysisGeneration)) syncLiveAnalysis();
         }
     }
 
@@ -1292,6 +1335,7 @@ public class MainController
     @FXML
     private void onStop()
     {
+        playWhenReady = false;
         player.stop();
         setStatus("Stopped.");
     }
@@ -3696,9 +3740,9 @@ public class MainController
         if (loadedFile != null)
         {
             player.prepare(loadedFile);
-            runPeakAnalysis();
             if (posSec > 0.0) player.seekTo(posSec);
-            if (wasPlaying) player.play();
+            playWhenReady = wasPlaying;
+            runPeakAnalysis();
         }
     }
 
@@ -4068,7 +4112,7 @@ public class MainController
         levelerDiagnosticLabel.setWrapText(true);
         levelerDiagnosticLabel.setMaxWidth(270);
         levelerDiagnosticLabel.setTooltip(new Tooltip(
-                "Ready means analysis completed, not necessarily nonzero correction. Only sufficiently different, confidently comparable sections receive gain changes."));
+                "Shows whether the current analysis produced gain changes, found no comparable sections, or needed no correction. Protected dynamics remain unchanged."));
         VBox controls = new VBox(7, knobs, levelerDiagnosticLabel);
         controls.setAlignment(Pos.CENTER);
         updateLevelerDiagnostic();
@@ -4077,7 +4121,7 @@ public class MainController
                 "#54d98c", 12.0, controls);
     }
 
-    /** Presentation only: readiness never promises a nonzero gain correction. */
+    /** Presentation of the current gain plan, including explicit no-change outcomes. */
     private static String levelerDiagnosticText(String diagnostic, boolean hasAudio, boolean enabled, double amount)
     {
         if (!hasAudio) return "Load audio to analyze";
@@ -4086,7 +4130,10 @@ public class MainController
         if (diagnostic == null) return "Unchanged · analysis unavailable";
         return switch (diagnostic)
         {
-            case "STRUCTURAL_READY" -> "Ready · comparable sections only";
+            case "STRUCTURAL_READY" -> "Leveling · comparable sections";
+            case "NO_COMPARABLE_SECTIONS" -> "Unchanged · no comparable sections found";
+            case "WITHIN_TOLERANCE" -> "Unchanged · levels within tolerance";
+            case "CORRECTION_LIMITED" -> "Unchanged · correction limited by safety";
             case "UNIT", "CLEARED" -> "Awaiting analysis";
             case "INVALID_INPUT" -> "Unchanged · invalid audio";
             case "INSUFFICIENT_ANALYSIS" -> "Unchanged · insufficient musical evidence";
@@ -4122,7 +4169,32 @@ public class MainController
     private void invalidateOutputAnalysis()
     {
         outputAnalysisGeneration++;
+        cancelOutputAnalysis();
+        if (loadedFile == null || tonalSourceCache != loadedFile.getSamples())
+        {
+            tonalBufCache = null;
+            tonalSourceCache = null;
+        }
         updateLevelerDiagnostic();
+    }
+
+    private void cancelOutputAnalysis()
+    {
+        if (outputAnalysisCancellation != null) outputAnalysisCancellation.cancel();
+        outputAnalysisExecutor.cancel();
+    }
+
+    /** Called on the FX thread when the application closes. Never waits for DSP. */
+    public void shutdown()
+    {
+        closing = true;
+        outputAnalysisGeneration++;
+        if (dynRefreshDebounce != null) dynRefreshDebounce.stop();
+        cancelOutputAnalysis();
+        outputAnalysisExecutor.close();
+        ++sourceAnalysisGeneration; ++fileLoadGeneration;
+        sourceAnalysisExecutor.close();
+        if (player != null) player.stop();
     }
 
     private DynCard buildPunchCard()
@@ -4424,30 +4496,60 @@ public class MainController
      */
     private void recomputeTrackAnalysis(Runnable after)
     {
+        if (closing) return;
         if (loadedFile == null) { if (after != null) after.run(); return; }
-        final float[] src = loadedFile.getSamples().clone();
+        final float[] src = loadedFile.getSamples();
         final int sr = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
-        Task<Void> task = new Task<>()
+        final long generation = ++sourceAnalysisGeneration;
+        deferredAudioReady = null;
+        sourceAnalysisPending = true;
+        invalidateOutputAnalysis();
+        Task<TrackAnalysis> task = new Task<>()
         {
-            @Override protected Void call()
+            @Override protected TrackAnalysis call()
             {
                 // Tempo and onsets describe the source and intentionally drive
                 // the processors before rendering. Every user-facing analyser
                 // is computed later from the final output in syncLiveAnalysis.
-                trackAnalysis.analyze(src, ch, sr);
-                return null;
+                TrackAnalysis result = new TrackAnalysis();
+                result.analyze(src, ch, sr);
+                return result;
             }
         };
         analyzing(true);
         task.setOnSucceeded(e ->
         {
             analyzing(false);
+            if (closing || generation != sourceAnalysisGeneration || loadedFile.getSamples() != src) return;
+            sourceAnalysisPending = false;
+            TrackAnalysis result = task.getValue();
+            // Preserve the latest manual edit, not the value at worker start.
+            if (trackAnalysis.isManualBpm()) result.setManualBpm(trackAnalysis.getBpm());
+            trackAnalysis = result;
+            peakComp.setTrackAnalysis(result); beatComp.setTrackAnalysis(result); punch.setTrackAnalysis(result);
             updateBpmUi();
-            if (after != null) after.run();
+            Runnable ready = deferredAudioReady;
+            deferredAudioReady = null;
+            if (ready != null) syncLiveAnalysis(ready);
+            else if (after != null) after.run();
         });
-        task.setOnFailed(e -> { analyzing(false); if (after != null) after.run(); });
-        runTask(task);
+        task.setOnFailed(e -> {
+            analyzing(false);
+            if (closing || generation != sourceAnalysisGeneration || loadedFile.getSamples() != src) return;
+            sourceAnalysisPending = false;
+            // Never use another source's onsets/tempo after a failed analysis.
+            trackAnalysis = new TrackAnalysis();
+            peakComp.setTrackAnalysis(trackAnalysis); beatComp.setTrackAnalysis(trackAnalysis); punch.setTrackAnalysis(trackAnalysis);
+            updateBpmUi();
+            AppLogger.error("Source musical analysis failed.", task.getException());
+            Runnable ready = deferredAudioReady;
+            deferredAudioReady = null;
+            if (ready != null) syncLiveAnalysis(ready);
+            else if (after != null) after.run();
+        });
+        task.setOnCancelled(e -> analyzing(false));
+        sourceAnalysisExecutor.replace(task);
     }
 
     /* =========================================================
@@ -4464,6 +4566,7 @@ public class MainController
      */
     private void scheduleDynamicsRefresh()
     {
+        if (closing) return;
         updateLevelerDiagnostic();
         if (applyingPreset) return;
         if (loadedFile == null) return;
@@ -4513,18 +4616,29 @@ public class MainController
 
     private void syncLiveAnalysis(Runnable onDone)
     {
+        if (closing) return;
+        if (sourceAnalysisPending) {
+            deferredAudioReady = onDone; // only the latest request may resume/seek
+            return; // source completion renders the latest controls
+        }
         if (loadedFile == null) { if (onDone != null) onDone.run(); return; }
-        final float[] src = loadedFile.getSamples().clone();
+        cancelOutputAnalysis();
+        // Controller edits replace the source array. Neither playback nor the
+        // offline chain mutates it; a pending request need not clone whole PCM.
+        final float[] src = loadedFile.getSamples();
         final int sr = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
         final Snapshot s = buildSnapshot();
         final long generation = ++outputAnalysisGeneration;
+        final CancellationToken cancellation = new CancellationToken();
+        outputAnalysisCancellation = cancellation;
 
         // Tonal-prefix cache: when the EQ block (and the source) are unchanged,
         // start the pass from the cached post-EQ signal.
         final int tonalStages = tonalStageCount(s);
         final long sig = tonalSignature(src, sr, ch, tonalStages);
         final boolean useCache = tonalStages > 0
+                && tonalSourceCache == src
                 && tonalStagesCache == tonalStages
                 && tonalSigCache == sig
                 && tonalBufCache != null
@@ -4539,49 +4653,38 @@ public class MainController
                 s.pipeline.prepare(sr, src.length);
                 float[] render = s.pipeline.analyzeAndRender(src, ch,
                         useCache ? tonalStages : 0, startBuf, null,
-                        (buf, idx) -> { if (idx == tonalStages - 1) tonalTap[0] = buf; });
+                        (buf, idx) -> { if (idx == tonalStages - 1) tonalTap[0] = buf; }, cancellation);
+
+                if (cancellation.isCancelled()) throw new java.util.concurrent.CancellationException();
+
+                // Audio is ready now. Slow presentation statistics must not
+                // delay safe adoption or an explicitly requested resume.
+                javafx.application.Platform.runLater(() -> {
+                    if (closing || cancellation.isCancelled() || generation != outputAnalysisGeneration) return;
+                    publishAudioPlan(s, generation, !useCache, onDone);
+                    if (generation == outputAnalysisGeneration && tonalTap[0] != null) {
+                        tonalBufCache = tonalTap[0]; tonalSourceCache = src;
+                        tonalSigCache = sig; tonalStagesCache = tonalStages;
+                    }
+                });
 
                 // LUFS, LRA, true peak, stereo image and static spectrum all
                 // consume exactly the final buffer returned by the full chain.
-                return OutputAnalysis.measure(render, ch, sr);
+                return OutputAnalysis.measure(render, ch, sr, cancellation);
             }
         };
         levelerStartedGeneration = generation;
+        markOutputMetersPending();
         analyzing(true);
         task.setOnSucceeded(e ->
         {
             analyzing(false);
             // A slower, older render must never overwrite a newer parameter
             // state with stale (often apparently pre-processing) measurements.
-            if (generation != outputAnalysisGeneration)
+            if (closing || generation != outputAnalysisGeneration || levelerReadyGeneration != generation)
             {
-                if (onDone != null) onDone.run();
                 return;
             }
-            if (!useCache && s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
-            adoptLive(peakComp, s);
-            adoptLive(beatComp, s);
-            adoptLive(leveler, s);
-            levelerReadyGeneration = generation;
-            updateLevelerDiagnostic();
-            adoptLive(punch, s);
-            if (s.copies.get(softClip) instanceof SoftClipProcessor sc) softClip.adoptAnalysis(sc);
-            if (s.copies.get(hardClip) instanceof HardClipProcessor hc) hardClip.adoptAnalysis(hc);
-            if (s.copies.get(multiband) instanceof MultibandLimiterProcessor mb) multiband.adoptAnalysis(mb);
-            if (s.copies.get(broadband) instanceof BroadbandLimiterProcessor bb) broadband.adoptAnalysis(bb);
-            normalizer.setAnalyzedPeak(s.normalizer.getAnalyzedPeak());
-            peakAppliedLabel.setText(normalizer.isEnabled()
-                    ? formatSignedDb(normalizer.getGainDb()) : "·");
-            updateTargetRanges(s);
-            player.setAnalysisValid(true);   // live chain is now analysed: the next play reuses it
-
-            if (tonalTap[0] != null)
-            {
-                tonalBufCache = tonalTap[0];
-                tonalSigCache = sig;
-                tonalStagesCache = tonalStages;
-            }
-
             // Output meters and the stopped-state analyser from the same final render
             // (the live post-processing meter takes over while playing).
             OutputAnalysis.Result r = task.getValue();
@@ -4600,30 +4703,57 @@ public class MainController
                 if (meterMid != null) meterMid.setText(formatPowerDb(r.midPower()));
                 if (meterSide != null) meterSide.setText(formatPowerDb(r.sidePower()));
             }
-            if (onDone != null) onDone.run();
         });
         task.setOnFailed(e ->
         {
             analyzing(false);
             if (generation == outputAnalysisGeneration)
             {
-                levelerFailedGeneration = generation;
+                if (levelerReadyGeneration != generation) levelerFailedGeneration = generation;
                 updateLevelerDiagnostic();
                 AppLogger.error("Post-processing output analysis failed.", task.getException());
             }
-            if (onDone != null) onDone.run();
         });
         task.setOnCancelled(e ->
         {
             analyzing(false);
             if (generation == outputAnalysisGeneration)
             {
-                levelerCancelledGeneration = generation;
+                if (levelerReadyGeneration != generation) levelerCancelledGeneration = generation;
                 updateLevelerDiagnostic();
             }
-            if (onDone != null) onDone.run();
         });
-        runTask(task);
+        outputAnalysisExecutor.replace(task);
+    }
+
+    /** FX-only adoption of a complete, current worker snapshot, before metering. */
+    private void publishAudioPlan(Snapshot s, long generation, boolean tonalChanged, Runnable onDone)
+    {
+        if (closing || generation != outputAnalysisGeneration) return;
+        if (tonalChanged && s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
+        adoptLive(peakComp, s); adoptLive(beatComp, s); adoptLive(leveler, s); adoptLive(punch, s);
+        if (s.copies.get(softClip) instanceof SoftClipProcessor sc) softClip.adoptAnalysis(sc);
+        if (s.copies.get(hardClip) instanceof HardClipProcessor hc) hardClip.adoptAnalysis(hc);
+        if (s.copies.get(multiband) instanceof MultibandLimiterProcessor mb) multiband.adoptPreparedAnalysis(mb);
+        if (s.copies.get(broadband) instanceof BroadbandLimiterProcessor bb) broadband.adoptPreparedAnalysis(bb);
+        normalizer.setAnalyzedPeak(s.normalizer.getAnalyzedPeak());
+        peakAppliedLabel.setText(normalizer.isEnabled() ? formatSignedDb(normalizer.getGainDb()) : "·");
+        updateTargetRanges(s);
+        // Clamping a control to the new range may have invalidated this plan.
+        if (generation != outputAnalysisGeneration) return;
+        levelerReadyGeneration = generation;
+        updateLevelerDiagnostic();
+        player.setAnalysisValid(true);
+        if (onDone != null) onDone.run();
+        if (playWhenReady && generation == outputAnalysisGeneration) requestPlayback();
+    }
+
+    private void markOutputMetersPending()
+    {
+        if (player.isPlaying()) return; // live meters describe the actually playing audio
+        for (Label label : new Label[]{meterLufs, meterShort, meterMom, meterLra,
+                meterPeak, meterCorr, meterMid, meterSide})
+            if (label != null) label.setText("…");
     }
 
     /** Number of leading snapshot stages that belong to the tonal (EQ) block. */
@@ -4754,6 +4884,7 @@ public class MainController
         FadeProcessor ofade = new FadeProcessor();
         ofade.setFadeInSec(fade.getFadeInSec());
         ofade.setFadeOutSec(fade.getFadeOutSec());
+        ofade.setFadeType(fade.getFadeType());
         ofade.setEnabled(fade.isEnabled());
 
         PeakCompProcessor opeak = new PeakCompProcessor();
@@ -4786,9 +4917,11 @@ public class MainController
         MultibandLimiterProcessor omulti = new MultibandLimiterProcessor();
         for (int b = 0; b < MultibandLimiterProcessor.BANDS; b++) omulti.setPushDb(b, multiband.getPushDb(b));
         omulti.setEnabled(multiband.isEnabled());
+        omulti.reuseAnalysisFeatures(multiband);
         BroadbandLimiterProcessor obroad = new BroadbandLimiterProcessor();
         obroad.setPushDb(broadband.getPushDb());
         obroad.setEnabled(broadband.isEnabled());
+        obroad.reuseAnalysisFeatures(broadband);
 
         java.util.Map<AudioProcessor, AudioProcessor> copies = new java.util.IdentityHashMap<>();
         copies.put(autoEq, oAutoEq);
@@ -5052,10 +5185,10 @@ public class MainController
             for (int b = 0; b < MultibandLimiterProcessor.BANDS && b < p.mbPushDb.length; b++)
             {
                 if (mbPushKnobs[b] != null) mbPushKnobs[b].setValue(p.mbPushDb[b]);
-                multiband.setPushDb(b, p.mbPushDb[b]);
+                multiband.requestPushDb(b, p.mbPushDb[b]);
             }
             if (bbPushKnob != null) bbPushKnob.setValue(p.bbPushDb);
-            broadband.setPushDb(p.bbPushDb);
+            broadband.requestPushDb(p.bbPushDb);
 
             peakEnabled.setSelected(p.normalizerOn);
             peakTarget.setValue(Math.max(peakTarget.getMin(),
@@ -5105,7 +5238,7 @@ public class MainController
                 {
                     player.prepare(loadedFile);
                     if (posSec > 0.0) player.seekTo(posSec);
-                    if (wasPlaying) player.play();
+                    playWhenReady = wasPlaying; // caller's single refresh resumes after adoption
                 }
             }
             else
@@ -5921,7 +6054,7 @@ public class MainController
             limiterExec.submit(() ->
             {
                 mbPending[band].set(false);
-                multiband.setPushDb(band, mbTarget[band]);
+                multiband.requestPushDb(band, mbTarget[band]);
             });
         }
     }
@@ -5934,7 +6067,7 @@ public class MainController
             limiterExec.submit(() ->
             {
                 bbPending.set(false);
-                broadband.setPushDb(bbTarget);
+                broadband.requestPushDb(bbTarget);
             });
         }
     }

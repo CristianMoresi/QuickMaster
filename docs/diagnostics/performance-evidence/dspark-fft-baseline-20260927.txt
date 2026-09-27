@@ -1,0 +1,47 @@
+DSPARK_SOURCE file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/libs/dspark-0.1.0.jar
+COMPLEX_DFT_PASS size=2 repetition=0 maxAbsError=0.00000000 relativeRms=0.00000000
+COMPLEX_DFT_PASS size=2 repetition=1 maxAbsError=0.00000000 relativeRms=0.00000000
+COMPLEX_DFT_PASS size=2 repetition=2 maxAbsError=0.00000000 relativeRms=0.00000000
+COMPLEX_DFT_PASS size=4 repetition=0 maxAbsError=7.77156117e-16 relativeRms=2.49631026e-16
+COMPLEX_DFT_PASS size=4 repetition=1 maxAbsError=1.19209290e-07 relativeRms=3.91601891e-08
+COMPLEX_DFT_PASS size=4 repetition=2 maxAbsError=5.55111512e-16 relativeRms=2.25667937e-16
+COMPLEX_DFT_PASS size=8 repetition=0 maxAbsError=1.19209290e-07 relativeRms=2.55666605e-08
+COMPLEX_DFT_PASS size=8 repetition=1 maxAbsError=6.52946497e-08 relativeRms=1.22342022e-08
+COMPLEX_DFT_PASS size=8 repetition=2 maxAbsError=1.19209290e-07 relativeRms=3.38916646e-08
+COMPLEX_DFT_PASS size=16 repetition=0 maxAbsError=2.38418580e-07 relativeRms=3.88652951e-08
+COMPLEX_DFT_PASS size=16 repetition=1 maxAbsError=2.38418588e-07 relativeRms=4.22612694e-08
+COMPLEX_DFT_PASS size=16 repetition=2 maxAbsError=3.43449153e-07 relativeRms=4.82763065e-08
+COMPLEX_DFT_PASS size=32 repetition=0 maxAbsError=5.96046425e-07 relativeRms=6.30279309e-08
+COMPLEX_DFT_PASS size=32 repetition=1 maxAbsError=6.41839677e-07 relativeRms=4.93400415e-08
+COMPLEX_DFT_PASS size=32 repetition=2 maxAbsError=6.82678932e-07 relativeRms=6.09771938e-08
+COMPLEX_DFT_PASS size=64 repetition=0 maxAbsError=9.09063254e-07 relativeRms=6.73384186e-08
+COMPLEX_DFT_PASS size=64 repetition=1 maxAbsError=1.01637165e-06 relativeRms=6.28392665e-08
+COMPLEX_DFT_PASS size=64 repetition=2 maxAbsError=1.28511448e-06 relativeRms=6.93109658e-08
+COMPLEX_DFT_PASS size=128 repetition=0 maxAbsError=1.55098713e-06 relativeRms=6.88274849e-08
+COMPLEX_DFT_PASS size=128 repetition=1 maxAbsError=1.62558118e-06 relativeRms=8.58044186e-08
+COMPLEX_DFT_PASS size=128 repetition=2 maxAbsError=1.55594737e-06 relativeRms=7.45089870e-08
+COMPLEX_DFT_PASS size=256 repetition=0 maxAbsError=2.04530676e-06 relativeRms=7.45585761e-08
+COMPLEX_DFT_PASS size=256 repetition=1 maxAbsError=3.03731281e-06 relativeRms=8.03020654e-08
+COMPLEX_DFT_PASS size=256 repetition=2 maxAbsError=2.64524800e-06 relativeRms=7.66795160e-08
+COMPLEX_DFT_PASS size=512 repetition=0 maxAbsError=5.25481573e-06 relativeRms=8.11514826e-08
+COMPLEX_DFT_PASS size=512 repetition=1 maxAbsError=4.26802308e-06 relativeRms=8.30725733e-08
+COMPLEX_DFT_PASS size=512 repetition=2 maxAbsError=3.77395663e-06 relativeRms=8.10291933e-08
+COMPLEX_DFT_PASS size=1024 repetition=0 maxAbsError=7.69365573e-06 relativeRms=8.86985861e-08
+COMPLEX_DFT_PASS size=1024 repetition=1 maxAbsError=5.77592402e-06 relativeRms=8.68230173e-08
+COMPLEX_DFT_PASS size=1024 repetition=2 maxAbsError=6.12749279e-06 relativeRms=8.90441890e-08
+REAL_ANALYTIC_PASS size=4
+REAL_ANALYTIC_PASS size=8
+REAL_ANALYTIC_PASS size=16
+REAL_ANALYTIC_PASS size=32
+REAL_ANALYTIC_PASS size=64
+REAL_ANALYTIC_PASS size=128
+REAL_ANALYTIC_PASS size=256
+REAL_ANALYTIC_PASS size=512
+REAL_ANALYTIC_PASS size=1024
+REAL_ANALYTIC_PASS size=2048
+REAL_ANALYTIC_PASS size=4096
+REAL_ANALYTIC_PASS size=8192
+REAL_ANALYTIC_PASS size=16384
+REAL_ANALYTIC_PASS size=32768
+REAL_ANALYTIC_PASS size=65536
+FFT_ACCEPTANCE_PASS independentDft=true analyticEndpoints=true repeatedInstance=true

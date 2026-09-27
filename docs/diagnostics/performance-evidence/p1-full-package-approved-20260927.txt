@@ -1,0 +1,994 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Users/cris_/.m2/wrapper/dists/apache-maven-3.9.11/03d7e36a140982eea48e22c1dcac01d8862b2550b2939e09a0809bbc5182a5bc/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.quickmaster:quickmaster >---------------------
+[INFO] Building QuickMaster 1.3.1
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ quickmaster ---
+[INFO] Deleting E:\Code\Projects\JA-DAW\QuickMaster-Integration\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ quickmaster ---
+[INFO] Copying 8 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ quickmaster ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 134 source files with javac [debug release 17] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ quickmaster ---
+[INFO] Copying 12 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ quickmaster ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 152 source files with javac [debug release 17] to target\test-classes
+[INFO] /E:/Code/Projects/JA-DAW/QuickMaster-Integration/src/test/java/com/quickmaster/processing/ProcessingPipelineDynamicsTest.java: Some input files use or override a deprecated API.
+[INFO] /E:/Code/Projects/JA-DAW/QuickMaster-Integration/src/test/java/com/quickmaster/processing/ProcessingPipelineDynamicsTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ quickmaster ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.quickmaster.audio.AudioFileTrimResetTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.030 s -- in com.quickmaster.audio.AudioFileTrimResetTest
+[INFO] Running com.quickmaster.audio.WavFileRoundTripTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.quickmaster.audio.WavFileRoundTripTest
+[INFO] Running com.quickmaster.config.AppConfigTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.quickmaster.config.AppConfigTest
+[INFO] Running com.quickmaster.config.AppLoggerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.config.AppLoggerTest
+[INFO] Running com.quickmaster.processing.analysis.LatestAnalysisExecutorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.quickmaster.processing.analysis.LatestAnalysisExecutorTest
+[INFO] Running com.quickmaster.processing.analysis.OnsetTempoEstimatorTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.quickmaster.processing.analysis.OnsetTempoEstimatorTest
+[INFO] Running com.quickmaster.processing.analysis.OutputAnalysisTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.quickmaster.processing.analysis.OutputAnalysisTest
+[INFO] Running com.quickmaster.processing.analysis.SpectralEngineTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.quickmaster.processing.analysis.SpectralEngineTest
+[INFO] Running com.quickmaster.processing.analysis.SpectrumAnalysisTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.quickmaster.processing.analysis.SpectrumAnalysisTest
+[INFO] Running com.quickmaster.processing.analysis.TrackAnalysisTempoTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.256 s -- in com.quickmaster.processing.analysis.TrackAnalysisTempoTest
+[INFO] Running com.quickmaster.processing.clip.ClipProcessorsTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in com.quickmaster.processing.clip.ClipProcessorsTest
+[INFO] Running com.quickmaster.processing.dynamics.AnalysisDynamicsCompatibilityTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.631 s -- in com.quickmaster.processing.dynamics.AnalysisDynamicsCompatibilityTest
+[INFO] Running com.quickmaster.processing.dynamics.AnalysisDynamicsProcessorTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.quickmaster.processing.dynamics.AnalysisDynamicsProcessorTest
+[INFO] Running com.quickmaster.processing.dynamics.AnalysisDynamicsSwitchCompatibilityTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.quickmaster.processing.dynamics.AnalysisDynamicsSwitchCompatibilityTest
+[INFO] Running com.quickmaster.processing.dynamics.BeatCompProcessorTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.128 s -- in com.quickmaster.processing.dynamics.BeatCompProcessorTest
+[INFO] Running com.quickmaster.processing.dynamics.DenseGainScheduleCompatibilityTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.078 s -- in com.quickmaster.processing.dynamics.DenseGainScheduleCompatibilityTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ActiveLevelerAcceptanceTest
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.jna.Native in an unnamed module (file:/C:/Users/cris_/.m2/repository/net/java/dev/jna/jna/5.17.0/jna-5.17.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+READING 0 1770-2_Comp_RelGateTest INTEGRATED measured=FINITE:-10.028804577072323 min=-10.028804577072323 frames=192000 readouts=1 gates=37/34/27 reset=1 eof=true
+READING 1 1770-2_Comp_AbsGateTest INTEGRATED measured=FINITE:-69.45155548106202 min=-69.45155548106202 frames=192000 readouts=1 gates=37/6/6 reset=1 eof=true
+READING 2 1770-2_Comp_24LKFS_25Hz_2ch INTEGRATED measured=FINITE:-23.993548589166643 min=-23.993548589166643 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 3 1770-2_Comp_24LKFS_100Hz_2ch INTEGRATED measured=FINITE:-23.993652987013377 min=-23.993652987013377 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 4 1770-2_Comp_24LKFS_500Hz_2ch INTEGRATED measured=FINITE:-23.993381601096978 min=-23.993381601096978 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 5 1770-2_Comp_24LKFS_1000Hz_2ch INTEGRATED measured=FINITE:-23.993773815497992 min=-23.993773815497992 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 6 1770-2_Comp_24LKFS_2000Hz_2ch INTEGRATED measured=FINITE:-23.993477734768742 min=-23.993477734768742 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 7 1770-2_Comp_24LKFS_10000Hz_2ch INTEGRATED measured=FINITE:-23.993688248460153 min=-23.993688248460153 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 8 1770-2_Comp_23LKFS_25Hz_2ch INTEGRATED measured=FINITE:-22.993508679430466 min=-22.993508679430466 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 9 1770-2_Comp_23LKFS_100Hz_2ch INTEGRATED measured=FINITE:-22.993717986139448 min=-22.993717986139448 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 10 1770-2_Comp_23LKFS_500Hz_2ch INTEGRATED measured=FINITE:-22.99363553375029 min=-22.99363553375029 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 11 1770-2_Comp_23LKFS_1000Hz_2ch INTEGRATED measured=FINITE:-22.993570081425624 min=-22.993570081425624 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 12 1770-2_Comp_23LKFS_2000Hz_2ch INTEGRATED measured=FINITE:-22.992528329354425 min=-22.992528329354425 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 13 1770-2_Comp_23LKFS_10000Hz_2ch INTEGRATED measured=FINITE:-22.99344141462061 min=-22.99344141462061 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 14 1770-2_Comp_18LKFS_FrequencySweep INTEGRATED measured=FINITE:-17.99052680596771 min=-17.99052680596771 frames=5760000 readouts=1 gates=1197/1197/1197 reset=1 eof=true
+READING 15 1770-2_Comp_24LKFS_SummingTest INTEGRATED measured=FINITE:-23.993557570006754 min=-23.993557570006754 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 16 1770-2_Comp_23LKFS_SummingTest INTEGRATED measured=FINITE:-22.993466241650072 min=-22.993466241650072 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 17 1770-2_Comp_24LKFS_ChannelCheckLeft INTEGRATED measured=FINITE:-23.993581172332924 min=-23.993581172332924 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 18 1770-2_Comp_24LKFS_ChannelCheckRight INTEGRATED measured=FINITE:-23.993581172332924 min=-23.993581172332924 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 19 1770-2_Comp_24LKFS_ChannelCheckCentre INTEGRATED measured=FINITE:-23.993581172332924 min=-23.993581172332924 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 20 1770-2_Comp_24LKFS_ChannelCheckLFE INTEGRATED measured=NO_LOUDNESS:0.0 min=0.0 frames=1392001 readouts=1 gates=287/0/0 reset=1 eof=true
+READING 21 1770-2_Comp_24LKFS_ChannelCheckLs INTEGRATED measured=FINITE:-23.994607547444772 min=-23.994607547444772 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 22 1770-2_Comp_24LKFS_ChannelCheckRs INTEGRATED measured=FINITE:-23.994607547444772 min=-23.994607547444772 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 23 1770-2_Comp_23LKFS_ChannelCheckLeft INTEGRATED measured=FINITE:-22.99313269259161 min=-22.99313269259161 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 24 1770-2_Comp_23LKFS_ChannelCheckRight INTEGRATED measured=FINITE:-22.99313269259161 min=-22.99313269259161 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 25 1770-2_Comp_23LKFS_ChannelCheckCentre INTEGRATED measured=FINITE:-22.99313269259161 min=-22.99313269259161 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 26 1770-2_Comp_23LKFS_ChannelCheckLFE INTEGRATED measured=NO_LOUDNESS:0.0 min=0.0 frames=1392001 readouts=1 gates=287/0/0 reset=1 eof=true
+READING 27 1770-2_Comp_23LKFS_ChannelCheckLs INTEGRATED measured=FINITE:-22.99326372521216 min=-22.99326372521216 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 28 1770-2_Comp_23LKFS_ChannelCheckRs INTEGRATED measured=FINITE:-22.99326372521216 min=-22.99326372521216 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+READING 29 1770-2_Conf_6ch_VinCntr-24LKFS INTEGRATED measured=FINITE:-23.97695298535124 min=-23.97695298535124 frames=3994582 readouts=1 gates=829/829/719 reset=1 eof=true
+READING 30 1770-2_Conf_6ch_VinL+R-24LKFS INTEGRATED measured=FINITE:-23.987720175066176 min=-23.987720175066176 frames=3994582 readouts=1 gates=829/829/725 reset=1 eof=true
+READING 31 1770-2_Conf_6ch_VinL-R-C-24LKFS INTEGRATED measured=FINITE:-23.97581561779091 min=-23.97581561779091 frames=3994582 readouts=1 gates=829/829/670 reset=1 eof=true
+READING 32 1770-2_Conf_Stereo_VinL+R-24LKFS INTEGRATED measured=FINITE:-23.975890680657635 min=-23.975890680657635 frames=3991527 readouts=1 gates=828/828/678 reset=1 eof=true
+READING 33 1770-2_Conf_Mono_Voice+Music-24LKFS INTEGRATED measured=FINITE:-23.993561964354498 min=-23.993561964354498 frames=3998849 readouts=1 gates=830/830/664 reset=1 eof=true
+READING 34 1770-2_Conf_6ch_VinCntr-23LKFS INTEGRATED measured=FINITE:-22.980957397713667 min=-22.980957397713667 frames=3994582 readouts=1 gates=829/829/719 reset=1 eof=true
+READING 35 1770-2_Conf_6ch_VinL+R-23LKFS INTEGRATED measured=FINITE:-22.988662477048663 min=-22.988662477048663 frames=3994582 readouts=1 gates=829/829/725 reset=1 eof=true
+READING 36 1770-2_Conf_6ch_VinL-R-C-23LKFS INTEGRATED measured=FINITE:-22.98560345401417 min=-22.98560345401417 frames=3994582 readouts=1 gates=829/829/670 reset=1 eof=true
+READING 37 1770-2_Conf_Stereo_VinL+R-23LKFS INTEGRATED measured=FINITE:-22.978882450928882 min=-22.978882450928882 frames=3991527 readouts=1 gates=828/828/678 reset=1 eof=true
+READING 38 1770-2_Conf_Mono_Voice+Music-23LKFS INTEGRATED measured=FINITE:-22.990611126501783 min=-22.990611126501783 frames=3998849 readouts=1 gates=830/830/664 reset=1 eof=true
+READING 39 seq-3341-1-16bit.wav MOMENTARY measured=FINITE:-22.95356606631272 min=-22.95356606631272 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+READING 40 seq-3341-1-16bit.wav SHORT_TERM measured=FINITE:-22.953557091009614 min=-22.953557091009614 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+READING 41 seq-3341-1-16bit.wav INTEGRATED measured=FINITE:-22.953554851417437 min=-22.953554851417437 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+READING 42 seq-3341-2-16bit.wav MOMENTARY measured=FINITE:-32.959870373326105 min=-32.959870373326105 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+READING 43 seq-3341-2-16bit.wav SHORT_TERM measured=FINITE:-32.959844278500185 min=-32.959844278500185 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+READING 44 seq-3341-2-16bit.wav INTEGRATED measured=FINITE:-32.95985890772082 min=-32.95985890772082 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+READING 45 seq-3341-3-16bit-v02.wav INTEGRATED measured=FINITE:-23.014141652725478 min=-23.014141652725478 frames=3840000 readouts=1 gates=797/797/603 reset=1 eof=true
+READING 46 seq-3341-4-16bit-v02.wav INTEGRATED measured=FINITE:-23.014141652725478 min=-23.014141652725478 frames=4800000 readouts=1 gates=997/803/603 reset=1 eof=true
+READING 47 seq-3341-5-16bit-v02.wav INTEGRATED measured=FINITE:-22.979029141003206 min=-22.979029141003206 frames=2884800 readouts=1 gates=598/598/598 reset=1 eof=true
+READING 48 seq-3341-6-5channels-16bit.wav INTEGRATED measured=FINITE:-23.017156275003106 min=-23.017156275003106 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+READING 49 seq-3341-6-6channels-WAVEEX-16bit.wav INTEGRATED measured=FINITE:-23.017156275003106 min=-23.017156275003106 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+READING 50 seq-3341-7_seq-3342-5-24bit.wav INTEGRATED measured=FINITE:-22.986158804852888 min=-22.986158804852888 frames=1343998 readouts=1 gates=276/276/276 reset=1 eof=true
+READING 51 seq-3341-2011-8_seq-3342-6-24bit-v02.wav INTEGRATED measured=FINITE:-22.99782024106011 min=-22.99782024106011 frames=11825152 readouts=1 gates=2460/2460/1943 reset=1 eof=true
+READING 52 seq-3341-9-24bit.wav SHORT_TERM measured=FINITE:-22.98621885223939 min=-22.986287000391275 frames=720000 readouts=576000 gates=0/0/0 reset=1 eof=true
+READING 53 seq-3341-10-1-24bit.wav SHORT_TERM measured=FINITE:-22.993329945544094 min=-22.993329945544094 frames=192000 readouts=48001 gates=0/0/0 reset=1 eof=true
+READING 54 seq-3341-10-10-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=256800 readouts=112801 gates=0/0/0 reset=1 eof=true
+READING 55 seq-3341-10-11-24bit.wav SHORT_TERM measured=FINITE:-22.993329944197157 min=-22.993329944197157 frames=264000 readouts=120001 gates=0/0/0 reset=1 eof=true
+READING 56 seq-3341-10-12-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=271200 readouts=127201 gates=0/0/0 reset=1 eof=true
+READING 57 seq-3341-10-13-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=278400 readouts=134401 gates=0/0/0 reset=1 eof=true
+READING 58 seq-3341-10-14-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=285600 readouts=141601 gates=0/0/0 reset=1 eof=true
+READING 59 seq-3341-10-15-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=292800 readouts=148801 gates=0/0/0 reset=1 eof=true
+READING 60 seq-3341-10-16-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=300000 readouts=156001 gates=0/0/0 reset=1 eof=true
+READING 61 seq-3341-10-17-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=307200 readouts=163201 gates=0/0/0 reset=1 eof=true
+READING 62 seq-3341-10-18-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=314400 readouts=170401 gates=0/0/0 reset=1 eof=true
+READING 63 seq-3341-10-19-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=321600 readouts=177601 gates=0/0/0 reset=1 eof=true
+READING 64 seq-3341-10-2-24bit.wav SHORT_TERM measured=FINITE:-22.993329944197157 min=-22.993329944197157 frames=199200 readouts=55201 gates=0/0/0 reset=1 eof=true
+READING 65 seq-3341-10-20-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=328800 readouts=184801 gates=0/0/0 reset=1 eof=true
+READING 66 seq-3341-10-3-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=206400 readouts=62401 gates=0/0/0 reset=1 eof=true
+READING 67 seq-3341-10-4-24bit.wav SHORT_TERM measured=FINITE:-22.993329944197157 min=-22.993329944197157 frames=213600 readouts=69601 gates=0/0/0 reset=1 eof=true
+READING 68 seq-3341-10-5-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=220800 readouts=76801 gates=0/0/0 reset=1 eof=true
+READING 69 seq-3341-10-6-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=228000 readouts=84001 gates=0/0/0 reset=1 eof=true
+READING 70 seq-3341-10-7-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=235200 readouts=91201 gates=0/0/0 reset=1 eof=true
+READING 71 seq-3341-10-8-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=242400 readouts=98401 gates=0/0/0 reset=1 eof=true
+READING 72 seq-3341-10-9-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=249600 readouts=105601 gates=0/0/0 reset=1 eof=true
+READING 73 seq-3341-12-24bit.wav MOMENTARY measured=FINITE:-22.96044421875121 min=-22.960444218751224 frames=480000 readouts=432000 gates=0/0/0 reset=1 eof=true
+READING 74 seq-3341-13-1-24bit.wav MOMENTARY measured=FINITE:-22.99353239825016 min=-22.99353239825016 frames=67200 readouts=48001 gates=0/0/0 reset=1 eof=true
+READING 75 seq-3341-13-10-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=75840 readouts=56641 gates=0/0/0 reset=1 eof=true
+READING 76 seq-3341-13-11-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=76800 readouts=57601 gates=0/0/0 reset=1 eof=true
+READING 77 seq-3341-13-12-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=77760 readouts=58561 gates=0/0/0 reset=1 eof=true
+READING 78 seq-3341-13-13-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=78720 readouts=59521 gates=0/0/0 reset=1 eof=true
+READING 79 seq-3341-13-14-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=79680 readouts=60481 gates=0/0/0 reset=1 eof=true
+READING 80 seq-3341-13-15-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=80640 readouts=61441 gates=0/0/0 reset=1 eof=true
+READING 81 seq-3341-13-16-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=81600 readouts=62401 gates=0/0/0 reset=1 eof=true
+READING 82 seq-3341-13-17-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=82560 readouts=63361 gates=0/0/0 reset=1 eof=true
+READING 83 seq-3341-13-18-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=83520 readouts=64321 gates=0/0/0 reset=1 eof=true
+READING 84 seq-3341-13-19-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=84480 readouts=65281 gates=0/0/0 reset=1 eof=true
+READING 85 seq-3341-13-2-24bit.wav MOMENTARY measured=FINITE:-22.99353238783095 min=-22.99353238783095 frames=68160 readouts=48961 gates=0/0/0 reset=1 eof=true
+READING 86 seq-3341-13-20-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=85440 readouts=66241 gates=0/0/0 reset=1 eof=true
+READING 87 seq-3341-13-3-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388137655 min=-22.993532388137655 frames=69120 readouts=49921 gates=0/0/0 reset=1 eof=true
+READING 88 seq-3341-13-4-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147557 min=-22.993532388147557 frames=70080 readouts=50881 gates=0/0/0 reset=1 eof=true
+READING 89 seq-3341-13-5-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=71040 readouts=51841 gates=0/0/0 reset=1 eof=true
+READING 90 seq-3341-13-6-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=72000 readouts=52801 gates=0/0/0 reset=1 eof=true
+READING 91 seq-3341-13-7-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=72960 readouts=53761 gates=0/0/0 reset=1 eof=true
+READING 92 seq-3341-13-8-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=73920 readouts=54721 gates=0/0/0 reset=1 eof=true
+READING 93 seq-3341-13-9-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=74880 readouts=55681 gates=0/0/0 reset=1 eof=true
+APPLICABILITY EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8
+state=PASSED
+evidence=94
+algorithmSha256=5adbc7a4151d79c756aeb8b6241250cda1dc8480b3a9e6afc04a413cd72ec248
+profileSha256=daad1207ff680b67b64108692a2070be389227ac8ddffa177ae9b8ac39ffbc14
+attestationSha256=dd1b2745a3a5d58a900505f9ff780aaa3423dbcb5192ce6750e2eed1ce45b0f0
+runnerSha256=e3f78bd9caaa8a8f01c9a470d54625cb821bdc475a5b345610689ff7bf5e5ce8
+createdAtEpochSecond=0
+failureReason=NONE
+ituState=PASSED
+ituReason=NONE
+ebuState=PASSED
+ebuReason=NONE
+claim=QM-OFFICIAL-LOUDNESS-FILE-V1 only; not full EBU Mode, live, LRA or true peak
+EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8
+REOPENED_JAR state=PASSED sha256=77e3c8a4ad508852db29ec2d1daefa1a9584f495e9cd1fa2bb2f9753317507cd algorithm=5adbc7a4151d79c756aeb8b6241250cda1dc8480b3a9e6afc04a413cd72ec248 runner=e3f78bd9caaa8a8f01c9a470d54625cb821bdc475a5b345610689ff7bf5e5ce8
+ACTIVE_ACCEPTANCE_JAR E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\active-leveler-acceptance\run-8485728093500398572\quickmaster-acceptance.jar sha256=77e3c8a4ad508852db29ec2d1daefa1a9584f495e9cd1fa2bb2f9753317507cd
+ACTIVE_SOUND key=P01_ABA_LEVEL rate=44100 channels=1 samples=5997600 pieces=9 rawUnitSamples=1764001 maxScalarError=0.0 maxSlopeDbPerSecond=1.9999999999999993 samplePeak=0.31636470556259155 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P01_ABA_LEVEL rate=44100 channels=1 firstGainDb=-1.000050794918072 secondGainDb=1.0000507980347777 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P01_ABA_LEVEL rate=44100 channels=2 samples=11995200 pieces=9 rawUnitSamples=3528002 maxScalarError=0.0 maxSlopeDbPerSecond=2.000000000000005 samplePeak=0.32480230927467346 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P01_ABA_LEVEL rate=44100 channels=2 firstGainDb=-1.0042185746205832 secondGainDb=1.0042185692986423 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P01_ABA_LEVEL rate=48000 channels=1 samples=6528000 pieces=9 rawUnitSamples=1920001 maxScalarError=0.0 maxSlopeDbPerSecond=2.0000000000000084 samplePeak=0.3162709176540375 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P01_ABA_LEVEL rate=48000 channels=1 firstGainDb=-1.000123116538411 secondGainDb=1.0001231146945158 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P01_ABA_LEVEL rate=48000 channels=2 samples=13056000 pieces=9 rawUnitSamples=3840002 maxScalarError=0.0 maxSlopeDbPerSecond=2.0000000000000004 samplePeak=0.32508864998817444 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P01_ABA_LEVEL rate=48000 channels=2 firstGainDb=-1.0042880880321414 secondGainDb=1.00428808532229 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P02_REPEAT_OUTLIER rate=44100 channels=1 samples=6703200 pieces=3 rawUnitSamples=5545575 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.3349820375442505 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P02_REPEAT_OUTLIER rate=44100 channels=1 firstGainDb=0.0 secondGainDb=3.000000005123216 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P02_REPEAT_OUTLIER rate=44100 channels=2 samples=13406400 pieces=3 rawUnitSamples=11091150 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.34400638937950134 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P02_REPEAT_OUTLIER rate=44100 channels=2 firstGainDb=0.0 secondGainDb=3.0000000009389893 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P02_REPEAT_OUTLIER rate=48000 channels=1 samples=7296000 pieces=3 rawUnitSamples=6036001 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.3348855972290039 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P02_REPEAT_OUTLIER rate=48000 channels=1 firstGainDb=0.0 secondGainDb=3.000000002256684 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P02_REPEAT_OUTLIER rate=48000 channels=2 samples=14592000 pieces=3 rawUnitSamples=12072002 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.34431254863739014 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P02_REPEAT_OUTLIER rate=48000 channels=2 firstGainDb=0.0 secondGainDb=2.9999999963825017 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P03_STEREO_LINKED rate=44100 channels=1 samples=6703200 pieces=3 rawUnitSamples=5545575 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.3349820375442505 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P03_STEREO_LINKED rate=44100 channels=1 firstGainDb=0.0 secondGainDb=3.000000005123216 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P03_STEREO_LINKED rate=44100 channels=2 samples=13406400 pieces=3 rawUnitSamples=11091150 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.43703293800354004 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P03_STEREO_LINKED rate=44100 channels=2 firstGainDb=0.0 secondGainDb=3.0000000014748007 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P03_STEREO_LINKED rate=48000 channels=1 samples=7296000 pieces=3 rawUnitSamples=6036001 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.3348855972290039 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P03_STEREO_LINKED rate=48000 channels=1 firstGainDb=0.0 secondGainDb=3.000000002256684 protectedEdgesRawExact=true
+ACTIVE_SOUND key=P03_STEREO_LINKED rate=48000 channels=2 samples=14592000 pieces=3 rawUnitSamples=12072002 maxScalarError=0.0 maxSlopeDbPerSecond=2.0 samplePeak=0.4373091161251068 bypassRawExact=true humanListening=false
+ACTIVE_POSITIVE key=P03_STEREO_LINKED rate=48000 channels=2 firstGainDb=0.0 secondGainDb=3.0000000006807594 protectedEdgesRawExact=true
+ACTIVE_PROTECTION key=N01_LONG_INTRO rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N01_LONG_INTRO rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N01_LONG_INTRO rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N01_LONG_INTRO rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N02_LONG_BREAK rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N02_LONG_BREAK rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N02_LONG_BREAK rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N02_LONG_BREAK rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N03_SHORT_BREAK rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N03_SHORT_BREAK rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N03_SHORT_BREAK rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N03_SHORT_BREAK rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N04_OUTRO_FADE rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N04_OUTRO_FADE rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N04_OUTRO_FADE rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N04_OUTRO_FADE rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N05_CRESCENDO rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N05_CRESCENDO rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N05_CRESCENDO rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N05_CRESCENDO rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N06_UNIQUE_BRIDGE rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N06_UNIQUE_BRIDGE rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N06_UNIQUE_BRIDGE rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N06_UNIQUE_BRIDGE rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N07_SILENCE_SPARSE rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N07_SILENCE_SPARSE rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N07_SILENCE_SPARSE rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N07_SILENCE_SPARSE rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N08_GAIN_SCALED_INTENT rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N08_GAIN_SCALED_INTENT rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N08_GAIN_SCALED_INTENT rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N08_GAIN_SCALED_INTENT rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N09_FLAT_INTRO_REPEAT rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N09_FLAT_INTRO_REPEAT rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N09_FLAT_INTRO_REPEAT rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N09_FLAT_INTRO_REPEAT rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N10_FLAT_OUTRO_REPEAT rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N10_FLAT_OUTRO_REPEAT rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N10_FLAT_OUTRO_REPEAT rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N10_FLAT_OUTRO_REPEAT rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N11_REPEAT_IN_BUILDUP rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N11_REPEAT_IN_BUILDUP rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N11_REPEAT_IN_BUILDUP rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_PROTECTION key=N11_REPEAT_IN_BUILDUP rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_SOUND key=A07_ANTIPHASE_RATE rate=44100 channels=1 samples=4762800 pieces=6 rawUnitSamples=2569618 maxScalarError=0.0 maxSlopeDbPerSecond=0.8660693956276568 samplePeak=0.33494287729263306 bypassRawExact=true humanListening=false
+ACTIVE_PROTECTION key=A07_ANTIPHASE_RATE rate=44100 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_SOUND key=A07_ANTIPHASE_RATE rate=44100 channels=2 samples=9525600 pieces=6 rawUnitSamples=5139236 maxScalarError=0.0 maxSlopeDbPerSecond=0.865868341684644 samplePeak=0.3715530037879944 bypassRawExact=true humanListening=false
+ACTIVE_PROTECTION key=A07_ANTIPHASE_RATE rate=44100 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_SOUND key=A07_ANTIPHASE_RATE rate=48000 channels=1 samples=5184000 pieces=6 rawUnitSamples=2796862 maxScalarError=0.0 maxSlopeDbPerSecond=0.8661320251366175 samplePeak=0.33484649658203125 bypassRawExact=true humanListening=false
+ACTIVE_PROTECTION key=A07_ANTIPHASE_RATE rate=48000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_SOUND key=A07_ANTIPHASE_RATE rate=48000 channels=2 samples=10368000 pieces=6 rawUnitSamples=5593724 maxScalarError=0.0 maxSlopeDbPerSecond=0.8659210100480561 samplePeak=0.37189045548439026 bypassRawExact=true humanListening=false
+ACTIVE_PROTECTION key=A07_ANTIPHASE_RATE rate=48000 channels=2 actualBound=true rawProtectedExact=true
+ACTIVE_SOUND key=A07_ANTIPHASE_RATE rate=96000 channels=1 samples=10368000 pieces=6 rawUnitSamples=5593724 maxScalarError=0.0 maxSlopeDbPerSecond=0.8660666772154421 samplePeak=0.3349851965904236 bypassRawExact=true humanListening=false
+ACTIVE_PROTECTION key=A07_ANTIPHASE_RATE rate=96000 channels=1 actualBound=true rawProtectedExact=true
+ACTIVE_SOUND key=A07_ANTIPHASE_RATE rate=96000 channels=2 samples=20736000 pieces=6 rawUnitSamples=11187448 maxScalarError=0.0 maxSlopeDbPerSecond=0.8658608814428065 samplePeak=0.37203729152679443 bypassRawExact=true humanListening=false
+ACTIVE_PROTECTION key=A07_ANTIPHASE_RATE rate=96000 channels=2 actualBound=true rawProtectedExact=true
+[INFO] Tests run: 62, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 213.4 s -- in com.quickmaster.processing.dynamics.leveler.ActiveLevelerAcceptanceTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ActiveLevelerGuardTest
+[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.114 s -- in com.quickmaster.processing.dynamics.leveler.ActiveLevelerGuardTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ArrangementPcmAcceptanceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.82 s -- in com.quickmaster.processing.dynamics.leveler.ArrangementPcmAcceptanceTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ArrangementReferencePlannerTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.quickmaster.processing.dynamics.leveler.ArrangementReferencePlannerTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.AsyncEscapeBytecodeGuardTest
+[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.133 s -- in com.quickmaster.processing.dynamics.leveler.AsyncEscapeBytecodeGuardTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.BodyContextGateTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.quickmaster.processing.dynamics.leveler.BodyContextGateTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.BoundaryDetectorTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.625 s -- in com.quickmaster.processing.dynamics.leveler.BoundaryDetectorTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.BoundaryExtentContractTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 66.79 s -- in com.quickmaster.processing.dynamics.leveler.BoundaryExtentContractTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.BoundaryOriginalNoveltyTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 s -- in com.quickmaster.processing.dynamics.leveler.BoundaryOriginalNoveltyTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.BoundaryPersistentContrastTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 44.85 s -- in com.quickmaster.processing.dynamics.leveler.BoundaryPersistentContrastTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ComparableGroupBuilderTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.dynamics.leveler.ComparableGroupBuilderTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ComparisonV2Test
+DFT fs=44100 channels=1 hz=55.0 resolved=55.00934638122787 cents=0.2941708861735958 power=148.08207296122387
+DFT fs=44100 channels=1 hz=220.0 resolved=219.98349662017245 cents=-0.12987402170765158 power=158.66521931997164
+DFT fs=44100 channels=1 hz=523.251 resolved=523.263674599315 cents=0.041934811667866494 power=150.69747273045678
+DFT fs=44100 channels=2 hz=55.0 resolved=55.00934638122787 cents=0.2941708861735958 power=148.08207296122387
+DFT fs=44100 channels=2 hz=220.0 resolved=219.98349662017245 cents=-0.12987402170765158 power=158.66521931997164
+DFT fs=44100 channels=2 hz=523.251 resolved=523.263674599315 cents=0.041934811667866494 power=150.69747273045678
+DFT fs=48000 channels=1 hz=55.0 resolved=54.97948945899313 cents=-0.6457303546726995 power=173.69240730309085
+DFT fs=48000 channels=1 hz=220.0 resolved=220.0102446966302 cents=0.08061615767163981 power=178.90323626524338
+DFT fs=48000 channels=1 hz=523.251 resolved=523.2341955092327 cents=-0.0556004169403814 power=161.29660184853438
+DFT fs=48000 channels=2 hz=55.0 resolved=54.97948945899313 cents=-0.6457303546726995 power=173.69240730309085
+DFT fs=48000 channels=2 hz=220.0 resolved=220.0102446966302 cents=0.08061615767163981 power=178.90323626524338
+DFT fs=48000 channels=2 hz=523.251 resolved=523.2341955092327 cents=-0.0556004169403814 power=161.29660184853438
+DFT fs=96000 channels=1 hz=55.0 resolved=54.979487328646066 cents=-0.6457974365878597 power=347.3982651890643
+DFT fs=96000 channels=1 hz=220.0 resolved=220.0102456763183 cents=0.0806238667188398 power=357.82120317682904
+DFT fs=96000 channels=1 hz=523.251 resolved=523.2341938999142 cents=-0.055605741720204875 power=322.6036824444847
+DFT fs=96000 channels=2 hz=55.0 resolved=54.979487328646066 cents=-0.6457974365878597 power=347.3982651890643
+DFT fs=96000 channels=2 hz=220.0 resolved=220.0102456763183 cents=0.0806238667188398 power=357.82120317682904
+DFT fs=96000 channels=2 hz=523.251 resolved=523.2341938999142 cents=-0.055605741720204875 power=322.6036824444847
+MUTANT_CAUSE CONTRAST_RADIUS QM_V2_ORACLE_CALIBRATION direction-only cosine/drop radius got=0.0 expected=0.8289215409436195
+MUTANT_CAUSE UNIT_TIMBRE QM_V2_ORACLE_CALIBRATION unit/no-op timbre
+MUTANT_CAUSE POOLED_ORDER QM_V2_ORACLE_CALIBRATION pooled means makes permutation a repeat
+MUTANT_CAUSE PREFIX_TRUNCATION QM_V2_ORACLE_CALIBRATION prefix-only score
+MUTANT_CAUSE PER_WINDOW_ROTATION QM_V2_ORACLE_CALIBRATION per-window rotation incorrectly claims valid
+MUTANT_CAUSE NOOP_POSITIVE_LITERAL QM_V2_ORACLE_CALIBRATION required positive actual action cannot be no-op
+LITERAL_SCORES repeat=1.0 reorder=0.75 phase=0.9583333333333334 late=0.875 transpose=0.95
+MUTANT_CAUSE ENDPOINT_DELETION QM_V2_ORACLE_CALIBRATION central-only/endpoint deletion
+PRODUCT_CASE stationary H=1.0 T=1.0 A=1.0 reason=NONE
+PRODUCT_CASE true_ordered_repeat H=1.0 T=1.0 A=1.0 reason=UNSTABLE_BOUNDARY
+PRODUCT_CASE same_histogram_reorder H=0.75 T=0.75 A=0.75 reason=UNSTABLE_BOUNDARY
+PRODUCT_CASE final_cell_change H=0.9916666666666667 T=1.0 A=0.9916666666666667 reason=UNSTABLE_BOUNDARY
+PRODUCT_CASE global_rotation2 H=0.95 T=1.0 A=1.0 reason=UNSTABLE_BOUNDARY
+PRODUCT_CASE contrast_radius H=1.0 T=0.06336766477907818 A=0.06336766477907818 reason=UNSTABLE_BOUNDARY
+PRODUCT_CASE added_endpoint_cells H=1.0 T=1.0 A=1.0 reason=UNSTABLE_BOUNDARY
+PRODUCT_CASE unequal_duration H=1.0 T=1.0 A=1.0 reason=UNSTABLE_BOUNDARY
+PRODUCT_CASE clipped_EOF H=1.0 T=1.0 A=1.0 reason=NONE
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.911 s -- in com.quickmaster.processing.dynamics.leveler.ComparisonV2Test
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ConformanceBindingContinuationTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.quickmaster.processing.dynamics.leveler.ConformanceBindingContinuationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ConformanceBindingRemoteTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.quickmaster.processing.dynamics.leveler.ConformanceBindingRemoteTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ConformanceCodecTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in com.quickmaster.processing.dynamics.leveler.ConformanceCodecTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ConformancePackageTest
+APPLICABILITY EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8
+APPLICABILITY EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8
+state=UNAVAILABLE
+evidence=0
+algorithmSha256=5adbc7a4151d79c756aeb8b6241250cda1dc8480b3a9e6afc04a413cd72ec248
+profileSha256=daad1207ff680b67b64108692a2070be389227ac8ddffa177ae9b8ac39ffbc14
+attestationSha256=d5f6302710c96a1fcf3971a2d45536ce028e583241c403eb60ae5af85620ff54
+runnerSha256=e3f78bd9caaa8a8f01c9a470d54625cb821bdc475a5b345610689ff7bf5e5ce8
+createdAtEpochSecond=0
+failureReason=CORPUS_UNAVAILABLE
+ituState=UNAVAILABLE
+ituReason=CORPUS_UNAVAILABLE
+ebuState=UNAVAILABLE
+ebuReason=CORPUS_UNAVAILABLE
+claim=QM-OFFICIAL-LOUDNESS-FILE-V1 only; not full EBU Mode, live, LRA or true peak
+EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8
+REOPENED_JAR state=NOT_RUN sha256=f2bc81237e60bcad0960515aa2ee02e41b3eb63ecfdc0149f4918ed1749432ca algorithm=5adbc7a4151d79c756aeb8b6241250cda1dc8480b3a9e6afc04a413cd72ec248 runner=e3f78bd9caaa8a8f01c9a470d54625cb821bdc475a5b345610689ff7bf5e5ce8
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.758 s -- in com.quickmaster.processing.dynamics.leveler.ConformancePackageTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.FiniteTruePeakStreamTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.quickmaster.processing.dynamics.leveler.FiniteTruePeakStreamTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.GainPlannerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.199 s -- in com.quickmaster.processing.dynamics.leveler.GainPlannerTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.HannAllocationTest
+structural pair=0 smallBytes=370528 largeBytes=373344 growth=2816
+structural pair=1 smallBytes=370528 largeBytes=373344 growth=2816
+structural pair=2 smallBytes=370528 largeBytes=373344 growth=2816
+comparison pair=0 smallBytes=1611816 largeBytes=1630952 growth=19136
+comparison pair=1 smallBytes=1611816 largeBytes=1630952 growth=19136
+comparison pair=2 smallBytes=1611816 largeBytes=1630952 growth=19136
+HANN_MUTANT HannRepeatedComparisonMutant sha256=c529637076b404bda7661d50c13bb7efb28ad0e78a2c28db814a920ffc6a1808
+comparison mutant pair=0 smallBytes=13900728 largeBytes=38495864 growth=24595136
+comparison mutant pair=1 smallBytes=13900728 largeBytes=38495864 growth=24595136
+comparison mutant pair=2 smallBytes=13900728 largeBytes=38495864 growth=24595136
+HANN_MUTANT_CAUSE repeated comparison: Multiple Failures (3 failures)
+	org.opentest4j.AssertionFailedError: comparison mutant allocation follows duration: pair=0 small=13900728 large=38495864 growth=24595136 ==> expected: <true> but was: <false>
+	org.opentest4j.AssertionFailedError: comparison mutant allocation follows duration: pair=1 small=13900728 large=38495864 growth=24595136 ==> expected: <true> but was: <false>
+	org.opentest4j.AssertionFailedError: comparison mutant allocation follows duration: pair=2 small=13900728 large=38495864 growth=24595136 ==> expected: <true> but was: <false>
+HANN_MUTANT HannResetStructuralMutant sha256=6231410ebd36e33bdf68297470b80d46e67e4b1dc8950c080510fd26334400a6
+structural mutant pair=0 smallBytes=6531824 largeBytes=19117552 growth=12585728
+structural mutant pair=1 smallBytes=6531824 largeBytes=19117552 growth=12585728
+structural mutant pair=2 smallBytes=6531824 largeBytes=19117552 growth=12585728
+HANN_MUTANT_CAUSE reset structural: Multiple Failures (3 failures)
+	org.opentest4j.AssertionFailedError: structural mutant allocation follows duration: pair=0 small=6531824 large=19117552 growth=12585728 ==> expected: <true> but was: <false>
+	org.opentest4j.AssertionFailedError: structural mutant allocation follows duration: pair=1 small=6531824 large=19117552 growth=12585728 ==> expected: <true> but was: <false>
+	org.opentest4j.AssertionFailedError: structural mutant allocation follows duration: pair=2 small=6531824 large=19117552 growth=12585728 ==> expected: <true> but was: <false>
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.614 s -- in com.quickmaster.processing.dynamics.leveler.HannAllocationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.HannBitIdentityTest
+HANN_MUTANT HannFloatStructuralMutant sha256=2c40433ed3973b1f7e8d8936af952179f48ec3df595301af8ea2bd451aaf7273
+HANN_MUTANT_CAUSE HannFloatStructuralMutant chroma 0/0 raw bits ==> expected: <4582247460436101983> but was: <4582247460420950437>
+HANN_MUTANT HannPrematureStructuralMutant sha256=3454357d3d8a5c82f3dafed946ef90836549ab0e9536858d3c88a7a7f0d92c3d
+HANN_MUTANT_CAUSE HannPrematureStructuralMutant chroma 0/0 raw bits ==> expected: <4582247460436101983> but was: <0>
+HANN_MUTANT HannFloatComparisonMutant sha256=3776729e6f37a8885384220f9c965abcda2c4e98eef7c004b683aae1b6bd8fe0
+HANN_MUTANT_CAUSE float comparison 8000/1 short packed 74/37 ==> expected: <-10057> but was: <-10056>
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.276 s -- in com.quickmaster.processing.dynamics.leveler.HannBitIdentityTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.HannCancellationTest
+HANN_CANCELLATION ComparisonFeatureExtractor reuse=false cancelledAt=1 nextPoll=4096 result=null productTransformed=false
+HANN_CANCELLATION ComparisonFeatureExtractor reuse=true cancelledAt=1 nextPoll=4096 result=null productTransformed=false
+HANN_CANCELLATION StructuralFeatureExtractor reuse=true cancelledAt=1 nextPoll=4096 result=null productTransformed=false
+HANN_CANCELLATION StructuralFeatureExtractor reuse=false cancelledAt=1 nextPoll=4096 result=null productTransformed=false
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.421 s -- in com.quickmaster.processing.dynamics.leveler.HannCancellationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngineIntegrationTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s -- in com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngineIntegrationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LevelerCalibrationProfileTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.502 s -- in com.quickmaster.processing.dynamics.leveler.LevelerCalibrationProfileTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LevelerUiDiagnosticTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s -- in com.quickmaster.processing.dynamics.leveler.LevelerUiDiagnosticTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessAnalyzerConformanceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.391 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessAnalyzerConformanceTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessConformanceGuardTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessConformanceGuardTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessCoreChunkEquivalenceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.663 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessCoreChunkEquivalenceTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessCorePrecisionTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.340 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessCorePrecisionTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessCoreTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.151 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessCoreTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessCoreWindowTreeTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.137 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessCoreWindowTreeTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessSharedCoreCancellationTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.433 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessSharedCoreCancellationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.LoudnessSharedCoreTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.974 s -- in com.quickmaster.processing.dynamics.leveler.LoudnessSharedCoreTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.M004ClassfileTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.348 s -- in com.quickmaster.processing.dynamics.leveler.M004ClassfileTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.M004StaticClosureTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.043 s -- in com.quickmaster.processing.dynamics.leveler.M004StaticClosureTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.M004StaticSchemaTest
+CANDIDATE (not frozen) semantic SHA-256 dc78cc63d942a16136d50c694fe57d945386ecf926b9c9b59a5d9e89bbf4fe0c
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.990 s -- in com.quickmaster.processing.dynamics.leveler.M004StaticSchemaTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MacroDynamicsProtectionTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.dynamics.leveler.MacroDynamicsProtectionTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.memory.LoudnessCoreStorageTest
+CORE_ALLOCATION rate=31 constructor=1480 retained=1480 framesAndGetters=0
+CORE_ALLOCATION rate=48000 constructor=1728480 retained=1728480 framesAndGetters=0
+CORE_ALLOCATION rate=96000 constructor=3456600 retained=3456600 framesAndGetters=0
+CORE_JFR baseline=true outsideTLAB=16 large=16
+CORE_JFR baseline=false outsideTLAB=63 large=0
+CORE_STORAGE_PASS maxArrayBytes=262176 chunkCap=32768 maxRate=5592383
+
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.711 s -- in com.quickmaster.processing.dynamics.leveler.memory.LoudnessCoreStorageTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.memory.RuntimeRetentionStageOneTest
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 16.39 s -- in com.quickmaster.processing.dynamics.leveler.memory.RuntimeRetentionStageOneTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalBodyRegressionTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.quickmaster.processing.dynamics.leveler.MusicalBodyRegressionTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalComparatorRegressionTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s -- in com.quickmaster.processing.dynamics.leveler.MusicalComparatorRegressionTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test
+IDENTITY key=A01_SHARED_ACCOMP fs=44100 channels=1 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=4a8152faa4eb9f4323ca5588a1b065256f3e5af460092e2e6e91600bc5fd37d0
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 6c846ab4576121737bfbb3e7cad2bb12a982b8f1cd2b0f710049ac01422aba13
+STRUCTURAL_WITNESS features 1439a3beebda892803e6753829fc7a3b58499627702e0a11e35f5e88911b068f
+STRUCTURAL_WITNESS layout ef32b23e16701a4f26854d965ca0fcc1067426baa04c19c4bd2f4b801a355322
+STRUCTURAL_WITNESS descriptors_context_sketch 60e8cfe8a30c446e3e71b4d8793dd74f7c880bb9be870ed375fe400d92bea20f
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ f8dd50665505b7e012212dbbc1ab5079420449b6d5245dd1ff1cd528c67c4446
+OBSERVATION Observation[h=0.4723095131332472, t=0.3421694627700582, a=0.3309458675997139, c=0.3609458675997139, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+IDENTITY key=A01_SHARED_ACCOMP fs=44100 channels=2 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=5e60ce9188b67a8284b30cd85cb9b6f27491dbe6c80f88ae584ca6a91fa566d7
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 99c653b7905fad5f79443572877904ba1bae722603084fe9e46d5b58ae847d3a
+STRUCTURAL_WITNESS features 3258f5dff858f26efc0b104f31da551ee7a37f4c115182f586a46756da07609f
+STRUCTURAL_WITNESS layout ef32b23e16701a4f26854d965ca0fcc1067426baa04c19c4bd2f4b801a355322
+STRUCTURAL_WITNESS descriptors_context_sketch 16468868f6b0e93ce62d93d0db2c5a38c5e2d479ef47be9286df3189aff25ada
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ 57f8e338d6393537f32751cbb85bf9412306c31a72e2b208ec598139203c492d
+OBSERVATION Observation[h=0.5181607418342005, t=0.34696290296991106, a=0.3353803889389303, c=0.3653803889389303, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+IDENTITY key=A01_SHARED_ACCOMP fs=48000 channels=1 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=a7318763d5aaadfd6a1d88623fc77ac39d5c3d21f56fb86ead83955e29918841
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 6f4fdf93f117995ae10db8d774e2abb90117f26fb8a03f93036c1c9395538be6
+STRUCTURAL_WITNESS features 7be185a6a689884abd466809bbc23ae8e0029746c56fccf4fbd6a9026c99af36
+STRUCTURAL_WITNESS layout c415264acbb8da826bab52ecf84302235f0312477e121d03931554b172a4d9f1
+STRUCTURAL_WITNESS descriptors_context_sketch 85a9213790a5dc0a70167ccfc61b393fdc176c7bea832ad9a30f7ffdf104ccc0
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ 65e6a563263166532ff0803b1d436f9c2ad6a0a82a4450df8e752f93accb4229
+OBSERVATION Observation[h=0.41738263650125385, t=0.282198928406867, a=0.27451051441337915, c=0.3045105144133792, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+IDENTITY key=A01_SHARED_ACCOMP fs=48000 channels=2 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=fafda67b432665b748634ba1811ef831259a27fc3a80ed95ef47d41590067765
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 2d5d49a90ee72ee9858e3cd549e31a18faec1783e09866d8855d4ecb2ceea99b
+STRUCTURAL_WITNESS features c554d1627e5fb29c9a863419ad24b3a4de7841a02daf5719f621c29cb6a62d93
+STRUCTURAL_WITNESS layout c415264acbb8da826bab52ecf84302235f0312477e121d03931554b172a4d9f1
+STRUCTURAL_WITNESS descriptors_context_sketch 550b63a446405096dd158c4bf6be37bb63479008173df1db9cb6954545f6b70f
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ 974069cc91e6fd0f7cd8da283cb7b08ee66ebc6bc92b810f27e13911cacc1f2c
+OBSERVATION Observation[h=0.4180424231986175, t=0.28421749037619426, a=0.27765648854387137, c=0.3076564885438714, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+IDENTITY key=A02_SAME_CHROMA_TIMBRE fs=44100 channels=1 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=84c034cf456c99ecef20d1694cfb202ab83c8f1297441434085e34aa4b62b5ef
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 88ba5a5d3772a125fd55f582b5863d7577daae881295d833220e0f6c42584080
+STRUCTURAL_WITNESS features ead9190e74dcb269fb874ea23c08c8c0738186f9b9202640e2a0b04cefdc473e
+STRUCTURAL_WITNESS layout ef32b23e16701a4f26854d965ca0fcc1067426baa04c19c4bd2f4b801a355322
+STRUCTURAL_WITNESS descriptors_context_sketch 233e01d4a088cf98b348c3242f6cc0beff47dd604fd2ade2f7ae35d06c41a362
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ 3d3c8bde582ad1553c29324f34b42456596eb30a8daefbdb262df4226f8c49a9
+OBSERVATION Observation[h=0.8623475852906326, t=0.027649842185089146, a=0.027649842185089146, c=0.057649842185089145, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+IDENTITY key=A02_SAME_CHROMA_TIMBRE fs=44100 channels=2 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=c2edb26a607af3e9b74afb72ea0019d8a51f771b27ace3027ef2fce30561a9a4
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 17048cb4a518a4930795342c7eee83f5172d426e6dd0c213ee5f46876d955521
+STRUCTURAL_WITNESS features 4e71485a8ba68cd9db3a21beadec18cc29bb7287d234bd7727d3058ecfdac1e0
+STRUCTURAL_WITNESS layout ef32b23e16701a4f26854d965ca0fcc1067426baa04c19c4bd2f4b801a355322
+STRUCTURAL_WITNESS descriptors_context_sketch 35e0b454ad83c3b1fb5324c45131dd26bc35857f40d2ade239b66ab27842c845
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ 083dab0be0aec81708c1b7483e03b674375eed9ccabe1249bb1c50ecaaf03c3e
+OBSERVATION Observation[h=0.8628207836627646, t=0.027139942696996155, a=0.027139942696996155, c=0.057139942696996154, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+IDENTITY key=A02_SAME_CHROMA_TIMBRE fs=48000 channels=1 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=3a8cc1d0e8085434bf90f3ad7de8fa8faf3ea057f286e17c4fa04b8002a28c89
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 6488301b0f1776bb22a38fabe365117468ddf6d3a76a133d017497d446fa3a30
+STRUCTURAL_WITNESS features c852a7a5f25f24a72d2d6226b2f93e74905187ae07d221578712a62a0de5657e
+STRUCTURAL_WITNESS layout c415264acbb8da826bab52ecf84302235f0312477e121d03931554b172a4d9f1
+STRUCTURAL_WITNESS descriptors_context_sketch 2e347fb429aa232f48e1e7caedefc6dbcac5d206901edcfdfd8e0f8baeb181e8
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ acab0ff277475135366140912bf6429c46e3925fbcbde72d3903b1f74f2af684
+OBSERVATION Observation[h=0.8407135784310752, t=0.022758081844849398, a=0.022758081844849398, c=0.0527580818448494, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+IDENTITY key=A02_SAME_CHROMA_TIMBRE fs=48000 channels=2 algorithm=QM-LEVELER-S002-ARRANGEMENT-V1 profile=QM-LEVELER-V2 pcmSha=3dcc4c4683cd47d012f2d36054ec54dfbdd3100ff070506c2f435d48dcce7419
+CLASS com.quickmaster.processing.dynamics.leveler.LevelerAnalysisEngine 4e56269acebe56ba3c5c3445d4b561fdfbbd07471f0c3641b4a1e1787e38f277
+CLASS com.quickmaster.processing.dynamics.leveler.StructuralFeatureExtractor 0c6adbfa83e8fc3541cf2edb980297d14ead7a10fb374534b7267ddd04ede5e9
+CLASS com.quickmaster.processing.dynamics.leveler.BoundaryDetector 27776321d6356d3c7c71f8a0a6d6a0dbdc323b91c62975101fc68273e01f79b0
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilder 799b7bf2a3d7e396af0f45b232f71f2d768a65ca206626e5b2089948201e57f2
+CLASS com.quickmaster.processing.dynamics.leveler.SegmentComparator 54c064e987669e1926bb78e131bcd7e457ad5d85022f98cf656250763f499a7f
+CLASS com.quickmaster.processing.dynamics.leveler.BodyContextGate fec679e3c649642e8594e96bb7611f6ea0139d58f2375ac027f1b71df8aa2d93
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalPcmFixture 7b21f8afd7c9c01b6b46cf2db809b36fb8df9930a4c378dc585b89c2a224533d
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalContextOracle 6ce89d62260e686bdb08e363dd86cb5fb7d1d6ab9c2fa0be5b3cf479d3206d8c
+CLASS com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test 92eefacde768a5115ed045e4faf68c64d47a3a6bc7392553cf103b4906d59312
+CLASS com.quickmaster.processing.dynamics.leveler.ComparisonV2Oracle 62f2f7f93df78226717c6a59f828c6145c1a1678a83bed564caeeaa64211bcc9
+STRUCTURAL_WITNESS loudness 3ad9abbc60a2e853ca91071752dcccb893df18e4b46071781fa3b3f1d9def942
+STRUCTURAL_WITNESS features 8c5030b6feb62a9d9035cea4fa690b0c5cd6db9027b76ea3bd9a10df15b0a461
+STRUCTURAL_WITNESS layout c415264acbb8da826bab52ecf84302235f0312477e121d03931554b172a4d9f1
+STRUCTURAL_WITNESS descriptors_context_sketch 26941c91e65b7f646cee1886e814876e1e1bf72d706045585263fe4746158100
+STRUCTURAL_WITNESS protections 235b02da3d7d75dbd67fa3a96c5fdd1794d86acf358d261d50c3997d5cca2301
+STRUCTURAL_WITNESS originalQ 681464fb722c3b43fec917858a3596d048f09bb291d28fd64942792c519b6fd8
+OBSERVATION Observation[h=0.8407077487235487, t=0.022313599178861665, a=0.022313599178861665, c=0.052313599178861664, rotation=0, count=32, reason=NONE, variants=8]
+TARGET 1 raw=0.0 conf=0.0 weighted=0.0
+TARGET 3 raw=0.0 conf=0.0 weighted=0.0
+COUNTS checks=9 failed=0 productV2Executed=true
+A03_V2_IDENTITY fs=44100 channels=1 H=0.5139644115146313 T=0.1761276301781507 A=0.1761276301781507 C=0.2061276301781507 rotation=2 support=192/192 firstReference=NOT_COMPARABLE secondReference=NOT_COMPARABLE
+A03_V2_IDENTITY fs=44100 channels=2 H=0.5140519469573783 T=0.18097030207388665 A=0.1804790123950577 C=0.2104790123950577 rotation=2 support=192/192 firstReference=NOT_COMPARABLE secondReference=NOT_COMPARABLE
+A03_V2_IDENTITY fs=48000 channels=1 H=0.26917022699545573 T=0.16191594997480296 A=0.16102992329315957 C=0.19102992329315957 rotation=2 support=192/192 firstReference=NOT_COMPARABLE secondReference=NOT_COMPARABLE
+A03_V2_IDENTITY fs=48000 channels=2 H=0.2692930587734666 T=0.1611195529513837 A=0.1593759333334197 C=0.1893759333334197 rotation=2 support=192/192 firstReference=NOT_COMPARABLE secondReference=NOT_COMPARABLE
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 44.74 s -- in com.quickmaster.processing.dynamics.leveler.MusicalComparisonV2Test
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalContextAdversarialTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.quickmaster.processing.dynamics.leveler.MusicalContextAdversarialTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalContextComparatorTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.quickmaster.processing.dynamics.leveler.MusicalContextComparatorTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalContextEngineTest
+PCM_ENGINE_0 QM-LEVELER-S002-ARRANGEMENT-V1/QM-LEVELER-V2/0:0-8000/35/false/0.0/0.0/0.0/3.333333333351028E10;1:8000-960000/2/true/-21.79506973865946/0.0/3.333333333351028E10/1.570484131464216E11;2:960000-1920000/0/true/-21.51899449534719/0.0/1.570484131464216E11/1.570484131464216E11;3:1920000-2880000/0/true/-21.795069738659468/0.0/1.570484131464216E11/1.570484131464216E11;4:2880000-3840000/0/true/-21.51899449534719/0.0/1.570484131464216E11/1.570484131464216E11;5:3840000-4800000/4/true/-21.795069738659468/0.0/1.570484131464216E11/0.0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NONE:0x1.a2d97de48422dp-2,0x1.f485306da57p-9,0x1.f485306da57p-9,0x1.150ae263034ccp-5,8,32;NONE:0x1.fff0a7b4c6052p-1,0x1.ffd468dd8cf0ap-1,0x1.ffcbe7394d143p-1,0x1.fff0a7b4c6052p-1,0,32;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NONE:0x1.a6c1c77499b41p-2,0x1.fa4dd2b7daep-9,0x1.fa4dd2b7daep-9,0x1.15676c87a6a3cp-5,4,32;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;PAIR_REFERENCE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;PAIR_REFERENCE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;
+PCM_ENGINE_1 QM-LEVELER-S002-ARRANGEMENT-V1/QM-LEVELER-V2/0:0-8000/35/false/0.0/0.0/0.0/3.333333333351028E10;1:8000-960000/2/true/-21.79506973865946/0.0/3.333333333351028E10/1.570484131464216E11;2:960000-1920000/0/true/-21.51899449534719/0.0/1.570484131464216E11/1.570484131464216E11;3:1920000-2880000/0/true/-21.795069738659468/0.0/1.570484131464216E11/1.570484131464216E11;4:2880000-3840000/0/true/-21.51899449534719/0.0/1.570484131464216E11/1.570484131464216E11;5:3840000-4800000/4/true/-21.795069738659468/0.0/1.570484131464216E11/0.0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NONE:0x1.a2d97de48422dp-2,0x1.f485306da57p-9,0x1.f485306da57p-9,0x1.150ae263034ccp-5,8,32;NONE:0x1.fff0a7b4c6052p-1,0x1.ffd468dd8cf0ap-1,0x1.ffcbe7394d143p-1,0x1.fff0a7b4c6052p-1,0,32;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NONE:0x1.a6c1c77499b41p-2,0x1.fa4dd2b7daep-9,0x1.fa4dd2b7daep-9,0x1.15676c87a6a3cp-5,4,32;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;PAIR_REFERENCE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;PAIR_REFERENCE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;
+PCM_ENGINE_2 QM-LEVELER-S002-ARRANGEMENT-V1/QM-LEVELER-V2/0:0-8000/35/false/0.0/0.0/0.0/3.333333333351028E10;1:8000-960000/2/true/-21.79506973865946/0.0/3.333333333351028E10/1.570484131464216E11;2:960000-1920000/0/true/-21.51899449534719/0.0/1.570484131464216E11/1.570484131464216E11;3:1920000-2880000/0/true/-21.795069738659468/0.0/1.570484131464216E11/1.570484131464216E11;4:2880000-3840000/0/true/-21.51899449534719/0.0/1.570484131464216E11/1.570484131464216E11;5:3840000-4800000/4/true/-21.795069738659468/0.0/1.570484131464216E11/0.0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NONE:0x1.a2d97de48422dp-2,0x1.f485306da57p-9,0x1.f485306da57p-9,0x1.150ae263034ccp-5,8,32;NONE:0x1.fff0a7b4c6052p-1,0x1.ffd468dd8cf0ap-1,0x1.ffcbe7394d143p-1,0x1.fff0a7b4c6052p-1,0,32;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NONE:0x1.a6c1c77499b41p-2,0x1.fa4dd2b7daep-9,0x1.fa4dd2b7daep-9,0x1.15676c87a6a3cp-5,4,32;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;PROTECTED:0x0.0p0,0x0.0p0,0x0.0p0,0x0.0p0,0,0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;PAIR_REFERENCE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;PAIR_REFERENCE:0x0.0p0:0x0.0p0;NOT_COMPARABLE:0x0.0p0:0x0.0p0;
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.03 s -- in com.quickmaster.processing.dynamics.leveler.MusicalContextEngineTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalContextMutationTest
+MUSICAL_MUTATIONS E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\leveler-context-mutations\run-3700766554191306643
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.033 s -- in com.quickmaster.processing.dynamics.leveler.MusicalContextMutationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalContextObservationTest
+MUSICAL_JDI E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\leveler-context-jdi\trends-13587815427628106877
+MUSICAL_JDI E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\leveler-context-jdi\radii-5512845384051960785
+MUSICAL_JDI E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\leveler-context-jdi\dense-pcm-10097969573047770772
+MUSICAL_JDI E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\leveler-context-jdi\engine-9320155280618310721
+MUSICAL_JDI E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\leveler-context-jdi\q-12475935514570810885
+MUSICAL_JDI E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\leveler-context-jdi\comparisons-11450087375254542889
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 73.01 s -- in com.quickmaster.processing.dynamics.leveler.MusicalContextObservationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalDescriptorRegressionTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.quickmaster.processing.dynamics.leveler.MusicalDescriptorRegressionTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalGroupingRegressionTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.dynamics.leveler.MusicalGroupingRegressionTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalPcmMatrixTest
+P01_ABA_LEVEL_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[2.3260589, 2.31785, 2.3313204]
+P01_ABA_LEVEL_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.642801, 2.6501856, 2.6661996]
+P01_ABA_LEVEL_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[2.4406862, 2.4536796, 2.4450498]
+P01_ABA_LEVEL_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.7492571, 2.781618, 2.7897981]
+P02_REPEAT_OUTLIER_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[2.6874226, 2.6923636, 2.6928659]
+P02_REPEAT_OUTLIER_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[3.0432106, 3.0682313, 3.0516635]
+P02_REPEAT_OUTLIER_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[2.8084586, 2.7970946, 2.8034035]
+P02_REPEAT_OUTLIER_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[3.1676695, 3.1809902, 3.1831501]
+P03_STEREO_LINKED_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[2.6754589, 2.6713226, 2.6788946]
+P03_STEREO_LINKED_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[3.0515115, 3.0457699, 3.0268577]
+P03_STEREO_LINKED_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[2.8149526, 2.8094452, 2.8055648]
+P03_STEREO_LINKED_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[3.1834774, 3.1830846, 3.1713379]
+N01_LONG_INTRO_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[0.9296145, 0.9367709, 0.929104]
+N01_LONG_INTRO_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.0728967, 1.0748587, 1.0690787]
+N01_LONG_INTRO_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[0.9788614, 0.968536, 0.9750397]
+N01_LONG_INTRO_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[1.1163534, 1.1263061, 1.1184921]
+N02_LONG_BREAK_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.6497228, 1.6537556, 1.65395]
+N02_LONG_BREAK_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.9166229, 1.9174758, 1.9091014]
+N02_LONG_BREAK_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.7433455, 1.7439891, 1.7430228]
+N02_LONG_BREAK_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.0181999, 2.022822, 1.9995278]
+N03_SHORT_BREAK_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.4825595, 1.491292, 1.4900007]
+N03_SHORT_BREAK_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.6982242, 1.6993088, 1.6982631]
+N03_SHORT_BREAK_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.5488711, 1.5580764, 1.5513836]
+N03_SHORT_BREAK_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[1.7748976, 1.7769437, 1.7804501]
+N04_OUTRO_FADE_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.0312577, 1.0324183, 1.0372479]
+N04_OUTRO_FADE_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.1893673, 1.1828682, 1.1926748]
+N04_OUTRO_FADE_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.0859349, 1.0877834, 1.0845414]
+N04_OUTRO_FADE_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[1.2404964, 1.2423635, 1.2416103]
+N05_CRESCENDO_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[0.9403036, 0.9350235, 0.9426061]
+N05_CRESCENDO_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.0663078, 1.0903518, 1.0729718]
+N05_CRESCENDO_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[0.9809665, 0.9803941, 0.9798771]
+N05_CRESCENDO_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[1.1244119, 1.1196761, 1.1210323]
+N06_UNIQUE_BRIDGE_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8951682, 1.8832676, 1.8737636]
+N06_UNIQUE_BRIDGE_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.1496601, 2.1492422, 2.1556791]
+N06_UNIQUE_BRIDGE_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9684894, 1.9815592, 1.9699694]
+N06_UNIQUE_BRIDGE_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.2578874, 2.2487171, 2.2504293]
+N07_SILENCE_SPARSE_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.2602142, 1.2539518, 1.2625274]
+N07_SILENCE_SPARSE_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.4475333, 1.4378776, 1.4515138]
+N07_SILENCE_SPARSE_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.326963, 1.3182554, 1.3192194]
+N07_SILENCE_SPARSE_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[1.515927, 1.5195427, 1.5205269]
+N08_GAIN_SCALED_INTENT_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8131821, 1.8242822, 1.8299187]
+N08_GAIN_SCALED_INTENT_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.0745679, 2.0732225, 2.072081]
+N08_GAIN_SCALED_INTENT_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[2.038439, 1.9001768, 1.9545873]
+N08_GAIN_SCALED_INTENT_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.1676408, 2.1789264, 2.1631558]
+N09_FLAT_INTRO_REPEAT_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.461256, 1.4691142, 1.4632502]
+N09_FLAT_INTRO_REPEAT_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.6917382, 1.6794793, 1.6791097]
+N09_FLAT_INTRO_REPEAT_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.5456326, 1.5382075, 1.5405172]
+N09_FLAT_INTRO_REPEAT_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[1.7566828, 1.7566325, 1.7632784]
+N10_FLAT_OUTRO_REPEAT_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.4655484, 1.4907277, 1.4801518]
+N10_FLAT_OUTRO_REPEAT_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.6945273, 1.704891, 1.687415]
+N10_FLAT_OUTRO_REPEAT_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.5437773, 1.5347113, 1.5377382]
+N10_FLAT_OUTRO_REPEAT_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[1.7619883, 1.7608601, 1.7598392]
+N11_REPEAT_IN_BUILDUP_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.7542332, 1.6671484, 1.6746869]
+N11_REPEAT_IN_BUILDUP_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[1.9031227, 1.8997451, 1.9061108]
+N11_REPEAT_IN_BUILDUP_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.7539737, 1.7821886, 1.7543069]
+N11_REPEAT_IN_BUILDUP_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.0804793, 2.0203606, 2.0001022]
+A01_SHARED_ACCOMP_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8429868, 1.8589983, 1.8428369]
+A01_SHARED_ACCOMP_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.1062736, 2.1050322, 2.1072331]
+A01_SHARED_ACCOMP_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9343899, 1.9310862, 1.9532526]
+A01_SHARED_ACCOMP_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.2098403, 2.2256563, 2.2066189]
+A02_SAME_CHROMA_TIMBRE_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8520458, 1.8560931, 1.8589935]
+A02_SAME_CHROMA_TIMBRE_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.0980883, 2.1047563, 2.0952369]
+A02_SAME_CHROMA_TIMBRE_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9401386, 1.945395, 1.9398977]
+A02_SAME_CHROMA_TIMBRE_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.2064806, 2.2086171, 2.2168429]
+A03_TRANSPOSED_REPEAT_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8054148, 1.80167, 1.8021764]
+A03_TRANSPOSED_REPEAT_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.0700663, 2.0684466, 2.0641241]
+A03_TRANSPOSED_REPEAT_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9419829, 1.9336515, 1.9432784]
+A03_TRANSPOSED_REPEAT_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.2096925, 2.2135784, 2.2189807]
+A04_BOUNDARY_JITTER_attack-1_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.87024, 1.854423, 1.8542249]
+A04_BOUNDARY_JITTER_attack-1_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.1168784, 2.1107947, 2.1219352]
+A04_BOUNDARY_JITTER_attack-1_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9639134, 1.9405961, 1.9371411]
+A04_BOUNDARY_JITTER_attack-1_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.2173997, 2.2167407, 2.2098518]
+A04_BOUNDARY_JITTER_attack0_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8646565, 1.8540945, 1.8549076]
+A04_BOUNDARY_JITTER_attack0_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.1101939, 2.1107779, 2.1132485]
+A04_BOUNDARY_JITTER_attack0_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9391722, 1.9323399, 1.9357616]
+A04_BOUNDARY_JITTER_attack0_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.1995176, 2.2095382, 2.1963173]
+A04_BOUNDARY_JITTER_attack1_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8563071, 1.8461631, 1.8336012]
+A04_BOUNDARY_JITTER_attack1_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.1053828, 2.0927515, 2.1106624]
+A04_BOUNDARY_JITTER_attack1_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9247186, 1.9344914, 1.922447]
+A04_BOUNDARY_JITTER_attack1_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.2115848, 2.2170671, 2.2254646]
+A06_DENSE_NOVELTY_base_44100_1 PROBED_PASS 0 assertions failed; seconds=[4.5036, 4.5059144, 4.499676]
+A06_DENSE_NOVELTY_base_44100_2 PROBED_PASS 0 assertions failed; seconds=[4.7335557, 4.7584698, 4.7261474]
+A06_DENSE_NOVELTY_base_48000_1 PROBED_PASS 0 assertions failed; seconds=[4.8388903, 4.8343898, 4.8473275]
+A06_DENSE_NOVELTY_base_48000_2 PROBED_PASS 0 assertions failed; seconds=[5.0875498, 5.0796738, 5.0864389]
+A07_ANTIPHASE_RATE_partial-antiphase_44100_1 PROBED_PASS 0 assertions failed; seconds=[1.8525545, 1.8581002, 1.8441023]
+A07_ANTIPHASE_RATE_partial-antiphase_44100_2 PROBED_PASS 0 assertions failed; seconds=[2.1141888, 2.097094, 2.0970804]
+A07_ANTIPHASE_RATE_partial-antiphase_48000_1 PROBED_PASS 0 assertions failed; seconds=[1.9492287, 1.9611903, 1.9350467]
+A07_ANTIPHASE_RATE_partial-antiphase_48000_2 PROBED_PASS 0 assertions failed; seconds=[2.1962242, 2.2262924, 2.2230978]
+A07_ANTIPHASE_RATE_partial-antiphase_96000_1 PROBED_PASS 0 assertions failed; seconds=[3.829369, 3.8053027, 3.8036207]
+A07_ANTIPHASE_RATE_partial-antiphase_96000_2 PROBED_PASS 0 assertions failed; seconds=[4.3415336, 4.4122464, 4.3754931]
+A08_SHORT_EMPTY_0.0_44100_1 PROBED_PASS empty guards; no valid zero-extent format invented
+A08_SHORT_EMPTY_0.0_44100_2 PROBED_PASS empty guards; no valid zero-extent format invented
+A08_SHORT_EMPTY_0.0_48000_1 PROBED_PASS empty guards; no valid zero-extent format invented
+A08_SHORT_EMPTY_0.0_48000_2 PROBED_PASS empty guards; no valid zero-extent format invented
+A08_SHORT_EMPTY_one-frame_44100_1 PROBED_PASS 0 assertions failed; seconds=[0.0010731, 6.702E-4, 6.43E-4]
+A08_SHORT_EMPTY_one-frame_44100_2 PROBED_PASS 0 assertions failed; seconds=[5.161E-4, 4.975E-4, 4.992E-4]
+A08_SHORT_EMPTY_one-frame_48000_1 PROBED_PASS 0 assertions failed; seconds=[5.604E-4, 5.474E-4, 5.461E-4]
+A08_SHORT_EMPTY_one-frame_48000_2 PROBED_PASS 0 assertions failed; seconds=[5.954E-4, 5.853E-4, 5.778E-4]
+A08_SHORT_EMPTY_0.1_44100_1 PROBED_PASS 0 assertions failed; seconds=[0.0021964, 0.0021849, 0.0021805]
+A08_SHORT_EMPTY_0.1_44100_2 PROBED_PASS 0 assertions failed; seconds=[0.0024641, 0.0024167, 0.002436]
+A08_SHORT_EMPTY_0.1_48000_1 PROBED_PASS 0 assertions failed; seconds=[0.0024491, 0.0024423, 0.0024474]
+A08_SHORT_EMPTY_0.1_48000_2 PROBED_PASS 0 assertions failed; seconds=[0.0027962, 0.0027736, 0.0028243]
+A08_SHORT_EMPTY_2.99_44100_1 PROBED_PASS 0 assertions failed; seconds=[0.0415859, 0.0417508, 0.0414378]
+A08_SHORT_EMPTY_2.99_44100_2 PROBED_PASS 0 assertions failed; seconds=[0.0483869, 0.0483554, 0.0488621]
+A08_SHORT_EMPTY_2.99_48000_1 PROBED_PASS 0 assertions failed; seconds=[0.0436604, 0.0463574, 0.0458608]
+A08_SHORT_EMPTY_2.99_48000_2 PROBED_PASS 0 assertions failed; seconds=[0.0529018, 0.0517302, 0.0538979]
+[INFO] Tests run: 106, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1056 s -- in com.quickmaster.processing.dynamics.leveler.MusicalPcmMatrixTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalReferenceRegressionTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.quickmaster.processing.dynamics.leveler.MusicalReferenceRegressionTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.MusicalTemporalTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.quickmaster.processing.dynamics.leveler.MusicalTemporalTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.OfficialWaveReaderTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.619 s -- in com.quickmaster.processing.dynamics.leveler.OfficialWaveReaderTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.OwnJarCleanupMetadataTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.689 s -- in com.quickmaster.processing.dynamics.leveler.OwnJarCleanupMetadataTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.RampAllocatorTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.quickmaster.processing.dynamics.leveler.RampAllocatorTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ReferencePlannerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.quickmaster.processing.dynamics.leveler.ReferencePlannerTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.SegmentComparatorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.quickmaster.processing.dynamics.leveler.SegmentComparatorTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilderTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.158 s -- in com.quickmaster.processing.dynamics.leveler.SegmentDescriptorBuilderTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.ShadowSchemaTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.quickmaster.processing.dynamics.leveler.ShadowSchemaTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.StructuralActivityWindowTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 s -- in com.quickmaster.processing.dynamics.leveler.StructuralActivityWindowTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.TimbreBandEdgeAllocationTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.quickmaster.processing.dynamics.leveler.TimbreBandEdgeAllocationTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.TruePeakOfficialTest
+TP_OFFICIAL case=15 fileSha256=86f8a70eca1bc77623dd20a4acbadbc449711cd348615d852e3b0689827bea55 rate=48000 channels=2 frames=153600 fallback=false chunk=65536 peak=0.5011719465255737 dBTP=-6.0002649391173914 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=15 fileSha256=86f8a70eca1bc77623dd20a4acbadbc449711cd348615d852e3b0689827bea55 rate=48000 channels=2 frames=153600 fallback=false chunk=997 peak=0.5011719465255737 dBTP=-6.0002649391173914 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=15 fileSha256=86f8a70eca1bc77623dd20a4acbadbc449711cd348615d852e3b0689827bea55 rate=48000 channels=2 frames=153600 fallback=true chunk=65536 peak=0.5011719465255737 dBTP=-6.0002649391173914 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=15 fileSha256=86f8a70eca1bc77623dd20a4acbadbc449711cd348615d852e3b0689827bea55 rate=48000 channels=2 frames=153600 fallback=true chunk=997 peak=0.5011719465255737 dBTP=-6.0002649391173914 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=16 fileSha256=9843c6fbc7c14d1bc5902ab23474851d766fd2ea92be5c45ab78ccd7e8a99ecd rate=48000 channels=2 frames=153600 fallback=false chunk=65536 peak=0.5037603623059113 dBTP=-5.955520147200646 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=16 fileSha256=9843c6fbc7c14d1bc5902ab23474851d766fd2ea92be5c45ab78ccd7e8a99ecd rate=48000 channels=2 frames=153600 fallback=false chunk=997 peak=0.5037603623059113 dBTP=-5.955520147200646 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=16 fileSha256=9843c6fbc7c14d1bc5902ab23474851d766fd2ea92be5c45ab78ccd7e8a99ecd rate=48000 channels=2 frames=153600 fallback=true chunk=65536 peak=0.5037603623059113 dBTP=-5.955520147200646 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=16 fileSha256=9843c6fbc7c14d1bc5902ab23474851d766fd2ea92be5c45ab78ccd7e8a99ecd rate=48000 channels=2 frames=153600 fallback=true chunk=997 peak=0.5037603623059113 dBTP=-5.955520147200646 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=17 fileSha256=b4e7377b6c5c0c30bf68752f6d02f7b23909e40aed083a25902a550e0e1e2265 rate=48000 channels=2 frames=153600 fallback=false chunk=65536 peak=0.48442858589987736 dBTP=-6.295404745250349 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=17 fileSha256=b4e7377b6c5c0c30bf68752f6d02f7b23909e40aed083a25902a550e0e1e2265 rate=48000 channels=2 frames=153600 fallback=false chunk=997 peak=0.48442858589987736 dBTP=-6.295404745250349 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=17 fileSha256=b4e7377b6c5c0c30bf68752f6d02f7b23909e40aed083a25902a550e0e1e2265 rate=48000 channels=2 frames=153600 fallback=true chunk=65536 peak=0.48442858589987736 dBTP=-6.295404745250349 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=17 fileSha256=b4e7377b6c5c0c30bf68752f6d02f7b23909e40aed083a25902a550e0e1e2265 rate=48000 channels=2 frames=153600 fallback=true chunk=997 peak=0.48442858589987736 dBTP=-6.295404745250349 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=18 fileSha256=d5fbe4854e93ef2a5a23260b522bdaa44bc739b69597bf751de919f11641d161 rate=48000 channels=2 frames=153600 fallback=false chunk=65536 peak=0.5007579762896057 dBTP=-6.007442486979358 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=18 fileSha256=d5fbe4854e93ef2a5a23260b522bdaa44bc739b69597bf751de919f11641d161 rate=48000 channels=2 frames=153600 fallback=false chunk=997 peak=0.5007579762896057 dBTP=-6.007442486979358 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=18 fileSha256=d5fbe4854e93ef2a5a23260b522bdaa44bc739b69597bf751de919f11641d161 rate=48000 channels=2 frames=153600 fallback=true chunk=65536 peak=0.5007579762896057 dBTP=-6.007442486979358 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=18 fileSha256=d5fbe4854e93ef2a5a23260b522bdaa44bc739b69597bf751de919f11641d161 rate=48000 channels=2 frames=153600 fallback=true chunk=997 peak=0.5007579762896057 dBTP=-6.007442486979358 lower=-6.4 upper=-5.8 tailFrames=6
+TP_OFFICIAL case=19 fileSha256=31bda52dc66bb63aa0d04b2e5a1e6a4332296fa5635570469b2863d05a06d309 rate=48000 channels=2 frames=153600 fallback=false chunk=65536 peak=1.4214223723683972 dBTP=3.054462934097753 lower=2.6 upper=3.2 tailFrames=6
+TP_OFFICIAL case=19 fileSha256=31bda52dc66bb63aa0d04b2e5a1e6a4332296fa5635570469b2863d05a06d309 rate=48000 channels=2 frames=153600 fallback=false chunk=997 peak=1.4214223723683972 dBTP=3.054462934097753 lower=2.6 upper=3.2 tailFrames=6
+TP_OFFICIAL case=19 fileSha256=31bda52dc66bb63aa0d04b2e5a1e6a4332296fa5635570469b2863d05a06d309 rate=48000 channels=2 frames=153600 fallback=true chunk=65536 peak=1.4214223723683972 dBTP=3.054462934097753 lower=2.6 upper=3.2 tailFrames=6
+TP_OFFICIAL case=19 fileSha256=31bda52dc66bb63aa0d04b2e5a1e6a4332296fa5635570469b2863d05a06d309 rate=48000 channels=2 frames=153600 fallback=true chunk=997 peak=1.4214223723683972 dBTP=3.054462934097753 lower=2.6 upper=3.2 tailFrames=6
+TP_OFFICIAL case=20 fileSha256=a2df8791198781579a25e0437008ce9b1a48b13605a8b71886a360c4ceed16e4 rate=48000 channels=2 frames=153604 fallback=false chunk=65536 peak=0.985123872756958 dBTP=-0.13018312868045112 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=20 fileSha256=a2df8791198781579a25e0437008ce9b1a48b13605a8b71886a360c4ceed16e4 rate=48000 channels=2 frames=153604 fallback=false chunk=997 peak=0.985123872756958 dBTP=-0.13018312868045112 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=20 fileSha256=a2df8791198781579a25e0437008ce9b1a48b13605a8b71886a360c4ceed16e4 rate=48000 channels=2 frames=153604 fallback=true chunk=65536 peak=0.985123872756958 dBTP=-0.13018312868045112 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=20 fileSha256=a2df8791198781579a25e0437008ce9b1a48b13605a8b71886a360c4ceed16e4 rate=48000 channels=2 frames=153604 fallback=true chunk=997 peak=0.985123872756958 dBTP=-0.13018312868045112 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=21 fileSha256=fc508ae04cb6d1dbcb286d6cdffe8e81a87effa9ba7bb267c17a5807d5b273d3 rate=48000 channels=2 frames=153604 fallback=false chunk=65536 peak=0.990956066394574 dBTP=-0.07891198689095821 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=21 fileSha256=fc508ae04cb6d1dbcb286d6cdffe8e81a87effa9ba7bb267c17a5807d5b273d3 rate=48000 channels=2 frames=153604 fallback=false chunk=997 peak=0.990956066394574 dBTP=-0.07891198689095821 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=21 fileSha256=fc508ae04cb6d1dbcb286d6cdffe8e81a87effa9ba7bb267c17a5807d5b273d3 rate=48000 channels=2 frames=153604 fallback=true chunk=65536 peak=0.990956066394574 dBTP=-0.07891198689095821 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=21 fileSha256=fc508ae04cb6d1dbcb286d6cdffe8e81a87effa9ba7bb267c17a5807d5b273d3 rate=48000 channels=2 frames=153604 fallback=true chunk=997 peak=0.990956066394574 dBTP=-0.07891198689095821 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=22 fileSha256=d238255454a091b49592b25355738e200f59868c0804be5427c901ed10b3a910 rate=48000 channels=2 frames=153604 fallback=false chunk=65536 peak=0.976774956958252 dBTP=-0.20410967156370166 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=22 fileSha256=d238255454a091b49592b25355738e200f59868c0804be5427c901ed10b3a910 rate=48000 channels=2 frames=153604 fallback=false chunk=997 peak=0.976774956958252 dBTP=-0.20410967156370166 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=22 fileSha256=d238255454a091b49592b25355738e200f59868c0804be5427c901ed10b3a910 rate=48000 channels=2 frames=153604 fallback=true chunk=65536 peak=0.976774956958252 dBTP=-0.20410967156370166 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=22 fileSha256=d238255454a091b49592b25355738e200f59868c0804be5427c901ed10b3a910 rate=48000 channels=2 frames=153604 fallback=true chunk=997 peak=0.976774956958252 dBTP=-0.20410967156370166 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=23 fileSha256=c7243e22970b82e020b45241c92d210cbf47217ccc967f014787a5f6400fa8a3 rate=48000 channels=2 frames=153604 fallback=false chunk=65536 peak=0.990956190842553 dBTP=-0.07891089608443272 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=23 fileSha256=c7243e22970b82e020b45241c92d210cbf47217ccc967f014787a5f6400fa8a3 rate=48000 channels=2 frames=153604 fallback=false chunk=997 peak=0.990956190842553 dBTP=-0.07891089608443272 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=23 fileSha256=c7243e22970b82e020b45241c92d210cbf47217ccc967f014787a5f6400fa8a3 rate=48000 channels=2 frames=153604 fallback=true chunk=65536 peak=0.990956190842553 dBTP=-0.07891089608443272 lower=-0.4 upper=0.2 tailFrames=6
+TP_OFFICIAL case=23 fileSha256=c7243e22970b82e020b45241c92d210cbf47217ccc967f014787a5f6400fa8a3 rate=48000 channels=2 frames=153604 fallback=true chunk=997 peak=0.990956190842553 dBTP=-0.07891089608443272 lower=-0.4 upper=0.2 tailFrames=6
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.280 s -- in com.quickmaster.processing.dynamics.leveler.TruePeakOfficialTest
+[INFO] Running com.quickmaster.processing.dynamics.leveler.TruePeakSafetyTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.quickmaster.processing.dynamics.leveler.TruePeakSafetyTest
+[INFO] Running com.quickmaster.processing.dynamics.LevelerActivePublicationTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.113 s -- in com.quickmaster.processing.dynamics.LevelerActivePublicationTest
+[INFO] Running com.quickmaster.processing.dynamics.LevelerProcessorTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.89 s -- in com.quickmaster.processing.dynamics.LevelerProcessorTest
+[INFO] Running com.quickmaster.processing.dynamics.LevelerShadowIsolationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.384 s -- in com.quickmaster.processing.dynamics.LevelerShadowIsolationTest
+[INFO] Running com.quickmaster.processing.dynamics.LookaheadGainSmootherTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.quickmaster.processing.dynamics.LookaheadGainSmootherTest
+[INFO] Running com.quickmaster.processing.dynamics.PeakCompProcessorTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.quickmaster.processing.dynamics.PeakCompProcessorTest
+[INFO] Running com.quickmaster.processing.dynamics.PunchProcessorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s -- in com.quickmaster.processing.dynamics.PunchProcessorTest
+[INFO] Running com.quickmaster.processing.dynamics.SparseGainLifecycleTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.dynamics.SparseGainLifecycleTest
+[INFO] Running com.quickmaster.processing.dynamics.SparseGainScheduleTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.dynamics.SparseGainScheduleTest
+[INFO] Running com.quickmaster.processing.eq.AutoEqCacheTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.088 s -- in com.quickmaster.processing.eq.AutoEqCacheTest
+[INFO] Running com.quickmaster.processing.eq.AutoEqProcessorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.108 s -- in com.quickmaster.processing.eq.AutoEqProcessorTest
+[INFO] Running com.quickmaster.processing.eq.EqualizerProcessorTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.quickmaster.processing.eq.EqualizerProcessorTest
+[INFO] Running com.quickmaster.processing.FadeProcessorTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.FadeProcessorTest
+[INFO] Running com.quickmaster.processing.limit.BroadbandLimiterProcessorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.quickmaster.processing.limit.BroadbandLimiterProcessorTest
+[INFO] Running com.quickmaster.processing.limit.LimiterPublicationTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.125 s -- in com.quickmaster.processing.limit.LimiterPublicationTest
+[INFO] Running com.quickmaster.processing.limit.MultibandLimiterProcessorTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.203 s -- in com.quickmaster.processing.limit.MultibandLimiterProcessorTest
+[INFO] Running com.quickmaster.processing.OfflineRenderBufferTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.quickmaster.processing.OfflineRenderBufferTest
+[INFO] Running com.quickmaster.processing.PeakNormalizerTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.processing.PeakNormalizerTest
+[INFO] Running com.quickmaster.processing.ProcessingPipelineBypassTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.quickmaster.processing.ProcessingPipelineBypassTest
+[INFO] Running com.quickmaster.processing.ProcessingPipelineDynamicsTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.quickmaster.processing.ProcessingPipelineDynamicsTest
+[INFO] Running com.quickmaster.processing.ProcessingPipelineRenderTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in com.quickmaster.processing.ProcessingPipelineRenderTest
+[INFO] Running com.quickmaster.ui.MainControllerDefaultsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.quickmaster.ui.MainControllerDefaultsTest
+[INFO] Running com.quickmaster.ui.MainControllerWaveformIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.quickmaster.ui.MainControllerWaveformIntegrationTest
+[INFO] Running com.quickmaster.ui.waveform.WaveformPeakIndexTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.quickmaster.ui.waveform.WaveformPeakIndexTest
+[INFO] Running com.quickmaster.ui.waveform.WaveformViewportTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.quickmaster.ui.waveform.WaveformViewportTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 715, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- antrun:3.2.0:run (prepare-official-loudness-attestation) @ quickmaster ---
+[INFO] Executing tasks
+[INFO]      [java] WARNING: A restricted method in java.lang.System has been called
+[INFO]      [java] WARNING: java.lang.System::load has been called by com.sun.jna.Native in an unnamed module (file:/C:/Users/cris_/.m2/repository/net/java/dev/jna/jna/5.17.0/jna-5.17.0.jar)
+[INFO]      [java] WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+[INFO]      [java] WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+[INFO]      [java] 
+[INFO]      [java] READING 0 1770-2_Comp_RelGateTest INTEGRATED measured=FINITE:-10.028804577072323 min=-10.028804577072323 frames=192000 readouts=1 gates=37/34/27 reset=1 eof=true
+[INFO]      [java] READING 1 1770-2_Comp_AbsGateTest INTEGRATED measured=FINITE:-69.45155548106202 min=-69.45155548106202 frames=192000 readouts=1 gates=37/6/6 reset=1 eof=true
+[INFO]      [java] READING 2 1770-2_Comp_24LKFS_25Hz_2ch INTEGRATED measured=FINITE:-23.993548589166643 min=-23.993548589166643 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 3 1770-2_Comp_24LKFS_100Hz_2ch INTEGRATED measured=FINITE:-23.993652987013377 min=-23.993652987013377 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 4 1770-2_Comp_24LKFS_500Hz_2ch INTEGRATED measured=FINITE:-23.993381601096978 min=-23.993381601096978 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 5 1770-2_Comp_24LKFS_1000Hz_2ch INTEGRATED measured=FINITE:-23.993773815497992 min=-23.993773815497992 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 6 1770-2_Comp_24LKFS_2000Hz_2ch INTEGRATED measured=FINITE:-23.993477734768742 min=-23.993477734768742 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 7 1770-2_Comp_24LKFS_10000Hz_2ch INTEGRATED measured=FINITE:-23.993688248460153 min=-23.993688248460153 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 8 1770-2_Comp_23LKFS_25Hz_2ch INTEGRATED measured=FINITE:-22.993508679430466 min=-22.993508679430466 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 9 1770-2_Comp_23LKFS_100Hz_2ch INTEGRATED measured=FINITE:-22.993717986139448 min=-22.993717986139448 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 10 1770-2_Comp_23LKFS_500Hz_2ch INTEGRATED measured=FINITE:-22.99363553375029 min=-22.99363553375029 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 11 1770-2_Comp_23LKFS_1000Hz_2ch INTEGRATED measured=FINITE:-22.993570081425624 min=-22.993570081425624 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 12 1770-2_Comp_23LKFS_2000Hz_2ch INTEGRATED measured=FINITE:-22.992528329354425 min=-22.992528329354425 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 13 1770-2_Comp_23LKFS_10000Hz_2ch INTEGRATED measured=FINITE:-22.99344141462061 min=-22.99344141462061 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 14 1770-2_Comp_18LKFS_FrequencySweep INTEGRATED measured=FINITE:-17.99052680596771 min=-17.99052680596771 frames=5760000 readouts=1 gates=1197/1197/1197 reset=1 eof=true
+[INFO]      [java] READING 15 1770-2_Comp_24LKFS_SummingTest INTEGRATED measured=FINITE:-23.993557570006754 min=-23.993557570006754 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 16 1770-2_Comp_23LKFS_SummingTest INTEGRATED measured=FINITE:-22.993466241650072 min=-22.993466241650072 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 17 1770-2_Comp_24LKFS_ChannelCheckLeft INTEGRATED measured=FINITE:-23.993581172332924 min=-23.993581172332924 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 18 1770-2_Comp_24LKFS_ChannelCheckRight INTEGRATED measured=FINITE:-23.993581172332924 min=-23.993581172332924 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 19 1770-2_Comp_24LKFS_ChannelCheckCentre INTEGRATED measured=FINITE:-23.993581172332924 min=-23.993581172332924 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 20 1770-2_Comp_24LKFS_ChannelCheckLFE INTEGRATED measured=NO_LOUDNESS:0.0 min=0.0 frames=1392001 readouts=1 gates=287/0/0 reset=1 eof=true
+[INFO]      [java] READING 21 1770-2_Comp_24LKFS_ChannelCheckLs INTEGRATED measured=FINITE:-23.994607547444772 min=-23.994607547444772 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 22 1770-2_Comp_24LKFS_ChannelCheckRs INTEGRATED measured=FINITE:-23.994607547444772 min=-23.994607547444772 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 23 1770-2_Comp_23LKFS_ChannelCheckLeft INTEGRATED measured=FINITE:-22.99313269259161 min=-22.99313269259161 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 24 1770-2_Comp_23LKFS_ChannelCheckRight INTEGRATED measured=FINITE:-22.99313269259161 min=-22.99313269259161 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 25 1770-2_Comp_23LKFS_ChannelCheckCentre INTEGRATED measured=FINITE:-22.99313269259161 min=-22.99313269259161 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 26 1770-2_Comp_23LKFS_ChannelCheckLFE INTEGRATED measured=NO_LOUDNESS:0.0 min=0.0 frames=1392001 readouts=1 gates=287/0/0 reset=1 eof=true
+[INFO]      [java] READING 27 1770-2_Comp_23LKFS_ChannelCheckLs INTEGRATED measured=FINITE:-22.99326372521216 min=-22.99326372521216 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 28 1770-2_Comp_23LKFS_ChannelCheckRs INTEGRATED measured=FINITE:-22.99326372521216 min=-22.99326372521216 frames=1392001 readouts=1 gates=287/287/287 reset=1 eof=true
+[INFO]      [java] READING 29 1770-2_Conf_6ch_VinCntr-24LKFS INTEGRATED measured=FINITE:-23.97695298535124 min=-23.97695298535124 frames=3994582 readouts=1 gates=829/829/719 reset=1 eof=true
+[INFO]      [java] READING 30 1770-2_Conf_6ch_VinL+R-24LKFS INTEGRATED measured=FINITE:-23.987720175066176 min=-23.987720175066176 frames=3994582 readouts=1 gates=829/829/725 reset=1 eof=true
+[INFO]      [java] READING 31 1770-2_Conf_6ch_VinL-R-C-24LKFS INTEGRATED measured=FINITE:-23.97581561779091 min=-23.97581561779091 frames=3994582 readouts=1 gates=829/829/670 reset=1 eof=true
+[INFO]      [java] READING 32 1770-2_Conf_Stereo_VinL+R-24LKFS INTEGRATED measured=FINITE:-23.975890680657635 min=-23.975890680657635 frames=3991527 readouts=1 gates=828/828/678 reset=1 eof=true
+[INFO]      [java] READING 33 1770-2_Conf_Mono_Voice+Music-24LKFS INTEGRATED measured=FINITE:-23.993561964354498 min=-23.993561964354498 frames=3998849 readouts=1 gates=830/830/664 reset=1 eof=true
+[INFO]      [java] READING 34 1770-2_Conf_6ch_VinCntr-23LKFS INTEGRATED measured=FINITE:-22.980957397713667 min=-22.980957397713667 frames=3994582 readouts=1 gates=829/829/719 reset=1 eof=true
+[INFO]      [java] READING 35 1770-2_Conf_6ch_VinL+R-23LKFS INTEGRATED measured=FINITE:-22.988662477048663 min=-22.988662477048663 frames=3994582 readouts=1 gates=829/829/725 reset=1 eof=true
+[INFO]      [java] READING 36 1770-2_Conf_6ch_VinL-R-C-23LKFS INTEGRATED measured=FINITE:-22.98560345401417 min=-22.98560345401417 frames=3994582 readouts=1 gates=829/829/670 reset=1 eof=true
+[INFO]      [java] READING 37 1770-2_Conf_Stereo_VinL+R-23LKFS INTEGRATED measured=FINITE:-22.978882450928882 min=-22.978882450928882 frames=3991527 readouts=1 gates=828/828/678 reset=1 eof=true
+[INFO]      [java] READING 38 1770-2_Conf_Mono_Voice+Music-23LKFS INTEGRATED measured=FINITE:-22.990611126501783 min=-22.990611126501783 frames=3998849 readouts=1 gates=830/830/664 reset=1 eof=true
+[INFO]      [java] READING 39 seq-3341-1-16bit.wav MOMENTARY measured=FINITE:-22.95356606631272 min=-22.95356606631272 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 40 seq-3341-1-16bit.wav SHORT_TERM measured=FINITE:-22.953557091009614 min=-22.953557091009614 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 41 seq-3341-1-16bit.wav INTEGRATED measured=FINITE:-22.953554851417437 min=-22.953554851417437 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+[INFO]      [java] READING 42 seq-3341-2-16bit.wav MOMENTARY measured=FINITE:-32.959870373326105 min=-32.959870373326105 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 43 seq-3341-2-16bit.wav SHORT_TERM measured=FINITE:-32.959844278500185 min=-32.959844278500185 frames=960000 readouts=1 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 44 seq-3341-2-16bit.wav INTEGRATED measured=FINITE:-32.95985890772082 min=-32.95985890772082 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+[INFO]      [java] READING 45 seq-3341-3-16bit-v02.wav INTEGRATED measured=FINITE:-23.014141652725478 min=-23.014141652725478 frames=3840000 readouts=1 gates=797/797/603 reset=1 eof=true
+[INFO]      [java] READING 46 seq-3341-4-16bit-v02.wav INTEGRATED measured=FINITE:-23.014141652725478 min=-23.014141652725478 frames=4800000 readouts=1 gates=997/803/603 reset=1 eof=true
+[INFO]      [java] READING 47 seq-3341-5-16bit-v02.wav INTEGRATED measured=FINITE:-22.979029141003206 min=-22.979029141003206 frames=2884800 readouts=1 gates=598/598/598 reset=1 eof=true
+[INFO]      [java] READING 48 seq-3341-6-5channels-16bit.wav INTEGRATED measured=FINITE:-23.017156275003106 min=-23.017156275003106 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+[INFO]      [java] READING 49 seq-3341-6-6channels-WAVEEX-16bit.wav INTEGRATED measured=FINITE:-23.017156275003106 min=-23.017156275003106 frames=960000 readouts=1 gates=197/197/197 reset=1 eof=true
+[INFO]      [java] READING 50 seq-3341-7_seq-3342-5-24bit.wav INTEGRATED measured=FINITE:-22.986158804852888 min=-22.986158804852888 frames=1343998 readouts=1 gates=276/276/276 reset=1 eof=true
+[INFO]      [java] READING 51 seq-3341-2011-8_seq-3342-6-24bit-v02.wav INTEGRATED measured=FINITE:-22.99782024106011 min=-22.99782024106011 frames=11825152 readouts=1 gates=2460/2460/1943 reset=1 eof=true
+[INFO]      [java] READING 52 seq-3341-9-24bit.wav SHORT_TERM measured=FINITE:-22.98621885223939 min=-22.986287000391275 frames=720000 readouts=576000 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 53 seq-3341-10-1-24bit.wav SHORT_TERM measured=FINITE:-22.993329945544094 min=-22.993329945544094 frames=192000 readouts=48001 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 54 seq-3341-10-10-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=256800 readouts=112801 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 55 seq-3341-10-11-24bit.wav SHORT_TERM measured=FINITE:-22.993329944197157 min=-22.993329944197157 frames=264000 readouts=120001 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 56 seq-3341-10-12-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=271200 readouts=127201 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 57 seq-3341-10-13-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=278400 readouts=134401 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 58 seq-3341-10-14-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=285600 readouts=141601 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 59 seq-3341-10-15-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=292800 readouts=148801 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 60 seq-3341-10-16-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=300000 readouts=156001 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 61 seq-3341-10-17-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=307200 readouts=163201 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 62 seq-3341-10-18-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=314400 readouts=170401 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 63 seq-3341-10-19-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=321600 readouts=177601 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 64 seq-3341-10-2-24bit.wav SHORT_TERM measured=FINITE:-22.993329944197157 min=-22.993329944197157 frames=199200 readouts=55201 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 65 seq-3341-10-20-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=328800 readouts=184801 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 66 seq-3341-10-3-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=206400 readouts=62401 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 67 seq-3341-10-4-24bit.wav SHORT_TERM measured=FINITE:-22.993329944197157 min=-22.993329944197157 frames=213600 readouts=69601 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 68 seq-3341-10-5-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=220800 readouts=76801 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 69 seq-3341-10-6-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=228000 readouts=84001 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 70 seq-3341-10-7-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=235200 readouts=91201 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 71 seq-3341-10-8-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=242400 readouts=98401 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 72 seq-3341-10-9-24bit.wav SHORT_TERM measured=FINITE:-22.99332994419716 min=-22.99332994419716 frames=249600 readouts=105601 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 73 seq-3341-12-24bit.wav MOMENTARY measured=FINITE:-22.96044421875121 min=-22.960444218751224 frames=480000 readouts=432000 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 74 seq-3341-13-1-24bit.wav MOMENTARY measured=FINITE:-22.99353239825016 min=-22.99353239825016 frames=67200 readouts=48001 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 75 seq-3341-13-10-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=75840 readouts=56641 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 76 seq-3341-13-11-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=76800 readouts=57601 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 77 seq-3341-13-12-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=77760 readouts=58561 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 78 seq-3341-13-13-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=78720 readouts=59521 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 79 seq-3341-13-14-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=79680 readouts=60481 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 80 seq-3341-13-15-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=80640 readouts=61441 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 81 seq-3341-13-16-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=81600 readouts=62401 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 82 seq-3341-13-17-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=82560 readouts=63361 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 83 seq-3341-13-18-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=83520 readouts=64321 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 84 seq-3341-13-19-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=84480 readouts=65281 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 85 seq-3341-13-2-24bit.wav MOMENTARY measured=FINITE:-22.99353238783095 min=-22.99353238783095 frames=68160 readouts=48961 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 86 seq-3341-13-20-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=85440 readouts=66241 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 87 seq-3341-13-3-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388137655 min=-22.993532388137655 frames=69120 readouts=49921 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 88 seq-3341-13-4-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147557 min=-22.993532388147557 frames=70080 readouts=50881 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 89 seq-3341-13-5-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=71040 readouts=51841 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 90 seq-3341-13-6-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=72000 readouts=52801 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 91 seq-3341-13-7-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=72960 readouts=53761 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 92 seq-3341-13-8-24bit.wav.wav MOMENTARY measured=FINITE:-22.99353238814771 min=-22.99353238814771 frames=73920 readouts=54721 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] READING 93 seq-3341-13-9-24bit.wav.wav MOMENTARY measured=FINITE:-22.993532388147703 min=-22.993532388147703 frames=74880 readouts=55681 gates=0/0/0 reset=1 eof=true
+[INFO]      [java] APPLICABILITY EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8
+[INFO]      [java] state=PASSED
+[INFO]      [java] evidence=94
+[INFO]      [java] algorithmSha256=5adbc7a4151d79c756aeb8b6241250cda1dc8480b3a9e6afc04a413cd72ec248
+[INFO]      [java] profileSha256=daad1207ff680b67b64108692a2070be389227ac8ddffa177ae9b8ac39ffbc14
+[INFO]      [java] attestationSha256=dd1b2745a3a5d58a900505f9ff780aaa3423dbcb5192ce6750e2eed1ce45b0f0
+[INFO]      [java] runnerSha256=e3f78bd9caaa8a8f01c9a470d54625cb821bdc475a5b345610689ff7bf5e5ce8
+[INFO]      [java] createdAtEpochSecond=0
+[INFO]      [java] failureReason=NONE
+[INFO]      [java] ituState=PASSED
+[INFO]      [java] ituReason=NONE
+[INFO]      [java] ebuState=PASSED
+[INFO]      [java] ebuReason=NONE
+[INFO]      [java] claim=QM-OFFICIAL-LOUDNESS-FILE-V1 only; not full EBU Mode, live, LRA or true peak
+[INFO]      [java] EBU11/14=LIVE_ALTERNATIVE_NOT_APPLICABLE_TO_FILE_PROFILE; TP15..23=M005; OTHER_ACQUIRED=8
+[INFO] Executed tasks
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ quickmaster ---
+[INFO] Building jar: E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\quickmaster.jar
+[INFO] 
+[INFO] --- antrun:3.2.0:run (verify-packaged-loudness-attestation) @ quickmaster ---
+[INFO] Executing tasks
+[INFO]      [java] REOPENED_JAR state=PASSED sha256=ec80915fe0e5fc773de33fffde3eb82f9ccaf640e0f38ee2fc137f7c112ca73a algorithm=5adbc7a4151d79c756aeb8b6241250cda1dc8480b3a9e6afc04a413cd72ec248 runner=e3f78bd9caaa8a8f01c9a470d54625cb821bdc475a5b345610689ff7bf5e5ce8
+[INFO]      [java] WARNING: A restricted method in java.lang.System has been called
+[INFO]      [java] WARNING: java.lang.System::load has been called by com.sun.jna.Native in an unnamed module (file:/C:/Users/cris_/.m2/repository/net/java/dev/jna/jna/5.17.0/jna-5.17.0.jar)
+[INFO]      [java] WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+[INFO]      [java] WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+[INFO]      [java] 
+[INFO] Executed tasks
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  27:56 min
+[INFO] Finished at: 2026-09-27T06:09:20+02:00
+[INFO] ------------------------------------------------------------------------

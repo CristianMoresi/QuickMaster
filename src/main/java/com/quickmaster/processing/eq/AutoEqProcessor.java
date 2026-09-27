@@ -359,12 +359,14 @@ public final class AutoEqProcessor implements AudioProcessor
         long h = 1125899906842597L;
         h = h * 31 + frames;
         h = h * 31 + channels;
+        h = h * 31 + sampleRate;
         h = h * 31 + Double.hashCode(amount);
         h = h * 31 + target.ordinal();
         h = h * 31 + Double.hashCode(attackSec);
         h = h * 31 + Double.hashCode(releaseSec);
-        int stride = Math.max(1, samples.length / 512);
-        for (int i = 0; i < samples.length; i += stride)
+        // A sparse 512-sample fingerprint misses edits between its probes and
+        // can replay another track's PCM. Account for every input sample.
+        for (int i = 0; i < samples.length; i++)
             h = h * 1099511628211L + Float.floatToIntBits(samples[i]);
         return h;
     }

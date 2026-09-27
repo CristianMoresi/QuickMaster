@@ -1,0 +1,54 @@
+INPUT scale=0.500 rate=48000 channels=2 frames=13440001 samplePeakDb=-6.451338
+LEVELER status=STRUCTURAL_READY analyzed=true seconds=8.610
+CONFORMANCE PASSED
+PLAN valid=true unit=true regions=19
+REGION id=0 start=0.000 end=2.500 lufs=NaN protection=35 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=0 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.0000 loudnessDelta=0.0000 context=[1.0, 1.0, 0.0, 0.6980210312314815, 0.0, 4.028215705051962]
+REGION id=1 start=2.500 end=7.000 lufs=-32.767 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=1 eligibility=BODY_INELIGIBLE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.9608 loudnessDelta=1.1529 context=[1.0, 1.0, 0.6980210312314815, 0.6511318104698868, 4.028215705051962, 2.9599949755939705]
+REGION id=2 start=7.000 end=17.000 lufs=-24.954 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=2 eligibility=NONE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=-0.0019 loudnessDelta=-0.0105 context=[1.0, 1.0, 0.6511318104698868, 0.01566139921743659, 2.9599949755939705, 3.1596566685172367]
+REGION id=3 start=17.000 end=23.500 lufs=-24.766 protection=72 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=3 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=1.3035 loudnessDelta=3.5195 context=[1.0, 1.0, 0.01566139921743659, 0.014436095624555279, 3.1596566685172367, 3.0670203794233046]
+REGION id=4 start=23.500 end=26.500 lufs=NaN protection=1 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=4 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.0000 loudnessDelta=0.0000 context=[1.0, 1.0, 0.014436095624555279, -0.14530086277609597, 3.0670203794233046, 3.6696237451017324]
+REGION id=5 start=26.500 end=29.000 lufs=NaN protection=33 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=5 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.0000 loudnessDelta=0.0000 context=[1.0, 1.0, -0.14530086277609597, 0.17405676391409783, 3.6696237451017324, 2.8845986532661754]
+REGION id=6 start=29.000 end=34.000 lufs=-24.248 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=6 eligibility=BODY_INELIGIBLE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=-0.7592 loudnessDelta=-1.2147 context=[1.0, 1.0, 0.17405676391409783, 0.21005886890308054, 2.8845986532661754, 3.0640292979875903]
+REGION id=7 start=34.000 end=37.500 lufs=-21.727 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=7 eligibility=BODY_INELIGIBLE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.2243 loudnessDelta=0.1121 context=[1.0, 1.0, 0.21005886890308054, -0.08751116680530006, 3.0640292979875903, 2.3727286431053183]
+REGION id=8 start=37.500 end=54.500 lufs=-22.777 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=8 eligibility=NONE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=-0.0588 loudnessDelta=-0.6231 context=[1.0, 1.0, -0.08751116680530006, -0.6788548331611635, 2.3727286431053183, 3.3422313173670264]
+REGION id=9 start=54.500 end=61.500 lufs=-30.923 protection=64 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=9 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=3.0376 loudnessDelta=9.4165 context=[1.0, 1.0, -0.6788548331611635, 1.0, 3.3422313173670264, 10.105980775897754]
+REGION id=10 start=61.500 end=112.500 lufs=-18.106 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=10 eligibility=NONE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.0460 loudnessDelta=1.6597 context=[1.0, 1.0, 1.0, -0.395105665916609, 10.105980775897754, 6.471774795202779]
+REGION id=11 start=112.500 end=116.500 lufs=-22.847 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=11 eligibility=BODY_INELIGIBLE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=-1.6492 loudnessDelta=-1.4843 context=[1.0, 1.0, -0.395105665916609, 0.415726546066443, 6.471774795202779, 5.9701012391254435]
+REGION id=12 start=116.500 end=156.000 lufs=-17.858 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=12 eligibility=NONE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.0081 loudnessDelta=0.2215 context=[1.0, 1.0, 0.415726546066443, -0.5317640044477129, 5.9701012391254435, 9.17320420508684]
+REGION id=13 start=156.000 end=162.500 lufs=-24.239 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=13 eligibility=BODY_INELIGIBLE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=-0.1843 loudnessDelta=-0.4976 context=[1.0, 1.0, -0.5317640044477129, 0.11764527036232438, 9.17320420508684, 3.2633698059196896]
+REGION id=14 start=162.500 end=168.000 lufs=-22.828 protection=0 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=14 eligibility=BODY_INELIGIBLE foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=-0.5523 loudnessDelta=-1.1047 context=[1.0, 1.0, 0.11764527036232438, -0.6812196407607335, 3.2633698059196896, 6.371300290890674]
+REGION id=15 start=168.000 end=175.500 lufs=-31.002 protection=64 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=15 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=2.6592 loudnessDelta=9.3073 context=[1.0, 1.0, -0.6812196407607335, 1.0, 6.371300290890674, 7.271123697456169]
+REGION id=16 start=175.500 end=261.000 lufs=-17.019 protection=128 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=16 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.0415 loudnessDelta=2.5725 context=[1.0, 1.0, 1.0, -0.563409842787299, 7.271123697456169, 0.0]
+REGION id=17 start=261.000 end=280.000 lufs=-23.780 protection=72 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=17 eligibility=PROTECTED foreground=1.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=-1.0283 loudnessDelta=-12.4425 context=[1.0, 0.0, -0.563409842787299, 0.0, 0.0, 16.829803387293953]
+REGION id=18 start=280.000 end=280.000 lufs=NaN protection=37 reference=NOT_COMPARABLE rawDb=0.000000 confidence=0.000000 plannedDb=0.000000
+BODY id=18 eligibility=PROTECTED foreground=0.0000 activitySpread=0.0000 activitySlope=0.0000 loudnessSlope=0.0000 loudnessDelta=0.0000 context=[0.0, 0.0, 0.0, 0.0, 16.829803387293953, 0.0]
+PAIR 2/8 reason=CONTEXT_MISMATCH H=0.0000 T=0.0000 A=0.0000 C=0.0000
+PAIR 2/10 reason=CONTEXT_MISMATCH H=0.0000 T=0.0000 A=0.0000 C=0.0000
+PAIR 2/12 reason=CONTEXT_MISMATCH H=0.0000 T=0.0000 A=0.0000 C=0.0000
+PAIR 8/10 reason=CONTEXT_MISMATCH H=0.0000 T=0.0000 A=0.0000 C=0.0000
+PAIR 8/12 reason=CONTEXT_MISMATCH H=0.0000 T=0.0000 A=0.0000 C=0.0000
+PAIR 10/12 reason=CONTEXT_MISMATCH H=0.0000 T=0.0000 A=0.0000 C=0.0000
+PAIR_REASONS {BODY_INELIGIBLE=69, CONTEXT_MISMATCH=6, PROTECTED=96}
+RAW_PAIR 10/12 reason=NONE H=0.3701 T=0.2147 A=0.1964 C=0.2264
+RAW_PAIR 10/16 reason=DURATION_RATIO H=0.0000 T=0.0000 A=0.0000 C=0.0000
+RAW_PAIR 12/16 reason=DURATION_RATIO H=0.0000 T=0.0000 A=0.0000 C=0.0000
+SAFETY status=PROVEN inputTpDb=-6.120600 outputTpDb=-6.120600 ceilingDb=-6.020600 unit=true
+RENDER changed=0/26880002 minGainDb=0.000000000 maxGainDb=0.000000000

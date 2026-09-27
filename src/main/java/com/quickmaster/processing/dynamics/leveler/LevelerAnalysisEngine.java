@@ -32,7 +32,7 @@ import com.quickmaster.processing.dynamics.leveler.model.StandardValidationRepor
 /** Synchronous, stateless orchestrator for the M-004 shadow pipeline. */
 public final class LevelerAnalysisEngine
 {
-    public static final String ALGORITHM_ID = "QM-LEVELER-S001-COMPARISON-V2";
+    public static final String ALGORITHM_ID = "QM-LEVELER-S002-ARRANGEMENT-V1";
 
     public ShadowAnalysisSnapshot analyzeShadow(float[] pcm,
                                                 AudioFormat source,
@@ -67,6 +67,7 @@ public final class LevelerAnalysisEngine
             {
                 ProtectionDecision decision = protectionClassifier.classify(
                         i, descriptors, LevelerCalibrationProfile.V1);
+                decision = protectBoundaryFragments(i, descriptors, decision);
                 protectionObjects[i] = protectShortTransition(decision,
                         descriptors.get(i).range().lengthFrames(), source.sampleRateHz());
             }
@@ -118,6 +119,9 @@ public final class LevelerAnalysisEngine
                     descriptors, similarity, LevelerCalibrationProfile.V2);
             ReferencePlan referencePlan = new ReferencePlanner().plan(
                     grouping, descriptors, LevelerCalibrationProfile.V2);
+            referencePlan = new ArrangementReferencePlanner().supplement(
+                    referencePlan, descriptors, protections, comparison, token);
+            if (referencePlan == null || token.isCancelled()) return null;
 
             StandardValidationReport standardValidation = ConformanceArtifactLoader.loadCurrent();
             Object[] diagnosticObjects = diagnostics(protections, similarity, standardValidation);
@@ -140,6 +144,27 @@ public final class LevelerAnalysisEngine
         {
             return null;
         }
+    }
+
+    /** Silent padding of any duration must not strip the real musical edge's protection. */
+    private static ProtectionDecision protectBoundaryFragments(int index, FrozenList<SegmentDescriptor> all,
+                                                               ProtectionDecision decision)
+    {
+        long bits = decision.flags().reasonBits();
+        if (index > 0)
+        {
+            boolean residual = true;
+            for (int i = 0; i < index; i++) residual &= !all.get(i).regionalLoudness().present();
+            if (residual) bits |= 1L << 1;
+        }
+        if (index + 1 < all.size())
+        {
+            boolean residual = true;
+            for (int i = index + 1; i < all.size(); i++) residual &= !all.get(i).regionalLoudness().present();
+            if (residual) bits |= 1L << 2;
+        }
+        return bits == decision.flags().reasonBits() ? decision
+                : new ProtectionDecision(decision.id(), new ProtectionFlags(bits));
     }
 
     private static ProtectionDecision protectShortTransition(ProtectionDecision decision,

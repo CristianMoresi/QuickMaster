@@ -1,0 +1,20 @@
+[0.174s][info][jfr,startup] Started recording 1. No limit specified, using maxsize=250MB as default.
+[0.174s][info][jfr,startup] 
+[0.174s][info][jfr,startup] Use jcmd 37320 JFR.dump name=1 to copy recording data to file.
+CONFIGURATION fullChain=true heapCheckpoints=false
+JAR file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/performance-20260927/p1-delivery-app/quickmaster.jar
+sept 27, 2026 5:36:48 A. M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @7d0614f'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/performance-20260927/p1-delivery-app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+INTERACTION load-full-chain totalSec=14.968324 lastEditToSettledSec=14.968324 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=40.833 generation=3
+AUDIO_READY load-full-chain lastEditSec=14.255218 beforeMetersSec=0.713106
+INTERACTION single-leveler-edit totalSec=4.636900 lastEditToSettledSec=4.636785 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.321 generation=5
+AUDIO_READY single-leveler-edit lastEditSec=3.875474 beforeMetersSec=0.761311
+INTERACTION six-edits-350ms-apart totalSec=6.088677 lastEditToSettledSec=4.293323 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.161 generation=17
+AUDIO_READY six-edits-350ms-apart lastEditSec=3.548499 beforeMetersSec=0.744824
+APP_RETAINED_HEAP_AFTER_GC MiB=1070.621
+LATEST_FULL_AUDIO_PASS coldFreshController=true bitExact=true rawBitDifferences=0 maxAbsError=0.00000000 changedSamples=26880002

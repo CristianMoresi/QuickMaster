@@ -18,6 +18,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.quickmaster.processing.dynamics.leveler.model.AudioFormat;
+import com.quickmaster.processing.dynamics.leveler.model.FrameRange;
+import com.quickmaster.processing.dynamics.leveler.model.FrozenList;
+import com.quickmaster.processing.dynamics.leveler.model.MeasuredLoudness;
 import com.quickmaster.processing.dynamics.leveler.model.ProtectionDecision;
 import com.quickmaster.processing.dynamics.leveler.model.ProtectionFlags;
 import com.quickmaster.processing.dynamics.leveler.model.SegmentDescriptor;
@@ -95,7 +98,7 @@ class LevelerCalibrationProfileTest
             ShadowAnalysisSnapshot snapshot = new LevelerAnalysisEngine().analyzeShadow(
                     new float[frames], new AudioFormat(sampleRate, 1, frames), new CancellationToken());
             assertNotNull(snapshot);
-            assertEquals("QM-LEVELER-S001-COMPARISON-V2", snapshot.cache().algorithmId());
+            assertEquals("QM-LEVELER-S002-ARRANGEMENT-V1", snapshot.cache().algorithmId());
             assertEquals("QM-LEVELER-V2", snapshot.cache().profileId());
             assertNotNull(snapshot.cache().comparison());
             assertSame(snapshot.cache().format(), snapshot.cache().comparison().format());
@@ -139,5 +142,42 @@ class LevelerCalibrationProfileTest
                 }
             }
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 44_100, 48_000, 96_000 })
+    void silentEdgeProtectionIsDurationIndependentAndPreservesAllBits(int rate) throws Exception
+    {
+        Method union = LevelerAnalysisEngine.class.getDeclaredMethod("protectBoundaryFragments",
+                int.class, FrozenList.class, ProtectionDecision.class);
+        union.setAccessible(true);
+        for (long tail : new long[] { 1, 3L * rate - 1, 3L * rate, 3L * rate + 1 })
+        {
+            for (boolean present : new boolean[] { false, true })
+            {
+                long end = tail + 20L * rate;
+                var regions = new FrozenList<SegmentDescriptor>(new Object[] {
+                        boundaryRegion(0, 0, tail, present), boundaryRegion(1, tail, end, true),
+                        boundaryRegion(2, end, end + tail, present) });
+                for (long bits = 0; bits < 256; bits++)
+                {
+                    var original = new ProtectionDecision(regions.get(1).id(), new ProtectionFlags(bits));
+                    var result = (ProtectionDecision)union.invoke(null, 1, regions, original);
+                    long expected = bits | (!present ? 6L : 0L);
+                    assertEquals(expected, result.flags().reasonBits());
+                    assertSame(original.id(), result.id());
+                    assertEquals(bits, original.flags().reasonBits());
+                    if (expected == bits) assertSame(original, result);
+                }
+            }
+        }
+    }
+
+    private static SegmentDescriptor boundaryRegion(int id, long start, long end, boolean present)
+    {
+        var base = MusicalModelFixtures.descriptor(id, -20);
+        return new SegmentDescriptor(base.id(), new FrameRange(start, end), base.bins(), base.validBinMask(),
+                present ? base.regionalLoudness() : MeasuredLoudness.absent(), 0, 0, 0, 0, 0, 1,
+                base.context(), base.sketch());
     }
 }

@@ -1,0 +1,22 @@
+sept 27, 2026 6:14:23 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @2974f221'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/performance-p1-fixed-20260927/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+SOURCE_LOAD_PASS latestFile=true sampleRate=44100 duration=12s
+SOURCE_EDIT_PASS latestArray=true isolatedTrackAnalysis=true latestManualBpm=143 queuedPlayCancelled=true
+2026-09-27 06:14:25 ERROR Failed to load E:\Code\Projects\JA-DAW\QuickMaster-Integration\dist\performance-20260927\source-race-17336034076490428031\deliberately-missing.wav
+com.quickmaster.audio.AudioFileException: File does not exist: E:\Code\Projects\JA-DAW\QuickMaster-Integration\dist\performance-20260927\source-race-17336034076490428031\deliberately-missing.wav
+	at com.quickmaster.audio.AudioFormatDetector.detect(AudioFormatDetector.java:51)
+	at com.quickmaster.audio.AudioFormatDetector.loadAuto(AudioFormatDetector.java:94)
+	at com.quickmaster.ui.MainController$1.call(MainController.java:1160)
+	at com.quickmaster.ui.MainController$1.call(MainController.java:1156)
+	at javafx.concurrent.Task$TaskCallable.call(Task.java:1399)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+SOURCE_FAILURE_RECOVERY_PASS retainedFile=true latestEditedPcm=true freshAnalysis=true
+SOURCE_CLOSE_PASS noPublicationAfterClose=true

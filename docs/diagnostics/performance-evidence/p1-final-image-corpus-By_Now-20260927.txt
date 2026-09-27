@@ -1,0 +1,11 @@
+SOURCE By Now.wav sha256=dcfb61d5d419bf6044bb0dd42fd7639659f33564c4b7ef9219cbf66798bf8e91 frames=13440001 rate=48000 channels=2
+JAR E:\Code\Projects\JA-DAW\QuickMaster-Integration\dist\performance-p1-fixed-20260927\QuickMaster\app\quickmaster.jar sha256=ec80915fe0e5fc773de33fffde3eb82f9ccaf640e0f38ee2fc137f7c112ca73a
+STATUS amount=1.0 STRUCTURAL_READY
+RENDER ORIGINAL changed=8255793/26880002 minGainDb=-0.313163 maxGainDb=0.000000
+STATUS amount=1.0 STRUCTURAL_READY
+STATUS amount=1.0 STRUCTURAL_READY
+RENDER INJECTED_PLUS_4_DB changed=8207919/26880002 minGainDb=-2.446705 maxGainDb=0.000000
+KNOWN_ERROR selected=175.500..261.000 peers=2 beforeGapLu=4.962374 afterGapLu=2.515670 improvementLu=2.446704
+STATUS amount=0.0 UNIT
+RENDER ZERO_AMOUNT changed=0/26880002 minGainDb=0.000000 maxGainDb=0.000000
+PASS actualPackagedRender=true protectedOriginalRegionsExact=true sourceUnchanged=true

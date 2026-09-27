@@ -1,0 +1,50 @@
+[
+  {
+    "mode": "leveler",
+    "trial": 1,
+    "maxBeforeMiB": 3993.805595397949,
+    "maxAfterMiB": 3948.3375091552734,
+    "lastAfterMiB": 446.8887939453125,
+    "eventCount": 34
+  },
+  {
+    "mode": "leveler",
+    "trial": 2,
+    "maxBeforeMiB": 3986.3563079833984,
+    "maxAfterMiB": 3953.4726028442383,
+    "lastAfterMiB": 447.0042037963867,
+    "eventCount": 34
+  },
+  {
+    "mode": "leveler",
+    "trial": 3,
+    "maxBeforeMiB": 4029.5390548706055,
+    "maxAfterMiB": 4004.7957763671875,
+    "lastAfterMiB": 446.9555435180664,
+    "eventCount": 42
+  },
+  {
+    "mode": "full",
+    "trial": 1,
+    "maxBeforeMiB": 4025.4789428710938,
+    "maxAfterMiB": 4000.158920288086,
+    "lastAfterMiB": 2013.9887084960938,
+    "eventCount": 66
+  },
+  {
+    "mode": "full",
+    "trial": 2,
+    "maxBeforeMiB": 4012.2350997924805,
+    "maxAfterMiB": 4006.6250534057617,
+    "lastAfterMiB": 2014.042709350586,
+    "eventCount": 66
+  },
+  {
+    "mode": "full",
+    "trial": 3,
+    "maxBeforeMiB": 4018.1232528686523,
+    "maxAfterMiB": 4009.9682083129883,
+    "lastAfterMiB": 1857.8430099487305,
+    "eventCount": 66
+  }
+]

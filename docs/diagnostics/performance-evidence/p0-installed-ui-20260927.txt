@@ -1,0 +1,14 @@
+sept 27, 2026 3:49:44 A. M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @74589991'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+UI_STATE enabled=true amount=1.0 speed=0.5 analyzed=true processor=STRUCTURAL_READY current=2 ready=2 started=2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by com.sun.marlin.OffHeapArray (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Please consider reporting this to the maintainers of class com.sun.marlin.OffHeapArray
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+UI_PASS actualAsyncFileLoad=true currentDiagnostic=Leveling · comparable sections livePipelineChanged=8255793 generation=2 screenshot=dist\performance-20260927\p0-installed-ui.png
+UI_ZERO_PASS Leveling off (0%)

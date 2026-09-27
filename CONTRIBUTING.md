@@ -14,10 +14,11 @@ mvn test               # run the unit test suite
 
 The audio engine lives in a separate library, **DSPark for Java** (`com.dspark:dspark`), a
 Java port of the [DSPark](https://github.com/CristianMoresi/DSPark) C++ DSP library. It is
-vendored in `libs/`; install it to your local Maven repository first:
+versioned with sources and tests in `vendor/dspark-java/`; build it first using
+the validated runtime (Temurin 25.0.4.7 for the current bytecode-bound acceptance):
 
 ```bash
-mvn install:install-file -Dfile=libs/dspark-0.1.0.jar -DpomFile=libs/dspark-0.1.0.pom
+mvn -f vendor/dspark-java/pom.xml clean install
 ```
 
 ## Project layout

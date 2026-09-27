@@ -3,6 +3,7 @@ import com.quickmaster.processing.AudioProcessor;
 
 import com.dspark.effects.LimiterEnvelope;
 import com.dspark.effects.MultibandCrossover;
+import com.quickmaster.processing.analysis.AnalysisInputKey;
 
 /**
  * First limiting layer: an automatic, phase-faithful <b>multiband limiter</b>.
@@ -19,7 +20,7 @@ import com.dspark.effects.MultibandCrossover;
  * gain-reduction meters ({@link #getBandGrAtPosition}) read the real reduction
  * identically with or without oversampling. Disabled by default.
  */
-public final class MultibandLimiterProcessor implements AudioProcessor
+public final class MultibandLimiterProcessor implements AudioProcessor, com.quickmaster.processing.OfflineBlockSizing
 {
     /** Crossover frequencies (Hz): Low | Low-Mid | High-Mid | High. */
     public static final double[] CROSSOVERS = { 120.0, 1000.0, 6000.0 };
@@ -36,6 +37,8 @@ public final class MultibandLimiterProcessor implements AudioProcessor
     private volatile boolean enabled = false;
 
     private final double[] pushDb = new double[BANDS];     // per-band target max reduction
+    private double[] appliedPushDb = new double[BANDS];    // controls represented by published envelopes
+    private AnalysisInputKey featureKey;
     private volatile float[][] bandPeakMap = null;         // [band][frame] cached peak (for remap)
     private volatile float[][] bandEnv = null;             // [band][frame] gain (null row = unity)
     private final double[] bandPeak = new double[BANDS];   // per-band program peak
@@ -67,6 +70,12 @@ public final class MultibandLimiterProcessor implements AudioProcessor
         mapBandToEnvelope(band);   // rebuild only this band (cheap; keeps the knob responsive)
     }
 
+    /** UI request only; the analysis worker constructs and publishes the new envelope. */
+    public void requestPushDb(int band, double db)
+    {
+        if (band >= 0 && band < BANDS) pushDb[band] = clamp(db, 0.0, MAX_PUSH_DB);
+    }
+
     /** Gain reduction (dB, &le; 0) of {@code band} at base-rate position {@code baseFrame}. */
     public double getBandGrAtPosition(int band, long baseFrame)
     {
@@ -78,7 +87,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor
         long i = baseFrame;
         if (i < 0) i = 0; else if (i >= e.length) i = e.length - 1;
         double g = e[(int) i];
-        double gr = 20.0 * Math.log10(Math.max(g, 1e-6)) - pushDb[band];   // remove the make-up
+        double gr = 20.0 * Math.log10(Math.max(g, 1e-6)) - appliedPushDb[band];
         return Math.max(Math.min(gr, 0.0), -MAX_PUSH_DB);
     }
 
@@ -95,7 +104,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor
         double minG = Double.MAX_VALUE;
         for (int i = a; i <= b2; i++) if (e[i] < minG) minG = e[i];
         if (minG == Double.MAX_VALUE) return 0.0;
-        double gr = 20.0 * Math.log10(Math.max(minG, 1e-6)) - pushDb[band];   // remove the make-up
+        double gr = 20.0 * Math.log10(Math.max(minG, 1e-6)) - appliedPushDb[band];
         return Math.max(Math.min(gr, 0.0), -MAX_PUSH_DB);
     }
 
@@ -114,13 +123,16 @@ public final class MultibandLimiterProcessor implements AudioProcessor
     @Override
     public void prepare(int sampleRate, long totalSamples)
     {
+        if (this.sampleRate != sampleRate) this.crossoverReady = false;
         this.sampleRate = sampleRate;
         this.framesProcessed = 0L;
         // Eagerly (re)prepare the crossover for this rate so getLatencyFrames()
         // is correct before the first process()/analyze() call.
-        this.crossoverReady = false;
         ensureCrossover(preparedChannels > 0 ? preparedChannels : 2);
+        crossover.reset();
     }
+
+    @Override public int preferredOfflineBlockFrames() { return crossover.getBlockSize(); }
 
     @Override
     public void setPlaybackPosition(long frame) { this.framesProcessed = frame; }
@@ -130,35 +142,48 @@ public final class MultibandLimiterProcessor implements AudioProcessor
     {
         if (samples == null || channels < 1) return;
         ensureCrossover(channels);
+        AnalysisInputKey key = AnalysisInputKey.of(samples, sampleRate, channels);
+        if (key.equals(featureKey) && bandPeakMap != null) {
+            mapToEnvelopes();
+            return;
+        }
         int frames = samples.length / channels;
         envRate = sampleRate;
         envFrames = frames;
         atkSamples = Math.max(1, (int) (ATTACK_MS * 0.001 * sampleRate));
         relSamples = Math.max(1, (int) (RELEASE_MS * 0.001 * sampleRate));
 
-        float[][] bands = crossover.splitWhole(samples, channels);
         float[][] pmaps = new float[BANDS][frames];
-        for (int b = 0; b < BANDS; b++)
+        java.util.Arrays.fill(bandPeak, 0.0);
+        crossover.reset();
+        int blockSize = crossover.getBlockSize();
+        float[] block = new float[Math.min(blockSize, frames) * channels];
+        float[][] bands = new float[BANDS][block.length];
+        // Keep only per-frame linked peaks, never four full stereo PCM tracks.
+        // The maps retain the crossover's causal delay, exactly as splitWhole
+        // did, so gains and delayed band samples use the same timeline.
+        for (int start = 0; start < frames; start += blockSize)
         {
-            float[] band = bands[b];
-            float[] pm = pmaps[b];
-            double mx = 0.0;
-            for (int f = 0; f < frames; f++)
+            if (Thread.currentThread().isInterrupted()) throw new java.util.concurrent.CancellationException();
+            int count = Math.min(blockSize, frames - start);
+            if (block.length != count * channels) block = new float[count * channels];
+            System.arraycopy(samples, start * channels, block, 0, block.length);
+            crossover.process(block, channels, bands);
+            for (int b = 0; b < BANDS; b++)
             {
-                float p = 0.0f;
-                int base = f * channels;
-                for (int c = 0; c < channels; c++)
+                for (int f = 0; f < count; f++)
                 {
-                    float a = Math.abs(band[base + c]);
-                    if (a > p) p = a;
+                    float peak = 0;
+                    for (int c = 0; c < channels; c++)
+                        peak = Math.max(peak, Math.abs(bands[b][f * channels + c]));
+                    pmaps[b][start + f] = peak;
+                    bandPeak[b] = Math.max(bandPeak[b], peak);
                 }
-                pm[f] = p;
-                if (p > mx) mx = p;
             }
-            pmaps[b] = pm;
-            bandPeak[b] = mx;
         }
+        crossover.reset();
         bandPeakMap = pmaps;
+        featureKey = key;
         mapToEnvelopes();
     }
 
@@ -169,6 +194,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor
         if (pmaps == null) return;
         float[][] envs = new float[BANDS][];
         for (int b = 0; b < BANDS; b++) envs[b] = buildBandEnv(b, pmaps);
+        appliedPushDb = pushDb.clone();
         bandEnv = envs;
     }
 
@@ -180,6 +206,9 @@ public final class MultibandLimiterProcessor implements AudioProcessor
         float[][] cur = bandEnv;
         float[][] envs = (cur != null) ? cur.clone() : new float[BANDS][];
         envs[band] = buildBandEnv(band, pmaps);
+        double[] applied = appliedPushDb.clone();
+        applied[band] = pushDb[band];
+        appliedPushDb = applied;
         bandEnv = envs;   // atomic publish
     }
 
@@ -244,13 +273,34 @@ public final class MultibandLimiterProcessor implements AudioProcessor
     /** Adopts the analysis (peak maps + peaks) from a background re-render copy. */
     public void adoptAnalysis(MultibandLimiterProcessor other)
     {
+        reuseAnalysisFeatures(other);
+        if (java.util.Arrays.equals(pushDb, other.appliedPushDb)) {
+            // Immutable analysis arrays are safe to share. Never remap a track
+            // on the FX thread when the worker has already done exactly that.
+            this.appliedPushDb = other.appliedPushDb;
+            this.bandEnv = other.bandEnv;
+        } else mapToEnvelopes(); // synchronous API for callers requesting different controls
+    }
+
+    /** FX publication of an already current snapshot, including bypass (null envelope).
+     * Unlike the synchronous convenience API this never remaps, even after an off-state edit. */
+    public void adoptPreparedAnalysis(MultibandLimiterProcessor other)
+    {
+        reuseAnalysisFeatures(other);
+        this.appliedPushDb = other.appliedPushDb;
+        this.bandEnv = other.bandEnv;
+    }
+
+    /** Constant-time transfer to a worker; analysis validates the complete new input key. */
+    public void reuseAnalysisFeatures(MultibandLimiterProcessor other)
+    {
         this.envRate = other.envRate;
         this.envFrames = other.envFrames;
         this.atkSamples = other.atkSamples;
         this.relSamples = other.relSamples;
         System.arraycopy(other.bandPeak, 0, this.bandPeak, 0, BANDS);
         this.bandPeakMap = other.bandPeakMap;
-        mapToEnvelopes();
+        this.featureKey = other.featureKey;
     }
 
     /* --- helpers --- */

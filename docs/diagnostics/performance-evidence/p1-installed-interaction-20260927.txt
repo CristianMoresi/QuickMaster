@@ -1,0 +1,17 @@
+CONFIGURATION fullChain=true heapCheckpoints=false
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+sept 27, 2026 9:14:58 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @1c65121'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+INTERACTION load-full-chain totalSec=15.568277 lastEditToSettledSec=15.568277 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=28.175 generation=3
+AUDIO_READY load-full-chain lastEditSec=14.762650 beforeMetersSec=0.805628
+INTERACTION single-leveler-edit totalSec=4.512712 lastEditToSettledSec=4.512529 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.578 generation=5
+AUDIO_READY single-leveler-edit lastEditSec=3.735815 beforeMetersSec=0.776714
+INTERACTION six-edits-350ms-apart totalSec=6.089834 lastEditToSettledSec=4.311088 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.557 generation=17
+AUDIO_READY six-edits-350ms-apart lastEditSec=3.583118 beforeMetersSec=0.727970
+APP_RETAINED_HEAP_AFTER_GC MiB=1068.886
+LATEST_FULL_AUDIO_PASS coldFreshController=true bitExact=true rawBitDifferences=0 maxAbsError=0.00000000 changedSamples=26880002

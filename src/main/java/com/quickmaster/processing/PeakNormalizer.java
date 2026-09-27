@@ -77,6 +77,9 @@ public final class PeakNormalizer implements AudioProcessor
     @Override
     public boolean usesAnalysis() { return true; }
 
+    /** The input peak is displayed even when normalization is off. */
+    @Override public boolean analyzeWhenBypassed() { return true; }
+
     @Override
     public void analyze(float[] samples, int channels)
     {

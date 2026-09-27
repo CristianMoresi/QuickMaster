@@ -1,0 +1,15 @@
+[0.190s][info][jfr,startup] Started recording 1. No limit specified, using maxsize=250MB as default.
+[0.190s][info][jfr,startup] 
+[0.190s][info][jfr,startup] Use jcmd 26540 JFR.dump name=1 to copy recording data to file.
+JAR file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/performance-20260927/p0-app/quickmaster.jar
+sept 27, 2026 3:45:32 A. M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @41c62850'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/performance-20260927/p0-app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+INTERACTION load-leveler-only totalSec=10.053182 lastEditToSettledSec=10.053182 maxJobs=1 maxWorkers=1 maxFxPulseDelayMs=50.574 generation=2
+INTERACTION single-leveler-edit totalSec=4.062471 lastEditToSettledSec=4.062244 maxJobs=1 maxWorkers=1 maxFxPulseDelayMs=12.523 generation=4
+INTERACTION six-edits-350ms-apart totalSec=5.572974 lastEditToSettledSec=3.771715 maxJobs=1 maxWorkers=1 maxFxPulseDelayMs=28.026 generation=16
+LATEST_AUDIO_PASS amount=0.8 bitExactToColdReference=true changedSamples=8255770

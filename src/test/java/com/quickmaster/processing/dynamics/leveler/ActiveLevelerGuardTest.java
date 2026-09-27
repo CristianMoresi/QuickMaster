@@ -9,11 +9,22 @@ import org.junit.jupiter.api.Test;
 class ActiveLevelerGuardTest
 {
     private static final String HISTORICAL_ENTRY_MUTANT_SHA = "f34b349e6d47c67b3ef680f11ebc4b801f81104fec41ce2e2be8b35ff4bb6cc0";
-    private static final String COMPARISON_V2_ENTRY_MUTANT_SHA = "6c68dd82532bf5dbe2cd63e4dbc6f6ad2b0fbccc1c9bee02d93fe8ab7dfce16f";
+    private static final String COMPARISON_V2_ENTRY_MUTANT_SHA = "9daad53b9f36e64b59f24e3d136562d756352c946363b0f9eddc7aa3abd4e0b8";
     @Test void currentActiveProductSatisfiesExplicitSuccessor() throws Exception
     {
         var result = AsyncEscapeBytecodeGuard.scanActive(classes());
         assertTrue(result.passed(), "ACTIVE_STATIC_SUCCESSOR_REQUIRED\n" + result.violations());
+    }
+
+    @Test void arrangementRouteCannotRetainPcmOrStartBackgroundWork() throws Exception
+    {
+        String owner = "com/quickmaster/processing/dynamics/leveler/ArrangementReferencePlanner";
+        String original = source(owner);
+        assertEquals(List.of(), AsyncEscapeBytecodeGuard.inspectActive(compile(owner, original)));
+        assertRejected(compile(owner, original.replace("public final class ArrangementReferencePlanner\n{",
+                "public final class ArrangementReferencePlanner\n{\n private float[] retainedPcm;")), "FIELD_SCHEMA_MISMATCH");
+        assertRejected(compile(owner, original.replace("return token != null && token.isCancelled();",
+                "new Thread().start(); return token != null && token.isCancelled();")), "BYTECODE_CALL_NOT_ALLOWED");
     }
 
     @Test void contextMaskSuccessorClosesDeclarationsCallsAndHistoricalBoundary() throws Exception {
@@ -277,6 +288,12 @@ class ActiveLevelerGuardTest
     /** Reconstruct only the reviewed historical cache predicate; the byte hash proves exact identity. */
     private static String historicalCacheSource(String current)
     {
+        int diagnostic = current.indexOf("    /** A completed unit plan is not presented as active leveling. */");
+        assertTrue(diagnostic > 0);
+        current = current.substring(0, diagnostic) + "}\n";
+        current = current.replace("    public double getSpeed() { return speed; }",
+                "    public double getSpeed() { return speed; }\n"
+                + "    public String getAnalysisDiagnostic() { return publishedGain().status().name(); }");
         String comparison = "                && cache.comparison() != null\n"
                 + "                && cache.comparison().format() == cache.format()\n";
         assertTrue(current.contains(comparison));

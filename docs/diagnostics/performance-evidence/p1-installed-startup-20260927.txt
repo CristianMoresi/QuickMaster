@@ -1,0 +1,4 @@
+2026-09-27 09:11:40 INFO  Application starting (JavaFX).
+2026-09-27 09:11:40 INFO  Controller initialised.
+2026-09-27 09:11:41 INFO  Native WM_SIZING aspect-ratio constraint enabled.
+

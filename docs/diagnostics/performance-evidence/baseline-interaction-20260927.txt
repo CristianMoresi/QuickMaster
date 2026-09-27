@@ -1,0 +1,24 @@
+[0.187s][info][jfr,startup] Started recording 1. No limit specified, using maxsize=250MB as default.
+[0.187s][info][jfr,startup] 
+[0.187s][info][jfr,startup] Use jcmd 42408 JFR.dump name=1 to copy recording data to file.
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+sept 27, 2026 2:50:23 A. M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @53499d85'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+INTERACTION load-leveler-only totalSec=16.245628 lastEditToSettledSec=16.245628 maxJobs=1 maxWorkers=1 maxFxPulseDelayMs=244.234 generation=2
+INTERACTION single-leveler-edit totalSec=7.346952 lastEditToSettledSec=7.346712 maxJobs=1 maxWorkers=1 maxFxPulseDelayMs=251.931 generation=4
+2026-09-27 02:50:54 ERROR Post-processing output analysis failed.
+java.lang.OutOfMemoryError: Java heap space
+	at com.dspark.effects.MultibandCrossover.splitWhole(MultibandCrossover.java:147)
+	at com.quickmaster.processing.limit.MultibandLimiterProcessor.analyze(MultibandLimiterProcessor.java:139)
+	at com.quickmaster.processing.ProcessingPipeline.analyzeAndRender(ProcessingPipeline.java:251)
+	at com.quickmaster.ui.MainController$7.call(MainController.java:4543)
+	at com.quickmaster.ui.MainController$7.call(MainController.java:4539)
+	at javafx.concurrent.Task$TaskCallable.call(Task.java:1399)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base/java.lang.Thread.run(Thread.java:1474)

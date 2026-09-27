@@ -41,7 +41,6 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
 
     public double getLeveling() { return leveling; }
     public double getSpeed() { return speed; }
-    public String getAnalysisDiagnostic() { return publishedGain().status().name(); }
     public ShadowAnalysisSnapshot getShadowAnalysis() { return shadowAnalysis; }
 
     public synchronized void setLeveling(double value)
@@ -246,5 +245,23 @@ public final class LevelerProcessor extends AnalysisDynamicsProcessor
         {
             throw new IllegalStateException("SHA-256 is required for analysis identity.", ex);
         }
+    }
+
+    /** A completed unit plan is not presented as active leveling. */
+    public synchronized String getAnalysisDiagnostic()
+    {
+        PublishedGain publication = publishedGain();
+        if (publication.status() != AnalysisStatus.STRUCTURAL_READY
+                || !((SparseGainSchedule) publication.schedule()).isUnit()) return publication.status().name();
+        ShadowAnalysisSnapshot snapshot = shadowAnalysis;
+        if (snapshot == null) return "INSUFFICIENT_ANALYSIS";
+        boolean comparable = false;
+        for (int i = 0; i < snapshot.cache().referencePlan().size(); i++)
+        {
+            var target = snapshot.cache().referencePlan().targets().get(i);
+            comparable |= target.referenceLoudness().present();
+            if (target.confidenceWeightedDb() != 0) return "CORRECTION_LIMITED";
+        }
+        return comparable ? "WITHIN_TOLERANCE" : "NO_COMPARABLE_SECTIONS";
     }
 }

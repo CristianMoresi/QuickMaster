@@ -43,17 +43,26 @@ class M004StaticClosureTest
     {
         for (var entry : M004StaticClosureContract.ENUMS.entrySet())
         {
-            byte[] original = M004StaticClosureFixtures.real(entry.getKey()); assertEquals(List.of(), M004StaticClosurePolicy.inspect(original), entry.getKey());
+            byte[] original = M004StaticClosureFixtures.real(entry.getKey());
+            boolean arrangement = entry.getKey().equals(M + "ReferenceReason");
+            var names = arrangement ? ActiveLevelerGuardContract.enumNames(entry.getKey()) : entry.getValue();
+            assertEquals(List.of(), arrangement
+                    ? M004StaticClosurePolicy.inspectActive(M004Classfile.parse(original), Set.of())
+                    : M004StaticClosurePolicy.inspect(original), entry.getKey());
             for (String method : List.of("<init>", "values", "valueOf", "$values", "<clinit>"))
             {
                 byte[] bad = M004StaticClosureFixtures.nop(original, method);
-                rejects(bad, AsyncEscapeBytecodeGuard.Rule.CLOSED_ENUM, "STATIC_ENUM_PROTOCOL");
+                if (arrangement) {
+                    assertTrue(codes(M004StaticClosurePolicy.inspectActive(M004Classfile.parse(bad), Set.of())).contains("STATIC_ENUM_PROTOCOL"));
+                    assertFalse(codes(M004StaticClosurePolicy.inspectActive(M004Classfile.parse(bad),
+                            Set.of(AsyncEscapeBytecodeGuard.Rule.CLOSED_ENUM))).contains("STATIC_ENUM_PROTOCOL"));
+                } else rejects(bad, AsyncEscapeBytecodeGuard.Rule.CLOSED_ENUM, "STATIC_ENUM_PROTOCOL");
                 M004ClassfileFixtures.persist("closed-enum-" + entry.getKey().substring(entry.getKey().lastIndexOf('/') + 1) + "-" + method.replace('<','_').replace('>','_'), original, bad);
             }
             Class<?> type = Class.forName(entry.getKey().replace('/', '.'));
             Object[] constants = type.getEnumConstants(), clone = (Object[]) type.getMethod("values").invoke(null);
-            assertNotSame(constants, clone); assertEquals(entry.getValue().size(), constants.length);
-            for (int i = 0; i < constants.length; i++) { Enum<?> e = (Enum<?>)constants[i]; assertEquals(entry.getValue().get(i), e.name()); assertEquals(i, e.ordinal()); assertSame(e, clone[i]); }
+            assertNotSame(constants, clone); assertEquals(names.size(), constants.length);
+            for (int i = 0; i < constants.length; i++) { Enum<?> e = (Enum<?>)constants[i]; assertEquals(names.get(i), e.name()); assertEquals(i, e.ordinal()); assertSame(e, clone[i]); }
             clone[0] = null; assertSame(constants[0], ((Object[])type.getMethod("values").invoke(null))[0]);
         }
     }
@@ -128,7 +137,7 @@ class M004StaticClosureTest
 
     @Test void sbP5Fields85TypedValuesAndSbN3EveryFieldTupleIsClosed() throws Exception
     {
-        int historicalCount = 0, comparisonV2Count = 0;
+        int historicalCount = 0, comparisonV2Count = 0, arrangementCount = 0;
         for (JsonElement element : M004StaticClosureContract.STATIC.getAsJsonArray("classes"))
         {
             String owner = element.getAsJsonObject().get("owner").getAsString(); byte[] original = M004StaticClosureFixtures.real(owner); var f = M004Classfile.parse(original);
@@ -141,6 +150,7 @@ class M004StaticClosureTest
                     assertEquals(25, field.access()); assertEquals(0, field.constantIndex());
                     comparisonV2Count++;
                 }
+                else if (owner.equals(M + "ReferenceReason") && field.name().equals("ARRANGEMENT_REFERENCE")) arrangementCount++;
                 else historicalCount++;
                 List<byte[]> mutants = new ArrayList<>();
                 mutants.add(M004StaticClosureFixtures.fieldName(original, field.name(), field.name() + "Changed"));
@@ -164,6 +174,7 @@ class M004StaticClosureTest
         }
         assertEquals(70, historicalCount, "Original historical field universe stays exact");
         assertEquals(1, comparisonV2Count, "Only the separately declared V2 singleton is additional");
+        assertEquals(1, arrangementCount, "The new reference reason has its own explicit contract and mutation checks");
     }
 
     @Test void sbP5ProfileAndSbN7AllFixedGettersIdsAndSingletonBodies() throws Exception
@@ -238,7 +249,7 @@ class M004StaticClosureTest
     {
         assertEquals("de368f326f668267d0cba20f34135efb466dafc53f84a4aee32d8af4347e4141", AsyncEscapeBytecodeGuard.sha(Files.readAllBytes(Path.of("libs/dspark-0.1.0.jar"))));
         Path loadedJar = Path.of(com.dspark.core.FFTReal.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        assertEquals("de368f326f668267d0cba20f34135efb466dafc53f84a4aee32d8af4347e4141", AsyncEscapeBytecodeGuard.sha(Files.readAllBytes(loadedJar)), "Executing dependency bytes must match the binding too");
+        assertEquals(ActiveLevelerGuardContract.DSPARK_SHA256, AsyncEscapeBytecodeGuard.sha(Files.readAllBytes(loadedJar)), "Executing dependency bytes must match the explicitly audited active successor");
         byte[] loader = M004StaticClosureFixtures.real(M004StaticClosureContract.LOADER);
         assertFalse(codes(M004StaticClosurePolicy.inspect(loader)).contains("STATIC_LOADER_PERIMETER"));
         var f = M004Classfile.parse(loader);

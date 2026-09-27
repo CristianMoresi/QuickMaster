@@ -77,7 +77,8 @@ public final class ShadowAnalysisCache
             throw new IllegalArgumentException("Invalid shadow cache.");
         }
         if (requireComparison && (comparison == null || comparison.format() != format
-                || !"QM-LEVELER-S001-COMPARISON-V2".equals(algorithmId)
+                || !("QM-LEVELER-S001-COMPARISON-V2".equals(algorithmId)
+                    || "QM-LEVELER-S002-ARRANGEMENT-V1".equals(algorithmId))
                 || !"QM-LEVELER-V2".equals(profileId)))
             throw new IllegalArgumentException("Invalid V2 comparison cache identity.");
         this.format = format;

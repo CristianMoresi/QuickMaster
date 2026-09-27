@@ -111,6 +111,15 @@ public interface AudioProcessor
      */
     default void analyze(float[] samples, int channels) { /* no-op by default */ }
 
+    /** Offline cancellation shared by the chain. Long analyzers may poll the token. */
+    default void analyze(float[] samples, int channels,
+            com.quickmaster.processing.dynamics.leveler.CancellationToken cancellation)
+    {
+        if (cancellation != null && cancellation.isCancelled())
+            throw new java.util.concurrent.CancellationException("Analysis superseded.");
+        analyze(samples, channels);
+    }
+
     /**
      * Indicates whether this processor derives a parameter from a
      * whole-signal pre-scan of its <i>actual</i> input - the signal as
@@ -129,6 +138,13 @@ public interface AudioProcessor
      *         upstream-processed signal
      */
     default boolean usesAnalysis() { return false; }
+
+    /**
+     * Whether an inactive stage still needs input measurements for its controls.
+     * Bypassed DSP is otherwise neither analyzed nor rendered offline. Enabling a
+     * stage requires analysis of its current input before adopting its result.
+     */
+    default boolean analyzeWhenBypassed() { return false; }
 
     /**
      * Reports the processing latency this processor introduces, in

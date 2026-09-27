@@ -1,0 +1,11 @@
+SOURCE Quiet Gold.wav sha256=cd6667b19b4c641b13b17ac3220b7ddbaeb4e9b390e907d59148a10fb944e1d0 frames=9904390 rate=48000 channels=2
+JAR C:\Program Files\QuickMaster\app\quickmaster.jar sha256=ec80915fe0e5fc773de33fffde3eb82f9ccaf640e0f38ee2fc137f7c112ca73a
+STATUS amount=1.0 PEAK_UNSAFE
+RENDER ORIGINAL changed=0/19808780 minGainDb=0.000000 maxGainDb=0.000000
+STATUS amount=1.0 STRUCTURAL_READY
+STATUS amount=1.0 STRUCTURAL_READY
+RENDER INJECTED_PLUS_4_DB changed=5877746/19808780 minGainDb=-2.854724 maxGainDb=0.069293
+KNOWN_ERROR selected=141.000..188.000 peers=2 beforeGapLu=4.383214 afterGapLu=1.507755 improvementLu=2.875459
+STATUS amount=0.0 UNIT
+RENDER ZERO_AMOUNT changed=0/19808780 minGainDb=0.000000 maxGainDb=0.000000
+PASS actualPackagedRender=true protectedOriginalRegionsExact=true sourceUnchanged=true

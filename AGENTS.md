@@ -16,3 +16,13 @@ Do not consider a change complete when it exists only in the source tree or unde
 All local and GitHub commit messages must start with a bracketed type such as `[FIX]` or `[DOC]`, followed by a brief summary. Use at most two lines.
 
 Use the repository's configured Cristian Moresi identity as the sole author and committer. Do not add assistant, bot, or AI contributor credits, co-author trailers, or generated-by attribution.
+
+## Product acceptance before delivery or release
+
+A passing automated suite is necessary but not sufficient. Reproduce each reported
+audio failure with the actual user-supplied track and the packaged application.
+For the Leveler, verify a positive, measurable correction on suitable real musical
+sections as well as protection of intentional dynamics. An unchanged render or a
+`Ready` label is not evidence that leveling works. Record the applied gain and
+changed samples, investigate empty correction plans, and do not release with an
+unresolved reported regression. Keep source audio untouched and do not distribute it.

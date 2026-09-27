@@ -8,6 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OutputAnalysisTest
 {
+    @Test void cancellationRejectsObsoleteMeasurementsWithoutTouchingSource() {
+        float[] pcm = {.3f, -.5f};
+        var token = new com.quickmaster.processing.dynamics.leveler.CancellationToken(); token.cancel();
+        org.junit.jupiter.api.Assertions.assertThrows(java.util.concurrent.CancellationException.class,
+                () -> OutputAnalysis.measure(pcm, 1, 48000, token));
+        org.junit.jupiter.api.Assertions.assertArrayEquals(new float[]{.3f,-.5f}, pcm);
+    }
     private static final int SAMPLE_RATE = 48_000;
     private static final int CHANNELS = 2;
 

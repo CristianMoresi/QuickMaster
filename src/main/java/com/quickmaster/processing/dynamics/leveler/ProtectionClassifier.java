@@ -85,13 +85,13 @@ public final class ProtectionClassifier
         int last = Math.min(all.size() - 1, index + 2);
         if (last - first < 3) return false;
         int loudnessIntervals = 0;
-        int loudnessSameSign = 0;
+        int loudnessRises = 0;
+        int loudnessFalls = 0;
         double loudnessTotal = 0.0d;
         int activityIntervals = 0;
-        int activitySameSign = 0;
+        int activityRises = 0;
+        int activityFalls = 0;
         double activityTotal = 0.0d;
-        double loudnessSign = 0.0d;
-        double activitySign = 0.0d;
         for (int i = first + 1; i <= last; i++)
         {
             SegmentDescriptor previous = all.get(i - 1);
@@ -99,21 +99,25 @@ public final class ProtectionClassifier
             if (previous.regionalLoudness().present() && current.regionalLoudness().present())
             {
                 double difference = current.regionalLoudness().lufs() - previous.regionalLoudness().lufs();
-                if (loudnessIntervals == 0) loudnessSign = StrictMath.signum(difference);
-                if (StrictMath.signum(difference) == loudnessSign) loudnessSameSign++;
+                // A plateau is not evidence of a directional trend. In particular,
+                // an isolated silent tail must not protect the preceding body.
+                if (difference >= 0.25d) loudnessRises++;
+                if (difference <= -0.25d) loudnessFalls++;
                 loudnessTotal += difference;
                 loudnessIntervals++;
             }
             double activityDifference = current.foregroundRatio() - previous.foregroundRatio();
-            if (activityIntervals == 0) activitySign = StrictMath.signum(activityDifference);
-            if (StrictMath.signum(activityDifference) == activitySign) activitySameSign++;
+            if (activityDifference >= 0.025d) activityRises++;
+            if (activityDifference <= -0.025d) activityFalls++;
             activityTotal += activityDifference;
             activityIntervals++;
         }
-        boolean loudnessBuild = loudnessIntervals >= 3 && loudnessSameSign * 4 >= loudnessIntervals * 3
-                && StrictMath.abs(loudnessTotal) >= 3.0d;
-        boolean activityBuild = activityIntervals >= 3 && activitySameSign * 4 >= activityIntervals * 3
-                && StrictMath.abs(activityTotal) >= 0.20d;
+        boolean loudnessBuild = loudnessIntervals >= 3
+                && ((loudnessTotal >= 3.0d && loudnessRises * 4 >= loudnessIntervals * 3)
+                    || (loudnessTotal <= -3.0d && loudnessFalls * 4 >= loudnessIntervals * 3));
+        boolean activityBuild = activityIntervals >= 3
+                && ((activityTotal >= 0.20d && activityRises * 4 >= activityIntervals * 3)
+                    || (activityTotal <= -0.20d && activityFalls * 4 >= activityIntervals * 3));
         return loudnessBuild || activityBuild;
     }
 

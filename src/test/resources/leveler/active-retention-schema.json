@@ -180,7 +180,7 @@
           "constantValue": {
             "attribute": "present",
             "tag": "CONSTANT_String",
-            "value": "QM-LEVELER-S001-COMPARISON-V2"
+            "value": "QM-LEVELER-S002-ARRANGEMENT-V1"
           },
           "descriptor": "Ljava/lang/String;",
           "name": "ALGORITHM_ID"
@@ -428,7 +428,7 @@
     }
   ],
   "comparisonAtoms": {
-    "algorithmId": "QM-LEVELER-S001-COMPARISON-V2",
+    "algorithmId": "QM-LEVELER-S002-ARRANGEMENT-V1",
     "historicalProfileId": "QM-LEVELER-V1",
     "profileId": "QM-LEVELER-V2"
   },
@@ -472,6 +472,16 @@
     "Z": "sparse schedule count = 0 or 1"
   },
   "enums": {
+    "com/quickmaster/processing/dynamics/leveler/model/ReferenceReason": [
+      "GROUP_REFERENCE",
+      "PAIR_REFERENCE",
+      "NOT_COMPARABLE",
+      "PROTECTED",
+      "INSUFFICIENT_LOUDNESS",
+      "AMBIGUOUS",
+      "STANDARD_VALIDATION_FAILED",
+      "ARRANGEMENT_REFERENCE"
+    ],
     "com/quickmaster/processing/dynamics/AnalysisStatus": [
       "UNIT",
       "LEGACY_READY",

@@ -1,0 +1,3 @@
+TEMPO bpm=82.25000 confidence=0.65000 reliable=true onsets=737 releaseMs=729.483
+BEAT blockFrames=65536 targetDb=-1.0 analyzed=true minAppliedGain=0.891250915 minAppliedDb=-1.000000226 meterMinimumDb=-0.999999709 overLimit=0/19765741 linkError=0.0000001183 outputSha=6b6bd0bed83231b69c09a0c2b52ecd4dc22e8957b5accf9f280d8ed5a40e0b5d
+SOURCE_UNCHANGED=true

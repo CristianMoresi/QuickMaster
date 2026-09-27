@@ -74,15 +74,28 @@ class PeakNormalizerTest
     }
 
     @Test
-    @DisplayName("Loud input is attenuated to the target peak")
+    @DisplayName("Loud input is attenuated to the true-peak target including the finite tail")
     void loudInputIsAttenuatedToTarget()
     {
         normalizer.setTargetDbfs(-6.0);
         float[] buffer = { 0.9f, -0.7f, 0.4f, -0.2f };
         normalizer.analyze(buffer, 2);
 
+        // Independent Annex-2 golden: the left-channel maximum is phase 0
+        // after six frames, when taps 6 and 5 contain these two real samples.
+        // Before DSPark's finite-tail fix this peak was never observed.
+        double inputTruePeak = .97216796875 * buffer[0] + .1373291015625 * buffer[2];
+        double target = Math.pow(10.0, -6.0 / 20.0);
+        assertTrue(inputTruePeak > maxAbs(buffer));
+        assertEquals(inputTruePeak, normalizer.getAnalyzedPeak(), 1e-12);
+        assertEquals(target / inputTruePeak, normalizer.getGain(), 1e-12);
         float[] output = normalizer.process(buffer.clone(), 2);
-        assertEquals(Math.pow(10.0, -6.0 / 20.0), maxAbs(output), EPSILON);
+        // Use the independent literal-coefficient kernel, not the normalizer's
+        // vendor helper as its own oracle. Sample peak must remain BELOW target.
+        var reference = new com.quickmaster.processing.dynamics.leveler.FiniteTruePeakStream(2, true);
+        reference.accept(output, 0, output.length / 2);
+        assertEquals(target, reference.finish(), EPSILON);
+        assertTrue(maxAbs(output) < target - .01);
         for (float s : output) assertTrue(Math.abs(s) <= 1.0f);
     }
 

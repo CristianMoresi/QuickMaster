@@ -31,8 +31,11 @@ class LevelerUiDiagnosticTest {
         assertTrue(body.contains("levelerDiagnosticLabel.setText("));
         assertTrue(body.contains("updateLevelerDiagnostic();"));
     }
-    @Test void readyMeansAnalyzedNotNecessarilyNonzeroGain() throws Exception {
-        assertEquals("Ready · comparable sections only", text("STRUCTURAL_READY",true,true,1));
+    @Test void gainAndNoChangeOutcomesAreDistinct() throws Exception {
+        assertEquals("Leveling · comparable sections", text("STRUCTURAL_READY",true,true,1));
+        assertEquals("Unchanged · no comparable sections found", text("NO_COMPARABLE_SECTIONS",true,true,1));
+        assertEquals("Unchanged · levels within tolerance", text("WITHIN_TOLERANCE",true,true,1));
+        assertEquals("Unchanged · correction limited by safety", text("CORRECTION_LIMITED",true,true,1));
         assertEquals("Awaiting analysis", text("UNIT",true,true,1));
         assertEquals("Awaiting analysis", text("CLEARED",true,true,1));
     }
@@ -63,14 +66,14 @@ class LevelerUiDiagnosticTest {
         return (String)method.invoke(null,"STRUCTURAL_READY",true,true,.5,current,started,ready,failed,cancelled);
     }
     @Test void upstreamOrSourceDirtyThenFailureNeverRestoresOldReady() throws Exception {
-        assertEquals("Ready · comparable sections only",generation(1,1,1,-1,-1));
+        assertEquals("Leveling · comparable sections",generation(1,1,1,-1,-1));
         assertEquals("Awaiting analysis",generation(2,1,1,-1,-1));
         assertEquals("Analyzing audio…",generation(2,2,1,-1,-1));
         assertEquals("Analysis failed · previous result is stale",generation(2,2,1,2,-1));
         assertEquals("Analysis cancelled · previous result is stale",generation(2,2,1,-1,2));
     }
     @Test void obsoleteJobsCannotHideOrAuthorizeCurrentReadiness() throws Exception {
-        assertEquals("Ready · comparable sections only",generation(3,3,3,2,1));
+        assertEquals("Leveling · comparable sections",generation(3,3,3,2,1));
         assertEquals("Analyzing audio…",generation(3,3,2,2,1));
         assertEquals("Awaiting analysis",generation(4,3,3,2,1));
     }

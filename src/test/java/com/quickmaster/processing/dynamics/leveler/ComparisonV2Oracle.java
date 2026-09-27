@@ -152,7 +152,8 @@ public final class ComparisonV2Oracle {
 
     static int version(String algorithm,String profile) {
         if(V1_ALGORITHM.equals(algorithm)&&V1_PROFILE.equals(profile))return 1;
-        if(V2_ALGORITHM.equals(algorithm)&&V2_PROFILE.equals(profile))return 2;
+        if((V2_ALGORITHM.equals(algorithm)||"QM-LEVELER-S002-ARRANGEMENT-V1".equals(algorithm))
+                &&V2_PROFILE.equals(profile))return 2;
         throw new IllegalArgumentException("Unknown or mixed comparison identity: "+algorithm+" / "+profile);
     }
     static long boundary(long i,int fs,int rate) {

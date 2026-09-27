@@ -6,7 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class FiniteTruePeakStreamTest {
     private static final float[] EOF={-.7042242288589478f,-.41123709082603455f};
     @Test void sixFrameTailGoldenAndAllPartitionsForBothKernels() {
-        assertEquals(.7042242288589478,com.dspark.analysis.TruePeak.measureMax(EOF,1),1e-12);
+        // Retain the old failure witness explicitly: an unflushed stream misses
+        // this endpoint peak. DSPark 0.2's finite-file helper now flushes its FIR.
+        var unflushed = new com.dspark.analysis.TruePeak();
+        double beforeTail = 0;
+        for (float sample : EOF) beforeTail = Math.max(beforeTail, unflushed.process(sample));
+        assertEquals(.7042242288589478, beforeTail, 1e-12);
+        assertEquals(.7410990583266539,com.dspark.analysis.TruePeak.measureMax(EOF,1),1e-12);
         for(boolean fallback:new boolean[]{false,true})for(int channels:new int[]{1,2})for(int lane=0;lane<channels;lane++)for(int split=0;split<=2;split++) {
             float[] pcm=new float[2*channels];pcm[lane]=EOF[0];pcm[channels+lane]=EOF[1];
             var stream=new FiniteTruePeakStream(channels,fallback);stream.accept(pcm,0,split);stream.accept(pcm,split,2-split);
