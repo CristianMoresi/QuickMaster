@@ -1,0 +1,18 @@
+sept 27, 2026 10:05:50 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @1ce24091'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+STOP_AUDIT fxBlockedMs=501.935 workerStillAlive=true trackedWorker=null
+java.lang.AssertionError: stop blocks FX while owning the monitor the worker needs
+	at PlaybackStopAudit.lambda$main$0(PlaybackStopAudit.java:33)
+	at com.sun.javafx.application.PlatformImpl.lambda$startup$5(PlatformImpl.java:294)
+	at com.sun.glass.ui.Application.invokeAndWait(Application.java:470)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runToolkit(QuantumToolkit.java:377)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.lambda$startup$10(QuantumToolkit.java:290)
+	at com.sun.glass.ui.Application.lambda$run$1(Application.java:155)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:190)
+	at java.base/java.lang.Thread.run(Thread.java:1474)

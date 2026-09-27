@@ -1,0 +1,3 @@
+WAV_SAVE bits=16 frames=2880000 allocatedBytes=11543808 elapsedMs=37.193 bytes=11520044
+WAV_SAVE bits=24 frames=2880000 allocatedBytes=17300848 elapsedMs=37.473 bytes=17280044
+WAV_SAVE bits=32 frames=2880000 allocatedBytes=23062336 elapsedMs=25.266 bytes=23040044

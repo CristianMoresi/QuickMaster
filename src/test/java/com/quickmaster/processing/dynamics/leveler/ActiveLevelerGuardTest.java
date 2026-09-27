@@ -8,6 +8,15 @@ import org.junit.jupiter.api.Test;
 /** Actual S-001 bytes and separately compiled neighbors; no observed whitelist generation. */
 class ActiveLevelerGuardTest
 {
+    @Test void approvedRenderMeterCannotPublishMutateAllocateOrAdvanceTheAudioClock() throws Exception {
+        String base="com/quickmaster/processing/dynamics/AnalysisDynamicsProcessor", original=source(base);
+        String entry="public double getGainDbAtPosition(long sourceFrame) {";
+        for(String mutation:List.of("published = null;", "currentGrDb = 1;", "preparedFrameCursor++;",
+                "new float[16][0].clone();", "adoptEnvelope(this);")) {
+            // Each mutant changes only the read-only scalar accessor.
+            assertRejected(compile(base,original.replace(entry,entry+mutation)),"ACTIVE_READ_ONLY_METER");
+        }
+    }
     private static final String HISTORICAL_ENTRY_MUTANT_SHA = "f34b349e6d47c67b3ef680f11ebc4b801f81104fec41ce2e2be8b35ff4bb6cc0";
     private static final String COMPARISON_V2_ENTRY_MUTANT_SHA = "9daad53b9f36e64b59f24e3d136562d756352c946363b0f9eddc7aa3abd4e0b8";
     @Test void currentActiveProductSatisfiesExplicitSuccessor() throws Exception

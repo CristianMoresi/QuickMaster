@@ -1,5 +1,6 @@
 package com.quickmaster.processing.eq;
 import com.quickmaster.processing.AudioProcessor;
+import com.quickmaster.processing.OfflineMetering;
 
 import com.dspark.effects.MasterEqualizer;
 
@@ -33,7 +34,7 @@ import com.dspark.effects.MasterEqualizer;
  * <b>Default state.</b> Enabled but with no bands configured - a transparent,
  * zero-latency passthrough until bands are added.
  */
-public final class EqualizerProcessor implements AudioProcessor
+public final class EqualizerProcessor implements AudioProcessor, OfflineMetering
 {
     /**
      * Maximum block size, in frames, accepted by {@link #process}. Matches
@@ -49,6 +50,65 @@ public final class EqualizerProcessor implements AudioProcessor
     private int preparedChannels = 0;
     private boolean enginePrepared = false;
     private boolean enabled = true;
+    private long totalSamples, frameCursor;
+    private record MeterHistory(float[] values, int bands, int step, int rate) { }
+    private volatile MeterHistory meters;
+    private MeterHistory recording;
+    // FX-only response engine; it never processes audio or shares DSP state.
+    private MasterEqualizer meterResponse;
+
+    @Override public void setPlaybackPosition(long frame) { frameCursor = frame; }
+
+    @Override public void beginOfflineMetering(int channels) {
+        recording = null;
+        if (!enabled || !hasActiveDynamicBand()) { meters = null; return; }
+        int step = Math.max(1, sampleRate / 50);
+        int rows = Math.toIntExact((totalSamples / channels + step - 1) / step);
+        int bands = getNumBands();
+        float[] values = new float[Math.multiplyExact(Math.multiplyExact(rows, bands), 2)];
+        for (int i = 1; i < values.length; i += 2) values[i] = Float.NaN;
+        recording = new MeterHistory(values, bands, step, sampleRate);
+    }
+
+    @Override public void endOfflineMetering() {
+        if (recording != null) meters = recording;
+        recording = null;
+    }
+
+    /** Share only the completed immutable timeline when a tonal-prefix cache is reused. */
+    public void adoptMeters(EqualizerProcessor source) { meters = source.meters; }
+
+    public double getBandMeterAt(int band, long baseFrame, int baseRate, boolean detector) {
+        MeterHistory m = meters;
+        if (m == null || band < 0 || band >= m.bands || baseFrame < 0 || baseRate <= 0)
+            return detector ? Double.NaN : 0;
+        long row = (long) (baseFrame * (double)m.rate / baseRate / m.step);
+        long index = (row * m.bands + band) * 2 + (detector ? 1 : 0);
+        return index >= m.values.length ? (detector ? Double.NaN : 0) : m.values[(int)index];
+    }
+
+    /** Dynamic response of the approved render at the source-clock playhead. */
+    public void getMagnitudeResponseAt(MasterEqualizer.Channel domain, double[] frequencies,
+                                       double[] magnitudes, long baseFrame, int baseRate) {
+        if (meterResponse == null) {
+            meterResponse = new MasterEqualizer(getMaxBands());
+            meterResponse.setNumBands(getNumBands());
+            // Minimum-phase is sufficient for magnitude drawing; no FIR kernels on FX.
+            for (int i = 0; i < getNumBands(); i++) {
+                MasterEqualizer.Band band = getBand(i);
+                band.dynamic = false; band.phase = MasterEqualizer.BandPhase.MINIMUM;
+                meterResponse.setBand(i, band);
+            }
+            meterResponse.prepare(sampleRate, MAX_BLOCK_FRAMES, 2);
+        }
+        for (int i = 0; i < getNumBands(); i++) {
+            MasterEqualizer.Band band = getBand(i);
+            if (band.dynamic) band.gainDb += getBandMeterAt(i, baseFrame, baseRate, false);
+            band.dynamic = false; band.phase = MasterEqualizer.BandPhase.MINIMUM;
+            meterResponse.setBand(i, band);
+        }
+        meterResponse.getMagnitudeResponse(domain, frequencies, magnitudes);
+    }
 
     public EqualizerProcessor() { this(MasterEqualizer.DEFAULT_MAX_BANDS); }
 
@@ -107,6 +167,8 @@ public final class EqualizerProcessor implements AudioProcessor
     public void prepare(int sampleRate, long totalSamples)
     {
         this.sampleRate = sampleRate;
+        this.totalSamples = totalSamples;
+        this.frameCursor = 0;
         // Eagerly prepare for stereo so getLatencyFrames() is correct before
         // the first block; re-prepared on the first process() if mono.
         engine.prepare(sampleRate, MAX_BLOCK_FRAMES, 2);
@@ -134,6 +196,21 @@ public final class EqualizerProcessor implements AudioProcessor
             enginePrepared = true;
         }
         engine.process(buffer, channels);
+        MeterHistory m = recording;
+        int frames = buffer.length / channels;
+        if (m != null && m.bands > 0) {
+            long first = Math.max(0, frameCursor - getLatencyFrames());
+            long end = Math.max(0, frameCursor + frames - getLatencyFrames());
+            int rowCount = m.values.length / (m.bands * 2);
+            int firstRow = (int)Math.min(rowCount, first / m.step);
+            int lastRow = (int)Math.min(rowCount, (end + m.step - 1) / m.step);
+            for (int row = firstRow; row < lastRow; row++) for (int band = 0; band < m.bands; band++) {
+                int index = (row * m.bands + band) * 2;
+                m.values[index] = (float)engine.getBandGainReductionDb(band);
+                m.values[index + 1] = (float)engine.getBandDetectorDb(band);
+            }
+        }
+        frameCursor += frames;
         return buffer;
     }
 

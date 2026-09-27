@@ -1,0 +1,7 @@
+sept 27, 2026 10:26:28 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @47e2e487'
+CONTROL_AUDIT multiband generation=0->0 undoRestored=true
+CONTROL_AUDIT broadband generation=0->0 undoRestored=true
+CONTROL_AUDIT limitEnabled generation=0->0 undoRestored=true
+CONTROL_AUDIT levelingUndo generation=0->1 undoRestored=false
+CONTROL_AUDIT failures=4

@@ -10,10 +10,11 @@ import java.util.*;
 /** Explicit ADR013/014 and named S-001 successors; never grants from observed candidate bytes. */
 final class ActiveLevelerGuardContract
 {
-    // Explicit DSPark 0.2 successor. Numeric/C++ oracles and scope in
-    // docs/diagnostics/dspark-java-0.2-migration.md; historical 0.1 pin is retained.
-    static final String DSPARK_JAR = "libs/dspark-0.2.0.jar";
-    static final String DSPARK_SHA256 = "5a9e6d8e3797bc55d4dcbf462927db6918176c5f06beb942c9ecc2e271d2edc0";
+    // Explicit 0.2.1 export-SRC successor: product-audit-20260927.md A15.
+    // Only Resampler and its nested enum differ; all Leveler boundaries are identical.
+    // Historical 0.1/0.2.0 artifacts and contract pins remain untouched.
+    static final String DSPARK_JAR = "libs/dspark-0.2.1.jar";
+    static final String DSPARK_SHA256 = "4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382";
     static final String D = "com/quickmaster/processing/dynamics/", L = D + "leveler/", M = L + "model/";
     private static final class Active {
         static final JsonObject DELTA = resource("active-schema-delta.json", "b1ae36d2c90b3060c1986156d332233786075dc59a4b5c4da3ccac2013c59641");
@@ -105,6 +106,9 @@ final class ActiveLevelerGuardContract
         if(s!=null&&!removed.contains(AsyncEscapeBytecodeGuard.Rule.DIRECTED_API)) {
             Map<String,Integer> methods=new TreeMap<>();
             for(JsonElement e:s.getAsJsonArray("methods")){JsonObject m=e.getAsJsonObject();methods.put(m.get("name").getAsString()+m.get("descriptor").getAsString(),m.get("access").getAsInt());}
+            // A14 explicit successor: scalar, read-only metering of approved PCM.
+            // Historical schema/hash retained; never learned from candidate bytes.
+            if(f.owner.equals(D+"AnalysisDynamicsProcessor")) methods.put("getGainDbAtPosition(J)D",1);
             if(f.methods.size()!=methods.size()||f.methods.stream().anyMatch(m->!Objects.equals(methods.get(m.name()+m.descriptor()),m.access())))
                 fail(out,"ACTIVE_METHOD_TABLE",f,"Exact active declaration table required");
         }
@@ -118,8 +122,35 @@ final class ActiveLevelerGuardContract
             }
         }
         if(!removed.contains(AsyncEscapeBytecodeGuard.Rule.DIRECTED_API))sensitiveCode(f,out);
+        if(!removed.contains(AsyncEscapeBytecodeGuard.Rule.DIRECTED_API))readOnlyMeter(f,out);
         if(!removed.contains(AsyncEscapeBytecodeGuard.Rule.ACTIVE_PUBLICATION_AUTHORITY))publicationAuthority(f,out);
         if(!removed.contains(AsyncEscapeBytecodeGuard.Rule.ACTIVE_COMPARISON_CALLS)){comparisonCalls(f,out);contextCalls(f,out);}
+    }
+    private static void readOnlyMeter(M004Classfile f,List<AsyncEscapeBytecodeGuard.Violation> out) {
+        if(!f.owner.equals(D+"AnalysisDynamicsProcessor")) return;
+        Set<String> calls=Set.of(
+                "b6:"+D+"PublishedGain.schedule()L"+D+"GainSchedule;",
+                "b9:"+D+"GainSchedule.sourceFrames()J",
+                "b6:"+D+"SparseGainSchedule.gainDbAt(D)D",
+                "b6:"+D+"AnalysisDynamicsProcessor.minimumLegacyGain()F",
+                "b6:"+D+"DenseGainSchedule.sampleLinearLegacy(D)F",
+                "b8:java/lang/Math.max(FF)F", "b8:java/lang/Math.log10(D)D");
+        for(var m:f.methods)if(m.name().equals("getGainDbAtPosition")&&m.descriptor().equals("(J)D")) {
+            if(m.code()==null||!m.code().handlers().isEmpty()) { fail(out,"ACTIVE_READ_ONLY_METER",f,"A14 getter must have a plain read-only body");continue; }
+            for(var ins:m.code().instructions()) {
+                int op=ins.opcode(); boolean denied=(op>=79&&op<=86)||op==179||op==181||op==186
+                        ||op==187||op==188||op==189||op==194||op==195||op==197||op==191;
+                if(op>=182&&op<=185) {
+                    var ref=f.member(ins.operand());
+                    denied=!calls.contains(Integer.toHexString(op)+":"+ref.owner()+"."+ref.name()+ref.descriptor());
+                }
+                if(op==178||op==180) {
+                    var ref=f.member(ins.operand());
+                    denied=op!=180||!ref.owner().equals(f.owner)||!Set.of("enabledZ","publishedL"+D+"PublishedGain;").contains(ref.name()+ref.descriptor());
+                }
+                if(denied) fail(out,"ACTIVE_READ_ONLY_METER",f,"Unreviewed A14 meter operation: "+op);
+            }
+        }
     }
     private static void contextCalls(M004Classfile f,List<AsyncEscapeBytecodeGuard.Violation> out) {
         for(var method:f.methods) {

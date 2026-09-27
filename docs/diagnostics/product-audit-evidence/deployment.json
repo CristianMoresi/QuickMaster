@@ -1,0 +1,11 @@
+{
+  "status": "DEPLOYED_AND_VERIFIED",
+  "source": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\product-audit-final-20260927\\QuickMaster",
+  "install": "C:\\Program Files\\QuickMaster",
+  "expectedJarSha256": "cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564",
+  "backup": "C:\\Program Files\\QuickMaster-backup-20260927-210305",
+  "sourceFiles": 201,
+  "installedJarSha256": "CB874287C83ACC4A3F8A6CCE582CCA3F19980D533C6B5B5B76D0FCAB917C5564",
+  "startupLog": "2026-09-27 21:03:07 INFO  Application starting (JavaFX).\r\n2026-09-27 21:03:07 INFO  Controller initialised.",
+  "completedAt": "2026-09-27T21:03:12.6386248+02:00"
+}

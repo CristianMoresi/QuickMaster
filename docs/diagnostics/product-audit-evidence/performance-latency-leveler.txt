@@ -1,0 +1,18 @@
+CONFIGURATION fullChain=false heapCheckpoints=false
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+sept 27, 2026 9:14:34 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @282308c3'
+INTERACTION load-leveler-only totalSec=9.137742 lastEditToSettledSec=9.137742 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=59.477 generation=3
+AUDIO_READY load-leveler-only lastEditSec=8.063497 beforeMetersSec=1.074245
+INTERACTION single-leveler-edit totalSec=2.818276 lastEditToSettledSec=2.818154 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=28.100 generation=5
+AUDIO_READY single-leveler-edit lastEditSec=1.713092 beforeMetersSec=1.105062
+INTERACTION repeat-edit-1 totalSec=3.300057 lastEditToSettledSec=3.300040 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=28.116 generation=7
+AUDIO_READY repeat-edit-1 lastEditSec=2.085675 beforeMetersSec=1.214365
+INTERACTION repeat-edit-2 totalSec=2.772348 lastEditToSettledSec=2.772329 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.502 generation=9
+AUDIO_READY repeat-edit-2 lastEditSec=1.712990 beforeMetersSec=1.059339
+INTERACTION repeat-edit-3 totalSec=2.675508 lastEditToSettledSec=2.675499 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.556 generation=11
+AUDIO_READY repeat-edit-3 lastEditSec=1.679117 beforeMetersSec=0.996382
+INTERACTION six-edits-350ms-apart totalSec=4.777681 lastEditToSettledSec=2.956120 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.602 generation=23
+AUDIO_READY six-edits-350ms-apart lastEditSec=1.976492 beforeMetersSec=0.979628
+APP_RETAINED_HEAP_AFTER_GC MiB=498.072
+LATEST_AUDIO_PASS publishedAuditionPcm=true amount=0.8 bitExactToColdReference=true changedSamples=8255770

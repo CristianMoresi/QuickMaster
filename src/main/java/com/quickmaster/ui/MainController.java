@@ -5,7 +5,7 @@ import com.dspark.effects.MasterEqualizer;
 import com.quickmaster.audio.AudioFile;
 import com.quickmaster.audio.AudioFileException;
 import com.quickmaster.audio.AudioFormatDetector;
-import com.quickmaster.audio.MetadataPreserver;
+import com.quickmaster.audio.AudioExport;
 import com.quickmaster.audio.Mp3File;
 import com.quickmaster.audio.WavFile;
 import com.quickmaster.config.AppConfig;
@@ -426,6 +426,7 @@ public class MainController
 
     /** Chain state at the start of the current parameter gesture (null = no open gesture). */
     private com.quickmaster.config.ChainPreset paramGestureBaseline = null;
+    private com.quickmaster.config.ChainPreset committedParameters;
     /** True while a preset (or an undo) is being applied, so listeners stay quiet. */
     private boolean applyingPreset = false;
 
@@ -442,6 +443,10 @@ public class MainController
      *  edit drops the active slot's render, a source change drops both. */
     private float[] renderSlotA = null;
     private float[] renderSlotB = null;
+    private Snapshot snapshotSlotA, snapshotSlotB, auditionSnapshot;
+    private OutputAnalysis.Result outputSlotA, outputSlotB;
+    private float[] auditionSource;
+    private EqualizerProcessor tonalEqMeters;
 
     /** Tonal-prefix cache: the analysed signal after the EQ block, so a
      *  dynamics / clip / limit gesture skips re-rendering the (expensive)
@@ -533,8 +538,6 @@ public class MainController
     @FXML
     public void initialize()
     {
-        AppLogger.info("Controller initialised.");
-
         initEqUi();
         initAutoEqUi();
         initLimiterUi();
@@ -673,6 +676,8 @@ public class MainController
 
         // Initial paint of the empty waveform area.
         Platform.runLater(this::drawWaveform);
+        committedParameters = capturePreset();
+        AppLogger.info("Controller initialised.");
     }
 
     /** Keeps explanatory tooltips visible until the pointer leaves their row. */
@@ -1420,7 +1425,7 @@ public class MainController
     @FXML
     private void onExport()
     {
-        if (loadedFile == null) return;
+        if (loadedFile == null || exporting) return;
 
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Export processed audio");
@@ -1453,6 +1458,7 @@ public class MainController
 
         final int srcRate = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
+        final String sourcePath = loadedFile.getFilePath();
         final float[] src = loadedFile.getSamples().clone();   // the (possibly trimmed) editable audio
         final int os = oversampling;
 
@@ -1479,17 +1485,11 @@ public class MainController
                     reclampTruePeak(out, ch, snap.normalizer.getTargetDbfs());
                 }
                 if (isCancelled()) return null;
-                if (exportAsMp3)
-                {
-                    new Mp3File(path, settings.sampleRate(), ch, out, settings.kbps(), false).save(path);
-                }
-                else
-                {
-                    new WavFile(path, settings.sampleRate(), ch, out,
-                            settings.bitDepth(), settings.isFloat()).save(path);
-                }
-                // Same-container exports keep the source's tags (ID3 / LIST-INFO / bext).
-                MetadataPreserver.preserve(loadedFile.getFilePath(), path);
+                AudioFile output = exportAsMp3
+                        ? new Mp3File(path, settings.sampleRate(), ch, out, settings.kbps(), false)
+                        : new WavFile(path, settings.sampleRate(), ch, out, settings.bitDepth(), settings.isFloat());
+                // Capture source identity on FX; keep source tags until the final atomic commit.
+                AudioExport.write(output, sourcePath, path);
                 return null;
             }
         };
@@ -1672,9 +1672,11 @@ public class MainController
                 default    -> 4;
             };
         }
+        boolean changed = oversampling != factor;
         oversampling = factor;
         if (player != null) player.setOversampling(factor);
         invalidateAllSlotRenders();   // renders bake in the oversampling factor
+        if (changed) scheduleDynamicsRefresh();
     }
 
     /**
@@ -2163,6 +2165,7 @@ public class MainController
         undoStack.clear();
         redoStack.clear();
         paramGestureBaseline = null;
+        committedParameters = capturePreset();
         updateUndoRedoButtons();
     }
 
@@ -2176,6 +2179,8 @@ public class MainController
     private void onUndo()
     {
         if (exporting) return;
+        if (dynRefreshDebounce != null) dynRefreshDebounce.stop();
+        commitParamGesture();
         if (loadedFile == null || undoStack.isEmpty()) return;
         EditState prev = undoStack.pop();
         redoStack.push(new EditState(
@@ -2189,6 +2194,8 @@ public class MainController
     private void onRedo()
     {
         if (exporting) return;
+        if (dynRefreshDebounce != null) dynRefreshDebounce.stop();
+        commitParamGesture();
         if (loadedFile == null || redoStack.isEmpty()) return;
         EditState next = redoStack.pop();
         undoStack.push(new EditState(
@@ -2313,7 +2320,14 @@ public class MainController
     /** Accumulates the phase correlation and M/S power of one buffer (smoothed). */
     private void feedStereoImage(float[] buf, int ch)
     {
-        if (ch < 2) { liveCorrSmooth = 1.0; return; }
+        if (ch == 1) {
+            double power = 0;
+            for (float value : buf) power += (double) value * value;
+            liveCorrSmooth = 1.0;
+            liveMidPow += (power / Math.max(1, buf.length) - liveMidPow) * .25;
+            liveSidePow = 0;
+            return;
+        }
         double sumLR = 0.0, sumL2 = 0.0, sumR2 = 0.0, midPow = 0.0, sidePow = 0.0;
         int frames = buf.length / ch;
         for (int f = 0; f < frames; f++)
@@ -2583,9 +2597,11 @@ public class MainController
                 // Feed the live detector level into the threshold knob (reference).
                 if (eqSelectedBand >= 0)
                 {
-                    MasterEqualizer.Band b = eq.getBand(eqSelectedBand);
+                    EqualizerProcessor audibleEq = audibleProcessor(eq);
+                    MasterEqualizer.Band b = audibleEq.getBand(eqSelectedBand);
                     levelBar.setLevel((b != null && b.dynamic)
-                            ? eq.getBandDetectorDb(eqSelectedBand) : Double.NaN);
+                            ? audibleEq.getBandMeterAt(eqSelectedBand, player.getPositionSamples(),
+                                loadedFile.getSampleRate(), true) : Double.NaN);
                 }
             }
         };
@@ -2929,14 +2945,16 @@ public class MainController
         }
 
         // Live dynamic magnitude over the static one (only while playing).
-        boolean dyn = on && player.isPlaying() && eq.hasActiveDynamicBand();
+        EqualizerProcessor audibleEq = audibleProcessor(eq);
+        boolean dyn = player.isPlaying() && audibleEq.isEnabled() && audibleEq.hasActiveDynamicBand();
         if (dyn)
         {
             double[] dynMag = new double[n];
             java.util.Arrays.fill(dynMag, 1.0);
             for (MasterEqualizer.Channel dom : MasterEqualizer.Channel.values())
             {
-                eq.getMagnitudeResponse(dom, freqs, tmp, true);
+                audibleEq.getMagnitudeResponseAt(dom, freqs, tmp, player.getPositionSamples(),
+                        loadedFile.getSampleRate());
                 for (int k = 0; k < n; k++) dynMag[k] *= tmp[k];
             }
             drawEqMagnitude(gc, dynMag, n, h, Color.web("#f0b14a"), false);
@@ -3116,9 +3134,10 @@ public class MainController
     /** Draws the Auto EQ correction actually applied at the playhead, on the EQ's dB axis. */
     private void drawAutoEqCorrection(GraphicsContext gc, double[] freqs, int n, double h)
     {
-        if (autoEqOn == null || !autoEqOn.isSelected()) return;
+        AutoEqProcessor audibleAutoEq = audibleProcessor(autoEq);
+        if (autoEqOn == null || !audibleAutoEq.isEnabled()) return;
         double[] corr = new double[n];
-        autoEq.fillCorrection(freqs, player.getPositionSamples(), corr);
+        audibleAutoEq.fillCorrection(freqs, player.getPositionSamples(), corr);
 
         double zeroY = eqDbToY(0.0, h);
         gc.setFill(Color.web("#46c1a6", 0.16));
@@ -3184,6 +3203,7 @@ public class MainController
                 setEqEditorDisabled(false);
                 showBandMenu = true;            // show the menu on the new band
                 drawEqCurve();
+                scheduleDynamicsRefresh();
             }
             eqDragging = false;
             return;
@@ -3711,12 +3731,15 @@ public class MainController
         {
             return;
         }
+        commitParamGesture();
+        paramGestureBaseline = capturePreset();
         ChainModule moved = chainModules.remove(from);
         chainModules.add(to, moved);
         rebuildChainBar();
         rebuildPipeline();
         selectModule(moved);     // open the moved module's panel so the change is obvious
         setStatus("Chain: " + chainOrderText());
+        commitParamGesture();
     }
 
     /**
@@ -3995,8 +4018,11 @@ public class MainController
     {
         if (from == to || from < 0 || to < 0
                 || from >= dynamicsOrder.size() || to >= dynamicsOrder.size()) return;
+        commitParamGesture();
+        paramGestureBaseline = capturePreset();
         AudioProcessor moved = dynamicsOrder.remove(from);
         dynamicsOrder.add(to, moved);
+        commitParamGesture();
         layoutDynamicsGrid();
         invalidateActiveSlotRender();   // the chain changed: the active slot's render is stale
 
@@ -4174,6 +4200,7 @@ public class MainController
         {
             tonalBufCache = null;
             tonalSourceCache = null;
+            tonalEqMeters = null;
         }
         updateLevelerDiagnostic();
     }
@@ -4194,7 +4221,9 @@ public class MainController
         outputAnalysisExecutor.close();
         ++sourceAnalysisGeneration; ++fileLoadGeneration;
         sourceAnalysisExecutor.close();
-        if (player != null) player.stop();
+        if (eqAnimator != null) eqAnimator.stop();
+        if (player != null) player.close();
+        if (exportTask != null) exportTask.cancel(true);
     }
 
     private DynCard buildPunchCard()
@@ -4287,7 +4316,7 @@ public class MainController
         updateLevelerDiagnostic();
         for (DynCard c : dynCards)
         {
-            double gr = c.proc.getGainReductionDb();          // signed: - reduce, + boost
+            double gr = audibleProcessor(c.proc).getGainDbAtPosition(player.getPositionSamples());
             double mag = Math.min(Math.abs(gr), c.meterMaxDb);
             double w = (c.meterMaxDb > 0) ? mag / c.meterMaxDb : 0.0;
             c.grFill.setPrefWidth(w * GR_METER_W);
@@ -4359,7 +4388,7 @@ public class MainController
         });
         satAlgoCombo = satAlgo;
         VBox softCard = buildClipCard("Soft-Clip", "#b58cf0", satKnob, satAlgo,
-                softClip::getGrAtPosition, softClip::setEnabled);
+                pos -> audibleProcessor(softClip).getGrAtPosition(pos), softClip::setEnabled);
 
         clipKnob = new Knob("Clip", HardClipProcessor.MIN_CLIP_DB, HardClipProcessor.MAX_CLIP_DB,
                 HardClipProcessor.DEFAULT_CLIP_DB)
@@ -4372,7 +4401,7 @@ public class MainController
             scheduleDynamicsRefresh();
         });
         VBox hardCard = buildClipCard("Hard-Clip", "#4a9eff", clipKnob, null,
-                hardClip::getGrAtPosition, hardClip::setEnabled);
+                pos -> audibleProcessor(hardClip).getGrAtPosition(pos), hardClip::setEnabled);
 
         HBox.setHgrow(softCard, Priority.ALWAYS);
         HBox.setHgrow(hardCard, Priority.ALWAYS);
@@ -4576,7 +4605,9 @@ public class MainController
         invalidateActiveSlotRender();   // a live edit makes the active slot's render stale
         if (paramGestureBaseline == null)
         {
-            paramGestureBaseline = capturePreset();
+            // Listeners run after the control and processor have changed. Use
+            // the preceding committed state, not the already-edited first value.
+            paramGestureBaseline = committedParameters != null ? committedParameters : capturePreset();
         }
         if (dynRefreshDebounce == null)
         {
@@ -4596,8 +4627,9 @@ public class MainController
         com.quickmaster.config.ChainPreset baseline = paramGestureBaseline;
         paramGestureBaseline = null;
         if (baseline == null) return;
+        committedParameters = capturePreset();
         com.google.gson.Gson gson = new com.google.gson.Gson();
-        if (gson.toJson(baseline).equals(gson.toJson(capturePreset()))) return;   // no-op gesture
+        if (gson.toJson(baseline).equals(gson.toJson(committedParameters))) return;   // no-op gesture
         undoStack.push(new EditState(null, baseline));
         trimUndoHistory();
         redoStack.clear();
@@ -4629,6 +4661,7 @@ public class MainController
         final int sr = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
         final Snapshot s = buildSnapshot();
+        final int os = oversampling;
         final long generation = ++outputAnalysisGeneration;
         final CancellationToken cancellation = new CancellationToken();
         outputAnalysisCancellation = cancellation;
@@ -4644,6 +4677,8 @@ public class MainController
                 && tonalBufCache != null
                 && tonalBufCache.length == src.length;
         final float[] startBuf = useCache ? tonalBufCache : null;
+        if (useCache && tonalEqMeters != null)
+            ((EqualizerProcessor)s.copies.get(eq)).adoptMeters(tonalEqMeters);
         final float[][] tonalTap = { null };
 
         Task<OutputAnalysis.Result> task = new Task<>()
@@ -4654,17 +4689,21 @@ public class MainController
                 float[] render = s.pipeline.analyzeAndRender(src, ch,
                         useCache ? tonalStages : 0, startBuf, null,
                         (buf, idx) -> { if (idx == tonalStages - 1) tonalTap[0] = buf; }, cancellation);
+                if (os > 1)
+                    render = s.pipeline.renderAnalyzedOversampled(src, ch, os, null, cancellation);
 
                 if (cancellation.isCancelled()) throw new java.util.concurrent.CancellationException();
 
                 // Audio is ready now. Slow presentation statistics must not
                 // delay safe adoption or an explicitly requested resume.
+                final float[] approvedRender = render;
                 javafx.application.Platform.runLater(() -> {
                     if (closing || cancellation.isCancelled() || generation != outputAnalysisGeneration) return;
-                    publishAudioPlan(s, generation, !useCache, onDone);
+                    publishAudioPlan(s, generation, !useCache, onDone, src, approvedRender);
                     if (generation == outputAnalysisGeneration && tonalTap[0] != null) {
                         tonalBufCache = tonalTap[0]; tonalSourceCache = src;
                         tonalSigCache = sig; tonalStagesCache = tonalStages;
+                        tonalEqMeters = (EqualizerProcessor)s.copies.get(eq);
                     }
                 });
 
@@ -4685,24 +4724,8 @@ public class MainController
             {
                 return;
             }
-            // Output meters and the stopped-state analyser from the same final render
-            // (the live post-processing meter takes over while playing).
-            OutputAnalysis.Result r = task.getValue();
-            spectrumAnalysis = r.spectrum();
-            drawEqCurve();
-            if (!player.isPlaying())
-            {
-                meterLufs.setText(formatLufs(r.integratedLufs()));
-                meterShort.setText(formatLufs(r.shortTermLufs()));
-                meterMom.setText(formatLufs(r.momentaryLufs()));
-                meterLra.setText(String.format(Locale.US, "%.1f LU", r.loudnessRange()));
-                meterPeak.setText(Double.isInfinite(r.truePeakDbtp()) ? "-∞ dBTP"
-                        : String.format(Locale.US, "%.1f dBTP", r.truePeakDbtp()));
-                if (meterCorr != null)
-                    meterCorr.setText(String.format(Locale.US, "%+.2f", r.correlation()));
-                if (meterMid != null) meterMid.setText(formatPowerDb(r.midPower()));
-                if (meterSide != null) meterSide.setText(formatPowerDb(r.sidePower()));
-            }
+            setSlotOutput(activeSettingsSlot, task.getValue());
+            showOutputAnalysis(task.getValue());
         });
         task.setOnFailed(e ->
         {
@@ -4727,7 +4750,8 @@ public class MainController
     }
 
     /** FX-only adoption of a complete, current worker snapshot, before metering. */
-    private void publishAudioPlan(Snapshot s, long generation, boolean tonalChanged, Runnable onDone)
+    private void publishAudioPlan(Snapshot s, long generation, boolean tonalChanged, Runnable onDone,
+                                  float[] source, float[] render)
     {
         if (closing || generation != outputAnalysisGeneration) return;
         if (tonalChanged && s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
@@ -4741,11 +4765,27 @@ public class MainController
         updateTargetRanges(s);
         // Clamping a control to the new range may have invalidated this plan.
         if (generation != outputAnalysisGeneration) return;
+        if (!player.publishRender(source, render)) return;
+        auditionSnapshot = s;
+        auditionSource = source;
+        setSlotRender(activeSettingsSlot, render);
+        if (activeSettingsSlot == 'A') snapshotSlotA = s; else snapshotSlotB = s;
         levelerReadyGeneration = generation;
         updateLevelerDiagnostic();
         player.setAnalysisValid(true);
         if (onDone != null) onDone.run();
         if (playWhenReady && generation == outputAnalysisGeneration) requestPlayback();
+    }
+
+    /** Visual meters follow the last completed audible plan, not pending controls. */
+    @SuppressWarnings("unchecked")
+    private <T extends AudioProcessor> T audibleProcessor(T controls)
+    {
+        if (player.isPlaying() && player.hasPublishedRender() && auditionSnapshot != null) {
+            AudioProcessor copy = auditionSnapshot.copies.get(controls);
+            if (copy != null) return (T)copy;
+        }
+        return controls;
     }
 
     private void markOutputMetersPending()
@@ -4754,6 +4794,58 @@ public class MainController
         for (Label label : new Label[]{meterLufs, meterShort, meterMom, meterLra,
                 meterPeak, meterCorr, meterMid, meterSide})
             if (label != null) label.setText("…");
+    }
+
+    /** FX-only presentation of statistics tied to one completed PCM buffer. */
+    private void showOutputAnalysis(OutputAnalysis.Result r)
+    {
+        spectrumAnalysis = r.spectrum();
+        drawEqCurve();
+        if (!player.isPlaying()) {
+            meterLufs.setText(formatLufs(r.integratedLufs()));
+            meterShort.setText(formatLufs(r.shortTermLufs()));
+            meterMom.setText(formatLufs(r.momentaryLufs()));
+            meterLra.setText(String.format(Locale.US, "%.1f LU", r.loudnessRange()));
+            meterPeak.setText(Double.isInfinite(r.truePeakDbtp()) ? "-∞ dBTP"
+                    : String.format(Locale.US, "%.1f dBTP", r.truePeakDbtp()));
+            if (meterCorr != null) meterCorr.setText(String.format(Locale.US, "%+.2f", r.correlation()));
+            if (meterMid != null) meterMid.setText(formatPowerDb(r.midPower()));
+            if (meterSide != null) meterSide.setText(formatPowerDb(r.sidePower()));
+        }
+    }
+
+    /** A/B may reuse audio immediately; missing statistics never require another DSP render. */
+    private void refreshSlotMeasurements(long generation, float[] source)
+    {
+        if (closing || generation != outputAnalysisGeneration || levelerReadyGeneration != generation) return;
+        final char slot = activeSettingsSlot;
+        OutputAnalysis.Result cached = slot == 'A' ? outputSlotA : outputSlotB;
+        if (cached != null) { showOutputAnalysis(cached); return; }
+        final float[] render = slotRender(slot);
+        final int channels = loadedFile.getChannels(), rate = loadedFile.getSampleRate();
+        final CancellationToken cancellation = new CancellationToken();
+        outputAnalysisCancellation = cancellation;
+        markOutputMetersPending();
+        Task<OutputAnalysis.Result> task = new Task<>() {
+            @Override protected OutputAnalysis.Result call() {
+                return OutputAnalysis.measure(render, channels, rate, cancellation);
+            }
+        };
+        analyzing(true);
+        task.setOnSucceeded(e -> {
+            analyzing(false);
+            if (closing || generation != outputAnalysisGeneration || loadedFile == null
+                    || loadedFile.getSamples() != source || slotRender(slot) != render) return;
+            setSlotOutput(slot, task.getValue());
+            showOutputAnalysis(task.getValue());
+        });
+        task.setOnFailed(e -> {
+            analyzing(false);
+            if (!closing && generation == outputAnalysisGeneration)
+                AppLogger.error("A/B output measurement failed.", task.getException());
+        });
+        task.setOnCancelled(e -> analyzing(false));
+        outputAnalysisExecutor.replace(task);
     }
 
     /** Number of leading snapshot stages that belong to the tonal (EQ) block. */
@@ -5073,7 +5165,9 @@ public class MainController
      */
     private void applyPreset(com.quickmaster.config.ChainPreset p, boolean touchPlayer)
     {
-        if (p == null) return;
+        com.quickmaster.config.PresetValidation.validate(p);
+        if (dynRefreshDebounce != null) dynRefreshDebounce.stop();
+        commitParamGesture();
         applyingPreset = true;
         try
         {
@@ -5250,9 +5344,11 @@ public class MainController
 
             drawEqCurve();
             drawWaveform();
+            committedParameters = capturePreset();
         }
         finally
         {
+            updatingEqEditor = false;
             applyingPreset = false;
         }
     }
@@ -5288,7 +5384,7 @@ public class MainController
         {
             String json = new com.google.gson.GsonBuilder().setPrettyPrinting().create()
                     .toJson(capturePreset());
-            java.nio.file.Files.writeString(target.toPath(), json);
+            com.quickmaster.config.JsonFiles.write(target.toPath(), json);
             setStatus("Preset saved: " + target.getName());
         }
         catch (Exception ex)
@@ -5314,10 +5410,11 @@ public class MainController
         if (chosen == null) return;
         try
         {
-            String json = java.nio.file.Files.readString(chosen.toPath());
+            String json = com.quickmaster.config.JsonFiles.read(chosen.toPath());
             com.quickmaster.config.ChainPreset p =
                     new com.google.gson.Gson().fromJson(json, com.quickmaster.config.ChainPreset.class);
             if (p == null) throw new IllegalArgumentException("Empty preset file.");
+            com.quickmaster.config.PresetValidation.validate(p);
             undoStack.push(new EditState(null, capturePreset()));
             trimUndoHistory();
             redoStack.clear();
@@ -5344,8 +5441,8 @@ public class MainController
      * The switch is instant and never interrupts playback: each slot is rendered
      * once to a source-aligned buffer (the first time it is compared, shown
      * behind the progress overlay), and toggling just hands the player the other
-     * slot's render - no re-analysis, no stop/restart. Editing a slot drops its
-     * render and returns to live processing so the edit is heard at once.
+     * slot's render - no re-analysis, no stop/restart. Editing a slot invalidates
+     * its cache; the prior approved PCM remains audible until its replacement is ready.
      */
     @FXML
     private void onSelectSlotA() { switchSettingsSlot('A'); }
@@ -5354,7 +5451,15 @@ public class MainController
     private void onSelectSlotB() { switchSettingsSlot('B'); }
 
     private float[] slotRender(char slot)        { return slot == 'A' ? renderSlotA : renderSlotB; }
-    private void setSlotRender(char slot, float[] r) { if (slot == 'A') renderSlotA = r; else renderSlotB = r; }
+    private void setSlotRender(char slot, float[] r) {
+        if (slotRender(slot) != r) setSlotOutput(slot, null);
+        if (slot == 'A') { renderSlotA = r; if (r == null) snapshotSlotA = null; }
+        else { renderSlotB = r; if (r == null) snapshotSlotB = null; }
+    }
+
+    private void setSlotOutput(char slot, OutputAnalysis.Result output) {
+        if (slot == 'A') outputSlotA = output; else outputSlotB = output;
+    }
 
     /** Keeps the A | B switch showing the truly-active slot (used after a cancel). */
     private void syncSlotButtons()
@@ -5365,51 +5470,35 @@ public class MainController
 
     private void switchSettingsSlot(char target)
     {
-        // The two buttons act as one switch: keep exactly one selected, and
-        // never let a click on the already-active button deselect it.
-        slotAButton.setSelected(target == 'A');
-        slotBButton.setSelected(target == 'B');
-        if (loadedFile == null) { activeSettingsSlot = target; return; }
-        if (target == activeSettingsSlot) return;
-        if (exporting) return;   // a render is already in flight; ignore the click
-
+        if (exporting || target == activeSettingsSlot) { syncSlotButtons(); return; }
+        if (loadedFile == null) { activeSettingsSlot = target; syncSlotButtons(); return; }
+        if (dynRefreshDebounce != null) dynRefreshDebounce.stop();
+        commitParamGesture();
         final char leaving = activeSettingsSlot;
-        if (leaving == 'A') settingsSlotA = capturePreset();
-        else                settingsSlotB = capturePreset();
-
-        // Recall the target slot; the first time it is visited it starts as a
-        // copy of the current chain (so B begins where A left off, then diverges).
+        final com.quickmaster.config.ChainPreset leavingPreset = capturePreset();
+        if (leaving == 'A') settingsSlotA = leavingPreset; else settingsSlotB = leavingPreset;
         com.quickmaster.config.ChainPreset recalled = (target == 'A') ? settingsSlotA : settingsSlotB;
         final com.quickmaster.config.ChainPreset targetPreset =
-                (recalled != null) ? recalled : capturePreset();
-
-        Runnable reconfigureAndPlay = () ->
-        {
-            activeSettingsSlot = target;
-            applyPreset(targetPreset, false);   // reconfigure controls/processors, no transport touch
-            ensureSlotRender(target, () ->
-            {
-                player.setFixedRender(slotRender(target));
-                setStatus("Settings " + target + " active.");
-            });
-        };
-
-        // Reconfiguring the live chain must not race the audio thread. If we are
-        // playing the live pipeline, first park playback on the leaving slot's
-        // render (it is independent of the live processors); once on a render,
-        // the pipeline can be rebuilt freely.
-        if (player.isPlaying() && !player.hasFixedRender())
-        {
-            ensureSlotRender(leaving, () ->
-            {
-                player.setFixedRender(slotRender(leaving));
-                reconfigureAndPlay.run();
-            });
-        }
-        else
-        {
-            reconfigureAndPlay.run();
-        }
+                (recalled != null) ? recalled : leavingPreset;
+        invalidateOutputAnalysis();
+        final long generation = outputAnalysisGeneration;
+        final float[] source = loadedFile.getSamples();
+        activeSettingsSlot = target;
+        applyPreset(targetPreset, false);
+        syncSlotButtons();
+        // The prior approved PCM keeps playing while the target is prepared.
+        ensureSlotRender(target, () -> {
+            Snapshot snapshot = target == 'A' ? snapshotSlotA : snapshotSlotB;
+            publishAudioPlan(snapshot, generation, true, null, source, slotRender(target));
+            refreshSlotMeasurements(generation, source);
+            setStatus("Settings " + target + " active.");
+        }, () -> {
+            activeSettingsSlot = leaving;
+            applyPreset(leavingPreset, false);
+            syncSlotButtons();
+            setStatus("Comparison not applied; previous settings retained.");
+            syncLiveAnalysis();
+        });
     }
 
     /**
@@ -5419,14 +5508,15 @@ public class MainController
      * independent snapshot behind the progress overlay, cached, and the callback
      * runs when it completes. Never stops the player.
      */
-    private void ensureSlotRender(char slot, Runnable onReady)
+    private void ensureSlotRender(char slot, Runnable onReady, Runnable onFailure)
     {
         if (slotRender(slot) != null || loadedFile == null) { onReady.run(); return; }
 
         final Snapshot snap = buildSnapshot();
         final int sr = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
-        final float[] src = loadedFile.getSamples().clone();
+        final float[] src = loadedFile.getSamples();
+        final long generation = outputAnalysisGeneration;
         final int os = oversampling;
 
         Task<float[]> task = new Task<>()
@@ -5442,32 +5532,30 @@ public class MainController
         };
         task.setOnSucceeded(e ->
         {
-            setSlotRender(slot, task.getValue());
             hideExportOverlay();
+            if (closing || generation != outputAnalysisGeneration || loadedFile == null
+                    || loadedFile.getSamples() != src) return;
+            setSlotRender(slot, task.getValue());
+            if (slot == 'A') snapshotSlotA = snap; else snapshotSlotB = snap;
             onReady.run();
         });
         task.setOnFailed(e ->
         {
             hideExportOverlay();
             AppLogger.error("A/B slot render failed.", task.getException());
-            onReady.run();
+            if (!closing && generation == outputAnalysisGeneration) onFailure.run();
         });
         task.setOnCancelled(e ->
         {
-            // Abort the comparison: fall back to live processing on the active slot
-            // and keep the switch buttons honest.
             hideExportOverlay();
-            player.setFixedRender(null);
-            syncSlotButtons();
-            if (loadedFile != null) syncLiveAnalysis();
+            if (!closing && generation == outputAnalysisGeneration) onFailure.run();
         });
         exportTask = task;
         showExportOverlay("Preparing comparison", "Slot " + slot, task);
         runTask(task);
     }
 
-    /** A live edit makes the active slot's render stale: drop it and return the
-     *  player to live processing so the edit is heard immediately. */
+    /** Discard the cache but keep the last approved PCM audible until replacement. */
     private void invalidateActiveSlotRender()
     {
         if (applyingPreset) return;   // not an edit: an A/B apply is recalling a slot
@@ -5479,8 +5567,12 @@ public class MainController
     private void invalidateAllSlotRenders()
     {
         if (applyingPreset) return;   // an A/B apply re-applies the OS factor; keep its renders
-        renderSlotA = null;
-        renderSlotB = null;
+        setSlotRender('A', null);
+        setSlotRender('B', null);
+        if (loadedFile == null || loadedFile.getSamples() != auditionSource) {
+            auditionSnapshot = null;
+            auditionSource = null;
+        }
         if (player.hasFixedRender()) player.setFixedRender(null);
     }
 
@@ -5549,6 +5641,7 @@ public class MainController
     @FXML
     private void onBatchExport()
     {
+        if (exporting) return;
         File initial = browseStartDir();
         Window window = waveformCanvas.getScene().getWindow();
 
@@ -5576,13 +5669,25 @@ public class MainController
         BatchSettings settings = askBatchSettings(srcDir, files.size());
         if (settings == null) { setStatus("Batch export cancelled."); return; }
         File outDir = settings.outDir();
+        final List<java.nio.file.Path> outputPaths;
         try
         {
+            outputPaths = AudioExport.planBatch(files.stream().map(File::toPath).toList(),
+                    outDir.toPath(), settings.mp3() ? ".mp3" : ".wav");
+            long existing = outputPaths.stream().filter(java.nio.file.Files::exists).count();
+            if (existing > 0)
+            {
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Replace " + existing + " existing output file(s) in " + outDir.getAbsolutePath() + "?",
+                        ButtonType.OK, ButtonType.CANCEL);
+                confirm.setHeaderText("Confirm batch overwrite");
+                if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+            }
             java.nio.file.Files.createDirectories(outDir.toPath());
         }
         catch (Exception ex)
         {
-            showError("Cannot create the destination folder", ex.getMessage());
+            showError("Cannot export to the destination", ex.getMessage());
             return;
         }
 
@@ -5590,6 +5695,9 @@ public class MainController
         final List<File> sources = new ArrayList<>(files);
         final List<BatchFailure> failures = new ArrayList<>();
         final int os = oversampling;
+        // Capture once on FX. A cancelled export can still be unwinding while
+        // the UI becomes editable; later songs must never read changed controls.
+        final Snapshot batchSnapshot = buildSnapshot(new TrackAnalysis());
 
         Task<Void> task = new Task<>()
         {
@@ -5626,7 +5734,12 @@ public class MainController
                         TrackAnalysis ta = new TrackAnalysis();
                         ta.analyze(audio.getSamples(), audio.getChannels(), audio.getSampleRate());
 
-                        Snapshot snap = buildSnapshot(ta);
+                        Snapshot snap = batchSnapshot;
+                        for (AudioProcessor processor : snap.pipeline.getProcessors()) {
+                            if (processor instanceof PeakCompProcessor p) p.setTrackAnalysis(ta);
+                            if (processor instanceof BeatCompProcessor p) p.setTrackAnalysis(ta);
+                            if (processor instanceof PunchProcessor p) p.setTrackAnalysis(ta);
+                        }
                         final double base = (double) index / n;
                         float[] processed = renderOversampled(snap.pipeline,
                                 audio.getSamples().clone(), audio.getSampleRate(),
@@ -5649,21 +5762,12 @@ public class MainController
                                     snap.normalizer.getTargetDbfs());
                         }
 
-                        String ext = settings.mp3() ? ".mp3" : ".wav";
-                        String outName = exportFileName(srcFile.getName(), ext);
-                        String outPath = new File(outDir, outName).getAbsolutePath();
-
-                        if (settings.mp3())
-                        {
-                            new Mp3File(outPath, outRate, audio.getChannels(), out,
-                                    settings.kbps(), false).save(outPath);
-                        }
-                        else
-                        {
-                            new WavFile(outPath, outRate, audio.getChannels(), out,
-                                    settings.bitDepth(), settings.isFloat()).save(outPath);
-                        }
-                        MetadataPreserver.preserve(srcFile.getAbsolutePath(), outPath);
+                        if (isCancelled()) return null;
+                        String outPath = outputPaths.get(index).toString();
+                        AudioFile output = settings.mp3()
+                                ? new Mp3File(outPath, outRate, audio.getChannels(), out, settings.kbps(), false)
+                                : new WavFile(outPath, outRate, audio.getChannels(), out, settings.bitDepth(), settings.isFloat());
+                        AudioExport.write(output, srcFile.getAbsolutePath(), outPath);
                         AppLogger.info("Batch export " + (index + 1) + " / " + n
                                 + " completed: " + outPath);
                     }
@@ -5914,33 +6018,16 @@ public class MainController
     private final double[] mbHeld = new double[MultibandLimiterProcessor.BANDS];  // held GR per band
     private double bbHeld = 0.0;                                            // held broadband GR
 
-    // Push rebuilds (O(N) envelope) run off the FX thread, coalesced, so the knobs stay fluid.
-    private final java.util.concurrent.ExecutorService limiterExec =
-            java.util.concurrent.Executors.newSingleThreadExecutor(r ->
-            {
-                Thread t = new Thread(r, "limiter-rebuild");
-                t.setDaemon(true);
-                return t;
-            });
-    private final double[] mbTarget = new double[MultibandLimiterProcessor.BANDS];
-    private final java.util.concurrent.atomic.AtomicBoolean[] mbPending =
-            new java.util.concurrent.atomic.AtomicBoolean[MultibandLimiterProcessor.BANDS];
-    private double bbTarget = 0.0;
-    private final java.util.concurrent.atomic.AtomicBoolean bbPending =
-            new java.util.concurrent.atomic.AtomicBoolean();
-
     private void initLimiterUi()
     {
         limEnabled.selectedProperty().addListener((o, ov, nv) ->
         {
             multiband.setEnabled(nv);
             broadband.setEnabled(nv);
+            scheduleDynamicsRefresh();
         });
         multiband.setEnabled(limEnabled.isSelected());
         broadband.setEnabled(limEnabled.isSelected());
-        for (int b = 0; b < MultibandLimiterProcessor.BANDS; b++)
-            mbPending[b] = new java.util.concurrent.atomic.AtomicBoolean();
-
         limContent.getChildren().clear();
         limContent.setSpacing(6);
 
@@ -6044,32 +6131,18 @@ public class MainController
         return new Object[]{ meter, fill, grLabel };
     }
 
-    /** Sets a band's push without blocking the FX thread: the envelope rebuild is
-     *  coalesced onto a background thread (the gain envelope publishes atomically). */
+    /** Publish only the requested value here; the common cancellable worker
+     * builds the entire current chain before adopting the new envelope. */
     private void scheduleMbPush(int band, double v)
     {
-        mbTarget[band] = v;
-        if (mbPending[band].compareAndSet(false, true))
-        {
-            limiterExec.submit(() ->
-            {
-                mbPending[band].set(false);
-                multiband.requestPushDb(band, mbTarget[band]);
-            });
-        }
+        multiband.requestPushDb(band, v);
+        scheduleDynamicsRefresh();
     }
 
     private void scheduleBbPush(double v)
     {
-        bbTarget = v;
-        if (bbPending.compareAndSet(false, true))
-        {
-            limiterExec.submit(() ->
-            {
-                bbPending.set(false);
-                broadband.requestPushDb(bbTarget);
-            });
-        }
+        broadband.requestPushDb(v);
+        scheduleDynamicsRefresh();
     }
 
     /**
@@ -6080,6 +6153,8 @@ public class MainController
      */
     private void updateLimiterMeters()
     {
+        MultibandLimiterProcessor audibleMultiband = audibleProcessor(multiband);
+        BroadbandLimiterProcessor audibleBroadband = audibleProcessor(broadband);
         long pos = (player != null) ? player.getPositionSamples() : 0L;
         long from = (prevLimPos >= 0 && prevLimPos < pos) ? prevLimPos : pos;
         prevLimPos = pos;
@@ -6087,9 +6162,9 @@ public class MainController
 
         for (int b = 0; b < mbFills.size(); b++)
         {
-            double gr = Math.abs(multiband.getBandGrDeepest(b, from, pos));
+            double gr = Math.abs(audibleMultiband.getBandGrDeepest(b, from, pos));
             mbHeld[b] = Math.max(gr, mbHeld[b] * decay);
-            double push = Math.max(multiband.getPushDb(b), 0.1);   // bar relative to the dialled push
+            double push = Math.max(audibleMultiband.getPushDb(b), 0.1);
             double frac = Math.min(mbHeld[b] / push, 1.0);
             Region fill = mbFills.get(b);
             fill.setPrefWidth(frac * MB_METER_W);
@@ -6098,9 +6173,9 @@ public class MainController
         }
         if (bbFill != null)
         {
-            double gr = Math.abs(broadband.getGrDeepest(from, pos));
+            double gr = Math.abs(audibleBroadband.getGrDeepest(from, pos));
             bbHeld = Math.max(gr, bbHeld * decay);
-            double push = Math.max(broadband.getPushDb(), 0.1);
+            double push = Math.max(audibleBroadband.getPushDb(), 0.1);
             double frac = Math.min(bbHeld / push, 1.0);
             bbFill.setPrefWidth(frac * BB_METER_W);
             bbFill.setMaxWidth(frac * BB_METER_W);

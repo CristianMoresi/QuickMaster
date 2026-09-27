@@ -1,0 +1,11 @@
+tools\diagnostics\EqControlAudit.java:49: warning: [unchecked] unchecked cast
+                var slopes=(ComboBox<Integer>)field(controller,"eqSlope");
+                                                   ^
+  required: ComboBox<Integer>
+  found:    Object
+1 warning
+sept 27, 2026 11:16:58 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @7c37508a'
+EQ_DOUBLE_CLICK generation=0->0 bands=1
+EQ_SLOPE_FAILURE slope=6 java.lang.IllegalArgumentException: Unsupported EQ slope.
+EQ_CONTROL_AUDIT failures=2

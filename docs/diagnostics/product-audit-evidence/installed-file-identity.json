@@ -1,0 +1,1215 @@
+{
+  "verifiedAt": "2026-09-27T21:09:23.6178874+02:00",
+  "source": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\product-audit-final-20260927\\QuickMaster",
+  "installed": "C:\\Program Files\\QuickMaster",
+  "fileCount": 201,
+  "allMatch": true,
+  "files": [
+    {
+      "path": "QuickMaster.exe",
+      "sourceSha256": "5eb101bd8c731f55f85f36fe344a3b647fd92fde2e989f0478ad2d502868c4ab",
+      "installedSha256": "5eb101bd8c731f55f85f36fe344a3b647fd92fde2e989f0478ad2d502868c4ab",
+      "matches": true
+    },
+    {
+      "path": "app\\.jpackage.xml",
+      "sourceSha256": "68e141d16104bcf897214bfd8795f1e7667080eb1690e6944cf4b389d15b23e5",
+      "installedSha256": "68e141d16104bcf897214bfd8795f1e7667080eb1690e6944cf4b389d15b23e5",
+      "matches": true
+    },
+    {
+      "path": "app\\dspark-0.2.1.jar",
+      "sourceSha256": "4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382",
+      "installedSha256": "4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382",
+      "matches": true
+    },
+    {
+      "path": "app\\gson-2.10.1.jar",
+      "sourceSha256": "4241c14a7727c34feea6507ec801318a3d4a90f070e4525681079fb94ee4c593",
+      "installedSha256": "4241c14a7727c34feea6507ec801318a3d4a90f070e4525681079fb94ee4c593",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-base-21.0.11-win.jar",
+      "sourceSha256": "ecd5a4c1d49f77df3518ccf697702176c99a0dbbcf2bec78793073da90789157",
+      "installedSha256": "ecd5a4c1d49f77df3518ccf697702176c99a0dbbcf2bec78793073da90789157",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-base-21.0.11.jar",
+      "sourceSha256": "6e9ceedaca2ac1c505003902a6d5c8e6480e3c31deb66cf8a619a9fc8e32832f",
+      "installedSha256": "6e9ceedaca2ac1c505003902a6d5c8e6480e3c31deb66cf8a619a9fc8e32832f",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-controls-21.0.11-win.jar",
+      "sourceSha256": "9ecd53bc4faff6895812373952dc0fda2dd54f77046cd04fccd10d49fe3b3799",
+      "installedSha256": "9ecd53bc4faff6895812373952dc0fda2dd54f77046cd04fccd10d49fe3b3799",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-controls-21.0.11.jar",
+      "sourceSha256": "da942005621630c85d8d271303c97bde17c94082e68b4e4539c71ca273ab6e36",
+      "installedSha256": "da942005621630c85d8d271303c97bde17c94082e68b4e4539c71ca273ab6e36",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-fxml-21.0.11-win.jar",
+      "sourceSha256": "d60b84eec6fda4717c38b8d2b8e8edf1265d1536bc7be483a094716da6586272",
+      "installedSha256": "d60b84eec6fda4717c38b8d2b8e8edf1265d1536bc7be483a094716da6586272",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-fxml-21.0.11.jar",
+      "sourceSha256": "f38cfb75e7ed6525861f89dc681153ac0a7b48f35e1b6ffddcd9524c40549862",
+      "installedSha256": "f38cfb75e7ed6525861f89dc681153ac0a7b48f35e1b6ffddcd9524c40549862",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-graphics-21.0.11-win.jar",
+      "sourceSha256": "5b385a10d1a92feecad731c633ce2a4941aa347544474f0d667a37157fcb8d55",
+      "installedSha256": "5b385a10d1a92feecad731c633ce2a4941aa347544474f0d667a37157fcb8d55",
+      "matches": true
+    },
+    {
+      "path": "app\\javafx-graphics-21.0.11.jar",
+      "sourceSha256": "4862f9d455839de88eeb3be4ca6d7c7287f5abb9204d50dda2904bdfa520edc6",
+      "installedSha256": "4862f9d455839de88eeb3be4ca6d7c7287f5abb9204d50dda2904bdfa520edc6",
+      "matches": true
+    },
+    {
+      "path": "app\\jlayer-1.0.1.4.jar",
+      "sourceSha256": "863a51470ab4d581c6269dcd5a0471a226932ec5b2ef3f79fe86ab559387ac5c",
+      "installedSha256": "863a51470ab4d581c6269dcd5a0471a226932ec5b2ef3f79fe86ab559387ac5c",
+      "matches": true
+    },
+    {
+      "path": "app\\jlayer-1.0.1.jar",
+      "sourceSha256": "850508c837454a1b06017c32a36876fae516de1e89a829f725fee1e6dcc52000",
+      "installedSha256": "850508c837454a1b06017c32a36876fae516de1e89a829f725fee1e6dcc52000",
+      "matches": true
+    },
+    {
+      "path": "app\\jna-5.17.0.jar",
+      "sourceSha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+      "installedSha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+      "matches": true
+    },
+    {
+      "path": "app\\jna-platform-5.17.0.jar",
+      "sourceSha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+      "installedSha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+      "matches": true
+    },
+    {
+      "path": "app\\jump3r-1.0.5.jar",
+      "sourceSha256": "89a5894eee514f9e86a61f01d59b2665af6eddcc25b01accc86514bae16f0054",
+      "installedSha256": "89a5894eee514f9e86a61f01d59b2665af6eddcc25b01accc86514bae16f0054",
+      "matches": true
+    },
+    {
+      "path": "app\\junit-3.8.2.jar",
+      "sourceSha256": "ecdcc08183708ea3f7b0ddc96f19678a0db8af1fb397791d484aed63200558b0",
+      "installedSha256": "ecdcc08183708ea3f7b0ddc96f19678a0db8af1fb397791d484aed63200558b0",
+      "matches": true
+    },
+    {
+      "path": "app\\mp3spi-1.9.5.4.jar",
+      "sourceSha256": "f2bd4d0b63532b52eaf9c086528ed8379e5a8805af759c4dbdea5b7a40e4e87e",
+      "installedSha256": "f2bd4d0b63532b52eaf9c086528ed8379e5a8805af759c4dbdea5b7a40e4e87e",
+      "matches": true
+    },
+    {
+      "path": "app\\QuickMaster.cfg",
+      "sourceSha256": "00b26cb2664617935f9a053135a6e7192b5cd238a9ffd50b5a22783404844b0a",
+      "installedSha256": "00b26cb2664617935f9a053135a6e7192b5cd238a9ffd50b5a22783404844b0a",
+      "matches": true
+    },
+    {
+      "path": "app\\quickmaster.jar",
+      "sourceSha256": "cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564",
+      "installedSha256": "cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564",
+      "matches": true
+    },
+    {
+      "path": "app\\tritonus-share-0.3.7.4.jar",
+      "sourceSha256": "6f626b41dc72074656059de1a25bc6f1c5abb202b57d37c538f5714f54efdab4",
+      "installedSha256": "6f626b41dc72074656059de1a25bc6f1c5abb202b57d37c538f5714f54efdab4",
+      "matches": true
+    },
+    {
+      "path": "runtime\\release",
+      "sourceSha256": "6252293f1a53e033d5fbd41be6849f8a8a09241d5bc89b0d56ad8aa473aaf29f",
+      "installedSha256": "6252293f1a53e033d5fbd41be6849f8a8a09241d5bc89b0d56ad8aa473aaf29f",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-console-l1-1-0.dll",
+      "sourceSha256": "88ace577a9c51061cb7d1a36babbbefa48212fadc838ffde98fdfff60de18386",
+      "installedSha256": "88ace577a9c51061cb7d1a36babbbefa48212fadc838ffde98fdfff60de18386",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-console-l1-2-0.dll",
+      "sourceSha256": "c062477ad3bfdc57b0cc402179637a214dab5045c8d644592c7decca7d18aa50",
+      "installedSha256": "c062477ad3bfdc57b0cc402179637a214dab5045c8d644592c7decca7d18aa50",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-datetime-l1-1-0.dll",
+      "sourceSha256": "1bd81dfd19204b44662510d9054852fb77c9f25c1088d647881c9b976cc16818",
+      "installedSha256": "1bd81dfd19204b44662510d9054852fb77c9f25c1088d647881c9b976cc16818",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-debug-l1-1-0.dll",
+      "sourceSha256": "591358eb4d1531e9563ee0813e4301c552ce364c912ce684d16576eabf195dc3",
+      "installedSha256": "591358eb4d1531e9563ee0813e4301c552ce364c912ce684d16576eabf195dc3",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-errorhandling-l1-1-0.dll",
+      "sourceSha256": "d56ce7b1cd76108ad6c137326ec694a14c99d48c3d7b0ace8c3ff4d9bcee3ce8",
+      "installedSha256": "d56ce7b1cd76108ad6c137326ec694a14c99d48c3d7b0ace8c3ff4d9bcee3ce8",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-fibers-l1-1-0.dll",
+      "sourceSha256": "91d249d7bc0e38ef6bcb17158b1fdc6dd8888dc086615c9b8b750b87e52a5fb3",
+      "installedSha256": "91d249d7bc0e38ef6bcb17158b1fdc6dd8888dc086615c9b8b750b87e52a5fb3",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-fibers-l1-1-1.dll",
+      "sourceSha256": "fc9d86cec621383eab636ebc87ddd3f5c19a3cb2a33d97be112c051d0b275429",
+      "installedSha256": "fc9d86cec621383eab636ebc87ddd3f5c19a3cb2a33d97be112c051d0b275429",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-file-l1-1-0.dll",
+      "sourceSha256": "1ca895aba4e7435563a6b43e85eba67a0f8c74aa6a6a94d0fc48fa35535e2585",
+      "installedSha256": "1ca895aba4e7435563a6b43e85eba67a0f8c74aa6a6a94d0fc48fa35535e2585",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-file-l1-2-0.dll",
+      "sourceSha256": "4cadbc0c39da7c6722206fdcebd670abe5b8d261e7b041dd94f9397a89d1990d",
+      "installedSha256": "4cadbc0c39da7c6722206fdcebd670abe5b8d261e7b041dd94f9397a89d1990d",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-file-l2-1-0.dll",
+      "sourceSha256": "93c624b366ba16c643fc8933070a26f03b073ad0cf7f80173266d67536c61989",
+      "installedSha256": "93c624b366ba16c643fc8933070a26f03b073ad0cf7f80173266d67536c61989",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-handle-l1-1-0.dll",
+      "sourceSha256": "39095f59c41d76ec81bb2723d646fde4c148e7cc3402f4980d2ade95cb9c84f9",
+      "installedSha256": "39095f59c41d76ec81bb2723d646fde4c148e7cc3402f4980d2ade95cb9c84f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-heap-l1-1-0.dll",
+      "sourceSha256": "8f105771b236dbcb859de271f0a6822ce1cb79c36988dd42c9e3f6f55c5f7eb9",
+      "installedSha256": "8f105771b236dbcb859de271f0a6822ce1cb79c36988dd42c9e3f6f55c5f7eb9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-interlocked-l1-1-0.dll",
+      "sourceSha256": "53b25e753ca785bf8b695d89dde5818a318890211dc992a89146f16658f0b606",
+      "installedSha256": "53b25e753ca785bf8b695d89dde5818a318890211dc992a89146f16658f0b606",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+      "sourceSha256": "a9b13a1cd1b8c19b0c6b4afcd5bb0dd29c0e2288231ac9e6db8510094ce68ba6",
+      "installedSha256": "a9b13a1cd1b8c19b0c6b4afcd5bb0dd29c0e2288231ac9e6db8510094ce68ba6",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-libraryloader-l1-1-0.dll",
+      "sourceSha256": "7f39ba298b41e4963047341288cab36b6a241835ee11ba4ad70f44dacd40906c",
+      "installedSha256": "7f39ba298b41e4963047341288cab36b6a241835ee11ba4ad70f44dacd40906c",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-localization-l1-2-0.dll",
+      "sourceSha256": "6ee44dd0d8510dc024c9f7c79b1b9fa88c987b26b6beb6653ddd11751c34e5dc",
+      "installedSha256": "6ee44dd0d8510dc024c9f7c79b1b9fa88c987b26b6beb6653ddd11751c34e5dc",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-memory-l1-1-0.dll",
+      "sourceSha256": "0512a35316ec9180437f86696a84c5c06a7e4e82e050055a656e5bf9fca206f9",
+      "installedSha256": "0512a35316ec9180437f86696a84c5c06a7e4e82e050055a656e5bf9fca206f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-namedpipe-l1-1-0.dll",
+      "sourceSha256": "c05f1fffe3b5a2738ea54ce9485cca026fb9635f982626fba1e1dcc531897273",
+      "installedSha256": "c05f1fffe3b5a2738ea54ce9485cca026fb9635f982626fba1e1dcc531897273",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-processenvironment-l1-1-0.dll",
+      "sourceSha256": "c4eca98c3c67b6395d5b005b00ac1eb0318b86b23aa71035a44c2b1602befba9",
+      "installedSha256": "c4eca98c3c67b6395d5b005b00ac1eb0318b86b23aa71035a44c2b1602befba9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-processthreads-l1-1-0.dll",
+      "sourceSha256": "5ccb89e93d67bc3288d4e84649c5346e66e15e3d7cd65d989daf3f4cb584be9a",
+      "installedSha256": "5ccb89e93d67bc3288d4e84649c5346e66e15e3d7cd65d989daf3f4cb584be9a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-processthreads-l1-1-1.dll",
+      "sourceSha256": "4ad565a8ba3ef0ea8ab87221ad11f83ee0bc844ce236607958406663b407333e",
+      "installedSha256": "4ad565a8ba3ef0ea8ab87221ad11f83ee0bc844ce236607958406663b407333e",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-profile-l1-1-0.dll",
+      "sourceSha256": "7809160932f44e59b021699f5bc68799eb7293ee1fa926d6fcca3c3445302e61",
+      "installedSha256": "7809160932f44e59b021699f5bc68799eb7293ee1fa926d6fcca3c3445302e61",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "sourceSha256": "9dc1e91e71c7c054854bd1487cb4e6946d82c9f463430f1c4e8d1471005172b1",
+      "installedSha256": "9dc1e91e71c7c054854bd1487cb4e6946d82c9f463430f1c4e8d1471005172b1",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-string-l1-1-0.dll",
+      "sourceSha256": "60fc31d2a0c634412f529dba76af3b9bf991352877c6dae528186d3935704cfd",
+      "installedSha256": "60fc31d2a0c634412f529dba76af3b9bf991352877c6dae528186d3935704cfd",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-synch-l1-1-0.dll",
+      "sourceSha256": "3a72b4f29f39a265d32ad12f0ce15dbf60129c840e10d84d427829ede45e78ad",
+      "installedSha256": "3a72b4f29f39a265d32ad12f0ce15dbf60129c840e10d84d427829ede45e78ad",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-synch-l1-2-0.dll",
+      "sourceSha256": "efc1e4460984a73cf47a3def033af1c8f3b1dbc1a56cd27781d3aacf3e3330cb",
+      "installedSha256": "efc1e4460984a73cf47a3def033af1c8f3b1dbc1a56cd27781d3aacf3e3330cb",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-sysinfo-l1-1-0.dll",
+      "sourceSha256": "b203d862ddef1dd62bf623fc866c7f7a9c317c1c2ae30d1f52cb41f955b5698e",
+      "installedSha256": "b203d862ddef1dd62bf623fc866c7f7a9c317c1c2ae30d1f52cb41f955b5698e",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-sysinfo-l1-2-0.dll",
+      "sourceSha256": "2703635d835396afd0f138d7c73751afe7e33a24f4225d08c1690b0a371932c0",
+      "installedSha256": "2703635d835396afd0f138d7c73751afe7e33a24f4225d08c1690b0a371932c0",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-timezone-l1-1-0.dll",
+      "sourceSha256": "33f4fddc181066fce06b2227bded813f95e94ed1f3d785e982c6b6b56c510c57",
+      "installedSha256": "33f4fddc181066fce06b2227bded813f95e94ed1f3d785e982c6b6b56c510c57",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-core-util-l1-1-0.dll",
+      "sourceSha256": "6eda016742a6171205a387a14b3c0b331841567740376f56768f8c151724207d",
+      "installedSha256": "6eda016742a6171205a387a14b3c0b331841567740376f56768f8c151724207d",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-conio-l1-1-0.dll",
+      "sourceSha256": "b762061b688aae679afe788904d2c9970f74a7dac98f3b42463d08f25e483d3f",
+      "installedSha256": "b762061b688aae679afe788904d2c9970f74a7dac98f3b42463d08f25e483d3f",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-convert-l1-1-0.dll",
+      "sourceSha256": "ebb2ae5535a64f65daeab8235585114fc9dd2cf1a49f5852d446250b998b6ae4",
+      "installedSha256": "ebb2ae5535a64f65daeab8235585114fc9dd2cf1a49f5852d446250b998b6ae4",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-environment-l1-1-0.dll",
+      "sourceSha256": "17d63275d00bdd8670422b95bd264c532998e0a1b041079e54fce4b6b7a55819",
+      "installedSha256": "17d63275d00bdd8670422b95bd264c532998e0a1b041079e54fce4b6b7a55819",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-filesystem-l1-1-0.dll",
+      "sourceSha256": "9a9e2a65a281644e368d0f272b95ba5f6b445d1c35910d06056c5ebeb77402db",
+      "installedSha256": "9a9e2a65a281644e368d0f272b95ba5f6b445d1c35910d06056c5ebeb77402db",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-heap-l1-1-0.dll",
+      "sourceSha256": "bab9ac3ec83e380ae51e4295ef3bf2c738627812d3a49d1e713661abbc8dc57a",
+      "installedSha256": "bab9ac3ec83e380ae51e4295ef3bf2c738627812d3a49d1e713661abbc8dc57a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-locale-l1-1-0.dll",
+      "sourceSha256": "bd14c67ea28e21d6257ad780a37122c9b5773f69e693f5db6bffaee4d839526e",
+      "installedSha256": "bd14c67ea28e21d6257ad780a37122c9b5773f69e693f5db6bffaee4d839526e",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-math-l1-1-0.dll",
+      "sourceSha256": "606d66d82db562ea7979179d06486a0f94d079941d26b80a1e2c49d29959df6f",
+      "installedSha256": "606d66d82db562ea7979179d06486a0f94d079941d26b80a1e2c49d29959df6f",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-multibyte-l1-1-0.dll",
+      "sourceSha256": "95f49efbe8107786733fa7c474025cf3fee0ac632f240367b296c736d06572aa",
+      "installedSha256": "95f49efbe8107786733fa7c474025cf3fee0ac632f240367b296c736d06572aa",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-private-l1-1-0.dll",
+      "sourceSha256": "1bc82bed6143d2bf1b6b08a7809f4a5e29317d6fddd338a7da3c0223522e4bbf",
+      "installedSha256": "1bc82bed6143d2bf1b6b08a7809f4a5e29317d6fddd338a7da3c0223522e4bbf",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-process-l1-1-0.dll",
+      "sourceSha256": "f6156b1020380ec4f0e48577ebedaaef5fb1ab1f337d8b4e72e6a33a7567a9cc",
+      "installedSha256": "f6156b1020380ec4f0e48577ebedaaef5fb1ab1f337d8b4e72e6a33a7567a9cc",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-runtime-l1-1-0.dll",
+      "sourceSha256": "c5902934d026d7e15fbe9917d474f3322846a41a25e66f4b2b1f758801879f4b",
+      "installedSha256": "c5902934d026d7e15fbe9917d474f3322846a41a25e66f4b2b1f758801879f4b",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-stdio-l1-1-0.dll",
+      "sourceSha256": "a9c5a153d8c0286f9b41a2b1c65854ad9e6471b8755b7de87bae4470e60bcab6",
+      "installedSha256": "a9c5a153d8c0286f9b41a2b1c65854ad9e6471b8755b7de87bae4470e60bcab6",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-string-l1-1-0.dll",
+      "sourceSha256": "25b8f83a7767211b11132775a0e27a45aa4ec8ab4e6572599f9c172ae3606b40",
+      "installedSha256": "25b8f83a7767211b11132775a0e27a45aa4ec8ab4e6572599f9c172ae3606b40",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-time-l1-1-0.dll",
+      "sourceSha256": "7c7f6393f06de11750adb09cc5698ae55cd9fb27b2e51e207286feb1b5b2b156",
+      "installedSha256": "7c7f6393f06de11750adb09cc5698ae55cd9fb27b2e51e207286feb1b5b2b156",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\api-ms-win-crt-utility-l1-1-0.dll",
+      "sourceSha256": "d8ba5f17b9ffcbf3aeaf3fa1da226832d2fa90f81acce0cd669464e76ce434ac",
+      "installedSha256": "d8ba5f17b9ffcbf3aeaf3fa1da226832d2fa90f81acce0cd669464e76ce434ac",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\awt.dll",
+      "sourceSha256": "322296e4052fd3f0528a1f93b189614ea434006b887ad8f9bc5b8d79acdfc9e3",
+      "installedSha256": "322296e4052fd3f0528a1f93b189614ea434006b887ad8f9bc5b8d79acdfc9e3",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\fontmanager.dll",
+      "sourceSha256": "c25cc683affface1787fbcfe4267ef06c0099dbb13f916b2a5c401e478475095",
+      "installedSha256": "c25cc683affface1787fbcfe4267ef06c0099dbb13f916b2a5c401e478475095",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\freetype.dll",
+      "sourceSha256": "4269dcb90dd82c920d95c4a16daa8ed7f899384372280fcc564d1eecd7316d1f",
+      "installedSha256": "4269dcb90dd82c920d95c4a16daa8ed7f899384372280fcc564d1eecd7316d1f",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\java.dll",
+      "sourceSha256": "e5b9d03078656bc530f03857fa89c435db4fd7b246a6f34edea4f1c59f5b31e6",
+      "installedSha256": "e5b9d03078656bc530f03857fa89c435db4fd7b246a6f34edea4f1c59f5b31e6",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\javajpeg.dll",
+      "sourceSha256": "c7ebde30dc8c900690a218735e819da8252a286933a986c18a692dfa498b26eb",
+      "installedSha256": "c7ebde30dc8c900690a218735e819da8252a286933a986c18a692dfa498b26eb",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\jawt.dll",
+      "sourceSha256": "fe845fd3ba49af03439f858f8ae90bca0a45cb8b341e57afe57494924c18fbb5",
+      "installedSha256": "fe845fd3ba49af03439f858f8ae90bca0a45cb8b341e57afe57494924c18fbb5",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\jimage.dll",
+      "sourceSha256": "2375c81a92a89dfbcdd613790748b702e81f762d964e10b41c294264735be325",
+      "installedSha256": "2375c81a92a89dfbcdd613790748b702e81f762d964e10b41c294264735be325",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\jli.dll",
+      "sourceSha256": "da2693437d06125ba8392bc2b8200adb094dd0c294f9771b68e2d089cc3f655a",
+      "installedSha256": "da2693437d06125ba8392bc2b8200adb094dd0c294f9771b68e2d089cc3f655a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\jsound.dll",
+      "sourceSha256": "85de0d5a4049a064e19ab0cc17101cfc29fe3ccc88544bcbd8765fb53875301a",
+      "installedSha256": "85de0d5a4049a064e19ab0cc17101cfc29fe3ccc88544bcbd8765fb53875301a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\lcms.dll",
+      "sourceSha256": "55beb403c3690e3cdbaac46e91d0cb21956ef8e78574adaf2a384d2593141341",
+      "installedSha256": "55beb403c3690e3cdbaac46e91d0cb21956ef8e78574adaf2a384d2593141341",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\management.dll",
+      "sourceSha256": "3cc759174fa5cf6f270fbcb6d0415e4312605d2b87f5a3a5bd8c080e7b18f882",
+      "installedSha256": "3cc759174fa5cf6f270fbcb6d0415e4312605d2b87f5a3a5bd8c080e7b18f882",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\mlib_image.dll",
+      "sourceSha256": "d261464667a9153aaeee3be1f71d0e9ac6cfe0d63005287d1be0fe76447314a6",
+      "installedSha256": "d261464667a9153aaeee3be1f71d0e9ac6cfe0d63005287d1be0fe76447314a6",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\msvcp140.dll",
+      "sourceSha256": "a4c2229bdc2a2a630acdc095b4d86008e5c3e3bc7773174354f3da4f5beb9cde",
+      "installedSha256": "a4c2229bdc2a2a630acdc095b4d86008e5c3e3bc7773174354f3da4f5beb9cde",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\net.dll",
+      "sourceSha256": "87955e43ccd8af43645cb5f23e435d80ca1afbfa3e47969fb002b57e65231d4e",
+      "installedSha256": "87955e43ccd8af43645cb5f23e435d80ca1afbfa3e47969fb002b57e65231d4e",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\nio.dll",
+      "sourceSha256": "953b491b5981356d04288884bf3f178d94b892d11445e864b67420eddd56094d",
+      "installedSha256": "953b491b5981356d04288884bf3f178d94b892d11445e864b67420eddd56094d",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\prefs.dll",
+      "sourceSha256": "a3f84f8ef9b7c8e9b19afa7e089f5694d9df8b9b9a187ef1e0216a3df0db2b5b",
+      "installedSha256": "a3f84f8ef9b7c8e9b19afa7e089f5694d9df8b9b9a187ef1e0216a3df0db2b5b",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\splashscreen.dll",
+      "sourceSha256": "96a9a4736d460b10afc503f4453272c92ff55440126cb1388754d0cf2141553f",
+      "installedSha256": "96a9a4736d460b10afc503f4453272c92ff55440126cb1388754d0cf2141553f",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\syslookup.dll",
+      "sourceSha256": "b422b0a9d714a68aea1257be572f42d1c2c43b67bec62bd53ff9a75d4971b337",
+      "installedSha256": "b422b0a9d714a68aea1257be572f42d1c2c43b67bec62bd53ff9a75d4971b337",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\ucrtbase.dll",
+      "sourceSha256": "2e5fb14b7bf8540278f3614a12f0226e56a7cc9e64b81cbd976c6fcf2f71cbfb",
+      "installedSha256": "2e5fb14b7bf8540278f3614a12f0226e56a7cc9e64b81cbd976c6fcf2f71cbfb",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\vcruntime140_1.dll",
+      "sourceSha256": "7dd9aa02e271c68ca6d5f18d651d23a15d7259715af43326578f7dde27f37637",
+      "installedSha256": "7dd9aa02e271c68ca6d5f18d651d23a15d7259715af43326578f7dde27f37637",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\vcruntime140.dll",
+      "sourceSha256": "02c6aa0e6e624411a9f19b0360a7865ab15908e26024510e5c38a9c08362c35a",
+      "installedSha256": "02c6aa0e6e624411a9f19b0360a7865ab15908e26024510e5c38a9c08362c35a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\verify.dll",
+      "sourceSha256": "1106ed604cee900ab37c5ed2b7a61f83fe87f3be24e84667d5225a38bfe9a15d",
+      "installedSha256": "1106ed604cee900ab37c5ed2b7a61f83fe87f3be24e84667d5225a38bfe9a15d",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\zip.dll",
+      "sourceSha256": "d18e94754ad3b1f894b06b61eddb8b8a33c3a2bf073ef1ceb5a7fc313b06b111",
+      "installedSha256": "d18e94754ad3b1f894b06b61eddb8b8a33c3a2bf073ef1ceb5a7fc313b06b111",
+      "matches": true
+    },
+    {
+      "path": "runtime\\bin\\server\\jvm.dll",
+      "sourceSha256": "50f653c1d30db1342f5d476946ef63f25b663f72e89445c0d70a33d1b86a4ee2",
+      "installedSha256": "50f653c1d30db1342f5d476946ef63f25b663f72e89445c0d70a33d1b86a4ee2",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\jaxp-strict.properties.template",
+      "sourceSha256": "3cc9b87633769414b22c24c97ecded8a15df630fe5ab12abca2398d88e31b32b",
+      "installedSha256": "3cc9b87633769414b22c24c97ecded8a15df630fe5ab12abca2398d88e31b32b",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\jaxp.properties",
+      "sourceSha256": "d4f45052a100e5aef02b6638a3b9c69b2bdd46155ceb58a52671e5d594c30100",
+      "installedSha256": "d4f45052a100e5aef02b6638a3b9c69b2bdd46155ceb58a52671e5d594c30100",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\logging.properties",
+      "sourceSha256": "8590633e1e8a7d88ffe74cc04189c5c61b1ed4703180cbc851dcd5575efcce74",
+      "installedSha256": "8590633e1e8a7d88ffe74cc04189c5c61b1ed4703180cbc851dcd5575efcce74",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\net.properties",
+      "sourceSha256": "594bc40230a0bd7c441fe069989d66e534a6bae2ee5910f9f4bf64e59b583256",
+      "installedSha256": "594bc40230a0bd7c441fe069989d66e534a6bae2ee5910f9f4bf64e59b583256",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\sound.properties",
+      "sourceSha256": "299c2360b6155eb28990ec49cd21753f97e43442fe8fab03e04f3e213df43a66",
+      "installedSha256": "299c2360b6155eb28990ec49cd21753f97e43442fe8fab03e04f3e213df43a66",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\security\\java.security",
+      "sourceSha256": "8f42977f80b73ed19f941a1e2886de91d61e2c799b22f3e8e370d54c1ce99365",
+      "installedSha256": "8f42977f80b73ed19f941a1e2886de91d61e2c799b22f3e8e370d54c1ce99365",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\security\\policy\\README.txt",
+      "sourceSha256": "6da0747334b0fea7592fd92614b2bbc8b126535e129b1fee483774d914e98eb5",
+      "installedSha256": "6da0747334b0fea7592fd92614b2bbc8b126535e129b1fee483774d914e98eb5",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\security\\policy\\limited\\default_local.policy",
+      "sourceSha256": "2b2627548e61316150d47ffc3e6cad465ca05b3cccd4785eb7d21aa7baa0f441",
+      "installedSha256": "2b2627548e61316150d47ffc3e6cad465ca05b3cccd4785eb7d21aa7baa0f441",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\security\\policy\\limited\\default_US_export.policy",
+      "sourceSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+      "installedSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\security\\policy\\limited\\exempt_local.policy",
+      "sourceSha256": "8c3d7648abcd95a272ce12db870082937f4d7f6878d730d83cb7fbb31eb8b2c9",
+      "installedSha256": "8c3d7648abcd95a272ce12db870082937f4d7f6878d730d83cb7fbb31eb8b2c9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\security\\policy\\unlimited\\default_local.policy",
+      "sourceSha256": "8d8a318e6d90dfd7e26612d2b6385aa704f686ca6134c551f8928418d92b851a",
+      "installedSha256": "8d8a318e6d90dfd7e26612d2b6385aa704f686ca6134c551f8928418d92b851a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\conf\\security\\policy\\unlimited\\default_US_export.policy",
+      "sourceSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+      "installedSha256": "758b930a526fc670ab7537f8c26321527050a31f5f42149a2dda623c56a0a1a9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916",
+      "installedSha256": "a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\aes.md",
+      "sourceSha256": "45c6d4da48325edfbff3dcf71c704e504c057904435ed23c6d57046d551eb69d",
+      "installedSha256": "45c6d4da48325edfbff3dcf71c704e504c057904435ed23c6d57046d551eb69d",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "75292f03bf23d3db7c985aecc191029b93883200721ed23ed34a2e601463df33",
+      "installedSha256": "75292f03bf23d3db7c985aecc191029b93883200721ed23ed34a2e601463df33",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\c-libutl.md",
+      "sourceSha256": "bef40679922d6fdfb7e4ddb223ad6722300f6054ba737bbf6188d60fcec517f9",
+      "installedSha256": "bef40679922d6fdfb7e4ddb223ad6722300f6054ba737bbf6188d60fcec517f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\cldr.md",
+      "sourceSha256": "472e341c36efc1136860ed7a6461a2af4a53ae95d55d1126726340f5ba62b06a",
+      "installedSha256": "472e341c36efc1136860ed7a6461a2af4a53ae95d55d1126726340f5ba62b06a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\icu.md",
+      "sourceSha256": "be23ad20a8231d2241b37fcf401548febd8597de8373f89268882020cb7c8818",
+      "installedSha256": "be23ad20a8231d2241b37fcf401548febd8597de8373f89268882020cb7c8818",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\LICENSE",
+      "sourceSha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+      "installedSha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\public_suffix.md",
+      "sourceSha256": "861de1e4992a7d28f1de25c73cd50d26a94779ebd749c0643fecfa56442c3429",
+      "installedSha256": "861de1e4992a7d28f1de25c73cd50d26a94779ebd749c0643fecfa56442c3429",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\siphash.md",
+      "sourceSha256": "5a792b5a74ad2a5f3d6a7ad8b7a841116e58a772c18bc6e392320a365b222c76",
+      "installedSha256": "5a792b5a74ad2a5f3d6a7ad8b7a841116e58a772c18bc6e392320a365b222c76",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\unicode.md",
+      "sourceSha256": "5194d6760f2e7eccc07804196cc619f84e730fa9d10c0529b71416186f4d12dc",
+      "installedSha256": "5194d6760f2e7eccc07804196cc619f84e730fa9d10c0529b71416186f4d12dc",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\wepoll.md",
+      "sourceSha256": "3ac2992770080453b98c42afa807ba4b2c1738ef756b92a55c645f55e7df48f0",
+      "installedSha256": "3ac2992770080453b98c42afa807ba4b2c1738ef756b92a55c645f55e7df48f0",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.base\\zlib.md",
+      "sourceSha256": "c9c70c36a1f0325e8788771906202d42ba6ab4205caca44ec0f665707e83226b",
+      "installedSha256": "c9c70c36a1f0325e8788771906202d42ba6ab4205caca44ec0f665707e83226b",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.datatransfer\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.datatransfer\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.datatransfer\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\colorimaging.md",
+      "sourceSha256": "04d61e3e8e71dd452ebe52008af5378d9f6640d14578aeb515dc5375973b0189",
+      "installedSha256": "04d61e3e8e71dd452ebe52008af5378d9f6640d14578aeb515dc5375973b0189",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\freetype.md",
+      "sourceSha256": "e1f43089a3d7f846ac72709ba3f5e3dfe4a07955cbb1f5b580c3c41cf93792dd",
+      "installedSha256": "e1f43089a3d7f846ac72709ba3f5e3dfe4a07955cbb1f5b580c3c41cf93792dd",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\giflib.md",
+      "sourceSha256": "206aab89ec75968e48a6a1ed6df7d8b9bfb7aea12cbe4c9345d93e5d97460a25",
+      "installedSha256": "206aab89ec75968e48a6a1ed6df7d8b9bfb7aea12cbe4c9345d93e5d97460a25",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\harfbuzz.md",
+      "sourceSha256": "5ec7cba7f8e7fc3a089213140aab6fa1b3bd5bf8a91bf8bddb3b8d315fc5f7d0",
+      "installedSha256": "5ec7cba7f8e7fc3a089213140aab6fa1b3bd5bf8a91bf8bddb3b8d315fc5f7d0",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\jpeg.md",
+      "sourceSha256": "c1dfb9719a71ad9f861f8728550542d681e25c8ef40e6393606e6e2a0c1d653a",
+      "installedSha256": "c1dfb9719a71ad9f861f8728550542d681e25c8ef40e6393606e6e2a0c1d653a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\lcms.md",
+      "sourceSha256": "6d409e73a4ce3c25479b4fb01d05fe79c0458bcd1dccc07f72d3e211d64ac8ce",
+      "installedSha256": "6d409e73a4ce3c25479b4fb01d05fe79c0458bcd1dccc07f72d3e211d64ac8ce",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\libpng.md",
+      "sourceSha256": "f73afb394792f3aeecd959e89487603677a430e56b44eba596d8b572accfd540",
+      "installedSha256": "f73afb394792f3aeecd959e89487603677a430e56b44eba596d8b572accfd540",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.desktop\\mesa3d.md",
+      "sourceSha256": "63f4e6f75caebbccb95d903fb43e46ac7111b3624d0a34f146b276d7d9e7b152",
+      "installedSha256": "63f4e6f75caebbccb95d903fb43e46ac7111b3624d0a34f146b276d7d9e7b152",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.logging\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.logging\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.logging\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.management\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.management\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.management\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.naming\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.naming\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.naming\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.prefs\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.prefs\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.prefs\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.scripting\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.scripting\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.scripting\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.security.sasl\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.security.sasl\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.security.sasl\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.sql\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.sql\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.sql\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.transaction.xa\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.transaction.xa\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.transaction.xa\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\bcel.md",
+      "sourceSha256": "cd578186ad93de46cca29ec8ace2b11f9da751987f3f140e6095c528596cc8c1",
+      "installedSha256": "cd578186ad93de46cca29ec8ace2b11f9da751987f3f140e6095c528596cc8c1",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\dom.md",
+      "sourceSha256": "6686e8877667584a3a7c07344baadca1a03e29f677162d87c3c0811e990d1148",
+      "installedSha256": "6686e8877667584a3a7c07344baadca1a03e29f677162d87c3c0811e990d1148",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\jcup.md",
+      "sourceSha256": "8d5dcfdf50455a3c34c753a98f21e953248af200415a9084e3f102cb6c43b8bf",
+      "installedSha256": "8d5dcfdf50455a3c34c753a98f21e953248af200415a9084e3f102cb6c43b8bf",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\schema10part1.md",
+      "sourceSha256": "b220f891e5bfa3aa4b2a4b34dfab53a291553c2ae0fd0b15a4cb1116d4e97770",
+      "installedSha256": "b220f891e5bfa3aa4b2a4b34dfab53a291553c2ae0fd0b15a4cb1116d4e97770",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\schema10part2.md",
+      "sourceSha256": "2350e35e91866d5ee5bd7ee7c303b3e424bbca335d36c71452588aac494eaa3e",
+      "installedSha256": "2350e35e91866d5ee5bd7ee7c303b3e424bbca335d36c71452588aac494eaa3e",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xalan.md",
+      "sourceSha256": "02bd013fc3f438dbb8fa41fa57888177e015efa6431d37fce6e794c6f353a6a1",
+      "installedSha256": "02bd013fc3f438dbb8fa41fa57888177e015efa6431d37fce6e794c6f353a6a1",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xerces.md",
+      "sourceSha256": "4a6bf6b367193ee68681cb2d9fed30ffc5d62dd2d477bd62e0271707d71b3244",
+      "installedSha256": "4a6bf6b367193ee68681cb2d9fed30ffc5d62dd2d477bd62e0271707d71b3244",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xhtml10.md",
+      "sourceSha256": "9a5cde47073ca80cf59127891420f4aed603eb65070738ad027bb19e76fb9319",
+      "installedSha256": "9a5cde47073ca80cf59127891420f4aed603eb65070738ad027bb19e76fb9319",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xhtml10schema.md",
+      "sourceSha256": "7bc51d884aaae6ef27551ee78d404ba3116356790da3d06b665679eb2e1cc002",
+      "installedSha256": "7bc51d884aaae6ef27551ee78d404ba3116356790da3d06b665679eb2e1cc002",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xhtml11.md",
+      "sourceSha256": "4f99a390896f0f55a0b78376de89bfd2ac845713de85e67e37f884b77e0c3122",
+      "installedSha256": "4f99a390896f0f55a0b78376de89bfd2ac845713de85e67e37f884b77e0c3122",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xhtml11schema.md",
+      "sourceSha256": "8cd69b1392e286538008f4cb003f85caea3a375c619e697813d820b69857cf74",
+      "installedSha256": "8cd69b1392e286538008f4cb003f85caea3a375c619e697813d820b69857cf74",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xmlspec.md",
+      "sourceSha256": "afec263bf5dc67697ee33734ee243f86a878161335ef6298273e4041673b0544",
+      "installedSha256": "afec263bf5dc67697ee33734ee243f86a878161335ef6298273e4041673b0544",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\java.xml\\xmlxsd.md",
+      "sourceSha256": "498a5fec63509a8f3949983bb6878ac5c95aaf1d5e3679272d93314371aa0211",
+      "installedSha256": "498a5fec63509a8f3949983bb6878ac5c95aaf1d5e3679272d93314371aa0211",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.jfr\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.jfr\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.jfr\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.localedata\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.localedata\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.localedata\\cldr.md",
+      "sourceSha256": "09972449731a1d1a0863af0384aeb7839f84cac74983c96856e6c305e31ed8b2",
+      "installedSha256": "09972449731a1d1a0863af0384aeb7839f84cac74983c96856e6c305e31ed8b2",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.localedata\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.localedata\\thaidict.md",
+      "sourceSha256": "c326144a2351c9608fa708b5d7d3c5a3da03e82b66479b128e9db4969539824a",
+      "installedSha256": "c326144a2351c9608fa708b5d7d3c5a3da03e82b66479b128e9db4969539824a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.unsupported\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.unsupported\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.unsupported\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.zipfs\\ADDITIONAL_LICENSE_INFO",
+      "sourceSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "installedSha256": "ebf9777bd307ed789ceabf282a9aca168c391c7f48e15a60939352efb3ea33f9",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.zipfs\\ASSEMBLY_EXCEPTION",
+      "sourceSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "installedSha256": "b998cda101e5a1ebcfb5ff9cddd76ed43a2f2169676592d428b7c0d780665f2a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\legal\\jdk.zipfs\\LICENSE",
+      "sourceSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "installedSha256": "86e0516b888276a492b19f9a84f5a866ed36925fae1510b3a94a0b6213e69192",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\classlist",
+      "sourceSha256": "138b627ab7b813501a95ee0b3142e69be57f4f13ae0154ba300dbaf2f62ee839",
+      "installedSha256": "138b627ab7b813501a95ee0b3142e69be57f4f13ae0154ba300dbaf2f62ee839",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\fontconfig.bfc",
+      "sourceSha256": "c7e2e76b908cb6330823e698889943c162e9861a4575501cbb59c9b830158ab0",
+      "installedSha256": "c7e2e76b908cb6330823e698889943c162e9861a4575501cbb59c9b830158ab0",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\fontconfig.properties.src",
+      "sourceSha256": "74e6c464ae1e63983ada241869fdc66ef8c28cef403ee2301e0a90db9555b00c",
+      "installedSha256": "74e6c464ae1e63983ada241869fdc66ef8c28cef403ee2301e0a90db9555b00c",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\jawt.lib",
+      "sourceSha256": "af64af138d14b9fd0849d7f66ad6b529a4e5ec9c25476557bf6b3d65a8ac6884",
+      "installedSha256": "af64af138d14b9fd0849d7f66ad6b529a4e5ec9c25476557bf6b3d65a8ac6884",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\jrt-fs.jar",
+      "sourceSha256": "2bd8b0fb53c9d0e240128953e6145e0bbe230168a3444c89fff81002beb60c14",
+      "installedSha256": "2bd8b0fb53c9d0e240128953e6145e0bbe230168a3444c89fff81002beb60c14",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\jvm.cfg",
+      "sourceSha256": "aa9efb969444c1484e29adecab55a122458090616e766b2f1230ef05bc3867e0",
+      "installedSha256": "aa9efb969444c1484e29adecab55a122458090616e766b2f1230ef05bc3867e0",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\jvm.lib",
+      "sourceSha256": "189b3a31965b924a78ed269170244f3da9d603dd3dd86138e5e896c1aecaba05",
+      "installedSha256": "189b3a31965b924a78ed269170244f3da9d603dd3dd86138e5e896c1aecaba05",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\modules",
+      "sourceSha256": "17708db67e9b30360a69fc81f0d1bfee0ed20d7ccd1755ea6815bf7a45e7c847",
+      "installedSha256": "17708db67e9b30360a69fc81f0d1bfee0ed20d7ccd1755ea6815bf7a45e7c847",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\psfont.properties.ja",
+      "sourceSha256": "5a4bd51b969bf187ff86d94f4a71fdfbfa602762975fa3c73d264b4575f7c78f",
+      "installedSha256": "5a4bd51b969bf187ff86d94f4a71fdfbfa602762975fa3c73d264b4575f7c78f",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\psfontj2d.properties",
+      "sourceSha256": "cfb2f55fc4a22368567273c38f1afe3fc627ad56710a1d922ada68015710e53f",
+      "installedSha256": "cfb2f55fc4a22368567273c38f1afe3fc627ad56710a1d922ada68015710e53f",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\tzdb.dat",
+      "sourceSha256": "5906b44e25a8a730131d7ba1beb5d15af27043f6536f1a169ca8a5d8b8bed8f8",
+      "installedSha256": "5906b44e25a8a730131d7ba1beb5d15af27043f6536f1a169ca8a5d8b8bed8f8",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\tzmappings",
+      "sourceSha256": "3929ab1380771d0d542d91cfbae02ce519a76678f5f63813739a6c6b98dc6d72",
+      "installedSha256": "3929ab1380771d0d542d91cfbae02ce519a76678f5f63813739a6c6b98dc6d72",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\jfr\\default.jfc",
+      "sourceSha256": "26f2d7bf2f8473b3849f9480629eee695edf59fd667da838890a22919237718a",
+      "installedSha256": "26f2d7bf2f8473b3849f9480629eee695edf59fd667da838890a22919237718a",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\jfr\\profile.jfc",
+      "sourceSha256": "3e2c847608b1e7d182337f56bbf75b6a026ba4e9634b398bd92aec865e9ea8a7",
+      "installedSha256": "3e2c847608b1e7d182337f56bbf75b6a026ba4e9634b398bd92aec865e9ea8a7",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\security\\blocked.certs",
+      "sourceSha256": "583500b76965eb54b03493372989ab4d3426f85462d1db232c5ae6706a4d6c58",
+      "installedSha256": "583500b76965eb54b03493372989ab4d3426f85462d1db232c5ae6706a4d6c58",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\security\\cacerts",
+      "sourceSha256": "98d34a90fca2688ef5674862d2a484e09e5ca25d2f07c5d654aa28f1581f3419",
+      "installedSha256": "98d34a90fca2688ef5674862d2a484e09e5ca25d2f07c5d654aa28f1581f3419",
+      "matches": true
+    },
+    {
+      "path": "runtime\\lib\\security\\public_suffix_list.dat",
+      "sourceSha256": "37e71e43c8605f29b9072f152d0ea4708735cdf335a5b68b2bc2f875760806c3",
+      "installedSha256": "37e71e43c8605f29b9072f152d0ea4708735cdf335a5b68b2bc2f875760806c3",
+      "matches": true
+    }
+  ]
+}

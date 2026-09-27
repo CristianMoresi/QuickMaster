@@ -1,0 +1,19 @@
+sept 27, 2026 12:12:29 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @5b7a8434'
+Exception in thread "main" java.util.concurrent.ExecutionException: java.lang.AssertionError: Cached A meter remained stale: -7.0 dBTP
+	at java.base/java.util.concurrent.CompletableFuture.wrapInExecutionException(CompletableFuture.java:345)
+	at java.base/java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:440)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2117)
+	at SlotPublicationAudit.fx(SlotPublicationAudit.java:20)
+	at SlotPublicationAudit.main(SlotPublicationAudit.java:48)
+Caused by: java.lang.AssertionError: Cached A meter remained stale: -7.0 dBTP
+	at SlotPublicationAudit.check(SlotPublicationAudit.java:27)
+	at SlotPublicationAudit.lambda$main$4(SlotPublicationAudit.java:53)
+	at SlotPublicationAudit.lambda$fx$0(SlotPublicationAudit.java:20)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:138)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:190)
+	at java.base/java.lang.Thread.run(Thread.java:1474)

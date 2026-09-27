@@ -1,0 +1,5 @@
+sept 27, 2026 11:27:21 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @7a67e3c6'
+LIVE_EDIT_PUBLICATION pendingPeakDb=-2.079298 writes=32 errors=[]
+Exception in thread "main" java.lang.AssertionError: Pending controls changed the approved -6 dBTP master
+	at LiveEditPublicationAudit.main(LiveEditPublicationAudit.java:85)

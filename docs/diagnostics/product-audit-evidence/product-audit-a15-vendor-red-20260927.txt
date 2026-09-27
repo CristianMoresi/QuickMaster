@@ -1,0 +1,119 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Users/cris_/.m2/wrapper/dists/apache-maven-3.9.11/03d7e36a140982eea48e22c1dcac01d8862b2550b2939e09a0809bbc5182a5bc/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< com.dspark:dspark >--------------------------
+[INFO] Building DSPark for Java 0.2.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dspark ---
+[INFO] skip non existing resourceDirectory E:\Code\Projects\JA-DAW\QuickMaster-Integration\vendor\dspark-java\src\main\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dspark ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dspark ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dspark ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 33 source files with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ dspark ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.dspark.core.ResamplerDeliveryTest
+[ERROR] Tests run: 6, Failures: 5, Errors: 0, Skipped: 0, Time elapsed: 0.144 s <<< FAILURE! -- in com.dspark.core.ResamplerDeliveryTest
+[ERROR] com.dspark.core.ResamplerDeliveryTest.rejectsMalformedNonfiniteAndImpossibleBuffersWithoutChangingSource -- Time elapsed: 0.005 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.dspark.core.ResamplerDeliveryTest.rejectsMalformedNonfiniteAndImpossibleBuffersWithoutChangingSource(ResamplerDeliveryTest.java:56)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.dspark.core.ResamplerDeliveryTest.interleavedPathAllocatesOnlyItsResultNotWholeTrackPlanarCopies -- Time elapsed: 0.025 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Allocated 1089728 for 88200 output samples ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at com.dspark.core.ResamplerDeliveryTest.interleavedPathAllocatesOnlyItsResultNotWholeTrackPlanarCopies(ResamplerDeliveryTest.java:51)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.dspark.core.ResamplerDeliveryTest.supportedDownconversionsPreserveTheAudioBand -- Time elapsed: 0.014 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 48000 -> 44100 @ 20000 ==> expected: <0.0> but was: <-0.13650011530791661>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:86)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1024)
+	at com.dspark.core.ResamplerDeliveryTest.supportedDownconversionsPreserveTheAudioBand(ResamplerDeliveryTest.java:15)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.dspark.core.ResamplerDeliveryTest.cancellationIsCooperativeAndDoesNotClearTheInterrupt -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.dspark.core.ResamplerDeliveryTest.cancellationIsCooperativeAndDoesNotClearTheInterrupt(ResamplerDeliveryTest.java:69)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.dspark.core.ResamplerDeliveryTest.supportedDownconversionsRejectOutOfBandTones -- Time elapsed: 0.037 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 176400 -> 48000 @ 28000 ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at com.dspark.core.ResamplerDeliveryTest.supportedDownconversionsRejectOutOfBandTones(ResamplerDeliveryTest.java:24)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   ResamplerDeliveryTest.cancellationIsCooperativeAndDoesNotClearTheInterrupt:69 Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+[ERROR]   ResamplerDeliveryTest.interleavedPathAllocatesOnlyItsResultNotWholeTrackPlanarCopies:51 Allocated 1089728 for 88200 output samples ==> expected: <true> but was: <false>
+[ERROR]   ResamplerDeliveryTest.rejectsMalformedNonfiniteAndImpossibleBuffersWithoutChangingSource:56 Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+[ERROR]   ResamplerDeliveryTest.supportedDownconversionsPreserveTheAudioBand:15 48000 -> 44100 @ 20000 ==> expected: <0.0> but was: <-0.13650011530791661>
+[ERROR]   ResamplerDeliveryTest.supportedDownconversionsRejectOutOfBandTones:24 176400 -> 48000 @ 28000 ==> expected: <true> but was: <false>
+[INFO] 
+[ERROR] Tests run: 6, Failures: 5, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.617 s
+[INFO] Finished at: 2026-09-27T12:03:11+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project dspark: There are test failures.
+[ERROR] 
+[ERROR] Please refer to E:\Code\Projects\JA-DAW\QuickMaster-Integration\vendor\dspark-java\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -1,0 +1,105 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Users/cris_/.m2/wrapper/dists/apache-maven-3.9.11/03d7e36a140982eea48e22c1dcac01d8862b2550b2939e09a0809bbc5182a5bc/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[ERROR] Tests run: 7, Failures: 7, Errors: 0, Skipped: 0, Time elapsed: 0.077 s <<< FAILURE! -- in com.quickmaster.audio.AudioIoAuditTest
+[ERROR] com.quickmaster.audio.AudioIoAuditTest.integer32UsesTwosComplementNegativeEndpoint -- Time elapsed: 0.044 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <-2147483648> but was: <-2147483647>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:145)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:531)
+	at com.quickmaster.audio.AudioIoAuditTest.integer32UsesTwosComplementNegativeEndpoint(AudioIoAuditTest.java:77)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.AudioIoAuditTest.cancelledWavWriteMustNotReplaceExistingAudio -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.AudioIoAuditTest.cancelledWavWriteMustNotReplaceExistingAudio(AudioIoAuditTest.java:66)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.AudioIoAuditTest.trimRejectsNonFiniteAndOverflowWithoutChangingAudio -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: trim NaN ==> Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:39)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3131)
+	at com.quickmaster.audio.AudioIoAuditTest.trimRejectsNonFiniteAndOverflowWithoutChangingAudio(AudioIoAuditTest.java:21)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.AudioIoAuditTest.invalidExportsMustNotReplaceExistingAudio -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.AudioIoAuditTest.invalidExportsMustNotReplaceExistingAudio(AudioIoAuditTest.java:54)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.AudioIoAuditTest.oddSizedPcmHasRiffWordPadding -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: RIFF chunks require a pad byte outside the data size ==> expected: <0> but was: <1>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at com.quickmaster.audio.AudioIoAuditTest.oddSizedPcmHasRiffWordPadding(AudioIoAuditTest.java:88)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.AudioIoAuditTest.truncatedPayloadIsNotAcceptedAsACompleteSong -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.AudioIoAuditTest.truncatedPayloadIsNotAcceptedAsACompleteSong(AudioIoAuditTest.java:42)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.AudioIoAuditTest.floatImportRejectsNonFiniteButKeepsFiniteHeadroom -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.AudioIoAuditTest.floatImportRejectsNonFiniteButKeepsFiniteHeadroom(AudioIoAuditTest.java:30)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] Failures: 
+[ERROR]   AudioIoAuditTest.cancelledWavWriteMustNotReplaceExistingAudio:66 Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+[ERROR]   AudioIoAuditTest.floatImportRejectsNonFiniteButKeepsFiniteHeadroom:30 Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+[ERROR]   AudioIoAuditTest.integer32UsesTwosComplementNegativeEndpoint:77 expected: <-2147483648> but was: <-2147483647>
+[ERROR]   AudioIoAuditTest.invalidExportsMustNotReplaceExistingAudio:54 Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+[ERROR]   AudioIoAuditTest.oddSizedPcmHasRiffWordPadding:88 RIFF chunks require a pad byte outside the data size ==> expected: <0> but was: <1>
+[ERROR]   AudioIoAuditTest.trimRejectsNonFiniteAndOverflowWithoutChangingAudio:21 trim NaN ==> Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+[ERROR]   AudioIoAuditTest.truncatedPayloadIsNotAcceptedAsACompleteSong:42 Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+[ERROR] Tests run: 7, Failures: 7, Errors: 0, Skipped: 0
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project quickmaster: There are test failures.
+[ERROR] 
+[ERROR] Please refer to E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

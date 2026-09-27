@@ -1,0 +1,10 @@
+E:\Code\Projects\JA-DAW\QuickMaster-Integration\tools\diagnostics\EqControlAudit.java:49: warning: [unchecked] unchecked cast
+                var slopes=(ComboBox<Integer>)field(controller,"eqSlope");
+                                                   ^
+  required: ComboBox<Integer>
+  found:    Object
+1 warning
+sept 27, 2026 9:07:53 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @609e8838'
+EQ_DOUBLE_CLICK generation=0->1 bands=1
+EQ_CONTROL_AUDIT failures=0

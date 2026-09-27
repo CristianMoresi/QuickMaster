@@ -24,10 +24,14 @@ public final class SpectralEngine
     private final int hop;
     private final int numBins;
     private final float[] win;
+    private final double[] normalization;
+    private final int firstStart;
     private final FFTReal fft;
 
     public SpectralEngine(int fftSize, int hop)
     {
+        if (fftSize < 4 || (fftSize & (fftSize - 1)) != 0 || hop < 1 || hop >= fftSize)
+            throw new IllegalArgumentException("STFT needs a power-of-two FFT and an overlapping positive hop.");
         this.n = fftSize;
         this.hop = hop;
         this.fft = new FFTReal(fftSize);
@@ -35,6 +39,11 @@ public final class SpectralEngine
         this.win = new float[fftSize];
         for (int i = 0; i < fftSize; i++)
             win[i] = (float) (0.5 - 0.5 * Math.cos(2.0 * Math.PI * i / (fftSize - 1)));
+        // Zero-padded boundary windows have the same complete overlap as the
+        // interior. Its denominator is periodic, not a whole-track allocation.
+        normalization = new double[hop];
+        for (int i = 0; i < fftSize; i++) normalization[i % hop] += (double) win[i] * win[i];
+        firstStart = -((fftSize - 1) / hop) * hop;
     }
 
     public int getNumBins() { return numBins; }
@@ -44,9 +53,9 @@ public final class SpectralEngine
     /** Number of STFT frames produced for a signal of the given length. */
     public int frameCount(int len)
     {
-        int count = 0;
-        for (int start = -(n - hop); start < len; start += hop) count++;
-        return Math.max(0, count);
+        if (len < 0) throw new IllegalArgumentException("Negative signal length.");
+        if (len == 0) return 0;
+        return Math.toIntExact(((long) len - 1 - firstStart) / hop + 1);
     }
 
     /** Forward STFT only: hands each frame's magnitudes to {@code fm}. */
@@ -56,16 +65,45 @@ public final class SpectralEngine
         float[] freq = new float[fft.getFrequencyDomainSize()];
         float[] mag = new float[numBins];
         int idx = 0;
-        for (int start = -(n - hop); start < x.length; start += hop)
+        for (long start = firstStart; x.length > 0 && start < x.length; start += hop)
         {
+            checkCancelled();
             for (int i = 0; i < n; i++)
             {
-                int s = start + i;
-                frame[i] = (s >= 0 && s < x.length) ? x[s] * win[i] : 0.0f;
+                long s = start + i;
+                frame[i] = (s >= 0 && s < x.length) ? x[(int) s] * win[i] : 0.0f;
             }
             fft.forward(frame, freq);
             fft.computeMagnitudes(freq, mag);
             fm.accept(mag, idx++);
+        }
+    }
+
+    /** Channel-linked energy, invariant under independent channel polarity. */
+    public void analyzePower(float[] interleaved, int channels, FrameMagnitudes powerConsumer)
+    {
+        if (channels < 1 || channels > 2 || interleaved.length % channels != 0)
+            throw new IllegalArgumentException("STFT requires complete mono/stereo frames.");
+        int frames = interleaved.length / channels;
+        float[] frame = new float[n], freq = new float[fft.getFrequencyDomainSize()];
+        float[] mag = new float[numBins], power = new float[numBins];
+        int idx = 0;
+        for (long start = firstStart; frames > 0 && start < frames; start += hop)
+        {
+            checkCancelled();
+            java.util.Arrays.fill(power, 0);
+            for (int c = 0; c < channels; c++)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    long s = start + i;
+                    frame[i] = (s >= 0 && s < frames) ? interleaved[(int)s * channels + c] * win[i] : 0;
+                }
+                fft.forward(frame, freq);
+                fft.computeMagnitudes(freq, mag);
+                for (int k = 0; k < numBins; k++) power[k] += mag[k] * mag[k] / channels;
+            }
+            powerConsumer.accept(power, idx++);
         }
     }
 
@@ -74,32 +112,40 @@ public final class SpectralEngine
     {
         int len = x.length;
         float[] out = new float[len];
-        double[] norm = new double[len];
         float[] frame = new float[n];
         float[] freq = new float[fft.getFrequencyDomainSize()];
         int idx = 0;
-        for (int start = -(n - hop); start < len; start += hop)
+        for (long start = firstStart; len > 0 && start < len; start += hop)
         {
+            checkCancelled();
             for (int i = 0; i < n; i++)
             {
-                int s = start + i;
-                frame[i] = (s >= 0 && s < len) ? x[s] * win[i] : 0.0f;
+                long s = start + i;
+                frame[i] = (s >= 0 && s < len) ? x[(int) s] * win[i] : 0.0f;
             }
             fft.forward(frame, freq);
             gain.apply(freq, idx++);
             fft.inverse(freq, frame);
             for (int i = 0; i < n; i++)
             {
-                int s = start + i;
+                long s = start + i;
                 if (s >= 0 && s < len)
                 {
-                    out[s] += frame[i] * win[i];
-                    norm[s] += (double) win[i] * win[i];
+                    out[(int) s] += frame[i] * win[i];
                 }
             }
         }
         for (int s = 0; s < len; s++)
-            out[s] = (norm[s] > 1e-9) ? (float) (out[s] / norm[s]) : x[s];
+        {
+            if ((s & 16383) == 0) checkCancelled();
+            double norm = normalization[s % hop];
+            out[s] = (norm > 1e-9) ? (float) (out[s] / norm) : x[s];
+        }
         return out;
+    }
+
+    private static void checkCancelled()
+    {
+        if (Thread.currentThread().isInterrupted()) throw new java.util.concurrent.CancellationException("STFT cancelled.");
     }
 }

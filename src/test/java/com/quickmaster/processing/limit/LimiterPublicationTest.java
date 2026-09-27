@@ -78,11 +78,12 @@ class LimiterPublicationTest {
         for(int rate:new int[]{44100,48000,96000}) for(int channels:new int[]{1,2}) {
             float[] source=signal(18007,channels);
             var crossover=new MultibandCrossover(); crossover.prepare(rate,channels,MultibandLimiterProcessor.CROSSOVERS);
-            float[][] bands=crossover.splitWhole(source,channels);
+            int latency=crossover.getLatency();
+            float[][] bands=crossover.splitWhole(java.util.Arrays.copyOf(source,source.length+latency*channels),channels);
             var limiter=new MultibandLimiterProcessor(); limiter.prepare(rate,source.length); limiter.analyze(source,channels);
             float[][] maps=(float[][])field(limiter,"bandPeakMap");
             for(int band=0;band<4;band++) for(int f=0;f<18007;f++) {
-                float expected=0; for(int c=0;c<channels;c++) expected=Math.max(expected,Math.abs(bands[band][f*channels+c]));
+                float expected=0; for(int c=0;c<channels;c++) expected=Math.max(expected,Math.abs(bands[band][(f+latency)*channels+c]));
                 assertEquals(expected,maps[band][f],2e-7f,"rate="+rate+", ch="+channels+", frame="+f);
             }
         }

@@ -60,30 +60,25 @@ public final class AutoEqProcessor implements AudioProcessor
     private long framesProcessed = 0L;
 
     // Pre-rendered output (interleaved), played back by position.
-    private volatile float[] rendered = null;
-    private int renderedFrames = 0;
-    private int renderedChannels = 0;
-    private int renderedRate = 0;         // rate the render was analysed at (the base rate)
-    private long renderSignature = 0L;    // cache key: input + params
-
-    // Per-frame per-band gain (dB), kept for the correction display.
-    private volatile float[] gainMap = null;
-    private int gainFrames = 0;
+    private record Render(float[] samples, int frames, int channels, int rate,
+                          long signature, float[] gain, int gainFrames) { }
+    // Publish all format, gain-map and PCM fields together during UI adoption.
+    private volatile Render render;
 
     public boolean isEnabled() { return enabled; }
     @Override public void setEnabled(boolean e) { this.enabled = e; }
 
     public double getAmount() { return amount; }
-    public void setAmount(double a) { this.amount = DspMath.clamp(a, MIN_AMOUNT, MAX_AMOUNT); }
+    public void setAmount(double a) { this.amount = finiteClamp(a, MIN_AMOUNT, MAX_AMOUNT); }
 
     public Target getTarget() { return target; }
     public void setTarget(Target t) { this.target = (t == null) ? Target.PINK : t; }
 
     public double getAttackSec() { return attackSec; }
-    public void setAttackSec(double s) { this.attackSec = DspMath.clamp(s, MIN_ATTACK_SEC, MAX_ATTACK_SEC); }
+    public void setAttackSec(double s) { this.attackSec = finiteClamp(s, MIN_ATTACK_SEC, MAX_ATTACK_SEC); }
 
     public double getReleaseSec() { return releaseSec; }
-    public void setReleaseSec(double s) { this.releaseSec = DspMath.clamp(s, MIN_RELEASE_SEC, MAX_RELEASE_SEC); }
+    public void setReleaseSec(double s) { this.releaseSec = finiteClamp(s, MIN_RELEASE_SEC, MAX_RELEASE_SEC); }
 
     @Override public boolean usesAnalysis() { return true; }
     @Override public int getLatencyFrames() { return 0; }
@@ -91,6 +86,7 @@ public final class AutoEqProcessor implements AudioProcessor
     @Override
     public void prepare(int sampleRate, long totalSamples)
     {
+        if (sampleRate <= 0 || totalSamples < 0) throw new IllegalArgumentException("Invalid Auto EQ format.");
         this.sampleRate = sampleRate;
         this.framesProcessed = 0L;
     }
@@ -101,47 +97,53 @@ public final class AutoEqProcessor implements AudioProcessor
     @Override
     public void analyze(float[] samples, int channels)
     {
-        if (!enabled || samples == null || channels < 1 || sampleRate <= 0) return;
+        if (!enabled) return;
+        if (samples == null || channels < 1 || channels > 2 || sampleRate <= 0 || samples.length % channels != 0)
+            throw new IllegalArgumentException("Auto EQ needs complete mono/stereo frames at a positive sample rate.");
+        for (int i = 0; i < samples.length; i++) {
+            if ((i & 16383) == 0) checkCancelled();
+            if (!Float.isFinite(samples[i])) throw new IllegalArgumentException("Non-finite Auto EQ input.");
+        }
         int frames = samples.length / channels;
-        if (frames <= 0) return;
+        if (frames == 0) { render = null; return; }
 
         long sig = signature(samples, channels, frames);
-        if (sig == renderSignature && rendered != null) return;     // input + params unchanged
-
-        // 1) Mono mixdown.
-        float[] mono = new float[frames];
-        for (int f = 0; f < frames; f++)
-        {
-            int base = f * channels;
-            double m = 0.0;
-            for (int c = 0; c < channels; c++) m += samples[base + c];
-            mono[f] = (float) (m / channels);
+        Render previous = render;
+        if (previous != null && sig == previous.signature) return;
+        if (amount == 0) {
+            render = new Render(samples.clone(), frames, channels, sampleRate, sig, null, 0);
+            return;
         }
 
         // 2) Band ranges (per bin and per band).
         int nb = engine.getNumBins();
         int[] bandLo = new int[NUM_BANDS], bandHi = new int[NUM_BANDS];
         double[] bandHz = new double[NUM_BANDS];
+        boolean[] active = new boolean[NUM_BANDS];
+        int activeBands = 0;
         for (int b = 0; b < NUM_BANDS; b++)
         {
             bandHz[b] = MIN_HZ * Math.pow(2.0, b / 12.0);
             double lo = bandHz[b] * Math.pow(2.0, -1.0 / 24.0);
             double hi = bandHz[b] * Math.pow(2.0, 1.0 / 24.0);
-            bandLo[b] = Math.max(1, (int) Math.floor(lo * FFT_SIZE / sampleRate));
+            active[b] = bandHz[b] < sampleRate * .5;
+            if (active[b]) activeBands++;
+            bandLo[b] = Math.min(nb - 1, Math.max(1, (int) Math.floor(lo * FFT_SIZE / sampleRate)));
             bandHi[b] = Math.min(nb - 1, (int) Math.ceil(hi * FFT_SIZE / sampleRate));
             if (bandHi[b] < bandLo[b]) bandHi[b] = bandLo[b];
         }
 
         // 3) Per-frame band levels (dB).
         int nFrames = engine.frameCount(frames);
-        final float[] level = new float[nFrames * NUM_BANDS];
-        engine.analyze(mono, (mag, idx) ->
+        final float[] level = new float[Math.multiplyExact(nFrames, NUM_BANDS)];
+        engine.analyzePower(samples, channels, (power, idx) ->
         {
             int row = idx * NUM_BANDS;
             for (int b = 0; b < NUM_BANDS; b++)
             {
+                if (!active[b]) continue;
                 double p = 0.0;
-                for (int k = bandLo[b]; k <= bandHi[b]; k++) p += (double) mag[k] * mag[k];
+                for (int k = bandLo[b]; k <= bandHi[b]; k++) p += power[k];
                 p /= (bandHi[b] - bandLo[b] + 1);
                 double db = 10.0 * Math.log10(Math.max(p, 1e-12));
                 level[row + b] = (float) Math.max(db, LEVEL_FLOOR_DB);
@@ -154,19 +156,21 @@ public final class AutoEqProcessor implements AudioProcessor
         for (int b = 0; b < NUM_BANDS; b++)
         {
             targetShape[b] = target.slopeDbPerOct * (Math.log(bandHz[b] / REF_HZ) / Math.log(2.0));
-            targetMean += targetShape[b];
+            if (active[b]) targetMean += targetShape[b];
         }
-        targetMean /= NUM_BANDS;
+        targetMean /= Math.max(1, activeBands);
 
         float[] gain = new float[nFrames * NUM_BANDS];
         for (int f = 0; f < nFrames; f++)
         {
+            checkCancelled();
             int row = f * NUM_BANDS;
             double frameMean = 0.0;
-            for (int b = 0; b < NUM_BANDS; b++) frameMean += level[row + b];
-            frameMean /= NUM_BANDS;
+            for (int b = 0; b < NUM_BANDS; b++) if (active[b]) frameMean += level[row + b];
+            frameMean /= Math.max(1, activeBands);
             for (int b = 0; b < NUM_BANDS; b++)
             {
+                if (!active[b]) continue;
                 double raw = (targetShape[b] - targetMean) - (level[row + b] - frameMean);
                 if (raw > 0.0)
                 {
@@ -185,6 +189,7 @@ public final class AutoEqProcessor implements AudioProcessor
         double rel = Math.exp(-1.0 / (Math.max(releaseSec, 1e-3) * frameRate));
         for (int b = 0; b < NUM_BANDS; b++)
         {
+            checkCancelled();
             double g = gain[b];                       // first frame
             for (int f = 0; f < nFrames; f++)
             {
@@ -240,23 +245,21 @@ public final class AutoEqProcessor implements AudioProcessor
             for (int i = 0; i < out.length; i++) out[i] *= g;
         }
 
-        this.gainMap = gain;
-        this.gainFrames = nFrames;
-        this.renderedFrames = frames;
-        this.renderedChannels = channels;
-        this.renderedRate = sampleRate;
-        this.renderSignature = sig;
-        this.rendered = out;             // volatile publish, last
+        checkCancelled();
+        this.render = new Render(out, frames, channels, sampleRate, sig, gain, nFrames);
     }
 
     /** Fills {@code outDb} with the correction (dB) applied at each frequency for the given position. */
     public void fillCorrection(double[] freqs, long samplePos, double[] outDb)
     {
-        float[] gm = gainMap;
-        int nf = gainFrames;
+        Render snapshot = render;
+        float[] gm = snapshot == null ? null : snapshot.gain;
+        int nf = snapshot == null ? 0 : snapshot.gainFrames;
         if (gm == null || nf == 0) { java.util.Arrays.fill(outDb, 0.0); return; }
-        int frame = (int) (samplePos / HOP);
-        if (frame < 0) frame = 0; else if (frame >= nf) frame = nf - 1;
+        // Analysis includes three leading padded windows. Use their centre
+        // times rather than indexing the map as if it had no boundary windows.
+        double timeFrame = (double) samplePos / HOP + 1.0;
+        int frame = (int) Math.max(0, Math.min(nf - 1, timeFrame));
         int row = frame * NUM_BANDS;
         for (int i = 0; i < freqs.length; i++)
         {
@@ -273,8 +276,10 @@ public final class AutoEqProcessor implements AudioProcessor
     @Override
     public float[] process(float[] buffer, int channels)
     {
-        float[] r = rendered;
-        if (!enabled || r == null || channels != renderedChannels) return buffer;
+        Render snapshot = render;
+        if (!enabled || snapshot == null || channels != snapshot.channels) return buffer;
+        float[] r = snapshot.samples;
+        int renderedFrames = snapshot.frames, renderedRate = snapshot.rate;
         int frames = buffer.length / channels;
         long pos = framesProcessed;
 
@@ -301,7 +306,7 @@ public final class AutoEqProcessor implements AudioProcessor
                 int bi = f * channels;
                 for (int c = 0; c < channels; c++)
                 {
-                    buffer[bi + c] = sampleRendered(r, channels, c, s);
+                    buffer[bi + c] = sampleRendered(r, renderedFrames, channels, c, s);
                 }
             }
         }
@@ -310,21 +315,21 @@ public final class AutoEqProcessor implements AudioProcessor
     }
 
     /** Catmull-Rom read of the base-rate render at a fractional frame position. */
-    private float sampleRendered(float[] r, int channels, int c, double pos)
+    private float sampleRendered(float[] r, int renderedFrames, int channels, int c, double pos)
     {
         int i1 = (int) pos;
         double t = pos - i1;
-        float p0 = renderedAt(r, channels, c, i1 - 1);
-        float p1 = renderedAt(r, channels, c, i1);
-        float p2 = renderedAt(r, channels, c, i1 + 1);
-        float p3 = renderedAt(r, channels, c, i1 + 2);
+        float p0 = renderedAt(r, renderedFrames, channels, c, i1 - 1);
+        float p1 = renderedAt(r, renderedFrames, channels, c, i1);
+        float p2 = renderedAt(r, renderedFrames, channels, c, i1 + 1);
+        float p3 = renderedAt(r, renderedFrames, channels, c, i1 + 2);
         double a0 = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
         double a1 = p0 - 2.5 * p1 + 2.0 * p2 - 0.5 * p3;
         double a2 = -0.5 * p0 + 0.5 * p2;
         return (float) (((a0 * t + a1) * t + a2) * t + p1);
     }
 
-    private float renderedAt(float[] r, int channels, int c, int frame)
+    private float renderedAt(float[] r, int renderedFrames, int channels, int c, int frame)
     {
         if (frame < 0) frame = 0;
         if (frame >= renderedFrames) frame = renderedFrames - 1;
@@ -334,13 +339,7 @@ public final class AutoEqProcessor implements AudioProcessor
     /** Adopts another instance's rendered output (after a background re-analysis). */
     public void adopt(AutoEqProcessor src)
     {
-        this.renderedFrames = src.renderedFrames;
-        this.renderedChannels = src.renderedChannels;
-        this.renderedRate = src.renderedRate;
-        this.renderSignature = src.renderSignature;
-        this.gainFrames = src.gainFrames;
-        this.gainMap = src.gainMap;
-        this.rendered = src.rendered;        // volatile publish, last
+        this.render = src.render;
     }
 
     /** Frequency weight that tapers the correction to zero toward the spectral extremes. */
@@ -367,7 +366,18 @@ public final class AutoEqProcessor implements AudioProcessor
         // A sparse 512-sample fingerprint misses edits between its probes and
         // can replay another track's PCM. Account for every input sample.
         for (int i = 0; i < samples.length; i++)
+        {
+            if ((i & 16383) == 0) checkCancelled();
             h = h * 1099511628211L + Float.floatToIntBits(samples[i]);
+        }
         return h;
+    }
+
+    private static double finiteClamp(double value, double min, double max) {
+        if (!Double.isFinite(value)) throw new IllegalArgumentException("Non-finite Auto EQ parameter.");
+        return DspMath.clamp(value, min, max);
+    }
+    private static void checkCancelled() {
+        if (Thread.currentThread().isInterrupted()) throw new java.util.concurrent.CancellationException("Auto EQ cancelled.");
     }
 }

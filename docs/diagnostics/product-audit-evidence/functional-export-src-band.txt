@@ -1,0 +1,1 @@
+EXPORT_SRC_BAND cases=135 failures=0 maxAbsGainErrorDb=0.000086499 maxResidualDb=-105.304 maxAliasDb=-145.304

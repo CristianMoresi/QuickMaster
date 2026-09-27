@@ -1,0 +1,11 @@
+SOURCE Billie Jean (80s Glam Metal).wav sha256=61c9a549be8f2041ae6a8656da2e51af3082716fe9af36da97102e4265b47a54 frames=10459293 rate=48000 channels=2
+JAR C:\Program Files\QuickMaster\app\quickmaster.jar sha256=cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564
+STATUS amount=1.0 STRUCTURAL_READY
+RENDER ORIGINAL changed=3669946/20918586 minGainDb=-0.114543 maxGainDb=0.137535
+STATUS amount=1.0 STRUCTURAL_READY
+STATUS amount=1.0 STRUCTURAL_READY
+RENDER INJECTED_PLUS_4_DB changed=3587898/20918586 minGainDb=-2.335944 maxGainDb=0.137535
+KNOWN_ERROR selected=150.000..172.000 peers=3 beforeGapLu=4.640787 afterGapLu=2.304843 improvementLu=2.335944
+STATUS amount=0.0 UNIT
+RENDER ZERO_AMOUNT changed=0/20918586 minGainDb=0.000000 maxGainDb=0.000000
+PASS actualPackagedRender=true protectedOriginalRegionsExact=true sourceUnchanged=true

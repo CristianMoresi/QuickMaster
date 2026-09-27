@@ -1,0 +1,54 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Users/cris_/.m2/wrapper/dists/apache-maven-3.9.11/03d7e36a140982eea48e22c1dcac01d8862b2550b2939e09a0809bbc5182a5bc/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.214 s <<< FAILURE! -- in com.quickmaster.audio.Mp3ExportAuditTest
+[ERROR] com.quickmaster.audio.Mp3ExportAuditTest.nonFinitePcmIsRejectedBeforeReplacingDestination -- Time elapsed: 0.032 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.Mp3ExportAuditTest.nonFinitePcmIsRejectedBeforeReplacingDestination(Mp3ExportAuditTest.java:16)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.Mp3ExportAuditTest.interruptedEncodingDoesNotTouchDestination -- Time elapsed: 0.025 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.Mp3ExportAuditTest.interruptedEncodingDoesNotTouchDestination(Mp3ExportAuditTest.java:26)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.Mp3ExportAuditTest.incompleteStereoFrameIsRejected -- Time elapsed: 0.006 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.Mp3ExportAuditTest.incompleteStereoFrameIsRejected(Mp3ExportAuditTest.java:33)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] Failures: 
+[ERROR]   Mp3ExportAuditTest.incompleteStereoFrameIsRejected:33 Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+[ERROR]   Mp3ExportAuditTest.interruptedEncodingDoesNotTouchDestination:26 Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+[ERROR]   Mp3ExportAuditTest.nonFinitePcmIsRejectedBeforeReplacingDestination:16 Expected com.quickmaster.audio.AudioFileException to be thrown, but nothing was thrown.
+[ERROR] Tests run: 10, Failures: 3, Errors: 0, Skipped: 0
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project quickmaster: There are test failures.
+[ERROR] 
+[ERROR] Please refer to E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -67,6 +67,8 @@ public class SourceAnalysisRaceProbe {
             invoke("recomputeTrackAnalysis",new Class[]{Runnable.class},(Runnable)()->{});
             float[] latest=Arrays.copyOf(file.getSamples(),file.getSamples().length-480);
             file.setSamples(latest);
+            // Mirror afterAudioEdit(): the player must own the new source identity.
+            ((com.quickmaster.playback.AudioPlayer)field("player")).prepare(file);
             invoke("recomputeTrackAnalysis",new Class[]{Runnable.class},(Runnable)()->{
                 try {invoke("syncLiveAnalysis",new Class[0]);}catch(Exception ex){done.completeExceptionally(ex);}
             });
@@ -107,6 +109,7 @@ public class SourceAnalysisRaceProbe {
             TrackAnalysis before=(TrackAnalysis)field("trackAnalysis");
             retained.setSamples(Arrays.copyOf(retained.getSamples(),retained.getSamples().length/2));
             float[] latest=retained.getSamples();
+            ((com.quickmaster.playback.AudioPlayer)field("player")).prepare(retained);
             invoke("recomputeTrackAnalysis",new Class[]{Runnable.class},(Runnable)()->{});
             invoke("loadAudioFile",new Class[]{java.io.File.class},missingFile.toFile());
             Timeline dismiss=new Timeline();

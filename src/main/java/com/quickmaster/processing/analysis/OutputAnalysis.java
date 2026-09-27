@@ -35,12 +35,16 @@ public final class OutputAnalysis
     {
         if (rendered == null)
             throw new IllegalArgumentException("Rendered output must not be null.");
-        if (channels <= 0)
-            throw new IllegalArgumentException("Channel count must be positive.");
+        if ((channels != 1 && channels != 2) || rendered.length % channels != 0)
+            throw new IllegalArgumentException("Require complete mono or stereo frames.");
         if (sampleRate <= 0)
             throw new IllegalArgumentException("Sample rate must be positive.");
 
         checkCancelled(cancellation);
+        for (int i = 0; i < rendered.length; i++) {
+            if ((i & 16383) == 0) checkCancelled(cancellation);
+            if (!Float.isFinite(rendered[i])) throw new IllegalArgumentException("Non-finite rendered sample.");
+        }
         LoudnessMeter loudness = new LoudnessMeter();
         loudness.prepare(sampleRate);
         loudness.process(rendered, channels);
@@ -62,6 +66,7 @@ public final class OutputAnalysis
             double sumR2 = 0.0;
             for (int frame = 0; frame < frames; frame++)
             {
+                if ((frame & 16383) == 0) checkCancelled(cancellation);
                 double left = rendered[frame * channels];
                 double right = rendered[frame * channels + 1];
                 sumLR += left * right;
@@ -76,6 +81,14 @@ public final class OutputAnalysis
             correlation = denominator > 1e-12 ? sumLR / denominator : 1.0;
             midPower /= frames;
             sidePower /= frames;
+        }
+        else if (channels == 1 && frames > 0)
+        {
+            for (int frame = 0; frame < frames; frame++) {
+                if ((frame & 16383) == 0) checkCancelled(cancellation);
+                midPower += (double) rendered[frame] * rendered[frame];
+            }
+            midPower /= frames;
         }
 
         SpectrumAnalysis spectrum = new SpectrumAnalysis();

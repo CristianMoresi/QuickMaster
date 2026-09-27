@@ -172,6 +172,18 @@ public abstract class AnalysisDynamicsProcessor implements AudioProcessor
     /** Signed most-extreme gain in dB in the most recent block. */
     public double getGainReductionDb() { return currentGrDb; }
 
+    /** Read-only metering of a completed render; never advances the DSP cursor. */
+    public double getGainDbAtPosition(long sourceFrame) {
+        PublishedGain state = published;
+        if (!enabled || sourceFrame < 0 || sourceFrame >= state.schedule().sourceFrames()) return 0;
+        if (state.schedule() instanceof SparseGainSchedule sparse) return sparse.gainDbAt(sourceFrame);
+        if (state.schedule() instanceof DenseGainSchedule dense) {
+            float gain = Math.max(minimumLegacyGain(), dense.sampleLinearLegacy(sourceFrame));
+            return 20 * Math.log10(Math.max(gain, 1e-6f));
+        }
+        return 0;
+    }
+
     /** True once {@link #analyze} has produced a gain envelope. */
     public boolean isAnalyzed()
     {

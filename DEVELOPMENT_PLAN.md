@@ -1,10 +1,39 @@
 # QuickMaster — desarrollo y cierre
 
+## Encargo vigente: auditoría integral posterior a 1.3.1
+
+Las correcciones A01–A16 están entregadas en Program Files. Suite limpia:
+798 tests de aplicación, 129 de DSPark, 106 variantes musicales y 94 lecturas
+oficiales aprobados; 23 sondas funcionales instaladas y las tres de rendimiento
+aprobadas. Se conserva el alcance limitado de cada prueba, no se afirma
+perfección absoluta ni escucha humana. Plan, cobertura, resultados y recibos:
+`docs/diagnostics/product-audit-20260927.md`.
+
+JAR instalado vigente:
+`cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564`;
+DSPark Java 0.2.1. Portable Java 25 de 201 archivos, todos idénticos al instalado,
+arranque limpio del EXE como usuario normal. Respaldo:
+`C:/Program Files/QuickMaster-backup-20260927-210305`.
+Fuentes en `E:/Code/Projects/JA-DAW/QuickMaster-Integration`, sobre `0981c71`;
+se conserva intacto el checkout principal con sus cambios previos. No se crea
+otra rama, no se hace push ni se modifica la release pública 1.3.1.
+
+Recheck final aislado: mediana de ajuste de Leveler 1,713 s (tres repeticiones),
+cadena completa 3,566 s hasta audio, p95 observado 3,813 s (veinte ajustes).
+Treinta ediciones: 1278,485→1278,502 MiB retenidos tras GC del harness, sin OOM;
+PCM publicado idéntico a referencia fría. Este cache cuesta ~210 MiB más que la
+línea base para esta pista: no se afirma menor RAM global ni respuesta instantánea.
+
+## Línea base publicada — registro histórico de 1.3.1
+
+La publicación y entrega descritas abajo preceden a la auditoría y mantienen
+su evidencia original; sus hashes y dependencias no son los instalados actuales.
+
 Actualizado: 2026-09-27, 09:42. Leveler, optimización P1 y DSPark Java 0.2
 **entregados y comprobados en Program Files**. Suite completa, portable, copia
 de los 201 archivos por hash, arranque normal y aceptación instalada aprobados.
 La autorización «Continúa» permitió resolver la cancelación anterior de UAC.
-Este es el registro vigente; no se utilizan skills de orquestación.
+Este era el registro de entrega previo a la auditoría; no se utilizan skills de orquestación.
 Tras la autorización `releasepush`, **1.3.1 publicada** a las 09:41:35 CEST sobre
 el commit `77cf486`, subido a `main`. Los tres paquetes se comprobaron antes de
 publicar. El ZIP de Windows contiene la imagen local de 201 archivos validada con

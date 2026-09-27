@@ -1,0 +1,12 @@
+SPECTRUM_OFFLINE_FAILURE rate=8000 java.lang.ArrayIndexOutOfBoundsException: Index 8294 out of bounds for length 8193
+SPECTRUM_LIVE_FAILURE rate=8000 java.lang.ArrayIndexOutOfBoundsException: Index 8294 out of bounds for length 8193
+SPECTRUM_OFFLINE_FAILURE rate=16000 java.lang.ArrayIndexOutOfBoundsException: Index 8263 out of bounds for length 8193
+SPECTRUM_LIVE_FAILURE rate=16000 java.lang.ArrayIndexOutOfBoundsException: Index 8263 out of bounds for length 8193
+SPECTRUM_OFFLINE_FAILURE rate=22050 java.lang.ArrayIndexOutOfBoundsException: Index 8294 out of bounds for length 8193
+SPECTRUM_LIVE_FAILURE rate=22050 java.lang.ArrayIndexOutOfBoundsException: Index 8294 out of bounds for length 8193
+SPECTRUM_OFFLINE_FAILURE rate=32000 java.lang.ArrayIndexOutOfBoundsException: Index 8233 out of bounds for length 8193
+SPECTRUM_LIVE_FAILURE rate=32000 java.lang.ArrayIndexOutOfBoundsException: Index 8233 out of bounds for length 8193
+SPECTRUM_STEREO phaseInversionDeltaDb=-134.986678528
+SPECTRUM_LIVE_STEREO phaseInversionDeltaDb=-134.986676409
+MONO_IMAGE midPower=0.000000000 sidePower=0.000000000
+SPECTRUM_AUDIT failures=11

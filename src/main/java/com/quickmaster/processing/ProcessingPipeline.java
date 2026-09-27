@@ -5,7 +5,6 @@ import com.quickmaster.audio.AudioFile;
 import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.ObjIntConsumer;
@@ -76,12 +75,13 @@ public class ProcessingPipeline
      */
     public static final int OFFLINE_BLOCK_FRAMES = 1024;
 
-    private final List<AudioProcessor> processors;
+    private volatile List<AudioProcessor> processors;
 
     // Last prepare() arguments, retained so the analysis pass can reset
     // stateful processors around its single cumulative render.
     private int lastSampleRate = 0;
     private long lastTotalSamples = 0;
+    private long streamFrameCursor;
 
     /**
      * Creates an empty pipeline with no processors. Use
@@ -89,7 +89,7 @@ public class ProcessingPipeline
      */
     public ProcessingPipeline()
     {
-        this.processors = new ArrayList<>();
+        this.processors = List.of();
     }
 
     /**
@@ -98,13 +98,15 @@ public class ProcessingPipeline
      * @param processor  the processor to add (must not be null)
      * @throws IllegalArgumentException if {@code processor} is null
      */
-    public void addProcessor(AudioProcessor processor)
+    public synchronized void addProcessor(AudioProcessor processor)
     {
         if (processor == null)
         {
             throw new IllegalArgumentException("Processor must not be null.");
         }
-        processors.add(processor);
+        List<AudioProcessor> next = new ArrayList<>(processors);
+        next.add(processor);
+        processors = List.copyOf(next);
     }
 
     /**
@@ -114,18 +116,21 @@ public class ProcessingPipeline
      * @param processor  the processor to remove
      * @return true if the processor was present and removed
      */
-    public boolean removeProcessor(AudioProcessor processor)
+    public synchronized boolean removeProcessor(AudioProcessor processor)
     {
-        return processors.remove(processor);
+        List<AudioProcessor> next = new ArrayList<>(processors);
+        boolean removed = next.remove(processor);
+        if (removed) processors = List.copyOf(next);
+        return removed;
     }
 
     /**
      * Removes all processors from the chain, leaving an empty
      * pipeline.
      */
-    public void clear()
+    public synchronized void clear()
     {
-        processors.clear();
+        processors = List.of();
     }
 
     /**
@@ -137,16 +142,17 @@ public class ProcessingPipeline
      *
      * @param newOrder  processors in the desired execution order
      */
-    public void setProcessors(java.util.List<AudioProcessor> newOrder)
+    public synchronized void setProcessors(java.util.List<AudioProcessor> newOrder)
     {
-        processors.clear();
+        List<AudioProcessor> next = new ArrayList<>();
         if (newOrder != null)
         {
             for (AudioProcessor p : newOrder)
             {
-                if (p != null) processors.add(p);
+                if (p != null) next.add(p);
             }
         }
+        processors = List.copyOf(next);
     }
 
     /**
@@ -160,7 +166,7 @@ public class ProcessingPipeline
      */
     public List<AudioProcessor> getProcessors()
     {
-        return Collections.unmodifiableList(processors);
+        return processors;
     }
 
     /**
@@ -176,6 +182,7 @@ public class ProcessingPipeline
     {
         this.lastSampleRate = sampleRate;
         this.lastTotalSamples = totalSamples;
+        this.streamFrameCursor = 0;
         for (AudioProcessor p : processors)
         {
             p.prepare(sampleRate, totalSamples);
@@ -299,6 +306,8 @@ public class ProcessingPipeline
         float[] output    = new float[input.length];
         float[] block = new float[Math.min(blockSize, outFrames) * channels];
 
+        if (p instanceof OfflineMetering metering) metering.beginOfflineMetering(channels);
+        try {
         int frameCursor = 0;
         while (frameCursor < outFrames)
         {
@@ -327,6 +336,9 @@ public class ProcessingPipeline
         }
 
         return output;
+        } finally {
+            if (p instanceof OfflineMetering metering) metering.endOfflineMetering();
+        }
     }
 
     private static void checkCancelled(CancellationToken cancellation)
@@ -348,11 +360,33 @@ public class ProcessingPipeline
      */
     public float[] execute(float[] buffer, int channels)
     {
+        return executeThrough(buffer, channels, processors);
+    }
+
+    private float[] executeThrough(float[] buffer, int channels, List<AudioProcessor> chain)
+    {
+        if (buffer == null || (channels != 1 && channels != 2) || buffer.length % channels != 0)
+            throw new IllegalArgumentException("Require complete mono/stereo frames.");
         float[] current = buffer;
-        for (AudioProcessor p : processors)
+        long upstreamLatency = 0;
+        for (AudioProcessor processor : chain)
         {
-            current = p.process(current, channels);
+            // Offline analysis hands each stage a source-length aligned buffer,
+            // zero outside its boundaries. Enforce the same contract in streaming:
+            // upstream FIR pre/post-ringing outside that interval is not program
+            // content and must not leak into the next filter or detector.
+            if (upstreamLatency > 0 && lastTotalSamples > 0) {
+                long position = streamFrameCursor - upstreamLatency;
+                int frames = current.length / channels;
+                int first = (int) Math.min(frames, Math.max(0, -position));
+                int last = (int) Math.max(first, Math.min(frames, lastTotalSamples / channels - position));
+                java.util.Arrays.fill(current, 0, first * channels, 0);
+                java.util.Arrays.fill(current, last * channels, current.length, 0);
+            }
+            current = processor.process(current, channels);
+            upstreamLatency += processor.getLatencyFrames();
         }
+        streamFrameCursor += buffer.length / channels;
         return current;
     }
 
@@ -360,9 +394,14 @@ public class ProcessingPipeline
      * {@link AudioProcessor#setPlaybackPosition(long)}). */
     public void setPlaybackPosition(long frame)
     {
+        streamFrameCursor = frame;
+        long upstreamLatency = 0;
         for (AudioProcessor p : processors)
         {
-            p.setPlaybackPosition(frame);
+            // A downstream envelope sees audio delayed by every preceding stage.
+            // Its source-relative position must follow that audio, not the input cursor.
+            p.setPlaybackPosition(frame - upstreamLatency);
+            upstreamLatency += p.getLatencyFrames();
         }
     }
 
@@ -381,19 +420,28 @@ public class ProcessingPipeline
      */
     public float[] executeBlocks(float[] buffer, int channels, int maxFrames)
     {
+        return executeBlocksThrough(buffer, channels, maxFrames, processors);
+    }
+
+    private float[] executeBlocksThrough(float[] buffer, int channels, int maxFrames, List<AudioProcessor> chain)
+    {
+        if (buffer == null || (channels != 1 && channels != 2)
+                || buffer.length % channels != 0 || maxFrames <= 0)
+            throw new IllegalArgumentException("Require complete mono/stereo frames and a positive block size.");
         int totalFrames = buffer.length / channels;
         if (totalFrames <= maxFrames)
         {
-            return execute(buffer, channels);
+            return executeThrough(buffer, channels, chain);
         }
         float[] out = new float[buffer.length];
         int cursor = 0;
         while (cursor < totalFrames)
         {
+            checkCancelled(null);
             int n = Math.min(maxFrames, totalFrames - cursor);
             float[] chunk = new float[n * channels];
             System.arraycopy(buffer, cursor * channels, chunk, 0, n * channels);
-            float[] processed = execute(chunk, channels);
+            float[] processed = executeThrough(chunk, channels, chain);
             System.arraycopy(processed, 0, out, cursor * channels, n * channels);
             cursor += n;
         }
@@ -461,8 +509,8 @@ public class ProcessingPipeline
     /**
      * Offline render with power-of-two <b>oversampling</b>, bounded in memory.
      * Mirrors what the live player does, but for the whole file and with latency
-     * compensation: the chain is analysed at the base rate (so e.g. the peak
-     * normalizer's gain is correct), prepared at {@code factor ×} the base rate,
+     * compensation: musical envelopes are analysed at the base rate, the chain
+     * is prepared at {@code factor ×} the base rate,
      * then driven one base block at a time through
      * {@code upsample → chain → downsample}, carrying the oversampler's and the
      * processors' state across blocks so the result is one continuous pass.
@@ -473,7 +521,9 @@ public class ProcessingPipeline
      * <p>
      * The leading {@code oversampler + chain} latency is dropped and an equal
      * silent tail is fed to flush the delay lines, so the rendered buffer has the
-     * same length as the source and is time-aligned with it. {@code factor <= 1}
+     * same length as the source and is time-aligned with it. A final normalizer
+     * measures this actual decimated output, not the preliminary base-rate pass.
+     * {@code factor == 1}
      * delegates to {@link #process(AudioFile, DoubleConsumer)}.
      *
      * @param file      the audio file to process; must already be loaded
@@ -482,7 +532,8 @@ public class ProcessingPipeline
      */
     public void processOversampled(AudioFile file, int factor, DoubleConsumer progress)
     {
-        if (factor <= 1)
+        validateOversamplingFactor(factor);
+        if (factor == 1)
         {
             process(file, progress);
             return;
@@ -500,9 +551,8 @@ public class ProcessingPipeline
 
         int sampleRate = file.getSampleRate();
         int channels   = file.getChannels();
-        int baseFrames = input.length / channels;
 
-        // 1) Analyse at the base rate (peak-normalizer gain, etc.), exactly as
+        // 1) Analyse musical control envelopes at the base rate, exactly as
         //    process() does. One cumulative pass; leaves every processor reset.
         //    Reported as the first ~35% of the overall progress.
         prepare(sampleRate, input.length);
@@ -510,67 +560,116 @@ public class ProcessingPipeline
                 : frac -> progress.accept(frac * 0.35);
         analyzeAndRender(input, channels, 0, null, analyzeProgress, null);
 
-        // 2) Prepare the chain at the oversampled rate for the real render.
-        long osTotal = (long) input.length * factor;
-        prepare(sampleRate * factor, osTotal);
+        DoubleConsumer renderProgress = progress == null ? null
+                : fraction -> progress.accept(.35 + .65 * fraction);
+        file.setSamples(renderAnalyzedOversampled(input, channels, factor, renderProgress, null));
+    }
 
-        OversamplingEngine os = new OversamplingEngine();
-        os.prepare(factor, channels, OFFLINE_BLOCK_FRAMES, OversamplingEngine.Quality.HIGH);
+    /**
+     * Renders a previously analysed base-rate chain through the actual oversampler.
+     * The optional final PeakNormalizer is measured and applied AFTER decimation.
+     * Reuses analysis/cached prefixes without repeating the base-rate render.
+     * Returns source-aligned PCM and leaves the chain reset at its base rate.
+     */
+    public float[] renderAnalyzedOversampled(float[] input, int channels, int factor,
+                                            DoubleConsumer progress, CancellationToken cancellation)
+    {
+        validateOversamplingFactor(factor);
+        if (factor == 1 || input == null || (channels != 1 && channels != 2)
+                || input.length == 0 || input.length % channels != 0 || lastSampleRate <= 0)
+            throw new IllegalArgumentException("Require a prepared base-rate chain and a 2x–16x complete audio buffer.");
+        checkCancelled(cancellation);
+        int sampleRate = lastSampleRate;
+        long totalSamples = lastTotalSamples;
+        int baseFrames = input.length / channels;
+        PeakNormalizer finalNormalizer = !processors.isEmpty()
+                && processors.get(processors.size() - 1) instanceof PeakNormalizer normalizer ? normalizer : null;
+        int hiStages = processors.size() - (finalNormalizer == null ? 0 : 1);
+        List<AudioProcessor> hiChain = processors.subList(0, hiStages);
+        try {
 
-        // Total warm-up latency in base frames: the oversampler's up→down round
-        // trip plus the chain's own latency (measured at the high rate, referred
-        // back to the base rate).
-        int pipeHiLatency = latencyThrough(processors.size());
-        int latBase = os.getLatencyBaseFrames()
-                + (int) Math.round(pipeHiLatency / (double) factor);
+            // 2) Prepare the chain at the oversampled rate for the real render.
+            long osTotal = (long) input.length * factor;
+            prepare(Math.multiplyExact(sampleRate, factor), osTotal);
+            for (AudioProcessor stage : hiChain)
+                if (stage instanceof OfflineMetering metering) metering.beginOfflineMetering(channels);
 
-        // The upsampled signal lags the source by the up-path delay; start the
-        // position-aware stages (fades, precomputed envelopes, the Auto EQ
-        // render) that far behind so their modulation lands on the audio it
-        // was computed for.
-        setPlaybackPosition(-os.getUpsampleLatencyHiFrames());
+            OversamplingEngine os = new OversamplingEngine();
+            os.prepare(factor, channels, OFFLINE_BLOCK_FRAMES, OversamplingEngine.Quality.HIGH);
 
-        // Drive (baseFrames + latBase) base frames in - the tail is silence that
-        // flushes the chain + engine delay lines - rounded up to whole blocks so
-        // the engine always sees a full, valid block (its scratch is block-sized).
-        int drive  = baseFrames + latBase;
-        int blocks = (drive + OFFLINE_BLOCK_FRAMES - 1) / OFFLINE_BLOCK_FRAMES;
+            // Total warm-up latency in base frames: the oversampler's up→down round
+            // trip plus the chain's own latency (measured at the high rate, referred
+            // back to the base rate).
+            int pipeHiLatency = latencyThrough(processors.size());
+            int latBase = os.getLatencyBaseFrames()
+                    + (int) Math.round(pipeHiLatency / (double) factor);
 
-        float[] output  = new float[baseFrames * channels];
-        float[] block   = new float[OFFLINE_BLOCK_FRAMES * channels];
-        float[] downBuf = new float[OFFLINE_BLOCK_FRAMES * channels];
+            // The upsampled signal lags the source by the up-path delay; start the
+            // position-aware stages (fades, precomputed envelopes, the Auto EQ
+            // render) that far behind so their modulation lands on the audio it
+            // was computed for.
+            setPlaybackPosition(-os.getUpsampleLatencyHiFrames());
 
-        for (int b = 0; b < blocks; b++)
-        {
-            int srcStart = b * OFFLINE_BLOCK_FRAMES;
-            int copy = Math.max(0, Math.min(OFFLINE_BLOCK_FRAMES, baseFrames - srcStart));
-            if (copy > 0)
+            // Drive (baseFrames + latBase) base frames in - the tail is silence that
+            // flushes the chain + engine delay lines - rounded up to whole blocks so
+            // the engine always sees a full, valid block (its scratch is block-sized).
+            int drive  = baseFrames + latBase;
+            int blocks = (drive + OFFLINE_BLOCK_FRAMES - 1) / OFFLINE_BLOCK_FRAMES;
+
+            float[] output  = new float[baseFrames * channels];
+            float[] block   = new float[OFFLINE_BLOCK_FRAMES * channels];
+            float[] downBuf = new float[OFFLINE_BLOCK_FRAMES * channels];
+
+            for (int b = 0; b < blocks; b++)
             {
-                System.arraycopy(input, srcStart * channels, block, 0, copy * channels);
-            }
-            if (copy < OFFLINE_BLOCK_FRAMES)
-            {
-                java.util.Arrays.fill(block, copy * channels, OFFLINE_BLOCK_FRAMES * channels, 0.0f);
-            }
-
-            float[] up = os.upsample(block, OFFLINE_BLOCK_FRAMES);
-            float[] hi = executeBlocks(up, channels, OFFLINE_BLOCK_FRAMES);
-            os.downsample(hi, OFFLINE_BLOCK_FRAMES, downBuf);
-
-            // Place this block's output shifted left by latBase, dropping the
-            // warm-up so the result is time-aligned with the source.
-            int outBase = srcStart - latBase;
-            for (int i = 0; i < OFFLINE_BLOCK_FRAMES; i++)
-            {
-                int dst = outBase + i;
-                if (dst >= 0 && dst < baseFrames)
+                checkCancelled(cancellation);
+                int srcStart = b * OFFLINE_BLOCK_FRAMES;
+                int copy = Math.max(0, Math.min(OFFLINE_BLOCK_FRAMES, baseFrames - srcStart));
+                if (copy > 0)
                 {
-                    System.arraycopy(downBuf, i * channels, output, dst * channels, channels);
+                    System.arraycopy(input, srcStart * channels, block, 0, copy * channels);
                 }
+                if (copy < OFFLINE_BLOCK_FRAMES)
+                {
+                    java.util.Arrays.fill(block, copy * channels, OFFLINE_BLOCK_FRAMES * channels, 0.0f);
+                }
+
+                float[] up = os.upsample(block, OFFLINE_BLOCK_FRAMES);
+                float[] hi = executeBlocksThrough(up, channels, OFFLINE_BLOCK_FRAMES, hiChain);
+                os.downsample(hi, OFFLINE_BLOCK_FRAMES, downBuf);
+
+                // Place this block's output shifted left by latBase, dropping the
+                // warm-up so the result is time-aligned with the source.
+                int outBase = srcStart - latBase;
+                for (int i = 0; i < OFFLINE_BLOCK_FRAMES; i++)
+                {
+                    int dst = outBase + i;
+                    if (dst >= 0 && dst < baseFrames)
+                    {
+                        System.arraycopy(downBuf, i * channels, output, dst * channels, channels);
+                    }
+                }
+                if (progress != null) progress.accept(.95 * ((b + 1) / (double) blocks));
             }
-            if (progress != null) progress.accept(0.35 + 0.65 * ((b + 1) / (double) blocks));
+            checkCancelled(cancellation);
+            if (finalNormalizer != null) {
+                finalNormalizer.analyze(output, channels, cancellation);
+                checkCancelled(cancellation);
+                finalNormalizer.process(output, channels);
+            }
+            checkCancelled(cancellation);
+            if (progress != null) progress.accept(1);
+            return output;
+        } finally {
+            for (AudioProcessor stage : hiChain)
+                if (stage instanceof OfflineMetering metering) metering.endOfflineMetering();
+            prepare(sampleRate, totalSamples);
         }
-        file.setSamples(output);
+    }
+
+    private static void validateOversamplingFactor(int factor) {
+        if (factor < 1 || factor > 16 || Integer.bitCount(factor) != 1)
+            throw new IllegalArgumentException("Oversampling factor must be 1, 2, 4, 8 or 16.");
     }
 
     /**
@@ -584,7 +683,9 @@ public class ProcessingPipeline
      */
     public int getLatencyFrames()
     {
-        return latencyThrough(processors.size());
+        int total = 0;
+        for (AudioProcessor processor : processors) total = Math.addExact(total, processor.getLatencyFrames());
+        return total;
     }
 
     /** Summed latency (frames) of the first {@code count} processors. */

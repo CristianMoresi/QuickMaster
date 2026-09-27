@@ -5,19 +5,20 @@ La suite completa incluye pruebas de audio oficial ITU-R BS.2217-1 y EBU LTS 5.0
 ## Build completo
 
 Usar Eclipse Temurin 25.0.4.7 para reproducir el binario auditado de Windows,
-incluida la compilación de DSPark Java 0.2. El contrato de aceptación comprueba
+incluida la compilación de DSPark Java 0.2.1. El contrato de aceptación comprueba
 el hash exacto de esa dependencia. Primero, desde la raíz del proyecto:
 
 ```powershell
 .\mvnw.cmd -f vendor/dspark-java/pom.xml clean install
-Get-FileHash vendor/dspark-java/target/dspark-0.2.0.jar -Algorithm SHA256
+Get-FileHash vendor/dspark-java/target/dspark-0.2.1.jar -Algorithm SHA256
 ```
 
-Hash auditado: `5a9e6d8e3797bc55d4dcbf462927db6918176c5f06beb942c9ecc2e271d2edc0`,
-idéntico a `libs/dspark-0.2.0.jar`. Un compilador distinto puede producir otros
+Hash auditado: `4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382`,
+idéntico a `libs/dspark-0.2.1.jar`. Un compilador distinto puede producir otros
 bytes aun apuntando a Java 17; no se debe cambiar el pin automáticamente para
 sortear una prueba. Fuentes, referencia C++ y comprobaciones independientes en
-[migración DSPark](diagnostics/dspark-java-0.2-migration.md).
+[migración DSPark](diagnostics/dspark-java-0.2-migration.md) y corrección de
+remuestreo 0.2.1 en [auditoría A15](diagnostics/product-audit-20260927.md).
 
 Después, sustituir las rutas siguientes por las ubicaciones locales de los
 corpus, sus manifiestos y la autorización de uso:

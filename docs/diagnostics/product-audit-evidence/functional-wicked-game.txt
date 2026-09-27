@@ -1,0 +1,11 @@
+SOURCE Wicked Game (80s Synthwave).wav sha256=47df7c01ea0ddaffb1a86afbbfd4f0e44d0bfb2acd7a35912d772ffeff891016 frames=14768639 rate=48000 channels=2
+JAR C:\Program Files\QuickMaster\app\quickmaster.jar sha256=cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564
+STATUS amount=1.0 STRUCTURAL_READY
+RENDER ORIGINAL changed=6369338/29537278 minGainDb=-0.082878 maxGainDb=0.328582
+STATUS amount=1.0 STRUCTURAL_READY
+STATUS amount=1.0 STRUCTURAL_READY
+RENDER INJECTED_PLUS_4_DB changed=6116838/29537278 minGainDb=-2.055916 maxGainDb=0.375736
+KNOWN_ERROR selected=114.000..123.000 peers=3 beforeGapLu=4.329010 afterGapLu=2.284388 improvementLu=2.044622
+STATUS amount=0.0 UNIT
+RENDER ZERO_AMOUNT changed=0/29537278 minGainDb=0.000000 maxGainDb=0.000000
+PASS actualPackagedRender=true protectedOriginalRegionsExact=true sourceUnchanged=true

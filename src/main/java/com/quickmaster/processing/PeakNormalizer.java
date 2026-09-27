@@ -7,9 +7,9 @@ import com.dspark.analysis.TruePeak;
  * <p>
  * Scans the (post-upstream) signal for its maximum <b>true peak</b> (the 4&times;
  * oversampled inter-sample peak, ITU-R BS.1770) and applies the single static
- * gain that brings it to a target ceiling in <b>dBTP</b>. Because it is a pure
- * scalar that scales the true peak exactly to the ceiling, the output is
- * guaranteed never to exceed the chosen dBTP on a DAC. The analysed peak is
+ * gain that brings its measured true peak to a target in <b>dBTP</b>. The final
+ * delivery waveform must be analysed after oversampling or sample-rate conversion;
+ * a finite 4x measurement is not a guarantee for every possible DAC. The analysed peak is
  * cached, so the gain recomputes <i>instantly</i> when the ceiling changes.
  * <p>
  * Placed last, after the limiter layers (which flatten the crest), it cashes that
@@ -42,7 +42,7 @@ public final class PeakNormalizer implements AudioProcessor
 
     public void setTargetDbfs(double targetDbfs)
     {
-        if (targetDbfs < MIN_TARGET_DBFS || targetDbfs > MAX_TARGET_DBFS)
+        if (!Double.isFinite(targetDbfs) || targetDbfs < MIN_TARGET_DBFS || targetDbfs > MAX_TARGET_DBFS)
         {
             throw new IllegalArgumentException("Target dBFS out of range ["
                     + MIN_TARGET_DBFS + ", " + MAX_TARGET_DBFS + "]: " + targetDbfs);
@@ -83,8 +83,7 @@ public final class PeakNormalizer implements AudioProcessor
     @Override
     public void analyze(float[] samples, int channels)
     {
-        cachedPeak = TruePeak.measureMax(samples, channels);   // 4x oversampled true peak
-        recomputeGain();
+        setAnalyzedPeak(TruePeak.measureMax(samples, channels));   // 4x oversampled true peak
     }
 
     /**
@@ -94,6 +93,8 @@ public final class PeakNormalizer implements AudioProcessor
      */
     public void setAnalyzedPeak(double peak)
     {
+        if (!Double.isFinite(peak) || peak < 0)
+            throw new IllegalArgumentException("Analyzed peak must be finite and nonnegative.");
         this.cachedPeak = peak;
         recomputeGain();
     }
@@ -108,8 +109,9 @@ public final class PeakNormalizer implements AudioProcessor
         float g = (float) gain;
         for (int i = 0; i < buffer.length; i++)
         {
-            float v = buffer[i] * g;
-            buffer[i] = (v > 1.0f) ? 1.0f : (v < -1.0f ? -1.0f : v);
+            // Pure scalar: intermediate oversampled peaks must not be clipped.
+            // Delivery normalization is measured after the final decimation.
+            buffer[i] *= g;
         }
         return buffer;
     }

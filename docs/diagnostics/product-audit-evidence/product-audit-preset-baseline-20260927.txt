@@ -1,0 +1,8 @@
+sept 27, 2026 10:12:17 A.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @56cdfb3b'
+PRESET_AUDIT case=0 rejected=java.lang.NullPointerException: Cannot read the array length because "p.mbPushDb" is null unchanged=false editorFlagStuck=false
+PRESET_AUDIT case=1 rejected=java.lang.NullPointerException: Cannot read field "type" because "bp" is null unchanged=false editorFlagStuck=true
+PRESET_AUDIT case=2 rejected=null unchanged=false editorFlagStuck=false
+PRESET_AUDIT case=3 rejected=null unchanged=false editorFlagStuck=false
+PRESET_AUDIT case=4 rejected=null unchanged=false editorFlagStuck=false
+PRESET_AUDIT failures=5

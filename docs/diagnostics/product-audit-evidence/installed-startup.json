@@ -1,0 +1,8 @@
+{
+  "status": "STARTUP_PASSED",
+  "processId": 45308,
+  "normalUser": true,
+  "log": "C:\\Users\\cris_\\AppData\\Roaming\\QuickMaster\\quickmaster.log",
+  "newLog": "2026-09-27 21:10:38 INFO  Application starting (JavaFX).\r\n2026-09-27 21:10:39 INFO  Controller initialised.\r\n2026-09-27 21:10:39 INFO  Native WM_SIZING aspect-ratio constraint enabled.\r\n",
+  "verifiedAt": "2026-09-27T21:10:43.5551300+02:00"
+}

@@ -1,0 +1,92 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/C:/Users/cris_/.m2/wrapper/dists/apache-maven-3.9.11/03d7e36a140982eea48e22c1dcac01d8862b2550b2939e09a0809bbc5182a5bc/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[ERROR] Tests run: 6, Failures: 4, Errors: 1, Skipped: 0, Time elapsed: 0.079 s <<< FAILURE! -- in com.quickmaster.audio.MetadataPreserverTest
+[ERROR] com.quickmaster.audio.MetadataPreserverTest.preservesAudioAndReplacesRatherThanDuplicatesId3Tags -- Time elapsed: 0.040 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: array lengths differ, expected: <142> but was: <281>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArraysHaveSameLength(AssertArrayEquals.java:428)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:205)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:63)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:59)
+	at org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:1229)
+	at com.quickmaster.audio.MetadataPreserverTest.preservesAudioAndReplacesRatherThanDuplicatesId3Tags(MetadataPreserverTest.java:33)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.MetadataPreserverTest.sourceEqualsDestinationIsAnExactNoOp -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: array lengths differ, expected: <142> but was: <281>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArraysHaveSameLength(AssertArrayEquals.java:428)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:205)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:63)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:59)
+	at org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:1229)
+	at com.quickmaster.audio.MetadataPreserverTest.sourceEqualsDestinationIsAnExactNoOp(MetadataPreserverTest.java:21)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.MetadataPreserverTest.aUserFileWithTheOldTemporaryNameIsNeverOverwritten -- Time elapsed: 0.004 s <<< ERROR!
+java.nio.file.NoSuchFileException: C:\Users\cris_\AppData\Local\Temp\junit1946017097071706570\destination.mp3.tagtmp
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:231)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:357)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:399)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:2973)
+	at java.base/java.nio.file.Files.readString(Files.java:3043)
+	at java.base/java.nio.file.Files.readString(Files.java:3006)
+	at com.quickmaster.audio.MetadataPreserverTest.aUserFileWithTheOldTemporaryNameIsNeverOverwritten(MetadataPreserverTest.java:44)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.MetadataPreserverTest.malformedTagSizesDoNotCopyAudioAsMetadata -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <131> but was: <142>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:145)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:531)
+	at com.quickmaster.audio.MetadataPreserverTest.malformedTagSizesDoNotCopyAudioAsMetadata(MetadataPreserverTest.java:69)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] com.quickmaster.audio.MetadataPreserverTest.metadataCancellationPreservesDestination -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.quickmaster.audio.MetadataPreserverTest.metadataCancellationPreservesDestination(MetadataPreserverTest.java:54)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+[ERROR] Failures: 
+[ERROR]   MetadataPreserverTest.malformedTagSizesDoNotCopyAudioAsMetadata:69 expected: <131> but was: <142>
+[ERROR]   MetadataPreserverTest.metadataCancellationPreservesDestination:54 Expected java.util.concurrent.CancellationException to be thrown, but nothing was thrown.
+[ERROR]   MetadataPreserverTest.preservesAudioAndReplacesRatherThanDuplicatesId3Tags:33 array lengths differ, expected: <142> but was: <281>
+[ERROR]   MetadataPreserverTest.sourceEqualsDestinationIsAnExactNoOp:21 array lengths differ, expected: <142> but was: <281>
+[ERROR] Errors: 
+[ERROR]   MetadataPreserverTest.aUserFileWithTheOldTemporaryNameIsNeverOverwritten:44 � NoSuchFile C:\Users\cris_\AppData\Local\Temp\junit1946017097071706570\destination.mp3.tagtmp
+[ERROR] Tests run: 6, Failures: 4, Errors: 1, Skipped: 0
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project quickmaster: There are test failures.
+[ERROR] 
+[ERROR] Please refer to E:\Code\Projects\JA-DAW\QuickMaster-Integration\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

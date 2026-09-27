@@ -62,6 +62,7 @@ public class LevelerUiAcceptance {
                 Method load = MainController.class.getDeclaredMethod("loadAudioFile", java.io.File.class);
                 load.setAccessible(true);
                 Runnable[] verify = new Runnable[1];
+                boolean[] zeroRequested = {false};
                 verify[0] = () -> {
                     try {
                         // Automatic Peak/Beat range updates can legitimately queue
@@ -75,6 +76,20 @@ public class LevelerUiAcceptance {
                         }
                         LevelerProcessor leveler = (LevelerProcessor)field(controller, "leveler");
                         String diagnostic = ((Label)field(controller, "levelerDiagnosticLabel")).getText();
+                        if (zeroRequested[0]) {
+                            AudioFile song = (AudioFile)field(controller, "loadedFile");
+                            float[] audible = (float[])field(field(controller, "player"), "publishedRender");
+                            if (leveler.getLeveling() != 0 || !diagnostic.equals("Leveling off (0%)")
+                                    || audible == null || audible.length != song.getSamples().length)
+                                throw new AssertionError("Zero amount did not publish a complete current plan");
+                            for (int i=0;i<audible.length;i++)
+                                if (Float.floatToRawIntBits(audible[i]) != Float.floatToRawIntBits(song.getSamples()[i]))
+                                    throw new AssertionError("Zero amount changed published audition PCM at " + i);
+                            System.out.println("UI_ZERO_PASS audiblePcmRawExact=true samples=" + audible.length);
+                            controller.shutdown();
+                            done.complete(null);
+                            return;
+                        }
                         System.out.println("UI_STATE enabled=" + leveler.isEnabled() + " amount=" + leveler.getLeveling()
                                 + " speed=" + leveler.getSpeed() + " analyzed=" + leveler.isAnalyzed()
                                 + " processor=" + leveler.getAnalysisDiagnostic()
@@ -95,6 +110,13 @@ public class LevelerUiAcceptance {
                         for (int i = 0; i < rendered.length; i++)
                             if (Float.floatToRawIntBits(rendered[i]) != Float.floatToRawIntBits(song.getSamples()[i])) changed++;
                         if (changed == 0) throw new AssertionError("Live pipeline is unchanged after UI analysis");
+                        Object player = field(controller, "player");
+                        float[] audible = (float[])field(player, "publishedRender");
+                        if (audible == null || audible.length != rendered.length)
+                            throw new AssertionError("The transport has no approved current master");
+                        for (int i = 0; i < rendered.length; i++)
+                            if (Float.floatToRawIntBits(rendered[i]) != Float.floatToRawIntBits(audible[i]))
+                                throw new AssertionError("Audible PCM differs from the adopted Leveler at sample " + i);
                         root.applyCss(); root.layout();
                         WritableImage shot = root.snapshot(null, null);
                         BufferedImage png = new BufferedImage((int)shot.getWidth(), (int)shot.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -102,13 +124,13 @@ public class LevelerUiAcceptance {
                             png.setRGB(x, y, shot.getPixelReader().getArgb(x, y));
                         ImageIO.write(png, "png", image.toFile());
                         System.out.println("UI_PASS actualAsyncFileLoad=true currentDiagnostic=" + diagnostic + " livePipelineChanged=" + changed
-                                + " generation=" + field(controller, "levelerReadyGeneration") + " screenshot=" + image);
+                                + " audiblePcmBitExact=true generation=" + field(controller, "levelerReadyGeneration") + " screenshot=" + image);
+                        zeroRequested[0] = true;
                         knob.getClass().getMethod("setValue", double.class).invoke(knob, 0.0);
                         call(controller, "updateLevelerDiagnostic");
                         String zero = ((Label)field(controller, "levelerDiagnosticLabel")).getText();
                         if (!zero.equals("Leveling off (0%)")) throw new AssertionError("Zero-control diagnostic: " + zero);
-                        System.out.println("UI_ZERO_PASS " + zero);
-                        done.complete(null);
+                        verify[0].run(); // Wait for the actual new PCM, not only the label.
                     } catch (Throwable error) { done.completeExceptionally(error); }
                 };
                 load.invoke(controller, source.toFile());

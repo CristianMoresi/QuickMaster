@@ -1,5 +1,7 @@
 package com.dspark.core;
 
+import java.util.concurrent.CancellationException;
+
 /**
  * Windowed-sinc sample-rate converter (offline / batch).
  * <p>
@@ -30,7 +32,7 @@ public final class Resampler
         NORMAL(32, 10.0),
         /** 64-point sinc, high quality (~-140 dB beyond the transition band). */
         HIGH(64, 12.5),
-        /** 128-point sinc, mastering grade (deep stopband even at the band edge). */
+        /** 128 source taps for upsampling; 256 target-rate taps for downsampling. */
         ULTRA(128, 14.5);
 
         final int points;
@@ -39,10 +41,11 @@ public final class Resampler
     }
 
     private static final int OVERSAMPLE = 256;
+    private static final int MAX_SINC_POINTS = 65536;
 
     private double ratio = 1.0;
+    private double sourceRate = 1.0, targetRate = 1.0;
     private int sincPoints = 32;
-    private double kaiserBeta = 10.0;
     private double[] sincTable = new double[0];
 
     /**
@@ -58,12 +61,23 @@ public final class Resampler
     {
         if (!Double.isFinite(sourceRate) || !Double.isFinite(targetRate) || quality == null)
             return;
-        double src = Math.max(sourceRate, 1.0);
-        double tgt = Math.max(targetRate, 1.0);
-        ratio = tgt / src;
-        sincPoints = quality.points;
-        kaiserBeta = quality.beta;
-        buildSincTable();
+        if (sourceRate <= 0 || targetRate <= 0)
+            throw new IllegalArgumentException("Sample rates must be positive");
+        double nextRatio = targetRate / sourceRate;
+        // A fixed SOURCE tap count widens the transition in the TARGET band as
+        // the decimation ratio grows. Preserve the target-rate filter support.
+        // ULTRA's 256 target taps retain 20 kHz at 44.1 kHz with a .95 cutoff.
+        double points = nextRatio < 1 ? (quality == Quality.ULTRA ? 256 : quality.points) / nextRatio : quality.points;
+        if (!Double.isFinite(nextRatio) || nextRatio <= 0 || points > MAX_SINC_POINTS)
+            throw new IllegalArgumentException("Unsupported conversion ratio");
+        int nextPoints = ((int)Math.ceil(points) + 1) & ~1;
+        double[] nextTable = buildSincTable(nextRatio, nextPoints, quality.beta);
+        // Preparation failure or cancellation leaves the previous converter intact.
+        ratio = nextRatio;
+        this.sourceRate = sourceRate;
+        this.targetRate = targetRate;
+        sincPoints = nextPoints;
+        sincTable = nextTable;
     }
 
     public double getRatio() { return ratio; }
@@ -71,8 +85,14 @@ public final class Resampler
     /** Output length (samples) for a given input length. */
     public int getOutputLength(int inputLength)
     {
-        double outLen = Math.ceil(inputLength * ratio);
-        return (int) Math.min(outLen, Integer.MAX_VALUE);
+        if (inputLength < 0) throw new IllegalArgumentException("Negative input length");
+        // Integer-rate products are exact here for representable audio buffers.
+        // Multiplying by the rounded ratio first can add a spurious frame:
+        // 176400 * (48000.0 / 176400) is slightly greater than 48000.
+        double outLen = Math.ceil(inputLength * targetRate / sourceRate);
+        if (!Double.isFinite(outLen) || outLen > Integer.MAX_VALUE - 8)
+            throw new IllegalArgumentException("Converted buffer exceeds the array limit");
+        return (int) outLen;
     }
 
     /**
@@ -83,20 +103,7 @@ public final class Resampler
      */
     public float[] process(float[] input)
     {
-        int inputLength = input.length;
-        int outputLength = getOutputLength(inputLength);
-        float[] output = new float[outputLength];
-        int half = sincPoints / 2;
-
-        for (int outIdx = 0; outIdx < outputLength; outIdx++)
-        {
-            double srcPos = outIdx / ratio;
-            if (srcPos >= inputLength) break;
-            int intPos = (int) srcPos;
-            double frac = srcPos - intPos;
-            output[outIdx] = interpolate(input, inputLength, intPos, frac, half);
-        }
-        return output;
+        return resampleInterleaved(input, 1);
     }
 
     /**
@@ -108,34 +115,43 @@ public final class Resampler
      */
     public float[] resampleInterleaved(float[] interleaved, int channels)
     {
+        if (interleaved == null || channels <= 0 || interleaved.length % channels != 0)
+            throw new IllegalArgumentException("A complete interleaved PCM buffer is required");
+        checkCancelled();
         int inFrames = interleaved.length / channels;
-        float[][] in = new float[channels][inFrames];
-        for (int f = 0; f < inFrames; f++)
-        {
-            for (int c = 0; c < channels; c++) in[c][f] = interleaved[f * channels + c];
+        int outFrames = getOutputLength(inFrames);
+        long samples = (long)outFrames * channels;
+        if (samples > Integer.MAX_VALUE - 8)
+            throw new IllegalArgumentException("Converted buffer exceeds the array limit");
+        for (int i=0;i<interleaved.length;i++) {
+            if ((i & 16383) == 0) checkCancelled();
+            if (!Float.isFinite(interleaved[i])) throw new IllegalArgumentException("Non-finite PCM sample");
         }
-
-        float[][] out = new float[channels][];
-        for (int c = 0; c < channels; c++) out[c] = process(in[c]);
-
-        int outFrames = out[0].length;
-        float[] result = new float[outFrames * channels];
+        if (ratio == 1) return interleaved.clone();
+        // Strided reads eliminate the two additional full-track planar copies.
+        float[] result = new float[(int)samples];
+        int half = sincPoints / 2;
         for (int f = 0; f < outFrames; f++)
         {
-            for (int c = 0; c < channels; c++) result[f * channels + c] = out[c][f];
+            if ((f & 255) == 0) checkCancelled();
+            double srcPos = f / ratio;
+            if (srcPos >= inFrames) break;
+            int intPos = (int)srcPos;
+            double frac = srcPos - intPos;
+            for (int c=0;c<channels;c++)
+                result[f*channels+c] = interpolate(interleaved, inFrames, intPos, frac, half, channels, c);
         }
         return result;
     }
 
-    private void buildSincTable()
+    private static double[] buildSincTable(double ratio, int sincPoints, double beta)
     {
         // OVERSAMPLE + 1 phases: the extra phase holds the frac = 1.0 kernel,
         // so the 2-point phase interpolation in the read path never has to
         // clamp or wrap (exact at both ends of the fractional range).
-        sincTable = new double[(OVERSAMPLE + 1) * sincPoints];
+        double[] sincTable = new double[(OVERSAMPLE + 1) * sincPoints];
 
         int half = sincPoints / 2;
-        double beta = kaiserBeta;
         double i0Beta = besselI0(beta);
 
         // 0.95 margin on downsampling to prevent transition-band aliasing.
@@ -143,6 +159,7 @@ public final class Resampler
 
         for (int phase = 0; phase <= OVERSAMPLE; phase++)
         {
+            checkCancelled();
             double frac = (double) phase / OVERSAMPLE;
             int base = phase * sincPoints;
             double sum = 0.0;
@@ -180,9 +197,10 @@ public final class Resampler
                 for (int tap = 0; tap < sincPoints; tap++) sincTable[base + tap] *= inv;
             }
         }
+        return sincTable;
     }
 
-    private float interpolate(float[] data, int length, int intPos, double frac, int half)
+    private float interpolate(float[] data, int length, int intPos, double frac, int half, int stride, int channel)
     {
         // Linear interpolation between two adjacent table phases: with 256
         // phases (plus the explicit frac=1 phase) the phase-quantization
@@ -196,26 +214,32 @@ public final class Resampler
         // Tap j weighs data[intPos - half + 1 + j] (see buildSincTable).
         int firstSrc = intPos - half + 1;
         double s0 = 0.0, s1 = 0.0;
-        if (firstSrc >= 0 && firstSrc + sincPoints <= length)
+        int start = Math.max(0, -firstSrc);
+        int end = (int)Math.min(sincPoints, (long)length - firstSrc);
+        if (pf == 0)
         {
-            for (int tap = 0; tap < sincPoints; tap++)
+            // Integer-ratio decimation uses exactly one phase, not two dot products.
+            for (int tap = start; tap < end; tap++)
             {
-                double sample = data[firstSrc + tap];
+                double sample = data[(firstSrc + tap)*stride+channel];
                 s0 += sample * sincTable[off0 + tap];
-                s1 += sample * sincTable[off1 + tap];
             }
+            return (float)s0;
         }
         else
         {
-            for (int tap = 0; tap < sincPoints; tap++)
+            for (int tap = start; tap < end; tap++)
             {
-                int srcIdx = firstSrc + tap;
-                double sample = (srcIdx >= 0 && srcIdx < length) ? data[srcIdx] : 0.0;
+                double sample = data[(firstSrc + tap)*stride+channel];
                 s0 += sample * sincTable[off0 + tap];
                 s1 += sample * sincTable[off1 + tap];
             }
         }
         return (float) (s0 + pf * (s1 - s0));
+    }
+
+    private static void checkCancelled() {
+        if (Thread.currentThread().isInterrupted()) throw new CancellationException("Resampling cancelled");
     }
 
     private static double besselI0(double x)

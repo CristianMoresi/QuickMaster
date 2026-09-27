@@ -2,17 +2,17 @@ package com.quickmaster.audio;
 
 import com.dspark.core.Dither;
 
-import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.spi.AudioFileReader;
-import java.io.ByteArrayInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.util.ServiceLoader;
 
 /**
@@ -136,14 +136,15 @@ public class WavFile extends AudioFile
                                 + " (supported: 1 mono, 2 stereo)");
             }
 
-            byte[] raw = in.readAllBytes();
+            if (sampleRate <= 0 || format.getSampleRate() != sampleRate
+                    || (isFloatEncoding && bits != 32)
+                    || format.isBigEndian() || format.getFrameSize() != channels * (bits / 8))
+                throw new AudioFileException("Unsupported or malformed WAV sample format: " + format);
 
-            float[] decoded;
-            if (isFloatEncoding && bits == 32)      decoded = decode32BitFloat(raw);
-            else if (bits == 16)                    decoded = decode16BitInt(raw);
-            else if (bits == 24)                    decoded = decode24BitInt(raw);
-            else                                    decoded = decode32BitInt(raw);
+            validateRiffData(file, format.getFrameSize());
+            float[] decoded = PcmDecoder.read(in, bits, isFloatEncoding, channels, in.getFrameLength());
 
+            AtomicAudioWrite.validateSamples(decoded, sampleRate, channels);
             setSampleRate(sampleRate);
             setChannels(channels);
             setSamplesAsLoaded(decoded);
@@ -159,6 +160,29 @@ public class WavFile extends AudioFile
         {
             throw new AudioFileException(
                     "I/O error while reading WAV: " + getFilePath(), e);
+        }
+    }
+
+    /** Java Sound rounds incomplete data chunks down to whole frames; reject
+     * that corruption before allocating from an untrusted declared frame count. */
+    private static void validateRiffData(File file, int frameBytes) throws IOException, AudioFileException {
+        try (var raw = new java.io.RandomAccessFile(file, "r")) {
+            if (raw.length() < 12 || raw.readInt() != 0x52494646) throw new AudioFileException("Invalid WAV RIFF header.");
+            long end = Integer.toUnsignedLong(Integer.reverseBytes(raw.readInt())) + 8;
+            if (raw.readInt() != 0x57415645 || end < 12 || end > raw.length())
+                throw new AudioFileException("Truncated or invalid WAV RIFF length.");
+            for (long position = 12; position + 8 <= end; ) {
+                AtomicAudioWrite.checkCancelled();
+                raw.seek(position); int id = raw.readInt();
+                long size = Integer.toUnsignedLong(Integer.reverseBytes(raw.readInt()));
+                if (size > end - position - 8) throw new AudioFileException("Truncated WAV chunk.");
+                if (id == 0x64617461) {
+                    if (size % frameBytes != 0) throw new AudioFileException("Incomplete WAV data frame.");
+                    return;
+                }
+                position += 8 + size + (size & 1);
+            }
+            throw new AudioFileException("WAV has no audio data chunk.");
         }
     }
 
@@ -291,75 +315,59 @@ public class WavFile extends AudioFile
     public void save(String filePath) throws AudioFileException
     {
         float[] samples = getSamples();
-        if (samples == null || samples.length == 0)
-        {
+        AtomicAudioWrite.validateSamples(samples, getSampleRate(), getChannels());
+        if ((bitDepth != 16 && bitDepth != 24 && bitDepth != 32) || (isFloat && bitDepth != 32))
             throw new AudioFileException(
-                    "No samples available to save - load a file or set samples first.");
-        }
-        if (getSampleRate() <= 0 || getChannels() <= 0)
-        {
-            throw new AudioFileException(
-                    "Invalid audio metadata: sample rate=" + getSampleRate()
-                            + ", channels=" + getChannels());
-        }
+                    "Unsupported WAV format: use integer 16/24/32-bit or float 32-bit.");
+        int bytesPerSample = bitDepth / 8;
+        int frameSize = bytesPerSample * getChannels();
+        long dataSize = (long) samples.length * bytesPerSample;
+        int headerSize = isFloat ? 58 : 44; // IEEE float: WAVEFORMATEX + fact chunk.
+        long riffSize = headerSize - 8L + dataSize + (dataSize & 1);
+        long byteRate = (long) getSampleRate() * frameSize;
+        if (riffSize > 0xffff_ffffL || byteRate > 0xffff_ffffL)
+            throw new AudioFileException("Audio exceeds the 4 GiB RIFF/WAV limit.");
 
-        byte[] raw;
-        AudioFormat.Encoding encoding;
-        int frameSize;
-
-        if (isFloat && bitDepth == 32)
-        {
-            raw = encode32BitFloat(samples);
-            encoding = AudioFormat.Encoding.PCM_FLOAT;
-            frameSize = 4 * getChannels();
-        }
-        else if (bitDepth == 16)
-        {
-            raw = encode16BitInt(samples, getChannels());
-            encoding = AudioFormat.Encoding.PCM_SIGNED;
-            frameSize = 2 * getChannels();
-        }
-        else if (bitDepth == 24)
-        {
-            raw = encode24BitInt(samples, getChannels());
-            encoding = AudioFormat.Encoding.PCM_SIGNED;
-            frameSize = 3 * getChannels();
-        }
-        else if (bitDepth == 32)
-        {
-            raw = encode32BitInt(samples);
-            encoding = AudioFormat.Encoding.PCM_SIGNED;
-            frameSize = 4 * getChannels();
-        }
-        else
-        {
-            throw new AudioFileException(
-                    "Unsupported bit depth for save: " + bitDepth
-                            + " (supported: 16, 24, 32)");
-        }
-
-        AudioFormat format = new AudioFormat(
-                encoding,
-                getSampleRate(),
-                bitDepth,
-                getChannels(),
-                frameSize,
-                getSampleRate(),
-                false                               // little-endian
-        );
-
-        long frameLength = raw.length / frameSize;
-
-        try (AudioInputStream ais = new AudioInputStream(
-                new ByteArrayInputStream(raw), format, frameLength))
-        {
-            AudioSystem.write(ais, AudioFileFormat.Type.WAVE, new File(filePath));
-        }
-        catch (IOException e)
-        {
-            throw new AudioFileException(
-                    "I/O error while writing WAV: " + filePath, e);
-        }
+        AtomicAudioWrite.write(filePath, staging -> {
+            try (var out = new BufferedOutputStream(Files.newOutputStream(staging))) {
+                ByteBuffer header = ByteBuffer.allocate(headerSize).order(ByteOrder.LITTLE_ENDIAN);
+                header.putInt(0x46464952).putInt((int) riffSize).putInt(0x45564157);
+                header.putInt(0x20746d66).putInt(isFloat ? 18 : 16);
+                header.putShort((short) (isFloat ? 3 : 1)).putShort((short) getChannels());
+                header.putInt(getSampleRate()).putInt((int) byteRate);
+                header.putShort((short) frameSize).putShort((short) bitDepth);
+                if (isFloat) {
+                    header.putShort((short) 0);
+                    header.putInt(0x74636166).putInt(4).putInt(samples.length / getChannels());
+                }
+                header.putInt(0x61746164).putInt((int) dataSize);
+                out.write(header.array());
+                Dither dither = bitDepth < 32 ? new Dither(bitDepth, false) : null;
+                ByteBuffer block = ByteBuffer.allocate(8192 * bytesPerSample).order(ByteOrder.LITTLE_ENDIAN);
+                for (int offset = 0; offset < samples.length;) {
+                    AtomicAudioWrite.checkCancelled();
+                    block.clear();
+                    int end = Math.min(samples.length, offset + 8192);
+                    for (int i = offset; i < end; i++) {
+                        float s = samples[i];
+                        if (isFloat) block.putFloat(s); // Preserve finite float headroom.
+                        else if (bitDepth == 32) {
+                            long value = Math.round((double) clamp(s) * 2147483648.0);
+                            block.putInt((int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value)));
+                        } else {
+                            double scale = bitDepth == 16 ? 32768.0 : 8388608.0;
+                            float q = dither.processSample(clamp(s), i % getChannels());
+                            int value = (int) Math.max(-scale, Math.min(scale - 1, Math.rint(q * scale)));
+                            if (bitDepth == 16) block.putShort((short) value);
+                            else block.put((byte) value).put((byte) (value >> 8)).put((byte) (value >> 16));
+                        }
+                    }
+                    out.write(block.array(), 0, block.position());
+                    offset = end;
+                }
+                if ((dataSize & 1) != 0) out.write(0);
+            }
+        });
     }
 
     /* --- Encoders: normalized float[] -> bytes --- */
@@ -371,64 +379,4 @@ public class WavFile extends AudioFile
         return v;
     }
 
-    /**
-     * Quantises to 16-bit with TPDF dither (per-channel state), replacing
-     * truncation distortion with a flat, uncorrelated noise floor - the
-     * standard practice when delivering a float master at a reduced depth.
-     */
-    private static byte[] encode16BitInt(float[] samples, int channels)
-    {
-        Dither dither = new Dither(16, false);
-        int ch = Math.max(1, channels);
-        ByteBuffer bb = ByteBuffer.allocate(samples.length * 2).order(ByteOrder.LITTLE_ENDIAN);
-        for (int i = 0; i < samples.length; i++)
-        {
-            float q = dither.processSample(clamp(samples[i]), i % ch);
-            int v = (int) Math.rint(q * 32768.0);
-            if (v >  32767) v =  32767;
-            if (v < -32768) v = -32768;
-            bb.putShort((short) v);
-        }
-        return bb.array();
-    }
-
-    /** Quantises to 24-bit with TPDF dither (see {@link #encode16BitInt}). */
-    private static byte[] encode24BitInt(float[] samples, int channels)
-    {
-        Dither dither = new Dither(24, false);
-        int ch = Math.max(1, channels);
-        byte[] out = new byte[samples.length * 3];
-        for (int i = 0; i < samples.length; i++)
-        {
-            float q = dither.processSample(clamp(samples[i]), i % ch);
-            int v = (int) Math.rint(q * 8388608.0);                 // 2^23
-            if (v >  8388607) v =  8388607;
-            if (v < -8388608) v = -8388608;
-            out[i * 3]     = (byte) ( v        & 0xFF);
-            out[i * 3 + 1] = (byte) ((v >> 8)  & 0xFF);
-            out[i * 3 + 2] = (byte) ((v >> 16) & 0xFF);
-        }
-        return out;
-    }
-
-    private static byte[] encode32BitInt(float[] samples)
-    {
-        ByteBuffer bb = ByteBuffer.allocate(samples.length * 4).order(ByteOrder.LITTLE_ENDIAN);
-        for (float s : samples)
-        {
-            long v = Math.round((double) clamp(s) * 2147483647.0);  // 2^31 - 1
-            bb.putInt((int) v);
-        }
-        return bb.array();
-    }
-
-    private static byte[] encode32BitFloat(float[] samples)
-    {
-        ByteBuffer bb = ByteBuffer.allocate(samples.length * 4).order(ByteOrder.LITTLE_ENDIAN);
-        for (float s : samples)
-        {
-            bb.putFloat(s);
-        }
-        return bb.array();
-    }
 }

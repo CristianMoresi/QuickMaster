@@ -1,0 +1,9 @@
+AUTO_EQ_FAILURE rate=8000 java.lang.ArrayIndexOutOfBoundsException: Index 8566 out of bounds for length 8193
+AUTO_EQ_FAILURE rate=16000 java.lang.ArrayIndexOutOfBoundsException: Index 8566 out of bounds for length 8193
+AUTO_EQ_FAILURE rate=22050 java.lang.ArrayIndexOutOfBoundsException: Index 8297 out of bounds for length 8193
+AUTO_EQ_FAILURE rate=32000 java.lang.ArrayIndexOutOfBoundsException: Index 8566 out of bounds for length 8193
+AUTO_EQ_POLARITY rate=44100 maxError=0.20102356374263763
+AUTO_EQ_POLARITY rate=48000 maxError=0.20216363668441772
+AUTO_EQ_POLARITY rate=96000 maxError=0.2043907195329666
+AUTO_EQ_POLARITY rate=192000 maxError=0.20938509702682495
+AUTO_EQ_AUDIT failures=8

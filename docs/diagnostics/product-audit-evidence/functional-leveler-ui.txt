@@ -1,0 +1,9 @@
+sept 27, 2026 9:08:30 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @33fe57a9'
+UI_STATE enabled=true amount=1.0 speed=0.5 analyzed=true processor=STRUCTURAL_READY current=3 ready=3 started=3
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by com.sun.marlin.OffHeapArray (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Please consider reporting this to the maintainers of class com.sun.marlin.OffHeapArray
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+UI_PASS actualAsyncFileLoad=true currentDiagnostic=Leveling � comparable sections livePipelineChanged=8255793 audiblePcmBitExact=true generation=3 screenshot=E:\Code\Projects\JA-DAW\QuickMaster-Integration\dist\installed-audit-functional-20260927-210740-019b88ae\leveler-ui.png
+UI_ZERO_PASS audiblePcmRawExact=true samples=26880002

@@ -67,6 +67,13 @@ public final class InteractionLatencyProbe {
                     && field(controller, "outputAnalysisGeneration").equals(field(controller, "levelerReadyGeneration"))
                     && (int)field(controller, "analyzeJobs") == 0;
             if (!current) { after(50, () -> awaitReady(scenario, next)); return; }
+            LevelerProcessor verifiedLeveler = (LevelerProcessor)field(controller, "leveler");
+            if (!verifiedLeveler.isEnabled() || verifiedLeveler.getShadowAnalysis() == null
+                    || verifiedLeveler.getShadowAnalysis().diagnostics().standardValidation().state()
+                       != com.quickmaster.processing.dynamics.leveler.model.ConformanceState.PASSED
+                    || "STANDARD_VALIDATION_FAILED".equals(verifiedLeveler.getAnalysisDiagnostic()))
+                throw new AssertionError("Timing is invalid without an authenticated active Leveler: "
+                        + verifiedLeveler.getAnalysisDiagnostic());
             long now = System.nanoTime();
             System.out.printf(Locale.ROOT, "INTERACTION %s totalSec=%.6f lastEditToSettledSec=%.6f maxJobs=%d maxWorkers=%d maxFxPulseDelayMs=%.3f generation=%s%n",
                     scenario, (now-start)/1e9, (now-lastEdit)/1e9, maxJobs, maxWorkers, maxPulseDelay/1e6,
@@ -122,10 +129,11 @@ public final class InteractionLatencyProbe {
                 pulse.stop();
                 if(((LevelerProcessor)field(controller,"leveler")).getLeveling()!=.8) throw new AssertionError("Wrong latest amount");
                 AudioFile song=(AudioFile)field(controller,"loadedFile");
-                ProcessingPipeline applied=new ProcessingPipeline();
-                for(var stage:((ProcessingPipeline)field(controller,"pipeline")).getProcessors()) applied.addProcessor(new AlreadyAnalyzed(stage));
-                applied.prepare(song.getSampleRate(),song.getSamples().length);
-                float[] actual=applied.analyzeAndRender(song.getSamples(),song.getChannels(),0,null,null,null);
+                // Verify what the device will consume, not a second render made
+                // from the adopted mutable processors (which could mask a stale PCM).
+                float[] actual=(float[])field(field(controller,"player"),"publishedRender");
+                if(actual==null || actual.length!=song.getSamples().length)
+                    throw new AssertionError("No complete PCM has been published for audition");
                 Method capture=MainController.class.getDeclaredMethod("capturePreset"); capture.setAccessible(true);
                 Object preset=capture.invoke(controller);
                 FXMLLoader loader=new FXMLLoader(MainController.class.getResource("main-view.fxml")); loader.load();
@@ -159,7 +167,7 @@ public final class InteractionLatencyProbe {
         }
         if(changed==0) throw new AssertionError("Full chain unexpectedly bypassed");
         if(rawBitDifferences!=0) throw new AssertionError("Full chain raw-bit differences, including signed zeros: "+rawBitDifferences);
-        System.out.printf(Locale.ROOT,"LATEST_FULL_AUDIO_PASS coldFreshController=true bitExact=true rawBitDifferences=%d maxAbsError=%.9g changedSamples=%d%n",rawBitDifferences,maxError,changed);
+        System.out.printf(Locale.ROOT,"LATEST_FULL_AUDIO_PASS publishedAuditionPcm=true coldFreshController=true bitExact=true rawBitDifferences=%d maxAbsError=%.9g changedSamples=%d%n",rawBitDifferences,maxError,changed);
     }
     private static void verifyLatestAudio() throws Exception {
         if(fullChain) { verifyFullChainAudio(); return; }
@@ -173,8 +181,9 @@ public final class InteractionLatencyProbe {
                 ProcessingPipeline pipeline = (ProcessingPipeline)field(controller, "pipeline");
                 for (var processor : pipeline.getProcessors())
                     if (processor.isEnabled() && processor != live) throw new AssertionError("Unexpected active processor");
-                pipeline.prepare(song.getSampleRate(), song.getSamples().length);
-                float[] output = pipeline.executeBlocks(song.getSamples().clone(), song.getChannels(), 4096);
+                float[] output = (float[])field(field(controller, "player"), "publishedRender");
+                if (output == null || output.length != song.getSamples().length)
+                    throw new AssertionError("No complete PCM has been published for audition");
                 captured.complete(new Applied(song.getSamples(), output, song.getSampleRate(), song.getChannels(), live.getSpeed()));
             } catch (Throwable ex) { captured.completeExceptionally(ex); }
         });
@@ -191,7 +200,7 @@ public final class InteractionLatencyProbe {
             if (Float.floatToRawIntBits(expected[i]) != Float.floatToRawIntBits(actual.source()[i])) changed++;
         }
         if (changed == 0) throw new AssertionError("Latest adopted audio unexpectedly bypassed");
-        System.out.printf("LATEST_AUDIO_PASS amount=0.8 bitExactToColdReference=true changedSamples=%d%n", changed);
+        System.out.printf("LATEST_AUDIO_PASS publishedAuditionPcm=true amount=0.8 bitExactToColdReference=true changedSamples=%d%n", changed);
     }
     public static void main(String[] args) throws Exception {
         fullChain=Arrays.asList(args).contains("--full-chain");

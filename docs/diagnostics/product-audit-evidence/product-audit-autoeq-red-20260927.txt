@@ -1,0 +1,52 @@
+
+Test run finished after 71 ms
+[         2 containers found      ]
+[         0 containers skipped    ]
+[         2 containers started    ]
+[         0 containers aborted    ]
+[         2 containers successful ]
+[         0 containers failed     ]
+[         3 tests found           ]
+[         0 tests skipped         ]
+[         3 tests started         ]
+[         0 tests aborted         ]
+[         0 tests successful      ]
+[         3 tests failed          ]
+
+
+Failures (3):
+  JUnit Jupiter:AutoEqAuditTest:invalidParametersAndPcmAreRejectedAndEmptyAnalysisCannotReplayAnOldTrack()
+    MethodSource [className = 'com.quickmaster.processing.eq.AutoEqAuditTest', methodName = 'invalidParametersAndPcmAreRejectedAndEmptyAnalysisCannotReplayAnOldTrack', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+       org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+       com.quickmaster.processing.eq.AutoEqAuditTest.invalidParametersAndPcmAreRejectedAndEmptyAnalysisCannotReplayAnOldTrack(AutoEqAuditTest.java:33)
+       java.base/java.lang.reflect.Method.invoke(Method.java:565)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+  JUnit Jupiter:AutoEqAuditTest:polarityAndDualMonoDoNotChangeLinkedCorrectionAtAnySupportedRate()
+    MethodSource [className = 'com.quickmaster.processing.eq.AutoEqAuditTest', methodName = 'polarityAndDualMonoDoNotChangeLinkedCorrectionAtAnySupportedRate', methodParameterTypes = '']
+    => java.lang.ArrayIndexOutOfBoundsException: Index 8566 out of bounds for length 8193
+       com.quickmaster.processing.eq.AutoEqProcessor.lambda$analyze$0(AutoEqProcessor.java:144)
+       com.quickmaster.processing.analysis.SpectralEngine.analyze(SpectralEngine.java:68)
+       com.quickmaster.processing.eq.AutoEqProcessor.analyze(AutoEqProcessor.java:138)
+       com.quickmaster.processing.eq.AutoEqAuditTest.polarityAndDualMonoDoNotChangeLinkedCorrectionAtAnySupportedRate(AutoEqAuditTest.java:21)
+       java.base/java.lang.reflect.Method.invoke(Method.java:565)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+  JUnit Jupiter:AutoEqAuditTest:zeroAmountIsBitExactAndAnalysisIsInterruptible()
+    MethodSource [className = 'com.quickmaster.processing.eq.AutoEqAuditTest', methodName = 'zeroAmountIsBitExactAndAnalysisIsInterruptible', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: array contents differ at index [3], expected: <-0.13> but was: <-0.13000001>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertArrayEquals.failArraysNotEqual(AssertArrayEquals.java:440)
+       org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:273)
+       org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:111)
+       org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:107)
+       org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:1334)
+       com.quickmaster.processing.eq.AutoEqAuditTest.zeroAmountIsBitExactAndAnalysisIsInterruptible(AutoEqAuditTest.java:47)
+       java.base/java.lang.reflect.Method.invoke(Method.java:565)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+       [...]

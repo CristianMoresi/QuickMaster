@@ -1,0 +1,3 @@
+sept 27, 2026 9:07:49 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @39d9314d'
+SLOT_PUBLICATION_PASS cachedA=true cachedB=true metersFollowPcm=true cancelRestoresControls=true

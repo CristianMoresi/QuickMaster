@@ -5,776 +5,481 @@ import com.dspark.core.OversamplingEngine;
 import com.quickmaster.audio.AudioFile;
 import com.quickmaster.config.AppLogger;
 import com.quickmaster.processing.ProcessingPipeline;
-
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleObjectProperty;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
+import javafx.beans.property.*;
+import javax.sound.sampled.*;
+import java.util.Arrays;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.function.ObjIntConsumer;
 
 /**
- * Real-time streaming audio player.
- * <p>
- * Plays an {@link AudioFile} through the system's audio output by
- * reading samples buffer-by-buffer from the file's editable sample
- * array, optionally passing each buffer through a
- * {@link ProcessingPipeline}, and writing the result to a
- * {@link SourceDataLine}. Supports play, pause, stop, seek, an
- * optional loop region, and the A/B comparison toggle that bypasses
- * the pipeline to play the original audio for instant comparison.
- * <p>
- * <b>Threading model.</b> Playback runs on a dedicated background
- * thread spawned by {@link #play()}. Control methods
- * ({@link #pause()}, {@link #stop()}, {@link #seekTo(double)},
- * {@link #toggleAB()}) are safe to call from the JavaFX Application
- * Thread; they signal the playback thread via {@code volatile}
- * fields and {@code synchronized} blocks. Position updates that
- * need to reach the UI are dispatched via
- * {@link Platform#runLater(Runnable)} so that JavaFX observable
- * properties are always mutated on the FX thread.
- * <p>
- * <b>Latency handling.</b> Latency-bearing stages (a linear-phase EQ,
- * the multiband crossover, the oversampling engine) delay the audible
- * signal behind the source read position. The player accounts for it
- * three ways: the published position (and {@link #getPositionSamples()})
- * is the <i>audible</i> position, so the cursor and meters track what
- * is actually sounding; when the source runs out, the loop keeps
- * feeding silence until the chain's tail has flushed, so the end of
- * the song is never cut off; and the A/B bypass runs through a delay
- * line of the same length, so toggling the comparison does not jump
- * in time.
- * <p>
- * <b>Seek coordination.</b> Naive seek implementations are racy:
- * the audio thread reads {@code positionFrames}, computes the next
- * buffer, then writes {@code positionFrames + bufferSize} at the
- * end. A seek that lands in the middle of that cycle is silently
- * overwritten when the buffer finishes. To avoid this, every seek
- * sets a {@code seekRequested} flag. The audio thread checks this
- * flag at the end of each buffer: if a seek occurred during the
- * buffer, the post-buffer increment is skipped so the new position
- * survives. The flag is then cleared and the loop continues from
- * the seek target.
- * <p>
- * <b>Output format.</b> Playback always converts the internal
- * float samples to 16-bit signed PCM little-endian for the audio
- * output line, with TPDF dither applied at the conversion so the
- * monitor path carries no truncation distortion. This format is
- * supported on every platform the JDK runs on; the export path
- * preserves the source file's full bit depth.
- * <p>
- * <b>Observable state.</b> JavaFX properties expose the player's
- * state to the UI:
- * <ul>
- *   <li>{@link #playingProperty()} - true while audio is sounding</li>
- *   <li>{@link #positionSamplesProperty()} - audible frame index</li>
- *   <li>{@link #abModeProperty()} - true when bypass is active</li>
- *   <li>{@link #stateProperty()} - STOPPED / PLAYING / PAUSED</li>
- * </ul>
- * UI components can bind to these and react to changes without
- * polling.
+ * Single-worker audio transport. Each playback session owns its source, device,
+ * oversampler and dither. Stop never joins the worker or closes a device on FX.
+ * Obsolete sessions cannot change a replacement session's position or UI state.
  */
-public class AudioPlayer
-{
-    /** Buffer size in frames. ~23 ms at 44.1 kHz, ~5 ms at 192 kHz. */
+public class AudioPlayer implements AutoCloseable {
     public static final int BUFFER_FRAMES = 1024;
-
-    /** Playback states. */
     public enum State { STOPPED, PLAYING, PAUSED }
 
+    @FunctionalInterface interface LineFactory {
+        SourceDataLine create(AudioFormat format) throws LineUnavailableException;
+    }
+
     private final ProcessingPipeline pipeline;
-
-    /* Live oversampling: the chain runs at osFactor x the base rate so the
-       dynamics/limiter alias less. osDirty asks the loop to re-prepare. */
-    private final OversamplingEngine osEngine = new OversamplingEngine();
-    private volatile int osFactor = 1;
-    private volatile boolean osDirty = false;
-
-    /* True when the chain is already analysed for the current source, so a playback
-       start can skip the (expensive) whole-file analyze pass and begin at once. The
-       UI sets it after its load/change analysis; a new source clears it. */
-    private volatile boolean analysisValid = false;
-
-    /* Source audio for the current session. Set on prepare(). */
-    private AudioFile audioFile;
-    private float[] sourceSamples;
-    private int sampleRate;
-    private int channels;
-
-    /* Playback control flags. Read by the audio thread, written by
-       the UI thread. Marked volatile so writes are seen immediately. */
-    private volatile boolean stopRequested = false;
-    private volatile boolean paused = false;
-    private volatile boolean seekRequested = false;
-
-    /* A/B bypass flag. Mirrors {@link #abMode} but is a plain volatile
-       boolean so the audio thread never touches a JavaFX property. */
-    private volatile boolean abBypass = false;
-
-    /* Optional pre-rendered, source-aligned output (the active A/B settings
-       slot). When non-null the loop plays it back directly instead of running
-       the live pipeline, so switching between two such renders is instant and
-       needs no re-analysis. Same length, channel count and rate as the source;
-       already latency-compensated, so it carries no chain delay. A plain
-       volatile reference, swapped atomically: safe to set during playback. */
-    private volatile float[] fixedRender = null;
-
-    /* Loop region in source frames (end <= 0 disables). Set from the UI. */
-    private volatile long loopStartFrames = 0L;
-    private volatile long loopEndFrames = 0L;
-    private volatile boolean loopEnabled = false;
-
-    /* Optional metering tap: always fed the post-processing master, even while
-       Bypass makes the raw source audible, so output meters never switch to a
-       pre-processing signal. */
-    private volatile java.util.function.ObjIntConsumer<float[]> meterTap;
-
-    /* Playback position in frames (the source read cursor). Mutations from the
-       UI thread (seek) and from the audio thread (loop advance) are serialised
-       via synchronized blocks on the player instance; volatile so unsynchronized
-       reads cannot tear. */
-    private volatile long positionFrames = 0L;
-
-    /* The audible position: the source frame currently sounding, i.e. the read
-       cursor minus the chain + oversampler latency. This is what the UI sees. */
-    private volatile long audiblePositionFrames = 0L;
-
-    /* A/B bypass delay line: keeps the original signal delayed by the chain's
-       current latency, so toggling the comparison stays time-aligned. */
-    private float[] abDelay = new float[0];
-    private int abDelayPos = 0;
-
-    /* TPDF dither for the 16-bit monitor conversion (audio thread only). */
-    private final Dither monitorDither = new Dither(16, false);
-
-    /* Audio output line and worker thread. */
-    private SourceDataLine line;
+    private final LineFactory lineFactory;
+    private final Consumer<Runnable> dispatch;
+    private final Consumer<Throwable> errors;
+    private final ThreadPoolExecutor worker = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<>(), task -> daemon(task, "QuickMaster-Playback"));
+    private final ExecutorService deviceCloser = Executors.newSingleThreadExecutor(
+            task -> daemon(task, "QuickMaster-AudioClose"));
+    private Session active;
     private Thread playbackThread;
+    private float[] sourceSamples;
+    private int sampleRate, channels;
+    private volatile float[] fixedRender;
+    private volatile float[] publishedRender;
+    private volatile int osFactor = 1;
+    private volatile boolean analysisValid, abBypass, paused, loopEnabled;
+    private volatile long loopStartFrames, loopEndFrames, positionFrames, audiblePositionFrames;
+    private long seekRevision, stateRevision;
+    private volatile State requestedState = State.STOPPED;
+    private volatile ObjIntConsumer<float[]> meterTap;
+    private boolean closed;
 
-    /* Observable properties for UI binding. */
     private final BooleanProperty playing = new SimpleBooleanProperty(false);
     private final LongProperty positionSamples = new SimpleLongProperty(0);
     private final BooleanProperty abMode = new SimpleBooleanProperty(false);
     private final ObjectProperty<State> state = new SimpleObjectProperty<>(State.STOPPED);
 
-    /**
-     * Creates a new player bound to the given pipeline.
-     *
-     * @param pipeline  the processing chain to apply during playback;
-     *                  must not be null
-     * @throws IllegalArgumentException if {@code pipeline} is null
-     */
-    public AudioPlayer(ProcessingPipeline pipeline)
-    {
-        if (pipeline == null)
-        {
-            throw new IllegalArgumentException("pipeline must not be null.");
-        }
+    private static final class Session {
+        final float[] source;
+        final int rate, channels;
+        final OversamplingEngine oversampler = new OversamplingEngine();
+        final Dither dither = new Dither(16, false);
+        volatile boolean cancelled;
+        volatile SourceDataLine line;
+        volatile Thread thread;
+        float[] abDelay = new float[0];
+        int abIndex;
+        Session(float[] source, int rate, int channels) { this.source = source; this.rate = rate; this.channels = channels; }
+    }
+
+    public AudioPlayer(ProcessingPipeline pipeline) {
+        this(pipeline, format -> (SourceDataLine) AudioSystem.getLine(new DataLine.Info(SourceDataLine.class, format)),
+                Platform::runLater, error -> AppLogger.error("Audio playback failed.", error));
+    }
+
+    /** Injectable device and dispatcher keep transport regression tests hardware-independent. */
+    AudioPlayer(ProcessingPipeline pipeline, LineFactory factory, Consumer<Runnable> dispatch, Consumer<Throwable> errors) {
+        if (pipeline == null) throw new IllegalArgumentException("pipeline must not be null.");
         this.pipeline = pipeline;
+        this.lineFactory = java.util.Objects.requireNonNull(factory);
+        this.dispatch = java.util.Objects.requireNonNull(dispatch);
+        this.errors = java.util.Objects.requireNonNull(errors);
     }
 
-    /**
-     * Prepares the player to play the given audio file. Must be
-     * called whenever the source changes (load, trim, reset). Stops
-     * any in-progress playback first, then captures references to
-     * the file's current sample buffer, sample rate and channel
-     * count. The play position is reset to zero.
-     *
-     * @param file  the audio file to play (must already be loaded)
-     */
-    public synchronized void prepare(AudioFile file)
-    {
+    private static Thread daemon(Runnable task, String name) {
+        Thread thread = new Thread(task, name); thread.setDaemon(true); return thread;
+    }
+
+    public synchronized void prepare(AudioFile file) {
+        if (file == null || file.getSamples() == null || file.getSampleRate() <= 0
+                || (file.getChannels() != 1 && file.getChannels() != 2)
+                || file.getSamples().length % file.getChannels() != 0)
+            throw new IllegalArgumentException("Playback requires complete mono/stereo audio.");
         stopInternal();
-
-        this.audioFile = file;
-        this.sourceSamples = file.getSamples();
-        this.sampleRate = file.getSampleRate();
-        this.channels = file.getChannels();
-        this.positionFrames = 0L;
-        this.audiblePositionFrames = 0L;
-        this.seekRequested = false;
-        this.analysisValid = false;   // new source: must be (re)analysed before the next play
-        this.loopEnabled = false;     // a new source invalidates the previous loop region
-        this.fixedRender = null;      // a new source invalidates any pre-rendered A/B slot
-
-        Platform.runLater(() ->
-        {
-            positionSamples.set(0L);
-            state.set(State.STOPPED);
-        });
+        sourceSamples = file.getSamples(); sampleRate = file.getSampleRate(); channels = file.getChannels();
+        fixedRender = null; publishedRender = null; analysisValid = false; loopEnabled = false;
+        publishState(State.STOPPED);
     }
 
-    /**
-     * Starts or resumes playback. Three cases handled:
-     * <ul>
-     *   <li>Already playing: no-op.</li>
-     *   <li>Paused: clear the pause flag, the playback thread resumes
-     *       on its next loop iteration.</li>
-     *   <li>Stopped: spawn a fresh playback thread, opening the
-     *       audio line and running the buffer loop until stop or
-     *       end-of-stream.</li>
-     * </ul>
-     */
-    public synchronized void play()
-    {
-        if (sourceSamples == null)
-        {
-            AppLogger.warn("AudioPlayer.play() called with no audio prepared.");
-            return;
+    public synchronized void play() {
+        if (closed) throw new IllegalStateException("Player is closed.");
+        if (sourceSamples == null || sourceSamples.length == 0 || requestedState == State.PLAYING) return;
+        if (active != null && !active.cancelled) {
+            paused = false; publishState(State.PLAYING); return;
         }
-        if (state.get() == State.PLAYING)
-        {
-            return;
-        }
-        if (state.get() == State.PAUSED)
-        {
-            paused = false;
-            Platform.runLater(() ->
-            {
-                state.set(State.PLAYING);
-                playing.set(true);
-            });
-            return;
-        }
-
-        // Fresh start: spawn the playback thread.
-        stopRequested = false;
         paused = false;
-        seekRequested = false;
-        playbackThread = new Thread(this::playbackLoop, "QuickMaster-Playback");
-        playbackThread.setDaemon(true);
-        playbackThread.start();
-
-        Platform.runLater(() ->
-        {
-            state.set(State.PLAYING);
-            playing.set(true);
-        });
+        if (positionFrames >= sourceSamples.length / channels) positionFrames = audiblePositionFrames = 0;
+        Session session = new Session(sourceSamples, sampleRate, channels);
+        active = session;
+        publishState(State.PLAYING);
+        worker.execute(() -> playbackLoop(session));
     }
 
-    /**
-     * Pauses playback at the current position. The playback thread
-     * stays alive, sleeping in short increments while the pause flag
-     * is set, until {@link #play()} clears it.
-     */
-    public synchronized void pause()
-    {
-        if (state.get() != State.PLAYING)
-        {
-            return;
+    public synchronized void pause() {
+        if (requestedState != State.PLAYING) return;
+        paused = true; publishState(State.PAUSED);
+    }
+
+    public synchronized void stop() {
+        stopInternal(); publishState(State.STOPPED);
+    }
+
+    private void stopInternal() {
+        Session previous = active;
+        active = null;
+        worker.getQueue().clear();
+        if (previous != null) {
+            previous.cancelled = true;
+            Thread thread = previous.thread;
+            if (thread != null) thread.interrupt();
+            SourceDataLine owned = previous.line;
+            if (owned != null) deviceCloser.execute(() -> closeLine(owned));
         }
-        paused = true;
-        Platform.runLater(() ->
-        {
-            state.set(State.PAUSED);
-            playing.set(false);
-        });
+        paused = false;
+        seekRevision++;
+        positionFrames = audiblePositionFrames = 0;
+        // Keep the worker reference until its own finally: it may still be closing.
     }
 
-    /**
-     * Stops playback and resets the position to the start. The
-     * playback thread is signalled to exit; this method blocks
-     * briefly waiting for it to finish so the audio line is closed
-     * cleanly.
-     */
-    public synchronized void stop()
-    {
-        stopInternal();
-        Platform.runLater(() ->
-        {
-            state.set(State.STOPPED);
-            playing.set(false);
-            positionSamples.set(0L);
-        });
-    }
-
-    /**
-     * Moves the playback position to the given time in seconds.
-     * Safe to call during playback, while paused, or while stopped.
-     * The {@code seekRequested} flag tells the playback loop to
-     * honour the new position instead of advancing past the buffer
-     * it had already started (see class-level Javadoc on seek
-     * coordination).
-     *
-     * @param sec  target position in seconds from the start
-     */
-    public synchronized void seekTo(double sec)
-    {
-        if (sourceSamples == null || sampleRate <= 0)
-        {
-            return;
-        }
-        long frames = Math.round(sec * sampleRate);
-        long totalFrames = sourceSamples.length / channels;
-        if (frames < 0) frames = 0;
-        if (frames > totalFrames) frames = totalFrames;
-        positionFrames = frames;
-        audiblePositionFrames = frames;
-        seekRequested = true;
-        final long fFrames = frames;
-        Platform.runLater(() -> positionSamples.set(fFrames));
-    }
-
-    /**
-     * Toggles A/B comparison mode. When enabled, playback bypasses
-     * the {@link ProcessingPipeline} and plays the original samples,
-     * delayed by the chain's current latency so the comparison stays
-     * time-aligned. Does not interrupt the playback position, so the
-     * user can toggle freely between processed and original audio
-     * while the audio is sounding.
-     */
-    public synchronized void toggleAB()
-    {
-        boolean newMode = !abBypass;
-        abBypass = newMode;
-        Platform.runLater(() -> abMode.set(newMode));
-    }
-
-    /**
-     * Sets a loop region in source frames. While playing with a valid
-     * region, reaching {@code endFrame} jumps back to {@code startFrame}
-     * sample-accurately. Pass {@code endFrame <= startFrame} to disable.
-     *
-     * @param startFrame  loop start (inclusive), in source frames
-     * @param endFrame    loop end (exclusive), in source frames
-     */
-    public synchronized void setLoopRegion(long startFrame, long endFrame)
-    {
+    public synchronized void seekTo(double seconds) {
+        if (!Double.isFinite(seconds)) throw new IllegalArgumentException("Seek time must be finite.");
         if (sourceSamples == null) return;
-        long totalFrames = sourceSamples.length / channels;
-        long s = Math.max(0, Math.min(startFrame, totalFrames));
-        long e = Math.max(0, Math.min(endFrame, totalFrames));
-        if (e > s)
-        {
-            loopStartFrames = s;
-            loopEndFrames = e;
-            loopEnabled = true;
-        }
-        else
-        {
-            loopEnabled = false;
-        }
+        long frame = Math.max(0, Math.min(Math.round(seconds * sampleRate), sourceSamples.length / channels));
+        positionFrames = audiblePositionFrames = frame; seekRevision++;
+        publishPosition(active, seekRevision, frame);
     }
 
-    /** Disables the loop region. */
+    public synchronized void toggleAB() {
+        abBypass = !abBypass;
+        boolean mode = abBypass;
+        dispatch.accept(() -> { if (abBypass == mode) abMode.set(mode); });
+    }
+
+    public synchronized void setLoopRegion(long start, long end) {
+        if (sourceSamples == null) return;
+        long total = sourceSamples.length / channels;
+        loopStartFrames = Math.max(0, Math.min(start, total));
+        loopEndFrames = Math.max(0, Math.min(end, total));
+        loopEnabled = loopEndFrames > loopStartFrames;
+    }
+
     public synchronized void clearLoopRegion() { loopEnabled = false; }
-
-    /** True while a loop region is active. */
     public boolean isLooping() { return loopEnabled; }
+    public void setMeterTap(ObjIntConsumer<float[]> tap) { meterTap = tap; }
 
-    /* =========================================================
-     *  Property accessors (for UI binding)
-     * ========================================================= */
-
-    /** Registers a tap fed each processed output buffer (for live metering). */
-    public void setMeterTap(java.util.function.ObjIntConsumer<float[]> tap) { this.meterTap = tap; }
-
-    /**
-     * Sets the live oversampling factor (a power of two, 1..16). The chain then
-     * runs at {@code factor x} the base sample rate during playback. Takes
-     * effect on the next buffer while playing, or on the next {@link #play()}.
-     *
-     * @param factor  1 (off), 2, 4, 8 or 16; other values are rounded down to a power of two
-     */
-    public void setOversampling(int factor)
-    {
-        int f = (factor < 1) ? 1 : Math.min(factor, 16);
-        this.osFactor = Integer.highestOneBit(f);   // snap to a power of two
-        this.osDirty = true;
-    }
-
-    /** Marks the chain analysis valid (or not) for the current source. When valid, a
-     *  playback start reuses it instead of re-running the whole-file analyze pass. */
-    public void setAnalysisValid(boolean valid) { this.analysisValid = valid; }
-
-    /**
-     * Plays a pre-rendered, source-aligned output buffer directly instead of
-     * running the live pipeline. Passing {@code null} restores live processing.
-     * The swap is a single volatile write, safe to call during playback: the
-     * audio thread picks up the new buffer on its next block. Used by the A/B
-     * settings switch so toggling between two rendered slots is instant.
-     *
-     * @param render a full-length, source-aligned render, or {@code null} for live
-     */
-    public void setFixedRender(float[] render) { this.fixedRender = render; }
-
-    /** True while a pre-rendered slot is being played back (see {@link #setFixedRender}). */
-    public boolean hasFixedRender() { return fixedRender != null; }
-
-    /**
-     * (Re)prepares the chain at the current oversampling factor and returns it.
-     * At {@code 1} the pipeline runs at the base rate; above it the pipeline is
-     * prepared at {@code factor x} the base rate and {@link #osEngine} performs
-     * the up/down conversion. Runs on the audio thread.
-     */
-    private int applyOversampling()
-    {
-        int f = osFactor;
-        osDirty = false;
-        if (f <= 1)
-        {
-            pipeline.prepare(sampleRate, sourceSamples.length);
-            return 1;
+    public synchronized void setOversampling(int factor) {
+        int next = Integer.highestOneBit(Math.max(1, Math.min(factor, 16)));
+        if (osFactor != next) {
+            osFactor = next; analysisValid = false;
+            if (fixedRender == null && publishedRender == null) {
+                positionFrames = audiblePositionFrames; seekRevision++;
+            }
         }
-        long osTotal = (long) sourceSamples.length * f;
-        pipeline.prepare(sampleRate * f, osTotal);
-        osEngine.prepare(f, channels, BUFFER_FRAMES, OversamplingEngine.Quality.HIGH);
-        return f;
     }
 
-    public BooleanProperty playingProperty()      { return playing; }
+    public void setAnalysisValid(boolean valid) { analysisValid = valid; }
+
+    /** Transfer an immutable completed master. Stale source work is never audible. */
+    public synchronized boolean publishRender(float[] expectedSource, float[] render) {
+        if (sourceSamples != expectedSource || closed) return false;
+        if (render == null || render.length != sourceSamples.length)
+            throw new IllegalArgumentException("Published render must match the current source.");
+        publishedRender = render;
+        analysisValid = true;
+        return true;
+    }
+
+    public boolean hasPublishedRender() { return publishedRender != null; }
+
+    private float[] auditionRender() {
+        float[] comparison = fixedRender;
+        return comparison != null ? comparison : publishedRender;
+    }
+
+    public synchronized void setFixedRender(float[] render) {
+        if (render != null && (sourceSamples == null || render.length != sourceSamples.length))
+            throw new IllegalArgumentException("Fixed render must match the current source.");
+        fixedRender = render;
+    }
+
+    public boolean hasFixedRender() { return fixedRender != null; }
+    public BooleanProperty playingProperty() { return playing; }
     public LongProperty positionSamplesProperty() { return positionSamples; }
-    public BooleanProperty abModeProperty()       { return abMode; }
-    public ObjectProperty<State> stateProperty()  { return state; }
-
-    public boolean isPlaying()           { return playing.get(); }
-
-    /** The audible position in source frames (latency-compensated while playing). */
-    public long getPositionSamples()     { return audiblePositionFrames; }
-
-    public boolean isAbMode()            { return abMode.get(); }
-    public State getState()              { return state.get(); }
+    public BooleanProperty abModeProperty() { return abMode; }
+    public ObjectProperty<State> stateProperty() { return state; }
+    public boolean isPlaying() { return requestedState == State.PLAYING; }
+    public long getPositionSamples() { return audiblePositionFrames; }
+    public boolean isAbMode() { return abBypass; }
+    public State getState() { return requestedState; }
     public ProcessingPipeline getPipeline() { return pipeline; }
 
-    /* =========================================================
-     *  Internal: the playback loop
-     * ========================================================= */
-
-    /**
-     * Chain + oversampler latency referred to base-rate frames, under the
-     * current preparation. Audio-thread only.
-     */
-    private int chainLatencyBaseFrames(int factor)
-    {
-        int hi = pipeline.getLatencyFrames();
-        if (factor <= 1) return hi;
-        return (int) Math.round(hi / (double) factor) + osEngine.getLatencyBaseFrames();
+    private void publishState(State next) {
+        requestedState = next;
+        long revision = ++stateRevision;
+        dispatch.accept(() -> {
+            synchronized (AudioPlayer.this) {
+                if (stateRevision != revision) return;
+                state.set(next); playing.set(next == State.PLAYING);
+                if (next == State.STOPPED) positionSamples.set(audiblePositionFrames);
+            }
+        });
     }
 
-    /** Grows/shrinks the A/B bypass delay line to the given latency (frames). */
-    private void ensureAbDelay(int latencyBaseFrames)
-    {
-        int needed = Math.max(0, latencyBaseFrames) * channels;
-        if (abDelay.length != needed)
-        {
-            abDelay = new float[needed];
-            abDelayPos = 0;
-        }
+    private void publishPosition(Session session, long revision, long frame) {
+        dispatch.accept(() -> {
+            synchronized (AudioPlayer.this) {
+                if (active == session && seekRevision == revision) positionSamples.set(frame);
+            }
+        });
     }
 
-    /**
-     * Feeds the original block into the bypass delay line and (in place)
-     * replaces it with the delayed signal, so the bypass path carries the
-     * same latency as the processed path.
-     */
-    private void delayBypass(float[] buf, int count)
-    {
-        if (abDelay.length == 0) return;
-        for (int i = 0; i < count; i++)
-        {
-            float in = buf[i];
-            buf[i] = abDelay[abDelayPos];
-            abDelay[abDelayPos] = in;
-            abDelayPos++;
-            if (abDelayPos == abDelay.length) abDelayPos = 0;
+    private int prepareChain(Session session, boolean analyze) {
+        pipeline.prepare(session.rate, session.source.length);
+        if (analyze && !analysisValid) {
+            pipeline.analyze(session.source, session.channels);
+            if (osFactor > 1) pipeline.renderAnalyzedOversampled(session.source, session.channels, osFactor, null, null);
+            if (!session.cancelled) analysisValid = true;
         }
+        int factor = osFactor;
+        pipeline.prepare(Math.multiplyExact(session.rate, factor), (long) session.source.length * factor);
+        if (factor > 1) session.oversampler.prepare(factor, session.channels, BUFFER_FRAMES, OversamplingEngine.Quality.HIGH);
+        session.abDelay = new float[0]; session.abIndex = 0;
+        return factor;
     }
 
-    /**
-     * Audio thread body. Opens a {@link SourceDataLine}, primes the
-     * pipeline once (so peak analysis and parameter smoothing reset
-     * cleanly), then loops: read a buffer from the source, run it
-     * through the pipeline unless A/B bypass is active, convert to
-     * 16-bit PCM (TPDF-dithered), write to the audio line. The write
-     * call blocks when the OS buffer is full, which is what keeps the
-     * loop in sync with real-time playback rate. The loop honours
-     * pause, seek and loop-region flags between buffers, and after the
-     * source ends it keeps feeding silence until the chain's latency
-     * tail has flushed, so the end of the audio is fully heard.
-     */
-    private void playbackLoop()
-    {
-        AudioFormat outFormat = new AudioFormat(
-                sampleRate, 16, channels, true, false);    // signed, little-endian
-        try
-        {
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, outFormat);
-            line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(outFormat, BUFFER_FRAMES * channels * 2 * 4);
-            line.start();
-        }
-        catch (LineUnavailableException e)
-        {
-            AppLogger.error("Audio output line unavailable.", e);
-            Platform.runLater(() ->
-            {
-                state.set(State.STOPPED);
-                playing.set(false);
-            });
-            return;
-        }
+    private int latency(Session session, int factor) {
+        return factor == 1 ? pipeline.getLatencyFrames()
+                : (int) Math.round(pipeline.getLatencyFrames() / (double) factor) + session.oversampler.getLatencyBaseFrames();
+    }
 
-        // Prepare for this audio: base-rate analysis (peak-normalizer gain),
-        // then (re)prepare at the oversampled rate for the actual render. A
-        // pre-rendered slot (A/B compare) plays back directly, so the live
-        // pipeline needs neither analysis nor preparation here.
-        pipeline.prepare(sampleRate, sourceSamples.length);
-        if (fixedRender == null && !analysisValid)
-        {
-            pipeline.analyze(sourceSamples, channels);   // only if the UI has not already analysed
-            analysisValid = true;
-        }
-        int curFactor = applyOversampling();
-        monitorDither.reset();
+    private void playbackLoop(Session session) {
+        SourceDataLine device = null;
+        boolean naturalEnd = false;
+        try {
+            synchronized (this) {
+                if (active != session || session.cancelled) return;
+                playbackThread = session.thread = Thread.currentThread();
+            }
+            AudioFormat format = new AudioFormat(session.rate, 16, session.channels, true, false);
+            device = lineFactory.create(format);
+            session.line = device;
+            if (session.cancelled) return;
+            device.open(format, BUFFER_FRAMES * session.channels * 2 * 2);
+            if (session.cancelled) return;
+            int factor = 1;
+            boolean prepared = false;
+            if (auditionRender() == null) { factor = prepareChain(session, true); prepared = true; }
+            if (session.cancelled) return;
+            device.start();
+            boolean devicePaused = false;
+            long submitted = 0, playedOrigin = device.getLongFramePosition();
+            long observedSeek = -1;
+            boolean looped = false;
+            boolean wasFixed = auditionRender() != null;
+            int previousLatency = wasFixed ? 0 : latency(session, factor);
+            float[] previousRender = auditionRender(), fadeFrom = null;
+            int fadePosition = 0, fadeFrames = Math.max(1, session.rate / 50);
+            int total = session.source.length / session.channels;
+            byte[] bytes = new byte[BUFFER_FRAMES * session.channels * 2];
 
-        final int bytesPerFrame = channels * 2;            // 16-bit
-        final byte[] outBuffer = new byte[BUFFER_FRAMES * bytesPerFrame];
-
-        long totalFrames = sourceSamples.length / channels;
-        long flushRemaining = -1L;     // >= 0 while flushing the chain tail after the source ends
-
-        try
-        {
-            while (!stopRequested)
-            {
-                // Handle pause: sleep until resumed or stopped.
-                if (paused)
-                {
-                    try { Thread.sleep(20); } catch (InterruptedException ie) { /* ignore */ }
+            while (!session.cancelled) {
+                if (paused) {
+                    if (!devicePaused) { device.stop(); devicePaused = true; }
+                    Thread.sleep(10);
                     continue;
                 }
-
-                // A pre-rendered slot (A/B compare) plays back directly, bypassing
-                // the live pipeline; it is source-aligned, so it carries no chain
-                // latency. Captured once per buffer (the reference is volatile).
-                final float[] render = fixedRender;
-                int latBase = (render != null) ? 0 : chainLatencyBaseFrames(curFactor);
-
-                long start;
-                long framesThisBuffer;
-                boolean flushing;
-                synchronized (this)
-                {
-                    // Loop region: jump back sample-accurately at the boundary.
-                    if (loopEnabled && positionFrames >= loopEndFrames
-                            && loopEndFrames > loopStartFrames)
-                    {
-                        positionFrames = loopStartFrames;
-                    }
-                    if (positionFrames >= totalFrames)
-                    {
-                        if (flushRemaining < 0) flushRemaining = latBase;
-                        if (flushRemaining <= 0) break;
-                        flushing = true;
-                        start = positionFrames;
-                        framesThisBuffer = Math.min(BUFFER_FRAMES, flushRemaining);
-                    }
-                    else
-                    {
-                        flushing = false;
-                        start = positionFrames;
-                        long limit = totalFrames;
-                        if (loopEnabled && loopEndFrames > start) limit = loopEndFrames;
-                        framesThisBuffer = Math.min(BUFFER_FRAMES, limit - start);
-                    }
-                    // Clear the seek flag now we have captured the start.
-                    seekRequested = false;
+                if (devicePaused) { device.start(); devicePaused = false; }
+                long start, revision;
+                int frames, lat;
+                boolean flushing, discontinuity, loopWrapped = false;
+                float[] render = auditionRender();
+                if (render != previousRender && render != null && previousRender != null && fixedRender == null) {
+                    fadeFrom = previousRender; fadePosition = 0;
                 }
-
-                // Build this buffer's output: either a pre-rendered slot (played
-                // back directly) or the live pipeline.
-                int samplesThisBuffer = (int) (framesThisBuffer * channels);
-                float[] out;
-                float[] meteredOutput;
-                if (render != null)
-                {
-                    // Pre-rendered, source-aligned slot output. Keep the master in
-                    // a separate buffer while bypass is active: playback may use
-                    // the source, but metering must remain post-processing.
-                    float[] mastered = new float[samplesThisBuffer];
-                    if (!flushing)
-                    {
-                        int off = (int) (start * channels);
-                        int n = Math.min(samplesThisBuffer, render.length - off);
-                        if (n > 0) System.arraycopy(render, off, mastered, 0, n);
+                previousRender = render;
+                boolean toFixed = render != null && !wasFixed;
+                boolean toLive = render == null && wasFixed;
+                wasFixed = render != null;
+                if (render == null && (!prepared || factor != osFactor)) {
+                    factor = prepareChain(session, !prepared); prepared = true;
+                }
+                lat = render == null ? latency(session, factor) : 0;
+                synchronized (this) {
+                    if (active != session || session.cancelled) break;
+                    // The live feed cursor leads source-aligned cached PCM by
+                    // chain latency. Change clocks only at a block boundary.
+                    if (toFixed) positionFrames = Math.max(0, positionFrames - previousLatency);
+                    if (loopEnabled && positionFrames >= loopEndFrames + lat) {
+                        positionFrames = loopStartFrames; seekRevision++; loopWrapped = true;
                     }
-                    meteredOutput = mastered;
+                    revision = seekRevision;
+                    discontinuity = toLive || (observedSeek < 0 ? positionFrames > 0 : observedSeek != revision);
+                    observedSeek = revision;
+                    start = positionFrames;
+                }
+                if (discontinuity) {
+                    fadeFrom = null;
+                    looped = loopWrapped;
+                    // The end of the previous iteration may still be queued at
+                    // the device. A loop wrap is not a user seek: never drop it.
+                    if (!loopWrapped && !toLive) { device.flush(); submitted = 0; playedOrigin = device.getLongFramePosition(); }
+                    if (render == null) {
+                        factor = prepareChain(session, false); lat = latency(session, factor);
+                        long target = Math.min(total, start);
+                        primeTo(session, factor, target + lat, revision);
+                        start = target + lat;
+                        synchronized (this) {
+                            if (active != session || session.cancelled) break;
+                            if (seekRevision != revision) continue;
+                            positionFrames = start;
+                        }
+                    }
+                }
+                previousLatency = lat;
+                long limit = (loopEnabled ? loopEndFrames : total) + lat;
+                if (start >= limit) {
+                    if (loopEnabled) continue;
+                    naturalEnd = true; break;
+                }
+                frames = (int) Math.min(BUFFER_FRAMES, limit - start);
+                flushing = start >= total;
+                int samples = frames * session.channels;
+                float[] mastered = new float[samples];
+                float[] audible;
+                if (render != null) {
+                    if (!flushing) System.arraycopy(render, (int) start * session.channels, mastered, 0, samples);
+                    if (fadeFrom != null && !flushing) {
+                        int count = Math.min(frames, fadeFrames - fadePosition);
+                        for (int frame = 0; frame < count; frame++) {
+                            double t = (fadePosition + frame + 1.0) / fadeFrames;
+                            double mix = t * t * (3 - 2 * t);
+                            for (int channel = 0; channel < session.channels; channel++) {
+                                int i = frame * session.channels + channel;
+                                float old = fadeFrom[(int)start * session.channels + i];
+                                mastered[i] = (float)(old + mix * (mastered[i] - old));
+                            }
+                        }
+                        fadePosition += count;
+                        if (fadePosition >= fadeFrames) fadeFrom = null;
+                    }
+                    audible = mastered;
                     if (abBypass && !flushing)
-                    {
-                        out = new float[samplesThisBuffer];
-                        int off = (int) (start * channels);
-                        int n = Math.min(samplesThisBuffer, sourceSamples.length - off);
-                        if (n > 0) System.arraycopy(sourceSamples, off, out, 0, n);
+                        audible = Arrays.copyOfRange(session.source, (int) start * session.channels, (int) start * session.channels + samples);
+                } else {
+                    if (!flushing) System.arraycopy(session.source, (int) start * session.channels, mastered, 0,
+                            Math.min(frames, total - (int) start) * session.channels);
+                    float[] original = mastered.clone();
+                    delayBypass(session, original, lat);
+                    pipeline.setPlaybackPosition(start * factor - (factor == 1 ? 0 : session.oversampler.getUpsampleLatencyHiFrames()));
+                    if (factor == 1) mastered = pipeline.execute(mastered, session.channels);
+                    else {
+                        float[] up = session.oversampler.upsample(mastered, frames);
+                        // DSPark returns its capacity-sized scratch array, not
+                        // a shortened view. Never process stale high-rate tail
+                        // samples when this source/loop block is partial.
+                        int validSamples = frames * factor * session.channels;
+                        if (up.length != validSamples) up = Arrays.copyOf(up, validSamples);
+                        float[] hi = pipeline.executeBlocks(up, session.channels, ProcessingPipeline.OFFLINE_BLOCK_FRAMES);
+                        session.oversampler.downsample(hi, frames, mastered);
                     }
-                    else out = mastered;
+                    audible = abBypass ? original : mastered;
                 }
-                else
-                {
-                    // Copy the slice from the source into a per-buffer working array
-                    // (silence while flushing the chain tail), so the in-place
-                    // pipeline cannot corrupt the original samples.
-                    float[] working = new float[samplesThisBuffer];
-                    if (!flushing)
-                    {
-                        System.arraycopy(sourceSamples, (int) (start * channels),
-                                working, 0, samplesThisBuffer);
-                    }
-
-                    // Re-prepare the chain if the oversampling factor changed.
-                    if (osDirty)
-                    {
-                        curFactor = applyOversampling();
-                        latBase = chainLatencyBaseFrames(curFactor);
-                    }
-
-                    // Index every position-aware stage by the true source position
-                    // (in current-rate frames). At an oversampled rate the signal
-                    // additionally lags by the up-path delay, which is subtracted so
-                    // precomputed envelopes land on the audio they were built for.
-                    if (curFactor == 1)
-                    {
-                        pipeline.setPlaybackPosition(start);
-                    }
-                    else
-                    {
-                        pipeline.setPlaybackPosition(
-                                start * curFactor - osEngine.getUpsampleLatencyHiFrames());
-                    }
-
-                    // Keep the bypass delay line matched to the current latency and
-                    // feed it the original block, so an A/B toggle stays aligned.
-                    ensureAbDelay(latBase);
-                    float[] original = working.clone();
-                    delayBypass(original, samplesThisBuffer);
-
-                    // Apply the pipeline unless A/B bypass is active. When
-                    // oversampling, upsample the block, run the chain at the high
-                    // rate (in sub-blocks the stages can handle), then downsample.
-                    if (curFactor == 1)
-                    {
-                        working = pipeline.execute(working, channels);
-                    }
-                    else
-                    {
-                        float[] up = osEngine.upsample(working, (int) framesThisBuffer);
-                        float[] hi = pipeline.executeBlocks(up, channels,
-                                ProcessingPipeline.OFFLINE_BLOCK_FRAMES);
-                        osEngine.downsample(hi, (int) framesThisBuffer, working);
-                    }
-                    meteredOutput = working;
-                    out = abBypass ? original : working;
+                if (session.cancelled) break;
+                pcm16(session, audible, bytes);
+                int offset = 0, size = samples * 2;
+                while (offset < size && !session.cancelled) {
+                    int wrote = device.write(bytes, offset, size - offset);
+                    if (wrote < 0 || wrote > size - offset || wrote % (session.channels * 2) != 0)
+                        throw new IllegalStateException("Invalid audio device write count.");
+                    if (wrote == 0) Thread.sleep(1);
+                    offset += wrote;
                 }
-
-                // Always feed the processed master, never the audible bypass source.
-                java.util.function.ObjIntConsumer<float[]> tap = meterTap;
-                if (tap != null) tap.accept(meteredOutput, channels);
-
-                // Convert float [-1,+1] to dithered signed 16-bit little-endian.
-                floatToPcm16Le(out, outBuffer, samplesThisBuffer);
-
-                // Write to the output line. This call blocks if the line
-                // buffer is full, keeping the loop in sync with the audio
-                // hardware's actual playback rate.
-                line.write(outBuffer, 0, samplesThisBuffer * 2);
-
-                // Advance position unless a seek arrived during this buffer.
-                // In that case, the new position is already in positionFrames
-                // and must not be overwritten.
-                synchronized (this)
-                {
-                    if (!seekRequested)
-                    {
-                        positionFrames = start + framesThisBuffer;
-                        if (flushing) flushRemaining -= framesThisBuffer;
-                    }
-                    else
-                    {
-                        flushRemaining = -1L;   // seek cancels an in-progress flush
-                    }
-                    // Publish the audible position: the source frame actually
-                    // sounding now, i.e. the read cursor minus the latency.
-                    long audible = positionFrames - latBase;
-                    if (audible < 0) audible = 0;
-                    if (audible > totalFrames) audible = totalFrames;
-                    audiblePositionFrames = audible;
+                if (session.cancelled) break;
+                submitted += frames;
+                synchronized (this) {
+                    if (active != session || session.cancelled) break;
+                    if (seekRevision != revision) continue;
+                    ObjIntConsumer<float[]> tap = meterTap;
+                    if (tap != null) tap.accept(mastered, session.channels);
+                    positionFrames = start + frames;
+                    long queued = Math.max(0, submitted - (device.getLongFramePosition() - playedOrigin));
+                    long audibleFrame = positionFrames - lat - queued;
+                    if (loopEnabled && looped && audibleFrame < loopStartFrames)
+                        audibleFrame = loopStartFrames + Math.floorMod(audibleFrame - loopStartFrames, loopEndFrames - loopStartFrames);
+                    audiblePositionFrames = Math.max(0, Math.min(total, audibleFrame));
+                    publishPosition(session, revision, audiblePositionFrames);
                 }
-                final long fPos = audiblePositionFrames;
-                Platform.runLater(() -> positionSamples.set(fPos));
             }
-        }
-        finally
-        {
-            try { line.drain(); } catch (Exception ignored) {}
-            try { line.stop();  } catch (Exception ignored) {}
-            try { line.close(); } catch (Exception ignored) {}
-            line = null;
-
-            // If we reached the end naturally, reset state.
-            if (!stopRequested && positionFrames >= totalFrames)
-            {
-                positionFrames = 0L;
-                audiblePositionFrames = 0L;
-                Platform.runLater(() ->
-                {
-                    state.set(State.STOPPED);
-                    playing.set(false);
-                    positionSamples.set(0L);
-                });
+            if (naturalEnd && !session.cancelled) device.drain();
+        } catch (InterruptedException | CancellationException e) {
+            // Control cancellation is normal; unexpected interruption still closes ownership.
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            if (!session.cancelled) errors.accept(e);
+        } finally {
+            if (device != null) closeLine(device);
+            synchronized (this) {
+                if (playbackThread == session.thread) playbackThread = null;
+                if (active == session) {
+                    active = null;
+                    if (naturalEnd) positionFrames = audiblePositionFrames = 0;
+                    publishState(State.STOPPED);
+                }
             }
         }
     }
 
-    /**
-     * Shuts down the playback thread cleanly without firing UI
-     * state updates (the caller is responsible for that). Joins
-     * with a short timeout so a misbehaving audio backend cannot
-     * hang the UI indefinitely.
-     */
-    private void stopInternal()
-    {
-        stopRequested = true;
-        paused = false;
-        Thread t = playbackThread;
-        if (t != null && t.isAlive())
-        {
-            try { t.join(500); } catch (InterruptedException ignored) {}
+    /** Exact history for stateful FIR/IIR/dynamic stages after a discontinuity.
+     * Runs only on the audio worker, publishes no samples and is interruptible.
+     * Includes chain latency so the first audible sample is the requested one. */
+    private void primeTo(Session session, int factor, long end, long revision) {
+        int total = session.source.length / session.channels;
+        for (long start = 0; start < end; ) {
+            synchronized (this) {
+                if (session.cancelled || active != session || seekRevision != revision) return;
+            }
+            int frames = (int) Math.min(BUFFER_FRAMES, end - start);
+            float[] block = new float[frames * session.channels];
+            int copy = (int) Math.max(0, Math.min(frames, total - start));
+            if (copy > 0) System.arraycopy(session.source, (int)start * session.channels, block, 0, copy * session.channels);
+            float[] bypass = block.clone(); delayBypass(session, bypass, latency(session, factor));
+            pipeline.setPlaybackPosition(start * factor - (factor == 1 ? 0 : session.oversampler.getUpsampleLatencyHiFrames()));
+            if (factor == 1) pipeline.execute(block, session.channels);
+            else {
+                float[] up = session.oversampler.upsample(block, frames);
+                int valid = frames * factor * session.channels;
+                if (up.length != valid) up = Arrays.copyOf(up, valid);
+                float[] high = pipeline.executeBlocks(up, session.channels, ProcessingPipeline.OFFLINE_BLOCK_FRAMES);
+                session.oversampler.downsample(high, frames, block);
+            }
+            start += frames;
         }
-        playbackThread = null;
-        positionFrames = 0L;
-        audiblePositionFrames = 0L;
     }
 
-    /**
-     * Converts an interleaved float buffer ([-1.0, +1.0]) to signed
-     * 16-bit PCM little-endian bytes with TPDF dither, so the monitor
-     * conversion carries a flat noise floor instead of truncation
-     * distortion. Samples outside the range are clamped to {±1.0}.
-     *
-     * @param src    source float samples
-     * @param dst    target byte buffer, must be at least {@code count*2} bytes
-     * @param count  number of float samples to convert
-     */
-    private void floatToPcm16Le(float[] src, byte[] dst, int count)
-    {
-        int ch = Math.max(1, channels);
-        for (int i = 0; i < count; i++)
-        {
-            float s = src[i];
-            if (s >  1.0f) s =  1.0f;
-            if (s < -1.0f) s = -1.0f;
-            float q = monitorDither.processSample(s, i % ch);
-            int v = (int) Math.rint(q * 32768.0);
-            if (v >  32767) v =  32767;
-            if (v < -32768) v = -32768;
-            dst[i * 2]     = (byte) (v & 0xFF);
-            dst[i * 2 + 1] = (byte) ((v >> 8) & 0xFF);
+    private static void delayBypass(Session session, float[] buffer, int latency) {
+        int size = latency * session.channels;
+        if (session.abDelay.length != size) { session.abDelay = new float[size]; session.abIndex = 0; }
+        if (size == 0) return;
+        for (int i = 0; i < buffer.length; i++) {
+            float original = buffer[i]; buffer[i] = session.abDelay[session.abIndex];
+            session.abDelay[session.abIndex] = original;
+            session.abIndex = (session.abIndex + 1) % size;
         }
+    }
+
+    private static void pcm16(Session session, float[] input, byte[] output) {
+        for (int i = 0; i < input.length; i++) {
+            if (!Float.isFinite(input[i])) throw new IllegalStateException("Non-finite playback sample.");
+            float value = Math.max(-1, Math.min(1, input[i]));
+            float quantized = session.dither.processSample(value, i % session.channels);
+            int pcm = Math.max(-32768, Math.min(32767, (int) Math.rint(quantized * 32768)));
+            output[i * 2] = (byte) pcm; output[i * 2 + 1] = (byte) (pcm >>> 8);
+        }
+    }
+
+    private static void closeLine(SourceDataLine line) {
+        try { line.stop(); } catch (Exception ignored) { }
+        try { line.flush(); } catch (Exception ignored) { }
+        try { line.close(); } catch (Exception ignored) { }
+    }
+
+    @Override public synchronized void close() {
+        if (closed) return;
+        stopInternal(); publishState(State.STOPPED); closed = true;
+        worker.shutdownNow(); deviceCloser.shutdown();
     }
 }

@@ -208,10 +208,11 @@ public abstract class AudioFile
             throw new IllegalStateException(
                     "Cannot trim before the file is loaded.");
         }
-        if (startSec < 0.0 || endSec < 0.0)
+        if (!Double.isFinite(startSec) || !Double.isFinite(endSec)
+                || startSec < 0.0 || endSec < 0.0)
         {
             throw new IllegalArgumentException(
-                    "Trim values must be non-negative; got startSec=" + startSec
+                    "Trim values must be finite and non-negative; got startSec=" + startSec
                             + ", endSec=" + endSec);
         }
 
@@ -219,7 +220,7 @@ public abstract class AudioFile
         long startFrames = Math.round(startSec * sampleRate);
         long endFrames   = Math.round(endSec   * sampleRate);
 
-        if (startFrames + endFrames >= totalFrames)
+        if (startFrames >= totalFrames || endFrames >= totalFrames - startFrames)
         {
             throw new IllegalArgumentException(
                     "Trim leaves no audio remaining (startSec=" + startSec

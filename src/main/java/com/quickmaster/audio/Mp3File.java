@@ -9,10 +9,10 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.util.Map;
 
 /**
@@ -261,7 +261,6 @@ public class Mp3File extends AudioFile
 
             // Inspect mp3spi properties to recover source bitrate
             // and VBR flag for later export defaults.
-            extractBitrateAndVbr(baseFormat);
 
             // Target PCM format: 16-bit signed little-endian,
             // same sample rate and channel layout as the source.
@@ -277,12 +276,13 @@ public class Mp3File extends AudioFile
 
             try (AudioInputStream pcmStream = AudioSystem.getAudioInputStream(pcmFormat, mpegStream))
             {
-                byte[] raw = pcmStream.readAllBytes();
-                float[] decoded = decode16BitInt(raw);
+                float[] decoded = PcmDecoder.read(pcmStream, 16, false, channels, -1);
+                AtomicAudioWrite.validateSamples(decoded, sampleRate, channels);
 
                 setSampleRate(sampleRate);
                 setChannels(channels);
                 setSamplesAsLoaded(decoded);
+                extractBitrateAndVbr(baseFormat);
             }
         }
         catch (UnsupportedAudioFileException e)
@@ -373,6 +373,7 @@ public class Mp3File extends AudioFile
     public void save(String filePath) throws AudioFileException
     {
         float[] samples = getSamples();
+        AtomicAudioWrite.validateSamples(samples, getSampleRate(), getChannels());
         if (samples == null || samples.length == 0)
         {
             throw new AudioFileException(
@@ -402,9 +403,6 @@ public class Mp3File extends AudioFile
                             + "Export to WAV instead, or resample the audio.");
         }
 
-        // Quantise floats to 16-bit signed little-endian PCM (TPDF-dithered).
-        byte[] pcm = encode16BitInt(samples, channels);
-
         // Build the source AudioFormat that the encoder needs.
         AudioFormat pcmFormat = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
@@ -420,34 +418,48 @@ public class Mp3File extends AudioFile
         // channels, mono for one.
         int mode = (channels == 2) ? LAME_MODE_JOINT_STEREO : LAME_MODE_MONO;
 
-        try
-        {
+        AtomicAudioWrite.write(filePath, staging -> {
             LameEncoder encoder = new LameEncoder(
                     pcmFormat, bitrate, mode, LAME_QUALITY, false);
 
             // Input is consumed in chunks of getPCMBufferSize(); the
             // encoded output goes into a getMP3BufferSize() buffer.
-            final int pcmChunkSize = encoder.getPCMBufferSize();
+            final int pcmChunkSize = encoder.getPCMBufferSize() / (2 * channels) * (2 * channels);
+            if (pcmChunkSize <= 0) {
+                encoder.close();
+                throw new AudioFileException("MP3 encoder supplied an invalid input buffer size.");
+            }
+            final byte[] pcm = new byte[pcmChunkSize];
+            final Dither dither = new Dither(16, false);
             final byte[] mp3Buffer = new byte[encoder.getMP3BufferSize()];
 
             try (BufferedOutputStream out =
-                         new BufferedOutputStream(new FileOutputStream(filePath)))
+                         new BufferedOutputStream(Files.newOutputStream(staging)))
             {
-                int pcmPosition = 0;
-                while (pcmPosition < pcm.length)
+                int samplePosition = 0;
+                while (samplePosition < samples.length)
                 {
-                    int chunk = Math.min(pcmChunkSize, pcm.length - pcmPosition);
-                    int encoded = encoder.encodeBuffer(pcm, pcmPosition, chunk, mp3Buffer);
+                    AtomicAudioWrite.checkCancelled();
+                    int count = Math.min(pcm.length / 2, samples.length - samplePosition);
+                    for (int i = 0; i < count; i++) {
+                        float q = dither.processSample(clamp(samples[samplePosition + i]), i % channels);
+                        int value = (int) Math.max(-32768, Math.min(32767, Math.rint(q * 32768.0)));
+                        pcm[2 * i] = (byte) value;
+                        pcm[2 * i + 1] = (byte) (value >> 8);
+                    }
+                    int encoded = encoder.encodeBuffer(pcm, 0, count * 2, mp3Buffer);
+                    if (encoded < 0) throw new AudioFileException("MP3 encoding failed: " + encoded);
                     if (encoded > 0)
                     {
                         out.write(mp3Buffer, 0, encoded);
                     }
-                    pcmPosition += chunk;
+                    samplePosition += count;
                 }
 
                 // Flush the final MP3 frame(s) and the LAME info tag.
                 // Without this call the encoded file is truncated.
                 int rest = encoder.encodeFinish(mp3Buffer);
+                if (rest < 0) throw new AudioFileException("MP3 encoder flush failed: " + rest);
                 if (rest > 0)
                 {
                     out.write(mp3Buffer, 0, rest);
@@ -457,12 +469,7 @@ public class Mp3File extends AudioFile
             {
                 encoder.close();
             }
-        }
-        catch (IOException e)
-        {
-            throw new AudioFileException(
-                    "I/O error while writing MP3: " + filePath, e);
-        }
+        });
     }
 
     /**
@@ -474,27 +481,6 @@ public class Mp3File extends AudioFile
         if (v >  1.0f) return  1.0f;
         if (v < -1.0f) return -1.0f;
         return v;
-    }
-
-    /**
-     * Encodes a normalized float sample array as interleaved
-     * 16-bit signed little-endian PCM, with TPDF dither (per-channel
-     * state) and defensive clamping to the valid range.
-     */
-    private static byte[] encode16BitInt(float[] samples, int channels)
-    {
-        Dither dither = new Dither(16, false);
-        int ch = Math.max(1, channels);
-        ByteBuffer bb = ByteBuffer.allocate(samples.length * 2).order(ByteOrder.LITTLE_ENDIAN);
-        for (int i = 0; i < samples.length; i++)
-        {
-            float q = dither.processSample(clamp(samples[i]), i % ch);
-            int v = (int) Math.rint(q * 32768.0);
-            if (v >  32767) v =  32767;
-            if (v < -32768) v = -32768;
-            bb.putShort((short) v);
-        }
-        return bb.array();
     }
 
     /**

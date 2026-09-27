@@ -157,29 +157,36 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
         java.util.Arrays.fill(bandPeak, 0.0);
         crossover.reset();
         int blockSize = crossover.getBlockSize();
-        float[] block = new float[Math.min(blockSize, frames) * channels];
+        int latency = crossover.getLatency();
+        int end = Math.addExact(frames, latency);
+        float[] block = new float[Math.min(blockSize, end) * channels];
         float[][] bands = new float[BANDS][block.length];
-        // Keep only per-frame linked peaks, never four full stereo PCM tracks.
-        // The maps retain the crossover's causal delay, exactly as splitWhole
-        // did, so gains and delayed band samples use the same timeline.
-        for (int start = 0; start < frames; start += blockSize)
+        // Store source-aligned peaks and flush the crossover's delay. Without
+        // this tail the final transient's real peak never enters the analysis.
+        // Keep only linked peaks, never four whole stereo PCM tracks.
+        for (int start = 0; start < end; )
         {
             if (Thread.currentThread().isInterrupted()) throw new java.util.concurrent.CancellationException();
-            int count = Math.min(blockSize, frames - start);
+            int count = Math.min(blockSize, end - start);
             if (block.length != count * channels) block = new float[count * channels];
-            System.arraycopy(samples, start * channels, block, 0, block.length);
+            java.util.Arrays.fill(block, 0);
+            int available = Math.max(0, Math.min(count, frames - start));
+            if (available > 0) System.arraycopy(samples, start * channels, block, 0, available * channels);
             crossover.process(block, channels, bands);
             for (int b = 0; b < BANDS; b++)
             {
                 for (int f = 0; f < count; f++)
                 {
+                    int sourceFrame = start + f - latency;
+                    if (sourceFrame < 0 || sourceFrame >= frames) continue;
                     float peak = 0;
                     for (int c = 0; c < channels; c++)
                         peak = Math.max(peak, Math.abs(bands[b][f * channels + c]));
-                    pmaps[b][start + f] = peak;
+                    pmaps[b][sourceFrame] = peak;
                     bandPeak[b] = Math.max(bandPeak[b], peak);
                 }
             }
+            start += count;
         }
         crossover.reset();
         bandPeakMap = pmaps;
@@ -247,7 +254,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
         double ratio = (sampleRate > 0) ? envRate / sampleRate : 1.0;
         for (int f = 0; f < frames; f++)
         {
-            double pos = (framesProcessed + f) * ratio;   // base-rate position (rate-invariant)
+            double pos = (framesProcessed + f - crossover.getLatency()) * ratio;
             int base = f * channels;
             for (int c = 0; c < channels; c++)
             {
@@ -326,6 +333,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
 
     private static double clamp(double v, double lo, double hi)
     {
+        if (!Double.isFinite(v)) throw new IllegalArgumentException("Non-finite multiband parameter.");
         return (v < lo) ? lo : (v > hi ? hi : v);
     }
 }

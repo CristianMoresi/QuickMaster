@@ -1,0 +1,29 @@
+
+Test run finished after 93 ms
+[         2 containers found      ]
+[         0 containers skipped    ]
+[         2 containers started    ]
+[         0 containers aborted    ]
+[         2 containers successful ]
+[         0 containers failed     ]
+[         2 tests found           ]
+[         0 tests skipped         ]
+[         2 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         1 tests failed          ]
+
+
+Failures (1):
+  JUnit Jupiter:MultibandTailAuditTest:detectedBandPeaksIncludeLatencyAlignedTailInsteadOfOnlyTheCausalPrefix()
+    MethodSource [className = 'com.quickmaster.processing.limit.MultibandTailAuditTest', methodName = 'detectedBandPeaksIncludeLatencyAlignedTailInsteadOfOnlyTheCausalPrefix', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: Peak excludes final transient: rate=8000, frames=257, band=0 ==> expected: <0.023998122662305832> but was: <3.1791032597539015E-6>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:86)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1024)
+       com.quickmaster.processing.limit.MultibandTailAuditTest.detectedBandPeaksIncludeLatencyAlignedTailInsteadOfOnlyTheCausalPrefix(MultibandTailAuditTest.java:21)
+       java.base/java.lang.reflect.Method.invoke(Method.java:565)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)

@@ -1,0 +1,28 @@
+{
+  "status": "PASSED",
+  "jarSha256": "cb874287c83acc4a3f8a6cce582cca3f19980d533c6b5b5b76d0fcab917c5564",
+  "samples": 20,
+  "audioReadySeconds": {
+    "median": 3.5659039999999997,
+    "min": 3.48263,
+    "max": 3.863189,
+    "p95": 3.812585
+  },
+  "settledSeconds": {
+    "median": 4.628517,
+    "min": 4.513698,
+    "max": 4.90089,
+    "p95": 4.855111
+  },
+  "memorySweep": {
+    "minimumMiB": 1278.484,
+    "firstMiB": 1278.485,
+    "lastMiB": 1278.502,
+    "maximumMiB": 1278.502,
+    "edits": 30
+  },
+  "coldPublishedPcmBitExact": true,
+  "percentileMethod": "Nearest rank, position 19 of 20; not a population estimate",
+  "timingLog": "dist/installed-audit-timing20-20260927-211648/latency-full-chain-20.log",
+  "verifiedAt": "2026-09-27T21:19:45.1015558+02:00"
+}

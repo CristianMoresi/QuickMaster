@@ -1,0 +1,47 @@
+PHASE_PREVIEW factor=1, ch=1, worst=4.343502223491669E-5, frame=301
+PHASE_PREVIEW factor=1, ch=2, worst=4.456937313079834E-5, frame=1957
+PHASE_PREVIEW factor=2, ch=1, worst=4.3720006942749023E-5, frame=407
+PHASE_PREVIEW factor=2, ch=2, worst=4.394352436065674E-5, frame=7861
+PHASE_PREVIEW factor=4, ch=1, worst=4.3876469135284424E-5, frame=2732
+PHASE_PREVIEW factor=4, ch=2, worst=4.380941390991211E-5, frame=3120
+
+Test run finished after 1006 ms
+[         2 containers found      ]
+[         0 containers skipped    ]
+[         2 containers started    ]
+[         0 containers aborted    ]
+[         2 containers successful ]
+[         0 containers failed     ]
+[        12 tests found           ]
+[         0 tests skipped         ]
+[        12 tests started         ]
+[         0 tests aborted         ]
+[        10 tests successful      ]
+[         2 tests failed          ]
+
+
+Failures (2):
+  JUnit Jupiter:AudioPlayerSessionTest:repeatedLoopUsesSourceContextAndDoesNotLeakThePreviousIterationsFilterState()
+    MethodSource [className = 'com.quickmaster.playback.AudioPlayerSessionTest', methodName = 'repeatedLoopUsesSourceContextAndDoesNotLeakThePreviousIterationsFilterState', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: loop frame=0 ==> expected: <-0.8882132172584534> but was: <3.0517578125E-5>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:86)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1024)
+       com.quickmaster.playback.AudioPlayerSessionTest.repeatedLoopUsesSourceContextAndDoesNotLeakThePreviousIterationsFilterState(AudioPlayerSessionTest.java:286)
+       java.base/java.lang.reflect.Method.invoke(Method.java:565)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+  JUnit Jupiter:AudioPlayerSessionTest:seekingIntoStatefulDspStartsAtTheExactExportSampleWithoutColdFilterHistory()
+    MethodSource [className = 'com.quickmaster.playback.AudioPlayerSessionTest', methodName = 'seekingIntoStatefulDspStartsAtTheExactExportSampleWithoutColdFilterHistory', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: No cold-filter warm-up may reach the device after seek. ==> expected: <22008> but was: <26466>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+       com.quickmaster.playback.AudioPlayerSessionTest.seekingIntoStatefulDspStartsAtTheExactExportSampleWithoutColdFilterHistory(AudioPlayerSessionTest.java:264)
+       java.base/java.lang.reflect.Method.invoke(Method.java:565)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1604)

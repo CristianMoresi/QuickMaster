@@ -1,0 +1,48 @@
+PHASE_PREVIEW factor=1, ch=1, worst=1.4537572860717773E-4, frame=122
+PHASE_PREVIEW factor=1, ch=2, worst=1.704692840576172E-4, frame=123
+PHASE_PREVIEW factor=2, ch=1, worst=4.363059997558594E-5, frame=6163
+PHASE_PREVIEW factor=2, ch=2, worst=4.431605339050293E-5, frame=6593
+PHASE_PREVIEW factor=4, ch=1, worst=4.312396049499512E-5, frame=5340
+PHASE_PREVIEW factor=4, ch=2, worst=4.419684410095215E-5, frame=2676
+
+Test run finished after 974 ms
+[         2 containers found      ]
+[         0 containers skipped    ]
+[         2 containers started    ]
+[         0 containers aborted    ]
+[         2 containers successful ]
+[         0 containers failed     ]
+[        10 tests found           ]
+[         0 tests skipped         ]
+[        10 tests started         ]
+[         0 tests aborted         ]
+[         9 tests successful      ]
+[         1 tests failed          ]
+
+
+Failures (1):
+  JUnit Jupiter:AudioPlayerSessionTest:phaseEqualizerAndMultibandPreviewMatchLatencyAlignedExport()
+    MethodSource [className = 'com.quickmaster.playback.AudioPlayerSessionTest', methodName = 'phaseEqualizerAndMultibandPreviewMatchLatencyAlignedExport', methodParameterTypes = '']
+    => org.opentest4j.MultipleFailuresError: Multiple Failures (2 failures)
+	org.opentest4j.AssertionFailedError: Full preview/export factor=1, ch=1, worst=1.4537572860717773E-4 ==> expected: <true> but was: <false>
+	org.opentest4j.AssertionFailedError: Full preview/export factor=1, ch=2, worst=1.704692840576172E-4 ==> expected: <true> but was: <false>
+       org.junit.jupiter.api.AssertAll.assertAll(AssertAll.java:80)
+       org.junit.jupiter.api.AssertAll.assertAll(AssertAll.java:54)
+       org.junit.jupiter.api.AssertAll.assertAll(AssertAll.java:48)
+       org.junit.jupiter.api.Assertions.assertAll(Assertions.java:2978)
+       com.quickmaster.playback.AudioPlayerSessionTest.phaseEqualizerAndMultibandPreviewMatchLatencyAlignedExport(AudioPlayerSessionTest.java:238)
+       [...]
+       Suppressed: org.opentest4j.AssertionFailedError: Full preview/export factor=1, ch=1, worst=1.4537572860717773E-4 ==> expected: <true> but was: <false>
+         org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+         org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+         org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+         org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+         org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+         [...]
+       Suppressed: org.opentest4j.AssertionFailedError: Full preview/export factor=1, ch=2, worst=1.704692840576172E-4 ==> expected: <true> but was: <false>
+         org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+         org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+         org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+         org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+         org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+         [...]
