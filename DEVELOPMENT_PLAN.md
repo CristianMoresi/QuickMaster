@@ -1,14 +1,16 @@
 # QuickMaster — desarrollo y cierre
 
-Actualizado: 2026-09-27, 09:17. Leveler, optimización P1 y DSPark Java 0.2
+Actualizado: 2026-09-27, 09:42. Leveler, optimización P1 y DSPark Java 0.2
 **entregados y comprobados en Program Files**. Suite completa, portable, copia
 de los 201 archivos por hash, arranque normal y aceptación instalada aprobados.
 La autorización «Continúa» permitió resolver la cancelación anterior de UAC.
 Este es el registro vigente; no se utilizan skills de orquestación.
-El usuario ha autorizado ahora `releasepush`: se prepara la publicación corregida
-de 1.3.1 sobre `main`, con el JAR y el portable ya aceptados. El borrador permanecerá
-privado hasta verificar los tres paquetes. El ZIP de Windows será la imagen local
-de 201 archivos validada con Temurin 25, no la imagen alternativa de CI con Java 21.
+Tras la autorización `releasepush`, **1.3.1 publicada** a las 09:41:35 CEST sobre
+el commit `77cf486`, subido a `main`. Los tres paquetes se comprobaron antes de
+publicar. El ZIP de Windows contiene la imagen local de 201 archivos validada con
+Temurin 25, no la imagen alternativa de CI con Java 21. Registro de publicación:
+`docs/releases/1.3.1-validation.md`. Solo existe la rama `main` y se conserva
+Cristian Moresi como único autor y committer de estos cambios.
 
 ## Rendimiento y DSPark — entrega completada
 
@@ -92,11 +94,25 @@ de 201 archivos validada con Temurin 25, no la imagen alternativa de CI con Java
 
 ## Release 1.3.1
 
-### Corrección entregada localmente (27 de septiembre)
+### Publicación corregida (27 de septiembre, 09:41 CEST)
+
+- Release pública y marcada como última: https://github.com/CristianMoresi/QuickMaster/releases/tag/v1.3.1
+- Tag `v1.3.1` sobre `77cf4864c51a55b4662340964a2fe763838d5629`; workflow
+  `36303709090` aprobado en las tres plataformas. Núcleo exacto `ec80915f…`.
+- ZIP Windows x64 descargado de GitHub idéntico al portable instalado y probado;
+  su EXE descomprimido vuelve a arrancar limpiamente. Linux x64 y macOS arm64
+  comprobados por contenido, hashes, runtime, permisos y arquitectura, sin
+  afirmar pruebas interactivas nativas en esas plataformas.
+- Se adjuntan los tres portables, el JAR central y `1.3.1-SHA256SUMS.txt`.
+  Todas las sumas se verificaron contra descargas del borrador antes de publicarlo.
+- Se conserva localmente el ZIP Windows de CI sustituido antes de la publicación;
+  no se han borrado audio, respaldos ni cambios del checkout principal.
+
+### Historial: corrección entregada localmente (27 de septiembre)
 
 - Trabajo autónomo sobre el Leveler general, sin ajustes por nombre de canción,
   timestamps particulares ni skills de orquestación. La entrega anterior no
-  constituye evidencia suficiente y no se prepara otro release.
+  constituía evidencia insuficiente; en esa fase no se preparó otro release.
 - Implementados: corrección del falso macro-build-up por mesetas; comparación
   complementaria de distribuciones de arreglo para cuerpos de distinta duración;
   conservación de protección en bordes con fragmentos residuales; diagnóstico
@@ -142,10 +158,11 @@ de 201 archivos validada con Temurin 25, no la imagen alternativa de CI con Java
 - **RETIRADO por indicación del usuario.** Eliminados el borrador de GitHub, sus
   cuatro adjuntos y el tag `v1.3.1` local/remoto. No llegó a publicarse ni a
   copiarse a Program Files. Código conservado en `main` (`eedf835`) y artefactos
-  locales conservados. El último release público sigue siendo `v1.3.0`.
+  locales conservados. En ese momento el último release público era `v1.3.0`.
 - **Regresión funcional confirmada en «By Now» el 25 de septiembre.** El JAR entonces instalado devolvía
   `STRUCTURAL_READY` con una curva completamente plana: 0 muestras modificadas
-  de 26.880.002. Corregida y entregada localmente el 27; no se ha publicado otro release.
+  de 26.880.002. Corregida y entregada localmente el 27 antes de la publicación
+  posterior autorizada mediante `releasepush`.
   Diagnóstico: `docs/diagnostics/by-now-leveler-2026-09-25.md`.
 - Preparación desde `origin/main`, sin crear ramas adicionales. La antigua rama
   `codex/leveler-beat-zoom` fue eliminada localmente y en GitHub por indicación
