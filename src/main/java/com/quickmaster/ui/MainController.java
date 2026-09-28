@@ -6191,7 +6191,7 @@ public class MainController
         Knob bk = new Knob("PUSH", 0.0, BroadbandLimiterProcessor.MAX_PUSH_DB, broadband.getPushDb())
                 .accent("#f0b14a").scale(2.1)
                 .formatter(v -> String.format(Locale.US, "%.1f dB", v))
-                .tooltip("Push the whole mix until its loudest true peak is limited by this many dB.");
+                .tooltip("Add input gain after Multiband. The limiting ceiling stays referenced to the signal before Multiband; band edits never change this Push. Actual gain reduction can exceed Push when the bands also add drive.");
         bk.valueProperty().addListener((o, ov, nv) -> scheduleBbPush(nv.doubleValue()));
         bk.disableProperty().bind(limEnabled.selectedProperty().not());
         bbPushKnob = bk;
@@ -6203,7 +6203,12 @@ public class MainController
         HBox.setHgrow(bbCard, Priority.ALWAYS);
         row.getChildren().add(bbCard);
 
-        limContent.getChildren().add(row);
+        Label route = new Label("1 · Multiband → 2 · Broadband · Shared input-peak reference");
+        route.getStyleClass().add("caption");
+        route.setWrapText(true);
+        route.setMinHeight(Region.USE_PREF_SIZE);
+        route.setTooltip(new Tooltip("Multiband feeds Broadband in series. The Peak Normalizer sets the final delivery ceiling. GR meters show actual attenuation, not the requested input gain."));
+        limContent.getChildren().addAll(route, row);
 
         // Clip the panel so a wide row can never overflow onto (and intercept the mouse
         // events of) the right sidebar, e.g. the Peak Normalizer controls.

@@ -1,7 +1,7 @@
 package com.quickmaster.processing.limit;
 import com.quickmaster.processing.AudioProcessor;
 
-import com.dspark.effects.LimiterEnvelope;
+import com.dspark.analysis.TruePeak;
 import com.dspark.effects.MultibandCrossover;
 import com.quickmaster.processing.analysis.AnalysisInputKey;
 
@@ -39,6 +39,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
     private final double[] pushDb = new double[BANDS];     // per-band target max reduction
     private double[] appliedPushDb = new double[BANDS];    // controls represented by published envelopes
     private AnalysisInputKey featureKey;
+    private double inputTruePeak;
     private volatile float[][] bandPeakMap = null;         // [band][frame] cached peak (for remap)
     private volatile float[][] bandEnv = null;             // [band][frame] gain (null row = unity)
     private final double[] bandPeak = new double[BANDS];   // per-band program peak
@@ -60,6 +61,9 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
     }
 
     public int getBands() { return BANDS; }
+
+    /** Shared Limit-module ceiling, measured BEFORE any band drive. */
+    public double getInputTruePeak() { return inputTruePeak; }
 
     public double getPushDb(int band) { return pushDb[band]; }
 
@@ -148,6 +152,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
             return;
         }
         int frames = samples.length / channels;
+        inputTruePeak = TruePeak.measureMax(samples, channels);
         envRate = sampleRate;
         envFrames = frames;
         atkSamples = Math.max(1, (int) (ATTACK_MS * 0.001 * sampleRate));
@@ -231,7 +236,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
         if (d <= 1e-6 || bandPeak[b] <= 1e-9) return null;   // unity: band passes unprocessed
         double makeup = Math.pow(10.0, d / 20.0);
         double th = bandPeak[b] * Math.pow(10.0, -d / 20.0);
-        float[] e = LimiterEnvelope.computeFromPeaks(pmaps[b], th, atkSamples, relSamples);
+        float[] e = OfflineLimiterEnvelope.compute(pmaps[b], th, atkSamples, relSamples);
         for (int i = 0; i < e.length; i++) e[i] *= (float) makeup;   // push up by the dialled dB
         return e;
     }
@@ -308,6 +313,7 @@ public final class MultibandLimiterProcessor implements AudioProcessor, com.quic
         System.arraycopy(other.bandPeak, 0, this.bandPeak, 0, BANDS);
         this.bandPeakMap = other.bandPeakMap;
         this.featureKey = other.featureKey;
+        this.inputTruePeak = other.inputTruePeak;
     }
 
     /* --- helpers --- */

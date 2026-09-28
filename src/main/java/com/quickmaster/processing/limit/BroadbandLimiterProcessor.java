@@ -2,15 +2,14 @@ package com.quickmaster.processing.limit;
 import com.quickmaster.processing.AudioProcessor;
 
 import com.dspark.analysis.TruePeak;
-import com.dspark.effects.LimiterEnvelope;
 import com.quickmaster.processing.analysis.AnalysisInputKey;
 
 /**
  * Second (final) limiting layer: an automatic <b>broadband true-peak limiter</b>.
  * <p>
  * Works like a single-band {@link MultibandLimiterProcessor}: one <b>Push</b>
- * control in dB whose threshold is solved from the whole-signal analysis so the
- * loudest peak is brickwall limited by exactly that amount. The level it reads
+ * input-drive control in dB. Its ceiling is anchored before the multiband
+ * stage, while its detector sees the actual multiband output. The level it reads
  * is the 4&times; oversampled <b>true peak</b> (ITU-R BS.1770), so it tames the
  * inter-sample peaks the multiband layer leaves behind, letting the final Peak
  * Normalizer push the true peak right up to the delivery ceiling.
@@ -30,6 +29,17 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
     private volatile double pushDb = 0.0;
     private double appliedPushDb = 0.0;
     private AnalysisInputKey featureKey;
+    private double requestedReference = Double.NaN;
+    private double ceilingTruePeak, safetyTrimDb;
+
+    /** Pipeline-owned reference; NaN selects this standalone stage's input. */
+    public void setCeilingReference(double peak) {
+        if (!Double.isNaN(peak) && (!Double.isFinite(peak) || peak < 0))
+            throw new IllegalArgumentException("Invalid limiter reference.");
+        requestedReference=peak;
+    }
+    public double getCeilingTruePeak() { return ceilingTruePeak; }
+    public double getSafetyTrimDb() { return safetyTrimDb; }
 
     private volatile float[] peakMapTp = null;   // cached true-peak per frame (for remap)
     private volatile float[] env = null;         // gain envelope (null = unity)
@@ -46,8 +56,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
 
     public void setPushDb(double db)
     {
-        pushDb = clamp(db, 0.0, MAX_PUSH_DB);
-        mapToEnvelope();
+        requestPushDb(db); // Keep the approved envelope until a complete analysis.
     }
 
     /** UI request only; analysis is mapped off the UI thread before adoption. */
@@ -63,7 +72,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         if (i < 0) i = 0; else if (i >= e.length) i = e.length - 1;
         double g = e[(int) i];
         double gr = 20.0 * Math.log10(Math.max(g, 1e-6)) - appliedPushDb;
-        return Math.max(Math.min(gr, 0.0), -MAX_PUSH_DB);
+        return Math.min(gr, 0.0);
     }
 
     /** Deepest gain reduction (dB, &le; 0) over a base-rate frame range. */
@@ -78,7 +87,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         for (int i = a; i <= b; i++) if (e[i] < minG) minG = e[i];
         if (minG == Double.MAX_VALUE) return 0.0;
         double gr = 20.0 * Math.log10(Math.max(minG, 1e-6)) - appliedPushDb;
-        return Math.max(Math.min(gr, 0.0), -MAX_PUSH_DB);
+        return Math.min(gr, 0.0);
     }
 
     /** The program true peak (linear) this stage last analysed. */
@@ -107,6 +116,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         AnalysisInputKey key = AnalysisInputKey.of(samples, sampleRate, channels);
         if (key.equals(featureKey) && peakMapTp != null) {
             mapToEnvelope();
+            verifyCeiling(samples, channels);
             return;
         }
         int frames = samples.length / channels;
@@ -122,6 +132,8 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         int lag = TruePeak.GROUP_DELAY_FRAMES;
         for (int f = 0; f < frames + TruePeak.TAIL_FRAMES; f++)
         {
+            if ((f & 16383) == 0 && Thread.currentThread().isInterrupted())
+                throw new java.util.concurrent.CancellationException();
             int base = f * channels;
             double p = 0.0;
             for (int c = 0; c < channels; c++)
@@ -141,6 +153,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         peakTp = mx;
         featureKey = key;
         mapToEnvelope();
+        verifyCeiling(samples, channels);
     }
 
     private void mapToEnvelope()
@@ -148,19 +161,47 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         float[] pm = peakMapTp;
         if (pm == null) return;
         appliedPushDb = pushDb;
-        if (pushDb <= 1e-6 || peakTp <= 1e-9)
+        ceilingTruePeak = Double.isNaN(requestedReference) ? peakTp : requestedReference;
+        safetyTrimDb=0;
+        if (peakTp <= 1e-9 || ceilingTruePeak <= 0
+                || (pushDb <= 1e-6 && peakTp <= ceilingTruePeak))
         {
             env = null;
             return;
         }
-        // Push the whole mix UP by the dialled dB (make-up) and true-peak limit it
-        // back to the original peak: the body rises (louder, denser) and the loudest
-        // true peak is held and limited by exactly that many dB.
+        // Drive the post-multiband mix, but do not let its changed peak move
+        // the ceiling. Zero drive still limits peaks raised by multiband.
         double makeup = Math.pow(10.0, pushDb / 20.0);
-        double th = peakTp * Math.pow(10.0, -pushDb / 20.0);
-        float[] e = LimiterEnvelope.computeFromPeaks(pm, th, atkSamples, relSamples);
+        double th = ceilingTruePeak / makeup;
+        float[] e = OfflineLimiterEnvelope.compute(pm, th, atkSamples, relSamples);
         for (int i = 0; i < e.length; i++) e[i] *= (float) makeup;
         env = e;
+    }
+
+    /** A modulated signal can create new ISP peaks. Verify the actual float
+     * output (including the FIR tail); retain a disclosed rounding/ISP trim,
+     * never claim the sidechain estimate alone is a true-peak guarantee. */
+    private void verifyCeiling(float[] samples,int channels) {
+        if(env==null)return;
+        for(int pass=0;pass<3;pass++) {
+            TruePeak[] detectors=new TruePeak[channels];
+            for(int c=0;c<channels;c++)detectors[c]=new TruePeak();
+            double peak=0;
+            int frames=samples.length/channels;
+            for(int f=0;f<frames+TruePeak.TAIL_FRAMES;f++) {
+                if((f&16383)==0 && Thread.currentThread().isInterrupted())throw new java.util.concurrent.CancellationException();
+                for(int c=0;c<channels;c++) {
+                    float value=f<frames?samples[f*channels+c]*env[f]:0;
+                    if(!Float.isFinite(value))throw new IllegalStateException("Non-finite limiter output.");
+                    peak=Math.max(peak,detectors[c].process(value));
+                }
+            }
+            if(peak<=ceilingTruePeak*(1+1e-7))return;
+            double scale=ceilingTruePeak/peak*(1-2e-7);
+            for(int f=0;f<env.length;f++)env[f]*=(float)scale;
+            safetyTrimDb+=20*Math.log10(scale);
+        }
+        throw new IllegalStateException("Limiter true-peak verification did not converge.");
     }
 
     @Override
@@ -196,7 +237,8 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         if (pushDb == other.appliedPushDb) {
             this.appliedPushDb = other.appliedPushDb;
             this.env = other.env;
-        } else mapToEnvelope();
+            ceilingTruePeak=other.ceilingTruePeak;safetyTrimDb=other.safetyTrimDb;
+        } else throw new IllegalStateException("Changed limiter controls require fresh analysis.");
     }
 
     /** Publishes the worker result without recalculation, also for bypass snapshots. */
@@ -205,6 +247,8 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
         reuseAnalysisFeatures(other);
         this.appliedPushDb = other.appliedPushDb;
         this.env = other.env;
+        this.ceilingTruePeak=other.ceilingTruePeak;
+        this.safetyTrimDb=other.safetyTrimDb;
     }
 
     /** Shares one immutable feature set; worker verifies rate, channels and every sample. */
@@ -232,6 +276,7 @@ public final class BroadbandLimiterProcessor implements AudioProcessor
 
     private static double clamp(double v, double lo, double hi)
     {
+        if(!Double.isFinite(v))throw new IllegalArgumentException("Non-finite broadband parameter.");
         return (v < lo) ? lo : (v > hi ? hi : v);
     }
 }

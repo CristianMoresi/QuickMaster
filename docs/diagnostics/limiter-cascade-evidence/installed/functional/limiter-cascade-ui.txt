@@ -1,0 +1,11 @@
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+sept 28, 2026 1:17:24 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @14dda234'
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by com.sun.marlin.OffHeapArray (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Please consider reporting this to the maintainers of class com.sun.marlin.OffHeapArray
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+LIMITER_UI_PCM A-bands-zero push=3.0 reference=0.988553091 rms=-12.944009 truePeak=-1.000000 bitExact=true
+LIMITER_UI_PCM B-bands-three push=3.0 reference=0.988553091 rms=-11.789786 truePeak=-1.000000 bitExact=true
+LIMITER_UI_PCM latest-rapid-edit push=3.0 reference=0.988553091 rms=-12.100695 truePeak=-1.000000 bitExact=true
+LIMITER_UI_PASS pushUnchanged=true fixedReference=true stagedColdExact=true cachedAB=true latestEdit=true sourceUnchanged=true normalizedRmsIncreaseDb=1.154223

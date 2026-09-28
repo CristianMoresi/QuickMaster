@@ -1,0 +1,9 @@
+{
+  "status": "IMAGE_VALIDATED",
+  "source": "E:\\Code\\Projects\\JA-DAW\\QuickMaster-Integration\\dist\\limiter-1.3.2-20260928\\image\\QuickMaster",
+  "install": "C:\\Program Files\\QuickMaster",
+  "expectedJarSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+  "backup": null,
+  "sourceFiles": 201,
+  "completedAt": "2026-09-28T02:15:17.2363702+02:00"
+}

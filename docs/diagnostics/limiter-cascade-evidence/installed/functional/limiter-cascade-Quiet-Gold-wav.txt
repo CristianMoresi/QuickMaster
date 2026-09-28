@@ -1,0 +1,11 @@
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+SOURCE D:\StyleShift AI\SSAI Masters\POST-YOUTUBE\Quiet Gold.wav rmsDb=-14.08468351421816 truePeakDb=0.4922408144715071
+CASCADE mbPush=0.0 bbPush=3.0 mbRms=-14.084684 mbTP=0.492241 bbAnalyzedTP=0.492241 bbRms=-11.943596 bbTP=0.492239 bbDeepest=-3.000055 bbMean=-0.430209 normalizationGain=-1.492239 normalizedRms=-13.435835
+CEILING reference=1.058307907 actual=1.058307641 safetyTrimDb=-0.000056634
+CASCADE mbPush=1.0 bbPush=3.0 mbRms=-13.092691 mbTP=1.470921 bbAnalyzedTP=1.470921 bbRms=-11.444407 bbTP=0.492239 bbDeepest=-3.978727 bbMean=-0.717825 normalizationGain=-1.492239 normalizedRms=-12.936646
+CEILING reference=1.058307907 actual=1.058307701 safetyTrimDb=-0.000047227
+CASCADE mbPush=3.0 bbPush=3.0 mbRms=-11.164572 mbTP=3.048367 bbAnalyzedTP=3.048367 bbRms=-10.647770 bbTP=0.492240 bbDeepest=-5.556174 bbMean=-1.498198 normalizationGain=-1.492240 normalizedRms=-12.140009
+CEILING reference=1.058307907 actual=1.058307757 safetyTrimDb=-0.000047576
+CASCADE mbPush=6.0 bbPush=3.0 mbRms=-8.564432 mbTP=5.858306 bbAnalyzedTP=5.858306 bbRms=-9.880227 bbTP=0.492239 bbDeepest=-8.366122 bbMean=-3.034107 normalizationGain=-1.492239 normalizedRms=-11.372466
+CEILING reference=1.058307907 actual=1.058307705 safetyTrimDb=-0.000056938
+LIMITER_CASCADE_PASS cases=4 fixedReference=true pushUnchanged=true finite=true

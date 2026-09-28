@@ -14,7 +14,10 @@ class BroadbandLimiterProcessorTest
         for (int n = 0; n < frames; n++)
         {
             double s = 0.3 * Math.sin(2.0 * Math.PI * 200.0 * n / SR);
-            if (n % 1200 == 0) s = 0.9;          // peaks well above the body
+            // Isolated peaks allow a calibrated 80 ms release to recover.
+            // The old 25 ms train relied on the legacy envelope's ~4 ms
+            // effective release, not the declared 80 ms time constant.
+            if (n % 12000 == 0) s = 0.9;
             for (int c = 0; c < ch; c++) x[n * ch + c] = (float) s;
         }
         return x;

@@ -1,0 +1,10 @@
+{
+  "suites": 125,
+  "tests": 841,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "jarSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+  "officialFileLoudnessReadings": 94,
+  "musicalVariants": 106
+}

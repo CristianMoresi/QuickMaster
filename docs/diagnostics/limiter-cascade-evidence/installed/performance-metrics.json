@@ -1,0 +1,32 @@
+{
+  "latency-leveler": {
+    "repeatedEditAudioSeconds": [
+      1.567352,
+      1.37989,
+      1.444136
+    ],
+    "medianAudioSeconds": 1.444136
+  },
+  "latency-full-chain": {
+    "repeatedEditAudioSeconds": [
+      12.363139,
+      7.168189,
+      6.113353
+    ],
+    "medianAudioSeconds": 7.168189
+  },
+  "ab": {
+    "firstIdenticalSeconds": 0.009973,
+    "uncachedSeconds": [
+      6.212419,
+      8.458694,
+      7.537144
+    ],
+    "medianUncachedSeconds": 7.537144
+  },
+  "memory": {
+    "edits": 30,
+    "minimumMiB": 1328.417,
+    "maximumMiB": 1328.437
+  }
+}

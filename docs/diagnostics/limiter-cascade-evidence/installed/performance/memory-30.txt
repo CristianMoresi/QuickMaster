@@ -1,0 +1,105 @@
+CONFIGURATION fullChain=true heapCheckpoints=true
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+sept 28, 2026 1:20:59 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @24528a25'
+INTERACTION load-full-chain totalSec=11.751785 lastEditToSettledSec=11.751785 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=34.760 generation=3
+AUDIO_READY load-full-chain lastEditSec=10.602172 beforeMetersSec=1.149612
+HEAP_CHECKPOINT load-full-chain MiB=1326.956
+INTERACTION single-leveler-edit totalSec=6.934848 lastEditToSettledSec=6.934689 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=13.326 generation=5
+AUDIO_READY single-leveler-edit lastEditSec=5.788875 beforeMetersSec=1.145814
+HEAP_CHECKPOINT single-leveler-edit MiB=1328.413
+INTERACTION repeat-edit-1 totalSec=6.869961 lastEditToSettledSec=6.869935 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.710 generation=7
+AUDIO_READY repeat-edit-1 lastEditSec=5.769427 beforeMetersSec=1.100508
+HEAP_CHECKPOINT repeat-edit-1 MiB=1328.418
+INTERACTION repeat-edit-2 totalSec=6.905443 lastEditToSettledSec=6.905405 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.475 generation=9
+AUDIO_READY repeat-edit-2 lastEditSec=5.819101 beforeMetersSec=1.086304
+HEAP_CHECKPOINT repeat-edit-2 MiB=1328.417
+INTERACTION repeat-edit-3 totalSec=7.286972 lastEditToSettledSec=7.286934 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.553 generation=11
+AUDIO_READY repeat-edit-3 lastEditSec=6.125274 beforeMetersSec=1.161660
+HEAP_CHECKPOINT repeat-edit-3 MiB=1328.418
+INTERACTION repeat-edit-4 totalSec=7.077239 lastEditToSettledSec=7.077214 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=28.049 generation=13
+AUDIO_READY repeat-edit-4 lastEditSec=6.068536 beforeMetersSec=1.008678
+HEAP_CHECKPOINT repeat-edit-4 MiB=1328.419
+INTERACTION repeat-edit-5 totalSec=7.027069 lastEditToSettledSec=7.027047 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.481 generation=15
+AUDIO_READY repeat-edit-5 lastEditSec=5.954526 beforeMetersSec=1.072521
+HEAP_CHECKPOINT repeat-edit-5 MiB=1328.419
+INTERACTION repeat-edit-6 totalSec=7.198798 lastEditToSettledSec=7.198774 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.628 generation=17
+AUDIO_READY repeat-edit-6 lastEditSec=6.158933 beforeMetersSec=1.039841
+HEAP_CHECKPOINT repeat-edit-6 MiB=1328.422
+INTERACTION repeat-edit-7 totalSec=7.105728 lastEditToSettledSec=7.105698 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.519 generation=19
+AUDIO_READY repeat-edit-7 lastEditSec=6.033478 beforeMetersSec=1.072220
+HEAP_CHECKPOINT repeat-edit-7 MiB=1328.423
+INTERACTION repeat-edit-8 totalSec=7.124203 lastEditToSettledSec=7.124176 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.747 generation=21
+AUDIO_READY repeat-edit-8 lastEditSec=6.020746 beforeMetersSec=1.103430
+HEAP_CHECKPOINT repeat-edit-8 MiB=1328.423
+INTERACTION repeat-edit-9 totalSec=8.547055 lastEditToSettledSec=8.547024 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=29.904 generation=23
+AUDIO_READY repeat-edit-9 lastEditSec=7.460457 beforeMetersSec=1.086567
+HEAP_CHECKPOINT repeat-edit-9 MiB=1328.425
+INTERACTION repeat-edit-10 totalSec=6.901594 lastEditToSettledSec=6.901554 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.606 generation=25
+AUDIO_READY repeat-edit-10 lastEditSec=5.862522 beforeMetersSec=1.039032
+HEAP_CHECKPOINT repeat-edit-10 MiB=1328.423
+INTERACTION repeat-edit-11 totalSec=6.962111 lastEditToSettledSec=6.962079 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.307 generation=27
+AUDIO_READY repeat-edit-11 lastEditSec=5.939101 beforeMetersSec=1.022978
+HEAP_CHECKPOINT repeat-edit-11 MiB=1328.424
+INTERACTION repeat-edit-12 totalSec=6.948392 lastEditToSettledSec=6.948362 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.575 generation=29
+AUDIO_READY repeat-edit-12 lastEditSec=5.896767 beforeMetersSec=1.051595
+HEAP_CHECKPOINT repeat-edit-12 MiB=1328.425
+INTERACTION repeat-edit-13 totalSec=6.843527 lastEditToSettledSec=6.843494 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.580 generation=31
+AUDIO_READY repeat-edit-13 lastEditSec=5.820179 beforeMetersSec=1.023314
+HEAP_CHECKPOINT repeat-edit-13 MiB=1328.427
+INTERACTION repeat-edit-14 totalSec=6.829564 lastEditToSettledSec=6.829531 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.666 generation=33
+AUDIO_READY repeat-edit-14 lastEditSec=5.851059 beforeMetersSec=0.978472
+HEAP_CHECKPOINT repeat-edit-14 MiB=1328.429
+INTERACTION repeat-edit-15 totalSec=6.795716 lastEditToSettledSec=6.795674 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.533 generation=35
+AUDIO_READY repeat-edit-15 lastEditSec=5.803809 beforeMetersSec=0.991866
+HEAP_CHECKPOINT repeat-edit-15 MiB=1328.429
+INTERACTION repeat-edit-16 totalSec=6.886563 lastEditToSettledSec=6.886535 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.400 generation=37
+AUDIO_READY repeat-edit-16 lastEditSec=5.832328 beforeMetersSec=1.054208
+HEAP_CHECKPOINT repeat-edit-16 MiB=1328.431
+INTERACTION repeat-edit-17 totalSec=6.888154 lastEditToSettledSec=6.888107 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.567 generation=39
+AUDIO_READY repeat-edit-17 lastEditSec=5.847384 beforeMetersSec=1.040724
+HEAP_CHECKPOINT repeat-edit-17 MiB=1328.431
+INTERACTION repeat-edit-18 totalSec=6.841896 lastEditToSettledSec=6.841867 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=28.048 generation=41
+AUDIO_READY repeat-edit-18 lastEditSec=5.832648 beforeMetersSec=1.009220
+HEAP_CHECKPOINT repeat-edit-18 MiB=1328.430
+INTERACTION repeat-edit-19 totalSec=6.869242 lastEditToSettledSec=6.869223 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.743 generation=43
+AUDIO_READY repeat-edit-19 lastEditSec=5.829994 beforeMetersSec=1.039228
+HEAP_CHECKPOINT repeat-edit-19 MiB=1328.432
+INTERACTION repeat-edit-20 totalSec=6.778390 lastEditToSettledSec=6.778370 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.903 generation=45
+AUDIO_READY repeat-edit-20 lastEditSec=5.785347 beforeMetersSec=0.993023
+HEAP_CHECKPOINT repeat-edit-20 MiB=1328.433
+INTERACTION repeat-edit-21 totalSec=6.735801 lastEditToSettledSec=6.735784 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.728 generation=47
+AUDIO_READY repeat-edit-21 lastEditSec=5.727574 beforeMetersSec=1.008210
+HEAP_CHECKPOINT repeat-edit-21 MiB=1328.434
+INTERACTION repeat-edit-22 totalSec=6.775561 lastEditToSettledSec=6.775534 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.610 generation=49
+AUDIO_READY repeat-edit-22 lastEditSec=5.783013 beforeMetersSec=0.992521
+HEAP_CHECKPOINT repeat-edit-22 MiB=1328.434
+INTERACTION repeat-edit-23 totalSec=6.792581 lastEditToSettledSec=6.792550 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.476 generation=51
+AUDIO_READY repeat-edit-23 lastEditSec=5.784522 beforeMetersSec=1.008028
+HEAP_CHECKPOINT repeat-edit-23 MiB=1328.435
+INTERACTION repeat-edit-24 totalSec=7.043434 lastEditToSettledSec=7.043404 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=13.342 generation=53
+AUDIO_READY repeat-edit-24 lastEditSec=5.890164 beforeMetersSec=1.153240
+HEAP_CHECKPOINT repeat-edit-24 MiB=1328.436
+INTERACTION repeat-edit-25 totalSec=6.914647 lastEditToSettledSec=6.914588 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=13.668 generation=55
+AUDIO_READY repeat-edit-25 lastEditSec=5.889827 beforeMetersSec=1.024761
+HEAP_CHECKPOINT repeat-edit-25 MiB=1328.437
+INTERACTION repeat-edit-26 totalSec=6.831133 lastEditToSettledSec=6.831107 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.569 generation=57
+AUDIO_READY repeat-edit-26 lastEditSec=5.790514 beforeMetersSec=1.040592
+HEAP_CHECKPOINT repeat-edit-26 MiB=1328.435
+INTERACTION repeat-edit-27 totalSec=7.122768 lastEditToSettledSec=7.122753 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=12.695 generation=59
+AUDIO_READY repeat-edit-27 lastEditSec=5.848197 beforeMetersSec=1.274556
+HEAP_CHECKPOINT repeat-edit-27 MiB=1328.435
+INTERACTION repeat-edit-28 totalSec=6.872707 lastEditToSettledSec=6.872680 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.634 generation=61
+AUDIO_READY repeat-edit-28 lastEditSec=5.863975 beforeMetersSec=1.008705
+HEAP_CHECKPOINT repeat-edit-28 MiB=1328.436
+INTERACTION repeat-edit-29 totalSec=6.918014 lastEditToSettledSec=6.917986 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.509 generation=63
+AUDIO_READY repeat-edit-29 lastEditSec=5.877555 beforeMetersSec=1.040431
+HEAP_CHECKPOINT repeat-edit-29 MiB=1328.436
+INTERACTION repeat-edit-30 totalSec=7.021361 lastEditToSettledSec=7.021335 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.655 generation=65
+AUDIO_READY repeat-edit-30 lastEditSec=5.997629 beforeMetersSec=1.023706
+HEAP_CHECKPOINT repeat-edit-30 MiB=1328.437
+INTERACTION six-edits-350ms-apart totalSec=9.000727 lastEditToSettledSec=7.199077 maxJobs=1 maxWorkers=2 maxFxPulseDelayMs=27.690 generation=77
+AUDIO_READY six-edits-350ms-apart lastEditSec=6.110732 beforeMetersSec=1.088344
+HEAP_CHECKPOINT six-edits-350ms-apart MiB=1328.452
+APP_RETAINED_HEAP_AFTER_GC MiB=1328.452
+LATEST_FULL_AUDIO_PASS publishedAuditionPcm=true coldFreshController=true bitExact=true rawBitDifferences=0 maxAbsError=0.00000000 changedSamples=26880002

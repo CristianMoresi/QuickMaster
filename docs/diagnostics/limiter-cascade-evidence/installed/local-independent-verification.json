@@ -1,0 +1,7 @@
+{
+  "status": "EXACT_IMAGE_AND_NORMAL_USER_STARTUP_PASS",
+  "filesCompared": 201,
+  "installedJarSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+  "startupLog": "2026-09-28 13:16:18 INFO  Application starting (JavaFX).\r\n2026-09-28 13:16:18 INFO  Controller initialised.",
+  "checkedAt": "2026-09-28T13:16:18.7415120+02:00"
+}

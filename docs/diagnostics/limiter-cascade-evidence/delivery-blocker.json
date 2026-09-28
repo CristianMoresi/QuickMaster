@@ -1,0 +1,16 @@
+{
+  "status": "RESOLVED_AFTER_USER_AUTHORIZED_RETRY",
+  "resolvedAt": "2026-09-28T13:16:18+02:00",
+  "resolutionEvidence": "installed/local-independent-verification.json",
+  "checkedAt": "2026-09-28T02:14:20+02:00",
+  "candidateVersion": "1.3.2",
+  "candidateJarSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+  "installedJarSha256": "0000ce9c21a4c38f47c361ea41e3762cfd50b22622240a9b9cef728f26f9079a",
+  "deploymentScriptStarted": false,
+  "error": "Windows Start-Process -Verb RunAs: El usuario ha cancelado la operación.",
+  "elevationRetried": true,
+  "newReleasePublished": false,
+  "previousReleaseDeleted": false,
+  "pushPerformed": false,
+  "nextStep": "Complete installed performance acceptance before publication; the original canceled attempt did not modify the installation."
+}

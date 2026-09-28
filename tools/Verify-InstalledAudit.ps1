@@ -66,6 +66,11 @@ try {
         Run-Probe 'live-edit' 'LiveEditPublicationAudit' @() @('LIVE_EDIT_PUBLICATION_PASS')
         Run-Probe 'slots' 'SlotPublicationAudit' @() @('SLOT_PUBLICATION_PASS.*metersFollowPcm=true')
         Run-Probe 'ab-cache-isolation' 'AbCacheIsolationAudit' @() @('AB_CACHE_ISOLATION_PASS cases=9 allRawBitExact=true')
+        Run-Probe 'limiter-cascade-ui' 'LimiterCascadeUiAudit' @($byNow,(Join-Path $run 'limiter-ui')) @('LIMITER_UI_PASS pushUnchanged=true fixedReference=true stagedColdExact=true')
+        foreach ($song in @('By Now.wav','Quiet Gold.wav','Billie Jean (80s Glam Metal).wav','Wicked Game (80s Synthwave).wav')) {
+            $name='limiter-cascade-'+($song -replace '[^a-zA-Z0-9]','-')
+            Run-Probe $name 'LimiterCascadeDiagnostic' @((Join-Path $PrivateAudioDirectory $song),'--assert') @('LIMITER_CASCADE_PASS cases=4 fixedReference=true pushUnchanged=true finite=true')
+        }
         Run-Probe 'presets' 'PresetAudit' @() @('PRESET_AUDIT failures=0')
         Run-Probe 'controls' 'ControlWiringAudit' @() @('CONTROL_AUDIT failures=0')
         Run-Probe 'eq-controls' 'EqControlAudit' @() @('EQ_CONTROL_AUDIT failures=0')

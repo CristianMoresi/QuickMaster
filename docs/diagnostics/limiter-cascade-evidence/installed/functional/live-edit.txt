@@ -1,0 +1,4 @@
+sept 28, 2026 1:17:11 P.�M. com.sun.javafx.application.PlatformImpl startup
+ADVERTENCIA: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @27d4a09'
+LIVE_EDIT_PUBLICATION initialPeakDb=-6.215206 pendingPeakDb=-6.215206 writes=32 errors=[]
+LIVE_EDIT_PUBLICATION_PASS

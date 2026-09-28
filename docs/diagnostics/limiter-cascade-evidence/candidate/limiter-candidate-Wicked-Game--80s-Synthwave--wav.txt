@@ -1,0 +1,11 @@
+JAR file:/E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/limiter-1.3.2-20260928/image/QuickMaster/app/quickmaster.jar
+SOURCE D:/StyleShift AI/SSAI Masters/POST-YOUTUBE/Wicked Game (80s Synthwave).wav rmsDb=-17.508379261924215 truePeakDb=-4.342166351859069
+CASCADE mbPush=0.0 bbPush=3.0 mbRms=-17.508379 mbTP=-4.342166 bbAnalyzedTP=-4.342166 bbRms=-15.148556 bbTP=-4.342169 bbDeepest=-3.000051 bbMean=-0.415236 normalizationGain=3.342169 normalizedRms=-11.806387
+CEILING reference=0.606585022 actual=0.606584853 safetyTrimDb=-0.000051120
+CASCADE mbPush=1.0 bbPush=3.0 mbRms=-16.513062 mbTP=-3.342166 bbAnalyzedTP=-3.342166 bbRms=-14.720339 bbTP=-4.342168 bbDeepest=-4.000071 bbMean=-0.826700 normalizationGain=3.342168 normalizedRms=-11.378171
+CEILING reference=0.606585022 actual=0.606584894 safetyTrimDb=-0.000070165
+CASCADE mbPush=3.0 bbPush=3.0 mbRms=-14.703048 mbTP=-1.480716 bbAnalyzedTP=-1.480716 bbRms=-14.164219 bbTP=-4.342168 bbDeepest=-5.861521 bbMean=-1.855495 normalizationGain=3.342168 normalizedRms=-10.822051
+CEILING reference=0.606585022 actual=0.606584922 safetyTrimDb=-0.000070080
+CASCADE mbPush=6.0 bbPush=3.0 mbRms=-12.455699 mbTP=1.321883 bbAnalyzedTP=1.321883 bbRms=-13.737194 bbTP=-4.342168 bbDeepest=-8.664130 bbMean=-3.562968 normalizationGain=3.342168 normalizedRms=-10.395025
+CEILING reference=0.606585022 actual=0.606584890 safetyTrimDb=-0.000080314
+LIMITER_CASCADE_PASS cases=4 fixedReference=true pushUnchanged=true finite=true

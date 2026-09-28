@@ -1,0 +1,15 @@
+Sep 28, 2026 1:26:48 PM com.sun.javafx.application.PlatformImpl startup
+WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @42f8285e'
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+AB_CONFIGURATION {"version":1,"autoEqOn":false,"autoEqAmount":0.2,"autoEqTarget":"PINK","autoEqAttackSec":0.1,"autoEqReleaseSec":0.4,"eqOn":true,"bands":[],"fadeInSec":0.0,"fadeOutSec":0.0,"fadeType":"LINEAR","dynamicsOn":true,"peakCompOn":true,"peakCompTargetDb":-2.0,"beatCompOn":true,"beatCompTargetDb":-1.0,"beatNote":"QUARTER","levelerOn":true,"leveling":0.8,"levelerSpeed":0.5,"punchOn":true,"punchAmountDb":0.5,"dynamicsOrder":["peak","beat","leveler","punch"],"clipOn":true,"softClipOn":true,"softClipDb":1.0,"softClipAlgo":"TUBE","hardClipOn":true,"hardClipDb":1.0,"hardClipCurve":"HARD","limitOn":true,"mbPushDb":[1.0,1.0,1.0,1.0],"bbPushDb":0.0,"normalizerOn":true,"normalizerTargetDbtp":-0.1,"osOn":false,"osFactor":4,"chainOrder":["EQ","Dynamics","Clip","Limit"]}
+AB_READY first-identical-B audioSec=0.009973 rendered=false
+AB_COLD_EXACT edited-B coldSec=7.773965 rawBitDifferences=0 changedSamples=26880001
+AB_READY cached-A audioSec=0.006587 rendered=false
+AB_READY uncached-B-0 audioSec=6.212419 rendered=true
+AB_COLD_EXACT uncached-B coldSec=6.609013 rawBitDifferences=0 changedSamples=26880001
+AB_READY cached-A-0 audioSec=0.005329 rendered=false
+AB_READY uncached-B-1 audioSec=8.458694 rendered=true
+AB_READY cached-A-1 audioSec=0.005408 rendered=false
+AB_READY uncached-B-2 audioSec=7.537144 rendered=true
+AB_READY cached-A-2 audioSec=0.004335 rendered=false
+AB_PREPARATION_PASS coldFreshController=true bitExact=true

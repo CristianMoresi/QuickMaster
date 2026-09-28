@@ -3,6 +3,8 @@ package com.quickmaster.processing;
 import com.dspark.core.OversamplingEngine;
 import com.quickmaster.audio.AudioFile;
 import com.quickmaster.processing.dynamics.leveler.CancellationToken;
+import com.quickmaster.processing.limit.MultibandLimiterProcessor;
+import com.quickmaster.processing.limit.BroadbandLimiterProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -264,6 +266,14 @@ public class ProcessingPipeline
         {
             checkCancelled(cancellation);
             AudioProcessor p = processors.get(i);
+            if (p instanceof BroadbandLimiterProcessor broadband) {
+                // Limit is a serial pair with ONE pre-multiband peak reference.
+                // Reset on every render: no reference survives a source/routing
+                // change, and standalone/bypassed multiband uses current input.
+                broadband.setCeilingReference(i > 0
+                        && processors.get(i - 1) instanceof MultibandLimiterProcessor multiband
+                        && multiband.isEnabled() ? multiband.getInputTruePeak() : Double.NaN);
+            }
             if (p.usesAnalysis() && (p.isEnabled() || p.analyzeWhenBypassed()))
             {
                 p.analyze(current, channels, cancellation);

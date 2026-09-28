@@ -98,9 +98,9 @@ Saturation is one of the most useful mastering tools, for two reasons: shaving p
 
 ### Limit (the final touch)
 
-An automatic two-stage **true-peak** limiter: a linear-phase multiband stage (four bands, each with its own Push) followed by a broadband brickwall (ITU-R BS.1770). It runs fully oversampled, so the limiting and the inter-sample peaks stay clean. This is the last bit of loudness and the final output ceiling.
+An offline two-stage limiter: a linear-phase multiband stage (four bands, each with its own Push) feeds the broadband true-peak-aware limiter **in series**. Both use smooth lookahead and calibrated release. Broadband's ceiling is anchored to the signal **before Multiband**, so band edits cannot raise its reference and cancel their own effect through output normalization.
 
-A **Push** control says how many dB the loudest peak should come down; quieter peaks move proportionally less and the body is lifted toward the ceiling, so the result is denser and louder with the peak held exactly.
+Band **Push** adds drive while holding each band's original peak. Broadband **Push** adds input gain to the already processed multiband signal; it is not a maximum-GR setting. Its knob never changes when bands change, and its meter shows the actual attenuation, which can exceed Push when the bands have already added drive. At zero broadband Push the stage still catches multiband peaks above the shared reference. The base-rate float output is checked for newly created inter-sample peaks; the separate **Peak Normalizer** measures the final waveform after oversampling/sample-rate conversion and sets the delivery ceiling. Multiband processing can change phase cancellation and timbre, so instantaneous GR is signal-dependent, not required to increase at every sample.
 
 ### Output
 

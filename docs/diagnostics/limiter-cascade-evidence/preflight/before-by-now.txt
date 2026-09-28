@@ -1,0 +1,6 @@
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+SOURCE D:/StyleShift AI/SSAI Masters/POST-YOUTUBE/By Now.wav rmsDb=-14.263389915145916 truePeakDb=-0.10000003646607597
+CASCADE mbPush=0.0 bbPush=3.0 mbRms=-14.263390 mbTP=-0.100000 bbAnalyzedTP=-0.100000 bbRms=-11.405394 bbTP=-0.006359 bbDeepest=-3.000000 bbMean=-0.024139 normalizationGain=-0.993641 normalizedRms=-12.399035
+CASCADE mbPush=1.0 bbPush=3.0 mbRms=-13.266763 mbTP=0.900000 bbAnalyzedTP=0.900000 bbRms=-10.405532 bbTP=0.993641 bbDeepest=-3.000000 bbMean=-0.023678 normalizationGain=-1.993641 normalizedRms=-12.399172
+CASCADE mbPush=3.0 bbPush=3.0 mbRms=-11.434383 mbTP=2.900001 bbAnalyzedTP=2.900001 bbRms=-8.499729 bbTP=2.993641 bbDeepest=-3.000000 bbMean=-0.012099 normalizationGain=-3.993641 normalizedRms=-12.493369
+CASCADE mbPush=6.0 bbPush=3.0 mbRms=-9.063919 mbTP=5.171030 bbAnalyzedTP=5.171030 bbRms=-6.096887 bbTP=5.238242 bbDeepest=-3.000000 bbMean=-0.007664 normalizationGain=-6.238242 normalizedRms=-12.335129

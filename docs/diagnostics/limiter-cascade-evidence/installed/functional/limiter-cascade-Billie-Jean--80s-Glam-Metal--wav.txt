@@ -1,0 +1,11 @@
+JAR file:/C:/Program%20Files/QuickMaster/app/quickmaster.jar
+SOURCE D:\StyleShift AI\SSAI Masters\POST-YOUTUBE\Billie Jean (80s Glam Metal).wav rmsDb=-13.427854953809293 truePeakDb=-0.001473520929174593
+CASCADE mbPush=0.0 bbPush=3.0 mbRms=-13.427855 mbTP=-0.001474 bbAnalyzedTP=-0.001474 bbRms=-11.089493 bbTP=-0.001476 bbDeepest=-3.000043 bbMean=-0.466048 normalizationGain=-0.998524 normalizedRms=-12.088017
+CEILING reference=0.999830369 actual=0.999830094 safetyTrimDb=-0.000043355
+CASCADE mbPush=1.0 bbPush=3.0 mbRms=-12.432601 mbTP=0.998522 bbAnalyzedTP=0.998522 bbRms=-10.576509 bbTP=-0.001475 bbDeepest=-4.000049 bbMean=-0.844134 normalizationGain=-0.998525 normalizedRms=-11.575034
+CEILING reference=0.999830369 actual=0.999830152 safetyTrimDb=-0.000052741
+CASCADE mbPush=3.0 bbPush=3.0 mbRms=-10.545604 mbTP=2.996801 bbAnalyzedTP=2.996801 bbRms=-9.928903 bbTP=-0.001475 bbDeepest=-5.998332 bbMean=-1.907008 normalizationGain=-0.998525 normalizedRms=-10.927428
+CEILING reference=0.999830369 actual=0.999830193 safetyTrimDb=-0.000057857
+CASCADE mbPush=6.0 bbPush=3.0 mbRms=-8.427679 mbTP=5.369369 bbAnalyzedTP=5.369369 bbRms=-9.541067 bbTP=-0.001475 bbDeepest=-8.370909 bbMean=-3.585069 normalizationGain=-0.998525 normalizedRms=-10.539592
+CEILING reference=0.999830369 actual=0.999830183 safetyTrimDb=-0.000066686
+LIMITER_CASCADE_PASS cases=4 fixedReference=true pushUnchanged=true finite=true

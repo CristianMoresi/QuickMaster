@@ -44,7 +44,7 @@ Después de que la suite completa pase:
 ```powershell
 .\mvnw.cmd -q dependency:copy-dependencies '-DincludeScope=runtime' '-DoutputDirectory=target/app'
 Copy-Item -LiteralPath target/quickmaster.jar -Destination target/app/quickmaster.jar
-& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.3.1 `
+& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.3.2 `
   --vendor 'Cristian Moresi' --input target/app --main-jar quickmaster.jar `
   --main-class com.quickmaster.Launcher --icon docs/icon.ico `
   --add-modules java.base,java.desktop,java.scripting,java.sql,java.logging,java.xml,java.prefs,java.management,java.naming,jdk.jfr,jdk.unsupported,jdk.zipfs,jdk.localedata `

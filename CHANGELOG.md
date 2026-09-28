@@ -7,6 +7,29 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-09-28
+
+### Fixed
+- Multiband now feeds the broadband limiter against a shared pre-multiband
+  peak reference. Band drive no longer raises the broadband ceiling and then
+  gets cancelled by output normalization. Broadband Push remains independent;
+  its GR meter reports actual attenuation, including upstream band drive.
+- Offline limiting uses smooth full-lookahead attack and calibrated release,
+  with verification of the resulting float true peaks, including file tails.
+- A/B preparation reuses only exact approved audio and invalidates both slots
+  after shared tempo or Leveler exclusion changes.
+
+### Added
+- Upward-only macro RMS Leveler with editable red waveform exclusions,
+  undo/redo, per-source persistence and crop/delete-aware region mapping.
+- Waveform follows the published processed audio, including limiting; Bypass
+  displays the original and cached A/B switches restore the matching waveform.
+
+### Changed
+- Portable packages use the validated core JAR and Java 25 runtime. This release
+  supersedes the withdrawn 1.3.1 release; it also includes the intervening DSP,
+  playback, export and analysis corrections verified in the local product audit.
+
 ## [1.3.1] - 2026-09-27
 
 ### Added

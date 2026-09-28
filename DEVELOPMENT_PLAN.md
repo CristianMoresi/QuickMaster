@@ -1,6 +1,44 @@
 # QuickMaster — desarrollo y cierre
 
-## Encargo vigente: Leveler ascendente, exclusiones y comparación A/B
+## Encargo vigente: cascada del limitador y release 1.3.2
+
+Fallo reproducido en By Now: la referencia de pico del broadband subía con
+el multibanda y el normalizador anulaba gran parte del resultado. Corregido
+con referencia común anterior al multibanda, detector posterior y Push
+independiente. Nueva envolvente offline suave con ataque completo y release
+calibrado; medidor sin tope artificial y verificación de true peak renderizado.
+
+Preflight: tests DSP/cascada y UI real aprobados, 30 combinaciones de salida
+rate/canales/oversampling hasta 16x. By Now, Push general 3 dB fijo, bandas
+0 -> 3 dB: RMS normalizado +1,154223 dB; techo final -1 dBTP. DSPark: 129 tests.
+Suite completa 1.3.2 aprobada: 841 tests, 106 variantes musicales y 94 lecturas
+oficiales; portable Java 25 generado. Tras autorización del usuario para
+reintentar UAC, entrega local completada a las 13:16: 201 archivos idénticos
+y arranque limpio del EXE también sin elevación. Aceptación instalada aprobada:
+34 sondas funcionales (291 tests), 48 casos musicales y 4 de rendimiento.
+Faltan push y publicación. El usuario
+autoriza sustituir el release erróneo v1.3.1 cuando esté comprobado el nuevo;
+no borrar otros releases/tags. Se respalda el anterior antes de retirarlo.
+
+Checkpoint histórico 28-09-2026 02:14: no commit/push/release nuevo ni eliminación del
+anterior. Para continuar hace falta indicación del usuario para reintentar la
+copia elevada. JAR nuevo: `ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4`.
+Imagen: `dist/limiter-1.3.2-20260928/image/QuickMaster`. Las pruebas del portable
+candidato con By Now, Quiet Gold, Billie Jean y Wicked Game pasan; la aceptación
+instalada posterior también está aprobada. Pasos restantes y respaldo en el informe.
+
+Resultado instalado: +1,154223 dB RMS en By Now con bandas 0 -> 3 dB y Push
+general fijo en 3 dB; techo -1 dBTP y PCM exacto frente al render nuevo.
+A/B idéntico: 10 ms; A en caché: 4–7 ms. B sin caché: mediana 7,537 s;
+Leveler aislado: 1,444 s; cadena completa: mediana 7,168 s (tres repeticiones,
+máximo 12,363 s). No se afirma mejora de velocidad sin caché frente a la
+entrega anterior. Memoria estable en 30 ediciones; métricas completas en el informe.
+
+Detalles: `docs/diagnostics/limiter-cascade-audit.md`. Se conserva el checkout
+principal antiguo con sus modificaciones previas; no se usa reset ni se
+sobrescribe ese trabajo para actualizar GitHub.
+
+## Entrega anterior: Leveler ascendente, exclusiones y comparación A/B
 
 Contrato: acercar los pasajes débiles al RMS sostenido más fuerte sin superarlo,
 sin reducciones ni trim global dentro del Leveler. Exclusiones pintadas en rojo

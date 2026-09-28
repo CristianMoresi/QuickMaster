@@ -1,0 +1,16 @@
+Sep 28, 2026 1:19:49 PM com.sun.javafx.application.PlatformImpl startup
+WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @71870da7'
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by com.sun.marlin.OffHeapArray (file:/C:/Program%20Files/QuickMaster/app/javafx-graphics-21.0.11-win.jar)
+WARNING: Please consider reporting this to the maintainers of class com.sun.marlin.OffHeapArray
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+EXCLUSION_PCM_PASS protectedRawExact=2304000 boostedSamples=13095527 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=4032000 boostedSamples=12433321 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=4032000 boostedSamples=12433321 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=4032000 boostedSamples=12433321 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=4032000 boostedSamples=12433321 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=3888000 boostedSamples=12456313 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=2928000 boostedSamples=5117385 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=1128000 boostedSamples=7005769 gainNeverNegative=true
+EXCLUSION_PCM_PASS protectedRawExact=3888000 boostedSamples=12456313 gainNeverNegative=true
+EXCLUSION_UI_PASS englishControls=true dragResizeUndoRedo=true cancel=true zoom=true persistence=true slots=true contextMenu=true numericBounds=true cropDeleteUndo=true batchIsolated=true sourceUnchanged=true
