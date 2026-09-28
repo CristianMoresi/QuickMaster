@@ -1,0 +1,15 @@
+{
+  "status": "REPLACED_AND_VERIFIED",
+  "newReleaseId": 398187027,
+  "newRelease": "v1.3.2",
+  "newReleaseUrl": "https://github.com/CristianMoresi/QuickMaster/releases/tag/v1.3.2",
+  "sourceCommit": "c83e1e16374ad75f0002258293d974a583654122",
+  "workflowId": 36416101957,
+  "previousReleaseId": 397553232,
+  "previousRelease": "v1.3.1",
+  "previousReleaseDeleted": true,
+  "previousTagRetained": true,
+  "backupDirectory": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/release-backup-v1.3.1-20260928",
+  "backupAssets": 5,
+  "completedAt": "2026-09-28T13:36:27.2153388+02:00"
+}

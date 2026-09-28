@@ -1,6 +1,6 @@
 # QuickMaster — desarrollo y cierre
 
-## Encargo vigente: cascada del limitador y release 1.3.2
+## Entrega completada: cascada del limitador y release 1.3.2
 
 Fallo reproducido en By Now: la referencia de pico del broadband subía con
 el multibanda y el normalizador anulaba gran parte del resultado. Corregido
@@ -16,16 +16,22 @@ oficiales; portable Java 25 generado. Tras autorización del usuario para
 reintentar UAC, entrega local completada a las 13:16: 201 archivos idénticos
 y arranque limpio del EXE también sin elevación. Aceptación instalada aprobada:
 34 sondas funcionales (291 tests), 48 casos musicales y 4 de rendimiento.
-Faltan push y publicación. El usuario
-autoriza sustituir el release erróneo v1.3.1 cuando esté comprobado el nuevo;
-no borrar otros releases/tags. Se respalda el anterior antes de retirarlo.
+Commit `c83e1e1` en main, autor único Cristian Moresi; release 1.3.2 publicado.
+CI Windows/macOS/Linux aprobado y tres ZIP descargados/verificados. El portable
+Windows del release está entregado en Program Files: 201 archivos idénticos,
+19 JAR iguales a los probados y arranque limpio sin elevación. Release 1.3.1
+retirado tras verificar 1.3.2; tag histórico y cinco assets respaldados se conservan.
+
+Release: https://github.com/CristianMoresi/QuickMaster/releases/tag/v1.3.2
+Workflow: https://github.com/CristianMoresi/QuickMaster/actions/runs/36416101957
+Entrega final: 28-09-2026 13:36. No quedan pasos pendientes de este encargo.
 
 Checkpoint histórico 28-09-2026 02:14: no commit/push/release nuevo ni eliminación del
-anterior. Para continuar hace falta indicación del usuario para reintentar la
-copia elevada. JAR nuevo: `ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4`.
+anterior. Ese bloqueo quedó resuelto tras la autorización expresa del usuario
+para reintentar la copia elevada. JAR: `ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4`.
 Imagen: `dist/limiter-1.3.2-20260928/image/QuickMaster`. Las pruebas del portable
 candidato con By Now, Quiet Gold, Billie Jean y Wicked Game pasan; la aceptación
-instalada posterior también está aprobada. Pasos restantes y respaldo en el informe.
+instalada posterior también está aprobada. Historial y respaldo en el informe.
 
 Resultado instalado: +1,154223 dB RMS en By Now con bandas 0 -> 3 dB y Push
 general fijo en 3 dB; techo -1 dBTP y PCM exacto frente al render nuevo.

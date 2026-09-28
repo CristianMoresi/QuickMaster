@@ -1,0 +1,4 @@
+ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4  QuickMaster-core-1.3.2.jar
+01ba7c4c4daa0d2b17993323583fbb1d66af3725b7646869e348eb99d3dab939  QuickMaster-linux-1.3.2.zip
+5d57a07df3f8c4046d8c4af3ca4c5fd21ce4819425074d8ba82c8af7736a3fe3  QuickMaster-macos-1.3.2.zip
+a2c6a41e84d758fc8598cbd9a6c15d602917fbe409bf47d615e0fc7ad576cf41  QuickMaster-windows-1.3.2.zip

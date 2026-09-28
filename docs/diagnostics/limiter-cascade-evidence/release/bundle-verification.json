@@ -1,0 +1,26 @@
+[
+  {
+    "asset": "QuickMaster-linux-1.3.2.zip",
+    "sha256": "01ba7c4c4daa0d2b17993323583fbb1d66af3725b7646869e348eb99d3dab939",
+    "coreSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+    "dsparkSha256": "4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382",
+    "runtime": "JAVA_VERSION=\"25.0.4.1\"\nMODULES=\"java.base java.datatransfer java.xml java.prefs java.desktop java.logging java.management java.security.sasl java.naming java.scripting java.transaction.xa java.sql jdk.jfr jdk.localedata jdk.unsupported jdk.zipfs\"",
+    "status": "VERIFIED"
+  },
+  {
+    "asset": "QuickMaster-macos-1.3.2.zip",
+    "sha256": "5d57a07df3f8c4046d8c4af3ca4c5fd21ce4819425074d8ba82c8af7736a3fe3",
+    "coreSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+    "dsparkSha256": "4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382",
+    "runtime": "JAVA_VERSION=\"25.0.4.1\"\nMODULES=\"java.base java.datatransfer java.xml java.prefs java.desktop java.logging java.management java.security.sasl java.naming java.scripting java.transaction.xa java.sql jdk.jfr jdk.localedata jdk.unsupported jdk.zipfs\"",
+    "status": "VERIFIED"
+  },
+  {
+    "asset": "QuickMaster-windows-1.3.2.zip",
+    "sha256": "a2c6a41e84d758fc8598cbd9a6c15d602917fbe409bf47d615e0fc7ad576cf41",
+    "coreSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+    "dsparkSha256": "4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382",
+    "runtime": "JAVA_VERSION=\"25.0.4.1\"\r\nMODULES=\"java.base java.datatransfer java.xml java.prefs java.desktop java.logging java.management java.security.sasl java.naming java.scripting java.transaction.xa java.sql jdk.jfr jdk.localedata jdk.unsupported jdk.zipfs\"",
+    "status": "VERIFIED"
+  }
+]

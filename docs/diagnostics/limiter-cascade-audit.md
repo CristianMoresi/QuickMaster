@@ -1,7 +1,8 @@
 # Limiter cascade audit and 1.3.2 delivery plan
 
-Status: 1.3.2 deployed and all installed acceptance passed; publication pending.
-No new release published or old release removed yet.
+Status: 1.3.2 published and delivered; all installed acceptance passed.
+Erroneous release 1.3.1 removed after the replacement was verified; its tag and
+verified local backup are retained. Completed 2026-09-28 13:36 +02:00.
 
 ## Reproduction and cause
 
@@ -162,3 +163,28 @@ has completed; no release has been published or removed yet.
   immediate; no uncached speed-up or human listening is claimed.
 - Complete logs, summaries, screenshot and measured timing samples are under
   `limiter-cascade-evidence/installed/`; build/preflight evidence is alongside it.
+
+## Published release and final Windows delivery
+
+- [QuickMaster 1.3.2](https://github.com/CristianMoresi/QuickMaster/releases/tag/v1.3.2)
+  is public/latest, with three portable ZIPs, the qualified core JAR and SHA-256
+  checksums. Tag source: `c83e1e16374ad75f0002258293d974a583654122`, pushed to
+  `main` with Cristian Moresi as sole author/committer.
+- [Release workflow 36416101957](https://github.com/CristianMoresi/QuickMaster/actions/runs/36416101957)
+  passed Windows, macOS and Linux packaging and bound-JAR checks. All three
+  downloaded ZIPs match GitHub asset digests and contain the exact qualified
+  core and DSPark JARs. CI used Temurin 25.0.4.1 runtime; the audited core was
+  compiled/tested using the pinned local Temurin 25.0.4.7 build.
+- The **downloaded Windows release**, not merely the local staging image, is
+  now in `C:/Program Files/QuickMaster`. All 201 files match its ZIP; all 19
+  application/dependency JARs also match the locally tested portable. Both
+  elevated and independent normal-user EXE starts are clean. Backup of the
+  preceding local image: `C:/Program Files/QuickMaster-backup-20260928-133426`.
+- Release 1.3.1 (ID 397553232) was deleted only after 1.3.2 publication and
+  asset verification. Its API now returns 404; historical tag `v1.3.1` remains.
+  All five old assets and metadata are recoverable from
+  `dist/release-backup-v1.3.1-20260928` and were rechecked before deletion.
+- Receipts, bundle hashes and clean-startup logs are under
+  `limiter-cascade-evidence/release/`. Native interactive macOS/Linux operation
+  and human listening were not performed. CI reports maintenance warnings for
+  older checkout/setup-java actions; all packaging jobs completed successfully.

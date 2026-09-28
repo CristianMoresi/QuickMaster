@@ -1,0 +1,9 @@
+{
+  "status": "DOWNLOADED_WINDOWS_IMAGE_AND_NORMAL_STARTUP_PASS",
+  "filesCompared": 201,
+  "qualifiedApplicationJarsCompared": 19,
+  "jarSha256": "ca98526f824cb76fd6e984e0fcde766bc6f120592a42646a6f34d9b7fac64ad4",
+  "runtime": "JAVA_VERSION=\"25.0.4.1\"\r\nMODULES=\"java.base java.datatransfer java.xml java.prefs java.desktop java.logging java.management java.security.sasl java.naming java.scripting java.transaction.xa java.sql jdk.jfr jdk.localedata jdk.unsupported jdk.zipfs\"",
+  "startupLog": "2026-09-28 13:35:16 INFO  Application starting (JavaFX).\r\n2026-09-28 13:35:16 INFO  Controller initialised.",
+  "checkedAt": "2026-09-28T13:35:16.8966764+02:00"
+}
