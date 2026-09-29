@@ -17,7 +17,8 @@ mediante su tag y el flujo de empaquetado verificado.
 
 La aplicación de uso está en `C:/Program Files/QuickMaster/QuickMaster.exe`.
 Es portable, sin instalador. La imagen de esta entrega está en
-`dist/mono-monitor-20260929/image/QuickMaster/`.
+`dist/release-1.3.3-20260929/windows-image/QuickMaster/`, extraída del ZIP de
+Windows del release. Resultados: `docs/releases/1.3.3-validation.md`.
 
 ## Qué se conservó al ordenar
 

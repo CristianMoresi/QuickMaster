@@ -1,6 +1,29 @@
 # QuickMaster — desarrollo y cierre
 
-## Publicación en main (29-09-2026)
+## Estado vigente: release 1.3.3 (29-09-2026)
+
+Release aprobado: versión Maven `1.3.3`, tag `v1.3.3` sobre
+`8b838f0818c49d9504f79b44580ae49f73c1fbd2`, en `main`. Sin cambios de DSP/UI
+respecto al desarrollo aceptado: 224 entradas compiladas/de recursos idénticas.
+README abreviado para nuevos usuarios, explicación del compresor conservada,
+badges visibles, captura `docs/gui.png` y About actualizados.
+
+Repetidos 921 tests completos y 140 de DSPark sin fallos/errores/skips. CI de las
+tres plataformas aprobado; los ZIP descargados contienen el JAR validado:
+`8be294d7346d33c61d2df1b8cc7cbfdc8e68ae8093ad50a9293ae07a8d1fcd8a`.
+El ZIP de Windows está desplegado en Program Files (201 archivos verificados,
+arranque limpio 17:43:35). Pasan 371 tests del JAR instalado, UI real, escucha
+mono mediante PCM16 silencioso, Leveler completo con By Now/Quiet Gold,
+generación estéreo y seis rutas con oversampling/limitación. Sin escucha humana
+ni ejecución gráfica local de macOS/Linux atribuida a estas pruebas.
+
+La publicación conserva a Cristian Moresi como único autor; no se distribuye
+audio privado ni señales licenciadas. Evidencia y alcance:
+`docs/releases/1.3.3-validation.md`, `dist/release-1.3.3-20260929/`.
+Respaldo anterior: `C:/Program Files/QuickMaster-backup-20260929-174332`.
+Los apartados siguientes son el historial de las entregas anteriores.
+
+## Publicación previa en main (29-09-2026)
 
 El usuario autoriza commit y push del conjunto verificado. README y changelog
 unificados con el estado actual de Stereo Image, EQ interactiva, DSPark 0.2.3,
@@ -11,7 +34,7 @@ Los audios privados, corpus oficiales, respaldos y artefactos de `dist/target`
 permanecen fuera del commit. La investigación versionada contiene mediciones
 numéricas y procedencia pública, nunca PCM ni grabaciones.
 
-## Estado vigente: escucha mono y controles Stereo Image (29-09-2026)
+## Entrega previa: escucha mono y controles Stereo Image (29-09-2026)
 
 Entrega terminada: eliminados los diálogos de los valores Low Cut/Side Gain;
 son etiquetas y el ajuste sigue en los sliders. Generation inicia y se
@@ -671,5 +694,6 @@ La regresión del Leveler, la revisión de Beat Comp, zoom/pan, la optimización
 y la migración auditada DSPark 0.2 están implementadas, probadas y entregadas
 localmente. Program Files contiene el portable final y supera la aceptación
 instalada. No queda trabajo obligatorio de este alcance pendiente de entrega.
-No hay nuevo release, commit ni push. La escucha humana y el reconocimiento
-infalible de intención musical no se sustituyen ni se afirman mediante estas pruebas.
+La publicación posterior queda registrada al inicio de este documento. La
+escucha humana y el reconocimiento infalible de intención musical no se
+sustituyen ni se afirman mediante estas pruebas.
