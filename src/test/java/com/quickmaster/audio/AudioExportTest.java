@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class AudioExportTest {
     @TempDir Path dir;
 
-    @Test void sameDestinationRetainsOriginalTagsBeforeCommittingNewAudio() throws Exception {
+    @Test void sameDestinationCommitsOnlyNewlyEncodedBytesWithoutCopyingOldTags() throws Exception {
         Path target = dir.resolve("original.mp3");
-        byte[] original = MetadataPreserverTest.taggedMp3((byte) 42);
+        byte[] original = "ID3 original metadata and audio TAG".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
         Files.write(target, original);
         AudioFile candidate = new WavFile("unused") {
             @Override public void save(String path) throws AudioFileException {
@@ -22,9 +22,7 @@ class AudioExportTest {
             }
         };
         AudioExport.write(candidate, target.toString(), target.toString());
-        byte[] expected = original.clone();
-        expected[11] = 9; expected[12] = 8; expected[13] = 7;
-        assertArrayEquals(expected, Files.readAllBytes(target));
+        assertArrayEquals(new byte[]{9, 8, 7}, Files.readAllBytes(target));
         try (var files = Files.list(dir)) { assertEquals(1, files.count()); }
     }
 

@@ -1531,7 +1531,6 @@ public class MainController
 
         final int srcRate = loadedFile.getSampleRate();
         final int ch = loadedFile.getChannels();
-        final String sourcePath = loadedFile.getFilePath();
         final float[] src = loadedFile.getSamples().clone();   // the (possibly trimmed) editable audio
         final int os = oversampling;
 
@@ -1561,8 +1560,8 @@ public class MainController
                 AudioFile output = exportAsMp3
                         ? new Mp3File(path, settings.sampleRate(), ch, out, settings.kbps(), false)
                         : new WavFile(path, settings.sampleRate(), ch, out, settings.bitDepth(), settings.isFloat());
-                // Capture source identity on FX; keep source tags until the final atomic commit.
-                AudioExport.write(output, sourcePath, path);
+                // Encoders create only fresh export metadata before the atomic commit.
+                AudioExport.write(output, path);
                 return null;
             }
         };
@@ -6130,7 +6129,7 @@ public class MainController
                         AudioFile output = settings.mp3()
                                 ? new Mp3File(outPath, outRate, audio.getChannels(), out, settings.kbps(), false)
                                 : new WavFile(outPath, outRate, audio.getChannels(), out, settings.bitDepth(), settings.isFloat());
-                        AudioExport.write(output, srcFile.getAbsolutePath(), outPath);
+                        AudioExport.write(output, outPath);
                         AppLogger.info("Batch export " + (index + 1) + " / " + n
                                 + " completed: " + outPath);
                     }

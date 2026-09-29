@@ -122,6 +122,8 @@ public abstract class AudioFile
      * Encodes the current sample array and writes it to the given
      * path using the format implemented by the subclass. If the
      * destination file already exists, it is overwritten.
+     * Export metadata is created from scratch: UTC encoding time and
+     * QuickMaster software credit only. Never transfer source metadata.
      *
      * @param filePath  destination path on disk
      * @throws AudioFileException if there are no samples to save or

@@ -323,7 +323,8 @@ public class WavFile extends AudioFile
         int frameSize = bytesPerSample * getChannels();
         long dataSize = (long) samples.length * bytesPerSample;
         int headerSize = isFloat ? 58 : 44; // IEEE float: WAVEFORMATEX + fact chunk.
-        long riffSize = headerSize - 8L + dataSize + (dataSize & 1);
+        byte[] metadata = ExportMetadata.now().wavInfoChunk();
+        long riffSize = headerSize - 8L + dataSize + (dataSize & 1) + metadata.length;
         long byteRate = (long) getSampleRate() * frameSize;
         if (riffSize > 0xffff_ffffL || byteRate > 0xffff_ffffL)
             throw new AudioFileException("Audio exceeds the 4 GiB RIFF/WAV limit.");
@@ -366,6 +367,7 @@ public class WavFile extends AudioFile
                     offset = end;
                 }
                 if ((dataSize & 1) != 0) out.write(0);
+                out.write(metadata);
             }
         });
     }

@@ -92,7 +92,7 @@ The final **Peak Normalizer** sets your delivery ceiling in **dBTP**. Select up 
 - **A/B** settings, original-signal **Bypass**, and playback-only **Listen in mono**.
 - Waveform **scroll to pan**, **Ctrl + scroll to zoom** (Command on macOS), looping and non-destructive trimming.
 - Reusable **presets**, undo/redo and **batch export**.
-- **WAV and MP3** import/export, sample-rate conversion, 16/24-bit dither and same-format metadata preservation.
+- **WAV and MP3** import/export, sample-rate conversion and 16/24-bit dither. Exports discard all source tags and create only a UTC export timestamp and “Made with QuickMaster by Cristian Moresi”.
 
 ## Build from source
 

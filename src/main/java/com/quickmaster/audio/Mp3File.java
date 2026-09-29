@@ -249,6 +249,9 @@ public class Mp3File extends AudioFile
             try (BufferedOutputStream out =
                          new BufferedOutputStream(Files.newOutputStream(staging)))
             {
+                // LameEncoder disables automatic ID3 writing. Add only our two
+                // fresh descriptive fields; leave encoder audio/timing frames intact.
+                out.write(ExportMetadata.now().mp3Tag());
                 int samplePosition = 0;
                 while (samplePosition < samples.length)
                 {

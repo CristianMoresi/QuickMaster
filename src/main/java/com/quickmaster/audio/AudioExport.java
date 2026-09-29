@@ -9,16 +9,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-/** File-level export transaction, including metadata before replacement. */
+/** Atomic export of a freshly encoded container. Source tags are never copied. */
 public final class AudioExport {
     private AudioExport() { }
 
-    public static void write(AudioFile output, String source, String destination) throws AudioFileException {
+    public static void write(AudioFile output, String destination) throws AudioFileException {
         AtomicAudioWrite.write(destination, stage -> {
             output.save(stage.toString());
             AtomicAudioWrite.checkCancelled();
-            MetadataPreserver.preserve(source, stage.toString());
         });
+    }
+
+    /** Compatibility entry point; source is deliberately ignored, never opened. */
+    public static void write(AudioFile output, String source, String destination) throws AudioFileException {
+        write(output, destination);
     }
 
     /** Preflight the entire batch before rendering or overwriting any file. */
