@@ -2,6 +2,7 @@ package com.quickmaster.processing.analysis;
 
 import com.dspark.analysis.OnsetDetector;
 import com.dspark.analysis.TempoEstimator;
+import com.dspark.analysis.SuperFluxOnsetDetector;
 
 /**
  * Per-track musical analysis shared by the tempo- and transient-aware
@@ -15,8 +16,8 @@ import com.dspark.analysis.TempoEstimator;
  * those are the only edits that move transients or change the tempo grid.
  * <p>
  * The result is read-only and cheap to share: a single instance is referenced
- * by every compressor that needs it, so the expensive FFT-based detection runs
- * just once rather than per compressor or per playback.
+ * by every compressor that needs it. The strong-pulse tempo and SuperFlux
+ * transient analyses each run once per source, never per knob or playback.
  * <p>
  * When {@link #isTempoReliable()} is {@code false}, the UI should let the user
  * type a BPM; {@link #setManualBpm(double)} overrides the detected value.
@@ -34,6 +35,8 @@ public final class TrackAnalysis
     private double[] onsetTimesSec = new double[0];
     private double[] onsetDurationsSec = new double[0];
     private float[] onsetStrengths = new float[0];
+    private SuperFluxOnsetDetector.Result transientOnsets =
+            new SuperFluxOnsetDetector.Result(new double[0],new double[0],new double[0],0,0);
 
     /**
      * Runs onset detection and tempo estimation over the whole signal.
@@ -51,6 +54,7 @@ public final class TrackAnalysis
             onsetTimesSec = new double[0];
             onsetDurationsSec = new double[0];
             onsetStrengths = new float[0];
+            transientOnsets = new SuperFluxOnsetDetector.Result(new double[0],new double[0],new double[0],0,0);
             detectedBpm = confidence = 0.0;
             if (!manualBpm) bpm = 0.0;
             return;
@@ -74,6 +78,12 @@ public final class TrackAnalysis
             novelty = onsets.getOdf();
             frameRate = onsets.getFrameRate();
         }
+        // Separate transient shaping from the audited strong-pulse tempo map.
+        // SuperFlux suppresses stationary-bin/vibrato fluctuations; merely
+        // lowering a local spectral-flux threshold amplifies them as attacks.
+        // Delta .01 (C++ default .03) retains the -31 dBFS transient corpus;
+        // stationary carriers and FM/AM are independently guarded at this value.
+        transientOnsets = new SuperFluxOnsetDetector().analyze(interleaved,channels,sampleRate,.01);
         TempoEstimator tempo = new TempoEstimator();
         tempo.estimate(novelty, frameRate);
 
@@ -108,6 +118,10 @@ public final class TrackAnalysis
         for (float sample : samples) if (!Float.isFinite(sample)) return false;
         return true;
     }
+
+    /** SuperFlux transient clock for Punch, independent of the tempo's strong-pulse gate. */
+    public double[] getTransientTimesSec() { return transientOnsets.times(); }
+    public double[] getTransientDurationsSec() { return transientOnsets.durations(); }
 
     /** Detected (or manually set) tempo in BPM; {@code 0} if unknown. */
     public double getBpm() { return bpm; }

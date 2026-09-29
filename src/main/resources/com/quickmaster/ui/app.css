@@ -660,3 +660,26 @@
 .leveler-exclude-toggle:focused {
     -fx-border-color: #ffc2c6;
 }
+
+/* Stereo Image: common geometry, integrated switches and shared trims. */
+.stereo-title { -fx-text-fill: #7bd8ce; -fx-font-size: 18px; -fx-font-weight: bold; }
+.stereo-status, .stereo-description { -fx-text-fill: #aeb8c5; -fx-font-size: 11px; }
+.stereo-target { -fx-text-fill: #91dcd4; -fx-font-size: 13px; }
+.stereo-meter { -fx-background-color: #202730; -fx-background-radius: 7; }
+.stereo-meter .progress-bar { -fx-accent: #63cabe; }
+.stereo-card { -fx-background-color: #242830; -fx-border-color: #3d4552; -fx-border-radius: 8; -fx-background-radius: 8; }
+.stereo-card:on { -fx-border-color: #52867f; }
+.stereo-card-title { -fx-text-fill: #edf2f8; -fx-font-size: 13px; -fx-font-weight: bold; }
+.stereo-gain-readout { -fx-text-fill: #91dcd4; -fx-font-size: 12px; }
+.stereo-trim { -fx-background-color: #20242c; -fx-background-radius: 7; }
+.stereo-trim .slider { -fx-accent: #63cabe; }
+.stereo-scale { -fx-text-fill: #a5afbd; -fx-font-size: 10px; }
+.stereo-notice { -fx-text-fill: #e6ba78; -fx-font-size: 11px; }
+.stereo-switch, .stereo-power { -fx-background-color: #303641; -fx-text-fill: #bec8d4; -fx-border-color: #596272; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 4 12; -fx-font-size: 11px; -fx-cursor: hand; }
+.stereo-switch { -fx-min-width: 48; }
+.stereo-power { -fx-min-width: 92; }
+.stereo-switch:selected, .stereo-power:selected { -fx-background-color: #214c48; -fx-text-fill: #c3f7ed; -fx-border-color: #64c8bc; }
+.stereo-switch:focused, .stereo-power:focused { -fx-border-color: #c3f7ed; }
+.stereo-value { -fx-text-fill: #91dcd4; -fx-padding: 3 8; -fx-font-size: 11px; }
+.mono-monitor { -fx-padding: 6 10; -fx-font-size: 12px; }
+.mono-monitor:selected { -fx-background-color: #245b75; -fx-border-color: #6ac9ee; -fx-text-fill: #e9faff; }

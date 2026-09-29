@@ -1,0 +1,2673 @@
+{
+  "status": "technical pilot only; not genre calibration",
+  "method_version": 3,
+  "track_count": 12,
+  "artist_project_counts": {
+    "StyleShift AI": 4,
+    "Scott Buckley": 1,
+    "KieLoBot": 1,
+    "Pamela Yuen": 2,
+    "Kevin MacLeod": 4
+  },
+  "decode_quality_counts": {
+    "clean": 12
+  },
+  "audio_seconds": 2642.2515364229025,
+  "analysis_seconds_excluding_probe_and_initial_hash": 23.657987000071444,
+  "max_astats_absolute_error_db": 8.885380502476892e-07,
+  "calibration_eligible_count": 0,
+  "tracks": [
+    {
+      "id": "by-now",
+      "artist": "StyleShift AI",
+      "source_sha256": "dcfb61d5d419bf6044bb0dd42fd7639659f33564c4b7ef9219cbf66798bf8e91",
+      "source_page": "User-supplied local production",
+      "permission": "user_owned_authorized",
+      "duration_s": 280.00002083333334,
+      "sample_rate": 48000,
+      "codec": "pcm_f32le",
+      "decode_quality": "clean",
+      "side_mid_db": -3.9231108839834175,
+      "astats_side_mid_db": -3.9231110000000022,
+      "astats_absolute_error_db": 1.1601658478355148e-07,
+      "elapsed_s": 2.473681100003887,
+      "all_active_windows": 186,
+      "p95_minus_10_windows": 165,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 186,
+          "states": {
+            "stereo": 186
+          },
+          "finite_ratio_windows": 186,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.496463300174737,
+            -4.106716055928143,
+            -2.800022386285826
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -21.890643400299325,
+          "selected_windows": 165,
+          "states": {
+            "stereo": 165
+          },
+          "finite_ratio_windows": 165,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.3896394589341226,
+            -4.068856271258032,
+            -2.807422279088795
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -31.890643400299325,
+          "selected_windows": 183,
+          "states": {
+            "stereo": 183
+          },
+          "finite_ratio_windows": 183,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.5403901665965005,
+            -4.107983722865453,
+            -2.8070565081380514
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -51.890643400299325,
+          "selected_windows": 186,
+          "states": {
+            "stereo": 186
+          },
+          "finite_ratio_windows": 186,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.496463300174737,
+            -4.106716055928143,
+            -2.800022386285826
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 185,
+          "states": {
+            "stereo": 185
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.7846897379847992,
+            "lr_balance_db": 0.6453226329469737,
+            "correlation_uncentered": 0.4112299187965381,
+            "mid_power": 0.017373899532567592,
+            "side_power": 0.0072682244787490285
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -11.08656558329043,
+            -4.010708361542687,
+            -2.8922850205352613
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 185,
+          "states": {
+            "stereo": 185
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.213977902355948,
+            "lr_balance_db": 0.6355128504518043,
+            "correlation_uncentered": 0.5386884335370642,
+            "mid_power": 0.0015001935689723466,
+            "side_power": 0.0004515953996438347
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -17.362473641522858,
+            -4.741802933669682,
+            -1.6084529885637124
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 185,
+          "states": {
+            "stereo": 185
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.9478002701499904,
+            "lr_balance_db": -0.6253422103414147,
+            "correlation_uncentered": 0.4267004325812242,
+            "mid_power": 0.0005359024395417819,
+            "side_power": 0.00021592638156615478
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -8.63917339275141,
+            -3.411704565729912,
+            -0.21733130416029833
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 185,
+          "states": {
+            "stereo": 185
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.4597040378807016,
+            "lr_balance_db": -0.8101929174619339,
+            "correlation_uncentered": 0.38015250096422804,
+            "mid_power": 0.00019167687580959878,
+            "side_power": 8.641702641854675e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.538124650408895,
+            -3.984624080066176,
+            -0.8932571972837257
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 185,
+          "states": {
+            "stereo": 185
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.931665099985932,
+            "lr_balance_db": -0.04066508613235828,
+            "correlation_uncentered": 0.424079249708985,
+            "mid_power": 0.006089320262546731,
+            "side_power": 0.0024626478063836782
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -7.203894920395563,
+            -3.8386475365609045,
+            -1.8275908634764373
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 185,
+          "states": {
+            "stereo": 185
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -4.624045758737343,
+            "lr_balance_db": 0.47671853356947896,
+            "correlation_uncentered": 0.48791921651299797,
+            "mid_power": 0.0010612623397700297,
+            "side_power": 0.0003659469881532621
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.23329324343023,
+            -4.825280039142533,
+            -2.2087436013833037
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 24000.0,
+          "valid_windows": 185,
+          "states": {
+            "stereo": 185
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.980421679605293,
+            "lr_balance_db": -0.07983871953918789,
+            "correlation_uncentered": 0.5970565616237313,
+            "mid_power": 0.00019228622672962472,
+            "side_power": 4.851834846335432e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -19.318657586042335,
+            -3.394447699846336,
+            -0.7890329154846152
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "quiet-gold",
+      "artist": "StyleShift AI",
+      "source_sha256": "cd6667b19b4c641b13b17ac3220b7ddbaeb4e9b390e907d59148a10fb944e1d0",
+      "source_page": "User-supplied local production",
+      "permission": "user_owned_authorized",
+      "duration_s": 206.34145833333332,
+      "sample_rate": 48000,
+      "codec": "pcm_f32le",
+      "decode_quality": "clean",
+      "side_mid_db": -7.1609361114619485,
+      "astats_side_mid_db": -7.160936999999999,
+      "astats_absolute_error_db": 8.885380502476892e-07,
+      "elapsed_s": 2.0610334999510087,
+      "all_active_windows": 137,
+      "p95_minus_10_windows": 129,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 137,
+          "states": {
+            "stereo": 137
+          },
+          "finite_ratio_windows": 137,
+          "finite_ratio_p10_p50_p90_db": [
+            -15.74321592391248,
+            -8.105953893792435,
+            -5.12176706871806
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -21.664636140388914,
+          "selected_windows": 129,
+          "states": {
+            "stereo": 129
+          },
+          "finite_ratio_windows": 129,
+          "finite_ratio_p10_p50_p90_db": [
+            -15.898789630130818,
+            -7.764291206936061,
+            -5.1314124738801805
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -31.664636140388914,
+          "selected_windows": 133,
+          "states": {
+            "stereo": 133
+          },
+          "finite_ratio_windows": 133,
+          "finite_ratio_p10_p50_p90_db": [
+            -15.84649108267111,
+            -8.105953893792435,
+            -5.153014979879872
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -51.66463614038891,
+          "selected_windows": 135,
+          "states": {
+            "stereo": 135
+          },
+          "finite_ratio_windows": 135,
+          "finite_ratio_p10_p50_p90_db": [
+            -15.794853503291796,
+            -8.398234552931333,
+            -5.164972080717442
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 136,
+          "states": {
+            "stereo": 136
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -11.035217526228518,
+            "lr_balance_db": 0.269768156050789,
+            "correlation_uncentered": 0.854338597827008,
+            "mid_power": 0.015829910216910853,
+            "side_power": 0.0012472591511428028
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -22.819184027285395,
+            -14.722073351682475,
+            -8.276070884292992
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 136,
+          "states": {
+            "stereo": 136
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -10.887338800185764,
+            "lr_balance_db": -0.14051674400021785,
+            "correlation_uncentered": 0.8493597119858909,
+            "mid_power": 0.002554949259950182,
+            "side_power": 0.00020828039836884478
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -16.298270268349746,
+            -12.011948890649792,
+            -7.435682787990032
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 136,
+          "states": {
+            "stereo": 136
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -8.92354735999833,
+            "lr_balance_db": 0.0285614503134959,
+            "correlation_uncentered": 0.772852085182529,
+            "mid_power": 0.0011495640923994909,
+            "side_power": 0.00014729176073506058
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -15.65264091589567,
+            -10.198524530944711,
+            -6.222963612753993
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 136,
+          "states": {
+            "stereo": 136
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -7.219565805459808,
+            "lr_balance_db": -0.3561490582918369,
+            "correlation_uncentered": 0.6816834754780586,
+            "mid_power": 0.002279314677627862,
+            "side_power": 0.00043236218864444007
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -16.536261638731496,
+            -8.981771424106034,
+            -3.729448417547435
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 136,
+          "states": {
+            "stereo": 136
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.990579764106734,
+            "lr_balance_db": 0.011899799783204063,
+            "correlation_uncentered": 0.42962195226048666,
+            "mid_power": 0.008257638794378939,
+            "side_power": 0.0032945636744943084
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -13.0070518604202,
+            -5.210190281926472,
+            -1.455990732217004
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 136,
+          "states": {
+            "stereo": 136
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -4.30782340062736,
+            "lr_balance_db": 0.0062501720446846536,
+            "correlation_uncentered": 0.4589313367318067,
+            "mid_power": 0.0025580332102566453,
+            "side_power": 0.0009486889420186923
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -13.228418219391267,
+            -4.951405337489757,
+            -2.3385500891747144
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 24000.0,
+          "valid_windows": 136,
+          "states": {
+            "stereo": 136
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -6.518225269591525,
+            "lr_balance_db": -0.1280429911984,
+            "correlation_uncentered": 0.6354794751703038,
+            "mid_power": 0.0003810150469676282,
+            "side_power": 8.494143625931006e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -23.103502241155304,
+            -7.763694223708016,
+            -4.036940781677275
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "billie-jean-remake",
+      "artist": "StyleShift AI",
+      "source_sha256": "61c9a549be8f2041ae6a8656da2e51af3082716fe9af36da97102e4265b47a54",
+      "source_page": "User-supplied local production; NOT the original commercial master",
+      "permission": "user_owned_authorized",
+      "duration_s": 217.9019375,
+      "sample_rate": 48000,
+      "codec": "pcm_s24le",
+      "decode_quality": "clean",
+      "side_mid_db": -11.101888151340358,
+      "astats_side_mid_db": -11.101888999999998,
+      "astats_absolute_error_db": 8.486596403400881e-07,
+      "elapsed_s": 1.9419354000128806,
+      "all_active_windows": 145,
+      "p95_minus_10_windows": 142,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "finite_ratio_windows": 145,
+          "finite_ratio_p10_p50_p90_db": [
+            -14.064359617189455,
+            -11.419824622526898,
+            -8.335157809713632
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -22.077970650459754,
+          "selected_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "finite_ratio_windows": 142,
+          "finite_ratio_p10_p50_p90_db": [
+            -14.09313068995618,
+            -11.441986005585512,
+            -8.303979834872983
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -32.077970650459754,
+          "selected_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "finite_ratio_windows": 144,
+          "finite_ratio_p10_p50_p90_db": [
+            -14.073949974778364,
+            -11.4204920462759,
+            -8.324765151433413
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -52.07797065045976,
+          "selected_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "finite_ratio_windows": 145,
+          "finite_ratio_p10_p50_p90_db": [
+            -14.064359617189455,
+            -11.419824622526898,
+            -8.335157809713632
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -15.487304184112652,
+            "lr_balance_db": -0.04345531624772446,
+            "correlation_uncentered": 0.9450331912880288,
+            "mid_power": 0.009315815969077535,
+            "side_power": 0.0002633240234086289
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -21.031317262301727,
+            -17.55376708928153,
+            -12.328602735966502
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -10.500926186435592,
+            "lr_balance_db": -0.05749144554947783,
+            "correlation_uncentered": 0.8363867156300024,
+            "mid_power": 0.009907531409674843,
+            "side_power": 0.0008828213737453712
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -15.539836197463238,
+            -10.728588189502585,
+            -7.21661761100274
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.248176502369283,
+            "lr_balance_db": 0.15050870831944121,
+            "correlation_uncentered": 0.7875878448869907,
+            "mid_power": 0.002349371575057055,
+            "side_power": 0.0002793405987536902
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -15.525358691086842,
+            -10.146468629591709,
+            -2.7383198398509903
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -7.739511753179152,
+            "lr_balance_db": 0.2804930847385928,
+            "correlation_uncentered": 0.712280342805948,
+            "mid_power": 0.0012041049465680164,
+            "side_power": 0.0002026343955228079
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -13.205161989787017,
+            -9.146451961158515,
+            -3.0266719513853437
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -10.20624696139185,
+            "lr_balance_db": 0.000462614650159615,
+            "correlation_uncentered": 0.8258804122404744,
+            "mid_power": 0.013181677304336078,
+            "side_power": 0.001257030975159508
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -13.462347752585355,
+            -10.706521177843104,
+            -5.288214588775826
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -11.858824406457302,
+            "lr_balance_db": -0.6179897299992949,
+            "correlation_uncentered": 0.8798383248257474,
+            "mid_power": 0.0059919044427682415,
+            "side_power": 0.0003905552121864905
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -15.884776674867933,
+            -12.000324413222199,
+            -9.048704243970057
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 24000.0,
+          "valid_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -12.497161668919256,
+            "lr_balance_db": -1.5491208249011308,
+            "correlation_uncentered": 0.9077010411986195,
+            "mid_power": 0.000576021072453267,
+            "side_power": 3.241322205881498e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -16.672091124305865,
+            -12.261645194036586,
+            -7.8970110053988885
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "wicked-game-remake",
+      "artist": "StyleShift AI",
+      "source_sha256": "47df7c01ea0ddaffb1a86afbbfd4f0e44d0bfb2acd7a35912d772ffeff891016",
+      "source_page": "User-supplied local production; NOT the original commercial master",
+      "permission": "user_owned_authorized",
+      "duration_s": 307.67997916666667,
+      "sample_rate": 48000,
+      "codec": "pcm_s16le",
+      "decode_quality": "clean",
+      "side_mid_db": -8.235948866380197,
+      "astats_side_mid_db": -8.235948999999998,
+      "astats_absolute_error_db": 1.3361980144566132e-07,
+      "elapsed_s": 2.709364300011657,
+      "all_active_windows": 205,
+      "p95_minus_10_windows": 198,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 205,
+          "states": {
+            "stereo": 205
+          },
+          "finite_ratio_windows": 205,
+          "finite_ratio_p10_p50_p90_db": [
+            -10.52211248774501,
+            -8.34533971068629,
+            -4.996527205890979
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -25.706969626524213,
+          "selected_windows": 198,
+          "states": {
+            "stereo": 198
+          },
+          "finite_ratio_windows": 198,
+          "finite_ratio_p10_p50_p90_db": [
+            -10.624347839676739,
+            -8.453100123770772,
+            -5.546513941193355
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -35.70696962652421,
+          "selected_windows": 203,
+          "states": {
+            "stereo": 203
+          },
+          "finite_ratio_windows": 203,
+          "finite_ratio_p10_p50_p90_db": [
+            -10.5416677675455,
+            -8.406102055219334,
+            -5.141475901109284
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -55.70696962652421,
+          "selected_windows": 204,
+          "states": {
+            "stereo": 204
+          },
+          "finite_ratio_windows": 204,
+          "finite_ratio_p10_p50_p90_db": [
+            -10.531890127645255,
+            -8.375720882952812,
+            -4.972982175338706
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 204,
+          "states": {
+            "stereo": 204
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -15.005556330022616,
+            "lr_balance_db": 0.05012846014755316,
+            "correlation_uncentered": 0.9387847595039759,
+            "mid_power": 0.00818297484582612,
+            "side_power": 0.00025843753090664095
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -23.184611735731735,
+            -16.531107447784176,
+            -9.338388833284414
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 204,
+          "states": {
+            "stereo": 204
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.303448584049212,
+            "lr_balance_db": -0.48056712527944273,
+            "correlation_uncentered": 0.3635441558491706,
+            "mid_power": 0.0016855968055056539,
+            "side_power": 0.000787787056767769
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -7.444640886591042,
+            -3.384687344682078,
+            0.029387619541512294
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 204,
+          "states": {
+            "stereo": 204
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -4.356191357260823,
+            "lr_balance_db": 0.03932722135588338,
+            "correlation_uncentered": 0.46332044387258897,
+            "mid_power": 0.0004397524918902886,
+            "side_power": 0.00016128321550035787
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -11.044025384364643,
+            -4.511763503620633,
+            -0.3797294639930032
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 204,
+          "states": {
+            "stereo": 204
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -4.907825978746511,
+            "lr_balance_db": -0.2652229261476011,
+            "correlation_uncentered": 0.5119417218632452,
+            "mid_power": 0.0005209340572027354,
+            "side_power": 0.00016826746555635044
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -9.887447923543837,
+            -4.040021424401914,
+            -0.24499508568276157
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 204,
+          "states": {
+            "stereo": 204
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.956767891645608,
+            "lr_balance_db": 0.3403856384113047,
+            "correlation_uncentered": 0.5957330867644471,
+            "mid_power": 0.003228097634096634,
+            "side_power": 0.0008189735435407347
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -9.24289779951884,
+            -5.344034777599971,
+            -2.9167335445490705
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 204,
+          "states": {
+            "stereo": 204
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.525850777421411,
+            "lr_balance_db": 0.19126804146285753,
+            "correlation_uncentered": 0.7995058054402072,
+            "mid_power": 0.0013052832663465273,
+            "side_power": 0.00014558602641304358
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -14.221748895488684,
+            -9.490595871913818,
+            -6.2188614091526455
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 24000.0,
+          "valid_windows": 194,
+          "states": {
+            "stereo": 194
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -11.64377153073165,
+            "lr_balance_db": -0.03749419784477049,
+            "correlation_uncentered": 0.8718097069495578,
+            "mid_power": 0.00017721695972552041,
+            "side_power": 1.2137468857600269e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -21.18501629112625,
+            -14.32422872935789,
+            -7.796765022258432
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "incredulity",
+      "artist": "Scott Buckley",
+      "source_sha256": "cce101d47fe4b345ca33a3d43e2331b1f1687045ed1bdc3dbae180d0edda3b90",
+      "source_page": "https://www.scottbuckley.com.au/library/incredulity/",
+      "permission": "CC-BY-4.0",
+      "duration_s": 374.146462585034,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -2.916239332046933,
+      "astats_side_mid_db": -2.9162389999999974,
+      "astats_absolute_error_db": 3.320469357248612e-07,
+      "elapsed_s": 3.335769400000572,
+      "all_active_windows": 249,
+      "p95_minus_10_windows": 198,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 249,
+          "states": {
+            "stereo": 249
+          },
+          "finite_ratio_windows": 249,
+          "finite_ratio_p10_p50_p90_db": [
+            -4.913505584370875,
+            -1.6846012328712607,
+            3.3705951906355223
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -23.373294247941445,
+          "selected_windows": 198,
+          "states": {
+            "stereo": 198
+          },
+          "finite_ratio_windows": 198,
+          "finite_ratio_p10_p50_p90_db": [
+            -5.252915433179719,
+            -2.43718400964062,
+            1.6480531851863012
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -33.373294247941445,
+          "selected_windows": 241,
+          "states": {
+            "stereo": 241
+          },
+          "finite_ratio_windows": 241,
+          "finite_ratio_p10_p50_p90_db": [
+            -4.952758962815427,
+            -1.6950346551382611,
+            3.0051668931586226
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -53.373294247941445,
+          "selected_windows": 244,
+          "states": {
+            "stereo": 244
+          },
+          "finite_ratio_windows": 244,
+          "finite_ratio_p10_p50_p90_db": [
+            -4.93803894589872,
+            -1.6837060885948274,
+            3.3972320385454493
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 248,
+          "states": {
+            "stereo": 248
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -15.204344029640406,
+            "lr_balance_db": -0.19497656177013123,
+            "correlation_uncentered": 0.941665613109623,
+            "mid_power": 0.0026674563403524124,
+            "side_power": 8.047535791043804e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -18.80685645585412,
+            -12.643307008156246,
+            -6.66309769929509
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 248,
+          "states": {
+            "stereo": 248
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.439496716723484,
+            "lr_balance_db": 1.7216711764513972,
+            "correlation_uncentered": 0.5664088829194839,
+            "mid_power": 0.00528031477863259,
+            "side_power": 0.0015090726268829802
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -8.268038368868524,
+            -4.095699532517855,
+            3.6871451541130544
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 248,
+          "states": {
+            "stereo": 248
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": 2.2170170182419753,
+            "lr_balance_db": 1.2319523776605772,
+            "correlation_uncentered": -0.25235850024799156,
+            "mid_power": 0.0009237710478623721,
+            "side_power": 0.0015390972018654904
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -1.004303651944448,
+            2.421426619260186,
+            6.3072515591797345
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 248,
+          "states": {
+            "stereo": 248
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": 2.1995875683468284,
+            "lr_balance_db": 2.3134840027443455,
+            "correlation_uncentered": -0.25680644573767236,
+            "mid_power": 0.0002576618784067178,
+            "side_power": 0.0004275716732937015
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -1.7046075256150908,
+            2.605258668252957,
+            6.717716761486867
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 248,
+          "states": {
+            "stereo": 248
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -0.06116268814131947,
+            "lr_balance_db": -1.2266969523049738,
+            "correlation_uncentered": 0.007111838382555517,
+            "mid_power": 0.0022907958847141908,
+            "side_power": 0.002258760193253586
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -1.5931708575384604,
+            0.1537577877325813,
+            2.073603970211085
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 230,
+          "states": {
+            "stereo": 230
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -1.394541767547142,
+            "lr_balance_db": 2.1934886765172106,
+            "correlation_uncentered": 0.1642901194068234,
+            "mid_power": 4.884935198021132e-05,
+            "side_power": 3.543273124346803e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -2.4383233713755215,
+            -1.2772531548008075,
+            1.567939101168032
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 106,
+          "states": {
+            "stereo": 106
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -0.9543985879243606,
+            "lr_balance_db": 1.7230999121012176,
+            "correlation_uncentered": 0.11159963874567012,
+            "mid_power": 2.058587143133897e-07,
+            "side_power": 1.6524540706774807e-07
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -1.519622572077187,
+            -0.9973499568047273,
+            -0.19862258246788506
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "quarks-funky",
+      "artist": "KieLoBot",
+      "source_sha256": "8d3c9db320ee379b6f463167e2ba462a689c031721afe419b2aaa4350ed90761",
+      "source_page": "https://freemusicarchive.org/music/KieLoBot/funky-tomatoes/quarks-funky-kb-30/",
+      "permission": "CC-BY-4.0",
+      "duration_s": 220.0,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -3.444924370751149,
+      "astats_side_mid_db": -3.4449250000000013,
+      "astats_absolute_error_db": 6.292488521353334e-07,
+      "elapsed_s": 1.8531035000341944,
+      "all_active_windows": 146,
+      "p95_minus_10_windows": 142,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 146,
+          "states": {
+            "stereo": 146
+          },
+          "finite_ratio_windows": 146,
+          "finite_ratio_p10_p50_p90_db": [
+            -5.487846441184599,
+            -3.51765022633591,
+            -1.0560915208358677
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -20.532048121993753,
+          "selected_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "finite_ratio_windows": 142,
+          "finite_ratio_p10_p50_p90_db": [
+            -5.498299004780113,
+            -3.5417526327683024,
+            -1.1720700431802926
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -30.532048121993753,
+          "selected_windows": 144,
+          "states": {
+            "stereo": 144
+          },
+          "finite_ratio_windows": 144,
+          "finite_ratio_p10_p50_p90_db": [
+            -5.4930727229823555,
+            -3.523249372503073,
+            -1.1766493524063069
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -50.53204812199375,
+          "selected_windows": 146,
+          "states": {
+            "stereo": 146
+          },
+          "finite_ratio_windows": 146,
+          "finite_ratio_p10_p50_p90_db": [
+            -5.487846441184599,
+            -3.51765022633591,
+            -1.0560915208358677
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -6.550945766404005,
+            "lr_balance_db": -1.5649149681195804,
+            "correlation_uncentered": 0.6480284053952656,
+            "mid_power": 0.0045050121005844185,
+            "side_power": 0.000996784750438764
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -12.338279418398354,
+            -8.83758542503772,
+            -3.154680966667403
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.957881432868502,
+            "lr_balance_db": -2.2136374937998746,
+            "correlation_uncentered": 0.8432347983725331,
+            "mid_power": 0.010059403301942764,
+            "side_power": 0.001015743558735291
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -14.093166853010834,
+            -9.156191563288896,
+            -2.8717432552462925
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.413397509616668,
+            "lr_balance_db": -3.8314549132565223,
+            "correlation_uncentered": 0.6080972743032956,
+            "mid_power": 0.003128263962815434,
+            "side_power": 0.0008994222784571744
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -8.34967665622538,
+            -3.8634307177739053,
+            2.5469476845774275
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": 0.7440959346776443,
+            "lr_balance_db": -3.105377249392793,
+            "correlation_uncentered": -0.09097833480597431,
+            "mid_power": 0.0020506995965782013,
+            "side_power": 0.002433949927500118
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -5.978861666517932,
+            2.1736679091966264,
+            8.830313987616512
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -2.293052841297186,
+            "lr_balance_db": 0.8562200829871848,
+            "correlation_uncentered": 0.2592853658409689,
+            "mid_power": 0.017895538929072596,
+            "side_power": 0.010554544558031178
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -4.8679155988989296,
+            -2.6750873093092937,
+            2.149592803122491
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": 1.2011973147946868,
+            "lr_balance_db": -1.2440227277616491,
+            "correlation_uncentered": -0.13882986441753384,
+            "mid_power": 0.0014234125254856866,
+            "side_power": 0.0018769405394849067
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -1.9542726318816792,
+            0.5653761456225843,
+            3.198849046347762
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 145,
+          "states": {
+            "stereo": 145
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -8.458234669365446,
+            "lr_balance_db": -0.9945778188756803,
+            "correlation_uncentered": 0.7552897062175827,
+            "mid_power": 0.0002886821695176602,
+            "side_power": 4.117148138189168e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.098225759382014,
+            -8.236282013883073,
+            -7.004393000207451
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "quirock",
+      "artist": "Pamela Yuen",
+      "source_sha256": "7718fe7443c8b86eddbae28082ea846fbc6cf15161f88dcf9622781c14fb1fb9",
+      "source_page": "https://freemusicarchive.org/music/pamela-yuen/multigenre-pop-vibes/quirock/",
+      "permission": "CC-BY-4.0",
+      "duration_s": 146.21356009070294,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -6.983702188833885,
+      "astats_side_mid_db": -6.983701999999999,
+      "astats_absolute_error_db": 1.888338854172389e-07,
+      "elapsed_s": 1.308304899954237,
+      "all_active_windows": 97,
+      "p95_minus_10_windows": 93,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "finite_ratio_windows": 97,
+          "finite_ratio_p10_p50_p90_db": [
+            -8.555260131731677,
+            -7.055997498125041,
+            -5.258341419547109
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -20.827779346246874,
+          "selected_windows": 93,
+          "states": {
+            "stereo": 93
+          },
+          "finite_ratio_windows": 93,
+          "finite_ratio_p10_p50_p90_db": [
+            -8.655855582881221,
+            -7.087927639351921,
+            -5.431168340782575
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -30.827779346246874,
+          "selected_windows": 94,
+          "states": {
+            "stereo": 94
+          },
+          "finite_ratio_windows": 94,
+          "finite_ratio_p10_p50_p90_db": [
+            -8.630706720093835,
+            -7.079703299312615,
+            -5.3991126377297105
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -50.82777934624688,
+          "selected_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "finite_ratio_windows": 96,
+          "finite_ratio_p10_p50_p90_db": [
+            -8.580408994519063,
+            -7.063738228699175,
+            -5.3021385776186145
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.61728722685619,
+            "lr_balance_db": 1.1005877233847556,
+            "correlation_uncentered": 0.8095369736860071,
+            "mid_power": 0.02265508725764332,
+            "side_power": 0.0024742126132299147
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -13.821455597038732,
+            -9.938974667248832,
+            -7.328179610002271
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -7.730011218038392,
+            "lr_balance_db": -0.6090929434285903,
+            "correlation_uncentered": 0.7131190198239301,
+            "mid_power": 0.004663974499225197,
+            "side_power": 0.0007866019983664495
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.611324140135633,
+            -6.694374823583866,
+            -3.681452100526355
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -8.861260298260863,
+            "lr_balance_db": -0.42042594877224887,
+            "correlation_uncentered": 0.7708461522130265,
+            "mid_power": 0.0020242449351894464,
+            "side_power": 0.0002631098042509838
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -14.936996237316329,
+            -7.077469235942509,
+            -3.43150386818049
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -4.893059136925834,
+            "lr_balance_db": -1.5395146608386678,
+            "correlation_uncentered": 0.5184860152768785,
+            "mid_power": 0.0009107844746413015,
+            "side_power": 0.0002951954813158572
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -9.606205861155827,
+            -5.681819707870821,
+            -1.1240296028483023
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.477024683027691,
+            "lr_balance_db": -1.4895625282430622,
+            "correlation_uncentered": 0.5666735821691786,
+            "mid_power": 0.013347963605545344,
+            "side_power": 0.003781921808541821
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.363176301970483,
+            -5.099707560109604,
+            -1.3848743425973806
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.175681347509076,
+            "lr_balance_db": 3.011700718580192,
+            "correlation_uncentered": 0.371409311265672,
+            "mid_power": 0.004039158938494175,
+            "side_power": 0.0019441188357509776
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -6.4916982251921915,
+            -3.2193871360455053,
+            -1.539318720514626
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.784068739675058,
+            "lr_balance_db": 3.4720660292099828,
+            "correlation_uncentered": 0.6294310326554332,
+            "mid_power": 8.633004226924103e-05,
+            "side_power": 2.2790564354181955e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -7.545326093062827,
+            -5.541033112084202,
+            1.1972875504375677
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "bossaquirk",
+      "artist": "Pamela Yuen",
+      "source_sha256": "9720623234032c5391bf1ec59810ca0dd4ad2e1c8152f3269200804094dc1592",
+      "source_page": "https://freemusicarchive.org/music/pamela-yuen/multigenre-pop-vibes/bossaquirk/",
+      "permission": "CC-BY-4.0",
+      "duration_s": 85.5273015873016,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -7.068324665452459,
+      "astats_side_mid_db": -7.0683240000000005,
+      "astats_absolute_error_db": 6.654524584703836e-07,
+      "elapsed_s": 0.8076782000134699,
+      "all_active_windows": 57,
+      "p95_minus_10_windows": 56,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 57,
+          "states": {
+            "stereo": 57
+          },
+          "finite_ratio_windows": 57,
+          "finite_ratio_p10_p50_p90_db": [
+            -11.584224517185948,
+            -8.400405047397578,
+            -3.7180204338231473
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -20.959221407665765,
+          "selected_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "finite_ratio_windows": 56,
+          "finite_ratio_p10_p50_p90_db": [
+            -11.60274839985787,
+            -8.401911631206303,
+            -3.708861566721712
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -30.959221407665765,
+          "selected_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "finite_ratio_windows": 56,
+          "finite_ratio_p10_p50_p90_db": [
+            -11.60274839985787,
+            -8.401911631206303,
+            -3.708861566721712
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -50.959221407665765,
+          "selected_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "finite_ratio_windows": 56,
+          "finite_ratio_p10_p50_p90_db": [
+            -11.60274839985787,
+            -8.401911631206303,
+            -3.708861566721712
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -22.500085581626657,
+            "lr_balance_db": -0.14671846872952196,
+            "correlation_uncentered": 0.9889573552622095,
+            "mid_power": 0.022167487062999383,
+            "side_power": 0.0001246544840587463
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -32.91999283843671,
+            -27.04528268219999,
+            -13.846153367980616
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -7.026591354610838,
+            "lr_balance_db": -1.0021927859971578,
+            "correlation_uncentered": 0.6734778352684306,
+            "mid_power": 0.00503573786361884,
+            "side_power": 0.0009986285528546606
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -25.98437608512381,
+            -17.99854095442017,
+            -0.6563456541245498
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -2.7639133829029143,
+            "lr_balance_db": -1.4088409801162805,
+            "correlation_uncentered": 0.31194391947690553,
+            "mid_power": 0.0030913703734606933,
+            "side_power": 0.0016359111113282334
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -19.939944871856973,
+            -11.834446143435176,
+            0.212115606932199
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -6.8460595962720925,
+            "lr_balance_db": -2.1722015710551115,
+            "correlation_uncentered": 0.6780419780846578,
+            "mid_power": 0.0018016871692910687,
+            "side_power": 0.00037245467178723135
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -19.1587688317193,
+            -9.05505271797966,
+            -1.82885903269738
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.7947910464770573,
+            "lr_balance_db": 0.38447560570981615,
+            "correlation_uncentered": 0.4114672460901411,
+            "mid_power": 0.012376058880298937,
+            "side_power": 0.005165391722476822
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -5.612305767327909,
+            -3.861463120451374,
+            -1.660114575848759
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 56,
+          "states": {
+            "stereo": 56
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -4.909372887490334,
+            "lr_balance_db": -1.963334321567953,
+            "correlation_uncentered": 0.5249659069032987,
+            "mid_power": 0.003939092449954157,
+            "side_power": 0.0012719173310044936
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -8.158007642364527,
+            -4.406681224695129,
+            -2.332768962278468
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 55,
+          "states": {
+            "stereo": 55
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.378315963515083,
+            "lr_balance_db": -0.18620049001038597,
+            "correlation_uncentered": 0.7932769340084552,
+            "mid_power": 0.0002801267144394047,
+            "side_power": 3.232383871977143e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -15.059820084669346,
+            -6.7212074842407,
+            -4.27669369426204
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "southern-gothic",
+      "artist": "Kevin MacLeod",
+      "source_sha256": "533074b8fabe8d5b4ab1c1588535eacf29e3f7e4a49fe9056162a8ce85324a16",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300004",
+      "permission": "CC-BY-4.0",
+      "duration_s": 147.2,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -2.489458943971262,
+      "astats_side_mid_db": -2.4894590000000036,
+      "astats_absolute_error_db": 5.6028741646230174e-08,
+      "elapsed_s": 1.2808557000244036,
+      "all_active_windows": 98,
+      "p95_minus_10_windows": 96,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 98,
+          "states": {
+            "stereo": 98
+          },
+          "finite_ratio_windows": 98,
+          "finite_ratio_p10_p50_p90_db": [
+            -4.646200129414165,
+            -2.564195311515925,
+            -0.6260028836916561
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -38.63924799820322,
+          "selected_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "finite_ratio_windows": 96,
+          "finite_ratio_p10_p50_p90_db": [
+            -4.480212711818275,
+            -2.548995319373091,
+            -0.5970016922666492
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -48.63924799820322,
+          "selected_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "finite_ratio_windows": 97,
+          "finite_ratio_p10_p50_p90_db": [
+            -4.607317771108772,
+            -2.5588035986909112,
+            -0.6115022879791516
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -68.63924799820322,
+          "selected_windows": 98,
+          "states": {
+            "stereo": 98
+          },
+          "finite_ratio_windows": 98,
+          "finite_ratio_p10_p50_p90_db": [
+            -4.646200129414165,
+            -2.564195311515925,
+            -0.6260028836916561
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -10.3700244770559,
+            "lr_balance_db": 0.5084616783073818,
+            "correlation_uncentered": 0.8332079793588091,
+            "mid_power": 0.00018496878159361484,
+            "side_power": 1.6986190411631764e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -11.73647049478994,
+            -10.543463440134984,
+            -4.897446746680855
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -6.609765548155387,
+            "lr_balance_db": -0.8979414074770874,
+            "correlation_uncentered": 0.6450841129704507,
+            "mid_power": 8.722046229152236e-05,
+            "side_power": 1.9038898975161323e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -8.944449110140429,
+            -6.739219343170274,
+            -2.5046043264225535
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.5384123445930635,
+            "lr_balance_db": -3.510112708454,
+            "correlation_uncentered": 0.4182115103068305,
+            "mid_power": 2.1856863865098692e-05,
+            "side_power": 9.67713083646325e-06
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -7.841982944130536,
+            -2.8885058796237755,
+            -0.34223951139918585
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -2.420296278664834,
+            "lr_balance_db": -1.115824131222558,
+            "correlation_uncentered": 0.2738969231462486,
+            "mid_power": 1.3784829952084623e-05,
+            "side_power": 7.895357239326555e-06
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -4.551577629410878,
+            -2.13816791470858,
+            -0.23709436836244538
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": 0.06300600903606753,
+            "lr_balance_db": 0.9810014598741522,
+            "correlation_uncentered": -0.007300020573233208,
+            "mid_power": 0.0002519220233104931,
+            "side_power": 0.0002556034648180459
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -2.122099059055065,
+            -0.10587693263198847,
+            0.9491374689958986
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 97,
+          "states": {
+            "stereo": 97
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -0.915259441084219,
+            "lr_balance_db": 1.1256305398977535,
+            "correlation_uncentered": 0.10586766874870229,
+            "mid_power": 3.696733190210263e-05,
+            "side_power": 2.9942782979186118e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -3.26231377765437,
+            -0.8783275611296579,
+            0.007606210128780634
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 96,
+          "states": {
+            "stereo": 96
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -2.930407368153608,
+            "lr_balance_db": -1.2745121921890556,
+            "correlation_uncentered": 0.3286389027659627,
+            "mid_power": 5.868962099468183e-07,
+            "side_power": 2.988963200474542e-07
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.65733375931513,
+            -4.140443752564582,
+            -1.1671619362587595
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "vibing-over-venus",
+      "artist": "Kevin MacLeod",
+      "source_sha256": "48a4ceca61ec6e93a3634ddb4db31a45e9c2c36fd22716bde4badf6821593c6a",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300005",
+      "permission": "CC-BY-4.0",
+      "duration_s": 411.14122448979595,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -14.423813611531358,
+      "astats_side_mid_db": -14.423813000000003,
+      "astats_absolute_error_db": 6.115313553323176e-07,
+      "elapsed_s": 3.5011650000233203,
+      "all_active_windows": 273,
+      "p95_minus_10_windows": 272,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "finite_ratio_windows": 273,
+          "finite_ratio_p10_p50_p90_db": [
+            -18.25231084874262,
+            -14.640749440368294,
+            -12.676304495844311
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -31.035072074623788,
+          "selected_windows": 272,
+          "states": {
+            "stereo": 272
+          },
+          "finite_ratio_windows": 272,
+          "finite_ratio_p10_p50_p90_db": [
+            -18.22779616505411,
+            -14.622907383552622,
+            -12.672030780332346
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -41.035072074623784,
+          "selected_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "finite_ratio_windows": 273,
+          "finite_ratio_p10_p50_p90_db": [
+            -18.25231084874262,
+            -14.640749440368294,
+            -12.676304495844311
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -61.035072074623784,
+          "selected_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "finite_ratio_windows": 273,
+          "finite_ratio_p10_p50_p90_db": [
+            -18.25231084874262,
+            -14.640749440368294,
+            -12.676304495844311
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -22.637150183234827,
+            "lr_balance_db": -0.3330013669835007,
+            "correlation_uncentered": 0.9898888841004437,
+            "mid_power": 0.0033635576140416583,
+            "side_power": 1.832668236281961e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -40.09414249075814,
+            -28.73811688319359,
+            -18.49608759603326
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -14.167773254240082,
+            "lr_balance_db": -0.042295708538304236,
+            "correlation_uncentered": 0.9262326318346744,
+            "mid_power": 0.0010440016328620006,
+            "side_power": 3.998746311540671e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -19.32750081880992,
+            -14.190874327442106,
+            -11.867701416073071
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -15.373510964649027,
+            "lr_balance_db": -0.21829963073473452,
+            "correlation_uncentered": 0.9439009714335954,
+            "mid_power": 0.0002889405369118208,
+            "side_power": 8.384117941197207e-06
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -18.620441186021313,
+            -15.545601022437507,
+            -10.510746838252064
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.111636761439057,
+            "lr_balance_db": 0.3416416617148922,
+            "correlation_uncentered": 0.7820280256072548,
+            "mid_power": 7.391224716482595e-05,
+            "side_power": 9.06886068284474e-06
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -19.16419122838008,
+            -12.329511210455273,
+            -6.454035144268833
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -6.9224865102617015,
+            "lr_balance_db": 0.36466012025261985,
+            "correlation_uncentered": 0.6629292389288731,
+            "mid_power": 0.0005523324279365037,
+            "side_power": 0.00011218941689178694
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -11.723233513264631,
+            -5.181054662418139,
+            -2.2886350779833995
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 273,
+          "states": {
+            "stereo": 273
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.854121379473424,
+            "lr_balance_db": 0.7233972821045674,
+            "correlation_uncentered": 0.5896312626288177,
+            "mid_power": 2.227823606064409e-05,
+            "side_power": 5.787202292822712e-06
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.379382453463572,
+            -6.920497236912614,
+            -3.5368754320177413
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 259,
+          "states": {
+            "stereo": 259
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -7.780273533029186,
+            "lr_balance_db": 1.4631917949725948,
+            "correlation_uncentered": 0.724373653464547,
+            "mid_power": 6.485868364910461e-07,
+            "side_power": 1.0812864900927382e-07
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -9.148456817326668,
+            -8.46192022192023,
+            -6.5395199908069985
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "brain-dance",
+      "artist": "Kevin MacLeod",
+      "source_sha256": "59daa6423c9d61238dd9c31f7139606267238b6e448dc42e12e0d6d77d663b8e",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300006",
+      "permission": "CC-BY-4.0",
+      "duration_s": 214.90938775510205,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -5.191740571953788,
+      "astats_side_mid_db": -5.191741,
+      "astats_absolute_error_db": 4.280462126970974e-07,
+      "elapsed_s": 1.929576700029429,
+      "all_active_windows": 143,
+      "p95_minus_10_windows": 138,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 143,
+          "states": {
+            "stereo": 143
+          },
+          "finite_ratio_windows": 143,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.152275143371568,
+            -5.655470784125395,
+            -3.8399325670231352
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -27.313849609769072,
+          "selected_windows": 138,
+          "states": {
+            "stereo": 138
+          },
+          "finite_ratio_windows": 138,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.07452443895869,
+            -5.634893078362979,
+            -3.88769395637247
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -37.31384960976907,
+          "selected_windows": 140,
+          "states": {
+            "stereo": 140
+          },
+          "finite_ratio_windows": 140,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.168388661304416,
+            -5.660201709616459,
+            -3.906798512112203
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -57.31384960976907,
+          "selected_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "finite_ratio_windows": 142,
+          "finite_ratio_p10_p50_p90_db": [
+            -7.159620069869372,
+            -5.660201709616459,
+            -3.9236426990827002
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -8.304221765734209,
+            "lr_balance_db": -0.4900972615484827,
+            "correlation_uncentered": 0.7436960471158964,
+            "mid_power": 0.003893055208295004,
+            "side_power": 0.0005752655753069283
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.855425587703424,
+            -8.678968959340718,
+            -6.280331234244982
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -2.3530455052434034,
+            "lr_balance_db": -0.6229207517445363,
+            "correlation_uncentered": 0.26514655582882984,
+            "mid_power": 0.0016840782142291152,
+            "side_power": 0.0009796201445045403
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -5.974824406915546,
+            -2.7100009467532615,
+            -0.6342555778720858
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -1.3042188330386835,
+            "lr_balance_db": -0.7349308999467608,
+            "correlation_uncentered": 0.14956916959374958,
+            "mid_power": 0.00036442348226310977,
+            "side_power": 0.0002698885564522659
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -3.970377689947672,
+            -1.499287174759798,
+            1.1061181915975644
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -0.7950362850159012,
+            "lr_balance_db": -0.8721824534577189,
+            "correlation_uncentered": 0.0917377242942886,
+            "mid_power": 0.00016035150067879756,
+            "side_power": 0.0001335270948651906
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -3.317684987580981,
+            -0.8522402207771514,
+            1.2458603516368334
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 142,
+          "states": {
+            "stereo": 142
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -5.52924440753893,
+            "lr_balance_db": 0.10221702285327051,
+            "correlation_uncentered": 0.5626038586294977,
+            "mid_power": 0.002271782612175953,
+            "side_power": 0.0006359783482768267
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -7.276390666859322,
+            -5.746384769079949,
+            -3.3879012251268015
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 141,
+          "states": {
+            "stereo": 141
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -6.309833417727902,
+            "lr_balance_db": 0.03821392097682111,
+            "correlation_uncentered": 0.6208924992447559,
+            "mid_power": 0.0013033217520080935,
+            "side_power": 0.00030483743717608675
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -11.460771759596911,
+            -8.355303968393184,
+            -6.678567534641174
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 140,
+          "states": {
+            "stereo": 140
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -3.4672779440287553,
+            "lr_balance_db": -0.07644058841584546,
+            "correlation_uncentered": 0.37926619466401934,
+            "mid_power": 2.4733021866664138e-05,
+            "side_power": 1.1131389694271822e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -11.73698674072721,
+            -4.412995330944977,
+            -2.75203269822165
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    },
+    {
+      "id": "i-got-a-stick",
+      "artist": "Kevin MacLeod",
+      "source_sha256": "a66c1c5bf09ec21c5f6bd6b749b774eaf696cd38851c751e97311ce4054d2eea",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2200004",
+      "permission": "CC-BY-4.0",
+      "duration_s": 31.190204081632654,
+      "sample_rate": 44100,
+      "codec": "mp3",
+      "decode_quality": "clean",
+      "side_mid_db": -14.368151848461565,
+      "astats_side_mid_db": -14.368152000000002,
+      "astats_absolute_error_db": 1.5153843690995927e-07,
+      "elapsed_s": 0.4555193000123836,
+      "all_active_windows": 20,
+      "p95_minus_10_windows": 19,
+      "gate_sensitivity": {
+        "absolute_minus_80_dbfs": {
+          "threshold_dbfs_power": -80.0,
+          "selected_windows": 20,
+          "states": {
+            "stereo": 20
+          },
+          "finite_ratio_windows": 20,
+          "finite_ratio_p10_p50_p90_db": [
+            -16.407427291085853,
+            -14.722904910013321,
+            -12.343135507273493
+          ]
+        },
+        "p95_minus_10_db": {
+          "threshold_dbfs_power": -24.086091023038,
+          "selected_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "finite_ratio_windows": 19,
+          "finite_ratio_p10_p50_p90_db": [
+            -16.069078472835027,
+            -14.688638223437353,
+            -12.330527125185245
+          ]
+        },
+        "p95_minus_20_db": {
+          "threshold_dbfs_power": -34.086091023038,
+          "selected_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "finite_ratio_windows": 19,
+          "finite_ratio_p10_p50_p90_db": [
+            -16.069078472835027,
+            -14.688638223437353,
+            -12.330527125185245
+          ]
+        },
+        "p95_minus_40_db": {
+          "threshold_dbfs_power": -54.086091023038,
+          "selected_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "finite_ratio_windows": 19,
+          "finite_ratio_p10_p50_p90_db": [
+            -16.069078472835027,
+            -14.688638223437353,
+            -12.330527125185245
+          ]
+        }
+      },
+      "bands": [
+        {
+          "lo_hz": 0,
+          "hi_hz": 120,
+          "valid_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -36.96565100433253,
+            "lr_balance_db": 0.012639083152250787,
+            "correlation_uncentered": 0.9995989180057141,
+            "mid_power": 0.01391381506794245,
+            "side_power": 2.7982152962921156e-06
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -39.35776890311832,
+            -37.02861286683087,
+            -35.26777962450856
+          ]
+        },
+        {
+          "lo_hz": 120,
+          "hi_hz": 200,
+          "valid_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -23.834380579514303,
+            "lr_balance_db": 0.05409184598167623,
+            "correlation_uncentered": 0.991781654737309,
+            "mid_power": 0.0058491649408927366,
+            "side_power": 2.4191110780827016e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -28.5650217691373,
+            -23.600213794947816,
+            -20.018349529160886
+          ]
+        },
+        {
+          "lo_hz": 200,
+          "hi_hz": 250,
+          "valid_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -17.373988786146214,
+            "lr_balance_db": 0.16849316512960236,
+            "correlation_uncentered": 0.9642269393590738,
+            "mid_power": 0.003246156117580984,
+            "side_power": 5.9425182468439116e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -18.63502989863174,
+            -17.67629936626195,
+            -16.319151019428727
+          ]
+        },
+        {
+          "lo_hz": 250,
+          "hi_hz": 300,
+          "valid_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -14.838160180794201,
+            "lr_balance_db": -0.35653339473451845,
+            "correlation_uncentered": 0.9372284235275005,
+            "mid_power": 0.0010768592861335937,
+            "side_power": 3.534621700156061e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -17.350522162107367,
+            -15.287514211332216,
+            -10.138634922710606
+          ]
+        },
+        {
+          "lo_hz": 300,
+          "hi_hz": 2000,
+          "valid_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -8.29738763632067,
+            "lr_balance_db": 0.24792779644836915,
+            "correlation_uncentered": 0.742462882880949,
+            "mid_power": 0.005353172803642786,
+            "side_power": 0.0007922687010658886
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -11.06003569923897,
+            -8.27487937812949,
+            -6.957404222878237
+          ]
+        },
+        {
+          "lo_hz": 2000,
+          "hi_hz": 10000,
+          "valid_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.86915838412971,
+            "lr_balance_db": 0.8611118990254224,
+            "correlation_uncentered": 0.8171396086097191,
+            "mid_power": 0.002430277305421765,
+            "side_power": 0.00025046093235809403
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.633787217070125,
+            -9.88956814069169,
+            -8.812974449367088
+          ]
+        },
+        {
+          "lo_hz": 10000,
+          "hi_hz": 22050.0,
+          "valid_windows": 19,
+          "states": {
+            "stereo": 19
+          },
+          "pooled": {
+            "state": "stereo",
+            "side_mid_db": -9.771278487455076,
+            "lr_balance_db": 0.5007955483463434,
+            "correlation_uncentered": 0.8106327766975044,
+            "mid_power": 0.0003533581560764876,
+            "side_power": 3.724665456833289e-05
+          },
+          "finite_ratio_p10_p50_p90_db": [
+            -10.739481314174883,
+            -9.706625015694856,
+            -7.0683540631870905
+          ]
+        }
+      ],
+      "calibration_eligible": false
+    }
+  ]
+}

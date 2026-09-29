@@ -1,0 +1,9 @@
+{
+  "id": "tail-route-test",
+  "url": "https://www.youtube.com/watch?v=fHI8X4OXluQ",
+  "titleMatch": "Blinding Lights",
+  "expectedDurationSeconds": 203.221,
+  "durationToleranceSeconds": 1,
+  "routeTailTest": true,
+  "purpose": "Only validate the final 8 seconds and post-roll boundary; NEVER eligible for corpus statistics"
+}

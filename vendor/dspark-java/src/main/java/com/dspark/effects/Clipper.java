@@ -10,9 +10,10 @@ import com.dspark.core.DspMath;
  * {@link Mode#ANALOG} (sine) and {@link Mode#GOLDEN_RATIO} curves - with an
  * optional multi-stage cascade (which spreads the drive across stages for a
  * smoother harmonic profile) and an optional slew limiter that tames the
- * hardest edges. Every curve is <b>antiderivative anti-aliased</b> (1st-order
- * ADAA), so the harmonics the clipping generates do not fold back as aliasing
- * even at the base sample rate. {@link #getGainReductionDb()} reports how far
+ * hardest edges. The streaming path uses first-order ADAA, which reduces
+ * aliasing but also changes the response and does not eliminate aliasing.
+ * Hosts with explicit oversampling can use {@link #shapeSample} instead.
+ * {@link #getGainReductionDb()} reports how far
  * the peak was pushed down for metering.
  */
 public final class Clipper
@@ -106,7 +107,18 @@ public final class Clipper
      */
     public double probeOutputPeak(double inputPeak, double ceiling)
     {
-        return Math.abs(shape(mode, inputPeak, Math.max(1e-6, ceiling)));
+        return Math.abs(shapeSample(inputPeak, ceiling));
+    }
+
+    /**
+     * Signed, memoryless single-stage transfer, matching the C++ Clipper curves.
+     * No drive, ADAA, slew, filtering or metering. The host owns oversampling.
+     * A linear ceiling avoids the UI-specific dB range of the streaming API.
+     */
+    public double shapeSample(double input, double ceiling) {
+        if (!Double.isFinite(input) || !Double.isFinite(ceiling) || ceiling <= 0)
+            throw new IllegalArgumentException("Require finite input and positive finite ceiling.");
+        return shape(mode, input, ceiling);
     }
 
     /**
@@ -168,8 +180,8 @@ public final class Clipper
 
     /**
      * One clipping stage with first-order antiderivative anti-aliasing
-     * (Parker/Zavalishin/Le&nbsp;Bivic DAFx-16): the harmonics the curve creates
-     * no longer fold back as aliasing. Inside the curve's exactly-linear region
+     * (Parker/Zavalishin/Le&nbsp;Bivic DAFx-16), reducing spectral foldback.
+     * Inside the curve's exactly-linear region
      * (HARD / GOLDEN_RATIO below their knee) the sample passes through
      * untouched, so the body suffers no averaging roll-off.
      */
@@ -219,9 +231,9 @@ public final class Clipper
             }
             case ANALOG:
             {
-                double k = 2.0 * c * c / Math.PI;
-                if (a <= c) return k * (1.0 - Math.cos(Math.PI * a / (2.0 * c)));
-                return k + c * (a - c);
+                double knee = c * Math.PI / 2;
+                if (a <= knee) return c * c * (1.0 - Math.cos(a / c));
+                return c * c + c * (a - knee);
             }
             case GOLDEN_RATIO:
             {
@@ -246,8 +258,8 @@ public final class Clipper
                 return ceiling * Math.tanh(x / ceiling);
             case ANALOG:
             {
-                double n = DspMath.clamp(x / ceiling, -1.0, 1.0);
-                return ceiling * Math.sin(n * (Math.PI * 0.5));
+                double n = DspMath.clamp(x / ceiling, -Math.PI / 2, Math.PI / 2);
+                return ceiling * Math.sin(n);
             }
             case GOLDEN_RATIO:
             {

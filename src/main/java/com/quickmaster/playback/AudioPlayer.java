@@ -40,8 +40,16 @@ public class AudioPlayer implements AutoCloseable {
     private int sampleRate, channels;
     private volatile float[] fixedRender;
     private volatile float[] publishedRender;
+    private volatile PreviewWindow previewWindow;
+    private volatile PreviewWindow precedingPreviewWindow;
+    private long previewGeneration = -1;
+    private long previewFloor = -1;
+    private volatile long consumedPreviewGeneration = -1;
+    private volatile boolean audiblePreview;
+    private volatile PreviewWindow activePreviewWindow;
     private volatile int osFactor = 1;
     private volatile boolean analysisValid, abBypass, paused, loopEnabled;
+    private volatile boolean listenInMono;
     private volatile long loopStartFrames, loopEndFrames, positionFrames, audiblePositionFrames;
     private long seekRevision, stateRevision;
     private volatile State requestedState = State.STOPPED;
@@ -58,13 +66,18 @@ public class AudioPlayer implements AutoCloseable {
         final int rate, channels;
         final OversamplingEngine oversampler = new OversamplingEngine();
         final Dither dither = new Dither(16, false);
+        final MonoMonitor monitor;
         volatile boolean cancelled;
         volatile SourceDataLine line;
         volatile Thread thread;
         float[] abDelay = new float[0];
         int abIndex;
-        Session(float[] source, int rate, int channels) { this.source = source; this.rate = rate; this.channels = channels; }
+        Session(float[] source, int rate, int channels, boolean mono) {
+            this.source = source; this.rate = rate; this.channels = channels;
+            monitor = new MonoMonitor(rate, mono);
+        }
     }
+    private record PreviewMark(long deviceFrame, long generation) { }
 
     public AudioPlayer(ProcessingPipeline pipeline) {
         this(pipeline, format -> (SourceDataLine) AudioSystem.getLine(new DataLine.Info(SourceDataLine.class, format)),
@@ -92,6 +105,7 @@ public class AudioPlayer implements AutoCloseable {
         stopInternal();
         sourceSamples = file.getSamples(); sampleRate = file.getSampleRate(); channels = file.getChannels();
         fixedRender = null; publishedRender = null; analysisValid = false; loopEnabled = false;
+        clearPreview();
         publishState(State.STOPPED);
     }
 
@@ -102,8 +116,9 @@ public class AudioPlayer implements AutoCloseable {
             paused = false; publishState(State.PLAYING); return;
         }
         paused = false;
+        audiblePreview = false;
         if (positionFrames >= sourceSamples.length / channels) positionFrames = audiblePositionFrames = 0;
-        Session session = new Session(sourceSamples, sampleRate, channels);
+        Session session = new Session(sourceSamples, sampleRate, channels, listenInMono);
         active = session;
         publishState(State.PLAYING);
         worker.execute(() -> playbackLoop(session));
@@ -119,6 +134,7 @@ public class AudioPlayer implements AutoCloseable {
     }
 
     private void stopInternal() {
+        audiblePreview = false; activePreviewWindow = null;
         Session previous = active;
         active = null;
         worker.getQueue().clear();
@@ -161,6 +177,10 @@ public class AudioPlayer implements AutoCloseable {
     public boolean isLooping() { return loopEnabled; }
     public void setMeterTap(ObjIntConsumer<float[]> tap) { meterTap = tap; }
 
+    /** Monitoring only: no render invalidation, seek, DSP change or source mutation. */
+    public void setListenInMono(boolean mono) { listenInMono = mono; }
+    public boolean isListenInMono() { return listenInMono; }
+
     public synchronized void setOversampling(int factor) {
         int next = Integer.highestOneBit(Math.max(1, Math.min(factor, 16)));
         if (osFactor != next) {
@@ -179,11 +199,36 @@ public class AudioPlayer implements AutoCloseable {
         if (render == null || render.length != sourceSamples.length)
             throw new IllegalArgumentException("Published render must match the current source.");
         publishedRender = render;
+        clearPreview();
         analysisValid = true;
         return true;
     }
 
     public boolean hasPublishedRender() { return publishedRender != null; }
+
+    public synchronized boolean beginPreview(float[] expectedSource, long generation) {
+        if (closed || sourceSamples != expectedSource || publishedRender == null || fixedRender != null) return false;
+        if (previewGeneration < 0) previewFloor = generation;
+        previewGeneration = generation; // Keep preceding audible window until replacement is ready.
+        return true;
+    }
+    public synchronized boolean publishPreview(PreviewWindow window) {
+        if (closed || window.source() != sourceSamples || previewGeneration < 0
+                || window.generation() < previewFloor || window.generation() > previewGeneration
+                || previewWindow != null && window.generation() < previewWindow.generation()
+                || window.channels() != channels || fixedRender != null) return false;
+        precedingPreviewWindow = previewWindow;
+        previewWindow = window; return true;
+    }
+    public synchronized void clearPreview() { previewWindow = null; precedingPreviewWindow = null; previewGeneration = previewFloor = -1; }
+    public PreviewWindow getPreviewWindow() { return previewWindow; }
+    public PreviewWindow getActivePreviewWindow() { return activePreviewWindow; }
+    public boolean isPreviewAudible() { return audiblePreview && !abBypass; }
+    public long getConsumedPreviewGeneration() { return consumedPreviewGeneration; }
+    /** Next submitted source frame, including device queue; never the lagging UI clock. */
+    public long getPreviewRequestFrame() { return positionFrames; }
+    public long getPreviewLoopStart() { return loopEnabled ? loopStartFrames : -1; }
+    public long getPreviewLoopEnd() { return loopEnabled ? loopEndFrames : -1; }
 
     private float[] auditionRender() {
         float[] comparison = fixedRender;
@@ -194,6 +239,7 @@ public class AudioPlayer implements AutoCloseable {
         if (render != null && (sourceSamples == null || render.length != sourceSamples.length))
             throw new IllegalArgumentException("Fixed render must match the current source.");
         fixedRender = render;
+        clearPreview();
     }
 
     public boolean hasFixedRender() { return fixedRender != null; }
@@ -258,7 +304,9 @@ public class AudioPlayer implements AutoCloseable {
             device = lineFactory.create(format);
             session.line = device;
             if (session.cancelled) return;
-            device.open(format, BUFFER_FRAMES * session.channels * 2 * 2);
+            // Published PCM/preview require no DSP on the device thread. One
+            // queued block keeps interactive edits from paying a second block.
+            device.open(format, BUFFER_FRAMES * session.channels * 2 * (auditionRender() == null ? 2 : 1));
             if (session.cancelled) return;
             int factor = 1;
             boolean prepared = false;
@@ -267,11 +315,15 @@ public class AudioPlayer implements AutoCloseable {
             device.start();
             boolean devicePaused = false;
             long submitted = 0, playedOrigin = device.getLongFramePosition();
+            long requestedPreviewGeneration = -1;
+            java.util.ArrayDeque<PreviewMark> previewMarks = new java.util.ArrayDeque<>();
             long observedSeek = -1;
             boolean looped = false;
             boolean wasFixed = auditionRender() != null;
             int previousLatency = wasFixed ? 0 : latency(session, factor);
             float[] previousRender = auditionRender(), fadeFrom = null;
+            PreviewWindow previousPreview = null, previewFadeFrom = null;
+            int previewFadePosition = 0;
             int fadePosition = 0, fadeFrames = Math.max(1, session.rate / 50);
             int total = session.source.length / session.channels;
             byte[] bytes = new byte[BUFFER_FRAMES * session.channels * 2];
@@ -316,7 +368,10 @@ public class AudioPlayer implements AutoCloseable {
                     looped = loopWrapped;
                     // The end of the previous iteration may still be queued at
                     // the device. A loop wrap is not a user seek: never drop it.
-                    if (!loopWrapped && !toLive) { device.flush(); submitted = 0; playedOrigin = device.getLongFramePosition(); }
+                    if (!loopWrapped && !toLive) {
+                        device.flush(); submitted = 0; playedOrigin = device.getLongFramePosition();
+                        requestedPreviewGeneration = -1; previewMarks.clear();
+                    }
                     if (render == null) {
                         factor = prepareChain(session, false); lat = latency(session, factor);
                         long target = Math.min(total, start);
@@ -379,6 +434,42 @@ public class AudioPlayer implements AutoCloseable {
                     audible = abBypass ? original : mastered;
                 }
                 if (session.cancelled) break;
+                PreviewWindow preview = previewWindow;
+                if (preview != null && !usablePreview(preview, start, frames, total, fadeFrames)) {
+                    PreviewWindow preceding = precedingPreviewWindow;
+                    preview = preceding != null && preceding.generation() == preview.generation()
+                            && usablePreview(preceding, start, frames, total, fadeFrames) ? preceding : null;
+                }
+                if (fixedRender != null || render == null || preview != null && preview.source() != session.source) preview = null;
+                if (preview != previousPreview) {
+                    previewFadeFrom = previousPreview; previewFadePosition = 0;
+                }
+                boolean previewTransition = previewFadePosition < fadeFrames
+                        && (preview != null || previewFadeFrom != null);
+                if (preview != null || previewTransition) {
+                    for (int f = 0; f < frames; f++) {
+                        double t = Math.min(1, (previewFadePosition + f + 1.0) / fadeFrames);
+                        double mix = t * t * (3 - 2 * t);
+                        for (int c = 0; c < session.channels; c++) {
+                            int i = f * session.channels + c;
+                            float next = preview == null ? mastered[i] : preview.sample(start + f, c);
+                            float old = previewFadeFrom != null && previewFadeFrom.covers(start + f, 1)
+                                    ? previewFadeFrom.sample(start + f, c) : mastered[i];
+                            mastered[i] = previewTransition ? (float)(old + mix * (next - old)) : next;
+                        }
+                    }
+                    previewFadePosition += frames;
+                }
+                previousPreview = preview;
+                activePreviewWindow = preview;
+                audiblePreview = preview != null;
+                if (preview != null && preview.generation() != requestedPreviewGeneration) {
+                    requestedPreviewGeneration = preview.generation();
+                    if (previewMarks.size() == 64) previewMarks.removeFirst();
+                    previewMarks.addLast(new PreviewMark(submitted, preview.generation()));
+                }
+                // Bypass remains the unmodified source, even during provisional audition.
+                if (!abBypass) audible = mastered;
                 pcm16(session, audible, bytes);
                 int offset = 0, size = samples * 2;
                 while (offset < size && !session.cancelled) {
@@ -390,6 +481,9 @@ public class AudioPlayer implements AutoCloseable {
                 }
                 if (session.cancelled) break;
                 submitted += frames;
+                long playedFrames = device.getLongFramePosition() - playedOrigin;
+                while (!previewMarks.isEmpty() && playedFrames > previewMarks.getFirst().deviceFrame())
+                    consumedPreviewGeneration = previewMarks.removeFirst().generation();
                 synchronized (this) {
                     if (active != session || session.cancelled) break;
                     if (seekRevision != revision) continue;
@@ -416,6 +510,8 @@ public class AudioPlayer implements AutoCloseable {
                 if (playbackThread == session.thread) playbackThread = null;
                 if (active == session) {
                     active = null;
+                    audiblePreview = false;
+                    activePreviewWindow = null;
                     if (naturalEnd) positionFrames = audiblePositionFrames = 0;
                     publishState(State.STOPPED);
                 }
@@ -461,14 +557,42 @@ public class AudioPlayer implements AutoCloseable {
         }
     }
 
-    private static void pcm16(Session session, float[] input, byte[] output) {
-        for (int i = 0; i < input.length; i++) {
-            if (!Float.isFinite(input[i])) throw new IllegalStateException("Non-finite playback sample.");
-            float value = Math.max(-1, Math.min(1, input[i]));
-            float quantized = session.dither.processSample(value, i % session.channels);
-            int pcm = Math.max(-32768, Math.min(32767, (int) Math.rint(quantized * 32768)));
-            output[i * 2] = (byte) pcm; output[i * 2 + 1] = (byte) (pcm >>> 8);
+    private boolean usablePreview(PreviewWindow window, long start, int frames, int total, int fade) {
+        return window.covers(start, frames) && (window.endFrame() >= total || window.covers(start, frames + fade)
+                || loopEnabled && window.covers(loopStartFrames, Math.toIntExact(loopEndFrames - loopStartFrames)));
+    }
+
+    private void pcm16(Session session, float[] input, byte[] output) {
+        if (session.channels == 1) {
+            for (int i = 0; i < input.length; i++) {
+                if (!Float.isFinite(input[i])) throw new IllegalStateException("Non-finite playback sample.");
+                pcm16Sample(session, input[i], output, i);
+            }
+            return;
         }
+        session.monitor.setMono(listenInMono);
+        for (int i = 0; i < input.length; i += 2) {
+            double left = input[i], right = input[i + 1];
+            if (!Double.isFinite(left) || !Double.isFinite(right))
+                throw new IllegalStateException("Non-finite playback sample.");
+            double sideGain = session.monitor.nextSideGain();
+            if (sideGain != 1) {
+                // Half-sum preserves centre gain and avoids the +6 dB of L+R.
+                // Double intermediates also allow over-range float PCM to cancel
+                // before device clamping. Never write back into master/preview.
+                double mid = .5 * left + .5 * right, side = .5 * left - .5 * right;
+                left = mid + sideGain * side; right = mid - sideGain * side;
+            }
+            pcm16Sample(session, left, output, i);
+            pcm16Sample(session, right, output, i + 1);
+        }
+    }
+
+    private static void pcm16Sample(Session session, double sample, byte[] output, int index) {
+        float value = (float) Math.max(-1, Math.min(1, sample));
+        float quantized = session.dither.processSample(value, index % session.channels);
+        int pcm = Math.max(-32768, Math.min(32767, (int) Math.rint(quantized * 32768)));
+        output[index * 2] = (byte) pcm; output[index * 2 + 1] = (byte) (pcm >>> 8);
     }
 
     private static void closeLine(SourceDataLine line) {

@@ -58,27 +58,22 @@ public final class LookaheadGainSmoother
 
     /**
      * Forward sliding minimum: {@code res[i] = min(a[i .. min(i+look, n-1)])},
-     * in O(n) via a monotonic deque. Implemented as a standard backward window
-     * minimum of size {@code look+1} read at position {@code i+look}.
+     * in O(n) via a monotonic deque. Traverse backwards so a truncated tail
+     * contains only future samples, never a stale minimum from before i.
      */
     static float[] forwardSlidingMin(float[] a, int look)
     {
         int n = a.length;
-        float[] g = new float[n];          // g[p] = min over [p-look, p]
+        if (look < 0) throw new IllegalArgumentException("Negative lookahead.");
+        float[] res = new float[n];
         int[] dq = new int[n];
         int head = 0, tail = 0;
-        for (int p = 0; p < n; p++)
+        for (int p = n - 1; p >= 0; p--)
         {
+            while (tail > head && (long) dq[head] > (long) p + look) head++;
             while (tail > head && a[dq[tail - 1]] >= a[p]) tail--;
             dq[tail++] = p;
-            if (dq[head] < p - look) head++;
-            g[p] = a[dq[head]];
-        }
-        float[] res = new float[n];
-        for (int i = 0; i < n; i++)
-        {
-            int q = Math.min(i + look, n - 1);
-            res[i] = g[q];
+            res[p] = a[dq[head]];
         }
         return res;
     }

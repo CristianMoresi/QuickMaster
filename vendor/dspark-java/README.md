@@ -10,7 +10,20 @@ Version 0.2 incorporates audited kernels from C++ commit
 parity with the entire C++ library. QuickMaster-specific offline dynamics and EQ
 voicing are preserved. See the [migration and numerical validation record](../../docs/diagnostics/dspark-java-0.2-migration.md).
 
+Version 0.2.2 adds `SuperFluxOnsetDetector` (offline C++ `474b7d1` path, with
+stereo spectral-power pooling) and signed stateless Clipper transfer access.
+The Analog curve now has the C++ unit-slope sine transfer. These paths have
+compiled-native reference vectors. Legacy Java `Saturation` rational voicings
+are not the C++ physical tape/transformer models and are no longer used by
+QuickMaster's clip controls. See the [scope and numerical evidence](../../docs/diagnostics/dynamics-clips-audit.md).
+
 ## What's included
+
+Version 0.2.3 updates `AutoGain` to the K-weighted C++ `474b7d1` algorithm,
+including 400 ms integration and thread-safe parameter/gain publication.
+720 native block vectors verify the port. `offlineGainDb` is an explicit
+whole-file, fixed-gain extension; it is not the streaming smoother or a limiter.
+See [EQ auto-gain validation](../../docs/diagnostics/eq-autogain-audit.md).
 
 | Area | Modules |
 |------|---------|
@@ -18,14 +31,17 @@ voicing are preserved. See the [migration and numerical validation record](../..
 | **Effects** | `Normalizer`, `Limiter` (true-peak brickwall), `Equalizer` (minimum- and linear-phase), `StereoWidth` (with bass-mono), `DcBlocker`, `AutoGain`, `Gain` |
 | **Analysis** | `LoudnessMeter` (EBU R128: momentary / short-term / integrated + true-peak + LRA), `SpectrumAnalyzer`, `LevelFollower` |
 
-All samples are processed as 32-bit `float` in the normalized range `[-1.0, +1.0]`.
+Audio uses 32-bit `float`, with nominal full scale `[-1.0, +1.0]` and unclipped
+internal headroom. Output gain/limiting, not the float representation, determines
+the delivery ceiling.
 
 ## Design
 
 - **Pure Java, zero dependencies** — only the JDK and (for tests) JUnit 5.
 - **Prepare / process lifecycle** — sample-rate-dependent setup is done once in
   `prepare(...)`, keeping the per-sample inner loop allocation-free.
-- **Offline and streaming** — every processor works on a whole buffer or block by block.
+- **Offline and streaming** — effects provide block processing; source analyses
+  such as `SuperFluxOnsetDetector` explicitly require the complete signal.
 
 ## Build
 

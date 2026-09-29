@@ -1,0 +1,248 @@
+{
+  "version": 1,
+  "selected_before_measurement": true,
+  "purpose": "Technical feasibility pilot; not representative professional-master calibration. No final genre profiles may be derived.",
+  "selection_notes": "Eight authorized public controls and four private tracks. Artist/album dependence retained explicitly. Tags are provisional sampling descriptions, not inferred genres or independent cohorts. Upload dates are not master dates. No human listening performed.",
+  "tracks": [
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "by-now",
+      "title": "By Now",
+      "artist": "StyleShift AI",
+      "permission": "user_owned_authorized",
+      "source_page": "User-supplied local production",
+      "local_path": "D:/StyleShift AI/SSAI Masters/POST-YOUTUBE/By Now.wav",
+      "tags": [
+        "private",
+        "vocal"
+      ],
+      "release_date": null
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "quiet-gold",
+      "title": "Quiet Gold",
+      "artist": "StyleShift AI",
+      "permission": "user_owned_authorized",
+      "source_page": "User-supplied local production",
+      "local_path": "D:/StyleShift AI/SSAI Masters/POST-YOUTUBE/Quiet Gold.wav",
+      "tags": [
+        "private",
+        "crescendo"
+      ],
+      "release_date": null
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "billie-jean-remake",
+      "title": "Billie Jean (80s Glam Metal)",
+      "artist": "StyleShift AI",
+      "permission": "user_owned_authorized",
+      "source_page": "User-supplied local production; NOT the original commercial master",
+      "local_path": "D:/StyleShift AI/SSAI Masters/POST-YOUTUBE/Billie Jean (80s Glam Metal).wav",
+      "tags": [
+        "private",
+        "metal-remake"
+      ],
+      "release_date": null
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "wicked-game-remake",
+      "title": "Wicked Game (80s Synthwave)",
+      "artist": "StyleShift AI",
+      "permission": "user_owned_authorized",
+      "source_page": "User-supplied local production; NOT the original commercial master",
+      "local_path": "D:/StyleShift AI/SSAI Masters/POST-YOUTUBE/Wicked Game (80s Synthwave).wav",
+      "tags": [
+        "private",
+        "synthwave-remake"
+      ],
+      "release_date": null
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "incredulity",
+      "title": "Incredulity",
+      "artist": "Scott Buckley",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://www.scottbuckley.com.au/library/incredulity/",
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/Scott Buckley - Incredulity.mp3",
+      "download_url": "https://www.scottbuckley.com.au/library/wp-content/uploads/2025/04/Incredulity.mp3",
+      "tags": [
+        "ambient",
+        "neoclassical",
+        "instrumental"
+      ],
+      "release_date": "2025-04",
+      "attribution": "Incredulity by Scott Buckley — released under CC-BY 4.0. www.scottbuckley.com.au",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": true,
+      "id": "quarks-funky",
+      "title": "Quarks Funky (KB 30)",
+      "artist": "KieLoBot",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://freemusicarchive.org/music/KieLoBot/funky-tomatoes/quarks-funky-kb-30/",
+      "download_url": "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/OHwmbgtX4BHxZLVvd3exQJPqRLkqddZI8zHK1rDQ.mp3",
+      "tags": [
+        "funk",
+        "jam",
+        "instrumental"
+      ],
+      "album": "Funky Tomatoes",
+      "release_date": "2024-07-19",
+      "mastering_credit": "Lobo Loco; album source",
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/quarks-funky.mp3",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Quarks Funky (KB 30) by KieLoBot, CC BY 4.0. Source: https://freemusicarchive.org/music/KieLoBot/funky-tomatoes/quarks-funky-kb-30/"
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "quirock",
+      "title": "Quirock",
+      "artist": "Pamela Yuen",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://freemusicarchive.org/music/pamela-yuen/multigenre-pop-vibes/quirock/",
+      "download_url": "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/p8tzEFDrbDssnDTRLN30PFfrlOQTHP6amZ2Vk3Af.mp3",
+      "tags": [
+        "rock",
+        "production-music"
+      ],
+      "album": "Multigenre Pop Vibes",
+      "release_date": null,
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/quirock.mp3",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Quirock by Pamela Yuen, CC BY 4.0. Source: https://freemusicarchive.org/music/pamela-yuen/multigenre-pop-vibes/quirock/"
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "bossaquirk",
+      "title": "Bossaquirk",
+      "artist": "Pamela Yuen",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://freemusicarchive.org/music/pamela-yuen/multigenre-pop-vibes/bossaquirk/",
+      "download_url": "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/cPumTq5l7XOoQBvd4Qg5auvrUYnqKmZsK2mUqcOS.mp3",
+      "tags": [
+        "bossa-influenced",
+        "production-music"
+      ],
+      "album": "Multigenre Pop Vibes",
+      "release_date": null,
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/bossaquirk.mp3",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Bossaquirk by Pamela Yuen, CC BY 4.0. Source: https://freemusicarchive.org/music/pamela-yuen/multigenre-pop-vibes/bossaquirk/"
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "southern-gothic",
+      "title": "Southern Gothic",
+      "artist": "Kevin MacLeod",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300004",
+      "download_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Southern%20Gothic.mp3",
+      "source_catalog": "https://incompetech.com/music/royalty-free/pieces.json",
+      "source_license": "https://incompetech.com/music/royalty-free/licenses/",
+      "catalog_upload_date": "2023-08-15",
+      "release_date": null,
+      "isrc": "USUAN2300004",
+      "tags": [
+        "acoustic",
+        "banjo",
+        "choir"
+      ],
+      "attribution": "Southern Gothic by Kevin MacLeod (incompetech.com), licensed under Creative Commons Attribution 4.0.",
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/southern-gothic.mp3",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "vibing-over-venus",
+      "title": "Vibing Over Venus",
+      "artist": "Kevin MacLeod",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300005",
+      "download_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Vibing%20Over%20Venus.mp3",
+      "source_catalog": "https://incompetech.com/music/royalty-free/pieces.json",
+      "source_license": "https://incompetech.com/music/royalty-free/licenses/",
+      "catalog_upload_date": "2023-08-15",
+      "release_date": null,
+      "isrc": "USUAN2300005",
+      "tags": [
+        "jazz-influenced",
+        "rhythm-section"
+      ],
+      "attribution": "Vibing Over Venus by Kevin MacLeod (incompetech.com), licensed under Creative Commons Attribution 4.0.",
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/vibing-over-venus.mp3",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "brain-dance",
+      "title": "Brain Dance",
+      "artist": "Kevin MacLeod",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300006",
+      "download_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Brain%20Dance.mp3",
+      "source_catalog": "https://incompetech.com/music/royalty-free/pieces.json",
+      "source_license": "https://incompetech.com/music/royalty-free/licenses/",
+      "catalog_upload_date": "2023-11-30",
+      "release_date": null,
+      "isrc": "USUAN2300006",
+      "tags": [
+        "electronic",
+        "synth"
+      ],
+      "attribution": "Brain Dance by Kevin MacLeod (incompetech.com), licensed under Creative Commons Attribution 4.0.",
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/brain-dance.mp3",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "role": "technical_pilot",
+      "eligible_for_profile": false,
+      "mastering_credit_verified": false,
+      "id": "i-got-a-stick",
+      "title": "I Got a Stick Arr Bryan Teoh",
+      "artist": "Kevin MacLeod",
+      "permission": "CC-BY-4.0",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2200004",
+      "download_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/I%20Got%20a%20Stick%20Arr%20Bryan%20Teoh.mp3",
+      "source_catalog": "https://incompetech.com/music/royalty-free/pieces.json",
+      "source_license": "https://incompetech.com/music/royalty-free/licenses/",
+      "catalog_upload_date": "2022-09-04",
+      "release_date": null,
+      "isrc": "USUAN2200004",
+      "tags": [
+        "brass",
+        "vocal",
+        "rhythm-section"
+      ],
+      "attribution": "I Got a Stick Arr Bryan Teoh by Kevin MacLeod (incompetech.com), licensed under Creative Commons Attribution 4.0.",
+      "local_path": "E:/Code/Projects/JA-DAW/QuickMaster-Integration/dist/stereo-research-20260928/audio/i-got-a-stick.mp3",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ]
+}

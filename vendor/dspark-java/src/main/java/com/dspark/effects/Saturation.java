@@ -3,7 +3,8 @@ package com.dspark.effects;
 import com.dspark.core.DspMath;
 
 /**
- * Analog-style soft clipper / saturator for mastering.
+ * Rational-knee soft-clip voicings for mastering. These Java-specific voicings
+ * are not the C++ Saturation tube, hysteresis/tape or filtered transformer models.
  * <p>
  * The signal is shaped by a warm soft-clip curve against a ceiling: the body
  * below the knee passes through cleanly, only the material near the ceiling is
@@ -12,8 +13,8 @@ import com.dspark.core.DspMath;
  * {@link Algorithm#TAPE} (symmetric → odd harmonics, smooth) and
  * {@link Algorithm#TRANSFORMER} (firmer, denser). The nonlinearity is
  * <b>antiderivative anti-aliased</b> (1st-order ADAA, Parker/Zavalishin/Le&nbsp;Bivic
- * DAFx-16; Bilbao&nbsp;et&nbsp;al. IEEE&nbsp;2017), so the harmonics it generates do
- * not fold back as aliasing. A 1st-order DC blocker removes the small offset the
+ * DAFx-16; Bilbao&nbsp;et&nbsp;al. IEEE&nbsp;2017), reducing (not eliminating)
+ * spectral foldback. A 1st-order DC blocker removes the small offset the
  * asymmetric voicings introduce, and an independent per-channel drive drift models
  * two slightly different analog channels, decorrelating the left/right harmonics
  * for a wider image.
@@ -119,6 +120,20 @@ public final class Saturation
         double c = Math.max(1e-4, ceilingCandidate);
         double driven = Math.abs(inputPeak) * DspMath.decibelsToGain(driveDb);
         return c * curve(driven / c, algorithm);   // positive side
+    }
+
+    /**
+     * Signed static rational-knee transfer, with no drive, ADAA, DC filtering
+     * or stereo drift. Hosts must provide their own antialiasing/oversampling.
+     * Both polarities must be considered when solving an asymmetric ceiling.
+     */
+    public double shapeSample(double input, double ceilingCandidate) {
+        if (!Double.isFinite(input) || !Double.isFinite(ceilingCandidate) || ceilingCandidate <= 0)
+            throw new IllegalArgumentException("Require finite input and positive finite ceiling.");
+        double u = input / ceilingCandidate;
+        double knee = input >= 0 ? kneePos(algorithm) : kneeNeg(algorithm);
+        if (Math.abs(u) <= knee) return input;
+        return ceilingCandidate * signedCurve(u, algorithm);
     }
 
     /**

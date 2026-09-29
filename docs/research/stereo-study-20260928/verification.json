@@ -1,0 +1,27 @@
+{
+  "verified_utc": "2026-09-28T21:29:30.662314+00:00",
+  "status": "passed",
+  "references": 50,
+  "families": 10,
+  "references_per_family": 5,
+  "source_duration_seconds": 14920.009999999997,
+  "clock_evidence_modes": {
+    "per_second": 48,
+    "30s_progress": 2
+  },
+  "references_with_preserved_selected_catalogue_item": 49,
+  "all_have_capture_source_identity": true,
+  "study_sha256": "8de32115b7fa145329734477fac06c00187b99d4c497d2dfee2374f8cf114add",
+  "verifier_sha256": "dc629787272a2faffdbfd6124123e5c74780bb6448f325f81bec4565a7ce0534",
+  "checks": [
+    "unique songs and URLs",
+    "complete 10x5 coverage",
+    "archive and measurement hashes",
+    "capture-quality gates",
+    "all stereo and tonal features recomputed",
+    "equal-song group aggregation recomputed",
+    "normalized spectral sums",
+    "no audio files in delivery"
+  ],
+  "limitations": "This validates the measured public deliveries and computations, not lossless original masters, perceptual preferences or population norms."
+}

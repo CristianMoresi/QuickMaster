@@ -1,5 +1,17 @@
 # QuickMaster project instructions
 
+## Canonical workspace
+
+Work only in `E:\Code\Projects\JA-DAW\QuickMaster`, on `main`. This is the
+current source tree, including uncommitted work. Do not recreate sibling
+Integration, Rapid, recovery or test checkouts, or auxiliary branches, unless
+the user explicitly changes this instruction.
+
+Historical work is preserved under `.archive/`; it is not an active project.
+Licensed local signals are under `test-data/official/`. Keep both out of Git and
+release packages. Old absolute paths in evidence are provenance, not current
+workspace instructions. See `WORKSPACE.md` for layout and recovery information.
+
 ## Required local delivery
 
 After every change to application code, resources, configuration, or packaging:

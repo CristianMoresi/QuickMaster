@@ -23,7 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Original raw-bit goldens remain binding for Peak/Beat/Punch; Leveler now fails closed without its own bound package. */
+/** Beat retains its raw-bit oracle. Corrected Peak/Punch require boundary/quiet-onset
+ * oracles in DynamicsAuditTest plus exact block/cumulative equivalence here.
+ * Historical hashes below are retained, not silently regenerated from candidates.
+ * Unbound structural Leveler still fails closed. */
 @SuppressWarnings("deprecation")
 class AnalysisDynamicsCompatibilityTest
 {
@@ -121,7 +124,7 @@ class AnalysisDynamicsCompatibilityTest
     }
 
     @Test
-    @DisplayName("Peak/Beat/Punch retain legacy raw bits; unbound structural Leveler is exactly unit")
+    @DisplayName("Beat preserves its golden; corrected dynamics preserve exact block identity; unbound Leveler is unit")
     void allLegacyProcessorsAreRawBitExactMonoAndStereo()
     {
         for (Kind kind : Kind.values())
@@ -143,8 +146,12 @@ class AnalysisDynamicsCompatibilityTest
                 }
                 else
                 {
-                    assertEquals(individualHeadSha256(kind, channels), rawBitSha256(actual),
-                            kind + " " + channels + "ch must match the raw-bit HEAD golden");
+                    if(kind==Kind.BEAT)
+                        assertEquals(individualHeadSha256(kind, channels), rawBitSha256(actual),
+                                kind + " " + channels + "ch must match the raw-bit HEAD golden");
+                    processor.prepare(SAMPLE_RATE,input.length);
+                    assertRawEquals(processor.process(input.clone(),channels),actual,
+                            "Complete and ragged renders must have identical source clocks");
                     assertFalse(Arrays.equals(rawBits(input), rawBits(actual)),
                             kind + " fixture must exercise a non-unity envelope");
                 }
@@ -153,7 +160,7 @@ class AnalysisDynamicsCompatibilityTest
     }
 
     @Test
-    @DisplayName("The cumulative pipeline preserves upstream Dense goldens and the unbound Leveler veto")
+    @DisplayName("Cumulative processing matches individually analyzed stages and the unbound Leveler veto")
     void cumulativePipelineMatchesLegacyRenderer()
     {
         for (int channels : new int[] { 1, 2 })
@@ -181,8 +188,7 @@ class AnalysisDynamicsCompatibilityTest
                     input.clone(), 16, false);
             pipeline.process(file);
 
-            assertEquals(pipelineStageInputHeadSha256(channels, Kind.LEVELER), rawBitSha256(file.getSamples()),
-                    "Unbound Leveler must preserve the independently pinned Punch output");
+            float[] reference=input.clone();
             String previousOutput = rawBitSha256(input);
             for (InstrumentedStage stage : stages)
             {
@@ -192,8 +198,13 @@ class AnalysisDynamicsCompatibilityTest
                 assertEquals(862, stage.processCalls, stage.kind + " block participation");
                 assertEquals(previousOutput, stage.analyzeInputSha256,
                         stage.kind + " must analyze the accumulated upstream output");
-                assertEquals(pipelineStageInputHeadSha256(channels, stage.kind),
-                        stage.analyzeInputSha256, stage.kind + " HEAD input golden");
+                assertEquals(rawBitSha256(reference),stage.analyzeInputSha256,
+                        "The stage must analyze the actual preceding PCM, not the source");
+                AnalysisDynamicsProcessor isolated=processor(stage.kind,input,channels,1,.5);
+                isolated.prepare(SAMPLE_RATE,input.length);isolated.analyze(reference,channels);
+                isolated.prepare(SAMPLE_RATE,input.length);
+                reference=renderInBlocks(isolated,reference,channels,new int[]{1024});
+                assertEquals(rawBitSha256(reference),stageOutput,"Exact stage output across entry points");
                 if (stage.kind == Kind.LEVELER)
                 {
                     assertEquals(0, stage.changedBlocks);
@@ -206,10 +217,10 @@ class AnalysisDynamicsCompatibilityTest
                 else
                 {
                     assertTrue(stage.changedBlocks > 0, stage.kind + " must alter this fixture");
-                    assertEquals(pipelineStageOutputHeadSha256(channels, stage.kind),
-                            stageOutput, stage.kind + " HEAD output golden");
-                    assertEquals(pipelineStageMeterHeadSha256(channels, stage.kind),
-                            stage.meterSha256(), stage.kind + " HEAD meter golden");
+                    // Peak's bounded attack deliberately replaces the leaky
+                    // legacy curve; Pulse selection is now locally adaptive.
+                    // Their independent PCM/timing/boost bounds are tested in
+                    // DynamicsAuditTest, not by blessing new output hashes.
                 }
                 previousOutput = stageOutput;
             }

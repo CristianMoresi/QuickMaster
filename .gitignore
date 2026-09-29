@@ -41,6 +41,10 @@ quickmaster.log
 *.log.*
 *.lck
 
+### Local recovery archives and licensed test audio ###
+/.archive/
+/test-data/
+
 # Scripts
 *.bat
 *.ps1

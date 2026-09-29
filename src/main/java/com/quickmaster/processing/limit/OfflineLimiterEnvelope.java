@@ -11,10 +11,10 @@ import java.util.concurrent.CancellationException;
  * without clipping, and a release time constant measured in samples, not dB.
  * O(frames) time and O(lookahead) scratch, in addition to the returned envelope.
  */
-final class OfflineLimiterEnvelope {
+public final class OfflineLimiterEnvelope {
     private OfflineLimiterEnvelope() { }
 
-    static float[] compute(float[] peaks, double threshold, int attack, int release) {
+    public static float[] compute(float[] peaks, double threshold, int attack, int release) {
         if (!Double.isFinite(threshold) || threshold <= 0)
             throw new IllegalArgumentException("Limiter threshold must be finite and positive.");
         int frames=peaks.length;

@@ -30,6 +30,9 @@ import com.quickmaster.processing.PeakNormalizer;
 import com.quickmaster.processing.ProcessingPipeline;
 import com.quickmaster.processing.dynamics.PunchProcessor;
 import com.quickmaster.processing.eq.AutoEqProcessor;
+import com.quickmaster.processing.stereo.StereoImageProcessor;
+import com.quickmaster.processing.stereo.StereoImageSettings;
+import com.quickmaster.processing.stereo.StereoImageAnalyzer;
 import com.quickmaster.processing.analysis.LiveSpectrum;
 import com.quickmaster.processing.analysis.OutputAnalysis;
 import com.quickmaster.processing.analysis.LatestAnalysisExecutor;
@@ -252,6 +255,9 @@ public class MainController
 
     // Equalizer (unified first block: tone + L/R/M/S routing + dynamics)
     @FXML private CheckBox eqEnabled;
+    @FXML private CheckBox eqAutoGain;
+    @FXML private Label eqAutoGainLabel;
+    @FXML private Label eqPreviewLabel;
     @FXML private Pane eqCanvasWrapper;
     @FXML private Canvas eqCanvas;
     @FXML private CheckBox autoEqOn;
@@ -306,6 +312,10 @@ public class MainController
     @FXML private CheckBox clipEnabled;
     @FXML private HBox clipCards;
     @FXML private Region limiterPanel;
+    @FXML private StackPane moduleContent;
+    private StereoImagePane stereoPane;
+    private final LatestAnalysisExecutor stereoReferenceExecutor = new LatestAnalysisExecutor();
+    private long stereoReferenceGeneration;
 
     // Command bar + loudness meters
     @FXML private Label meterLufs;
@@ -322,6 +332,7 @@ public class MainController
     @FXML private HBox correlationRow;
     @FXML private HBox midRow;
     @FXML private HBox sideRow;
+    @FXML private ToggleButton listenMono;
     @FXML private Canvas gonioCanvas;
 
     // Status bar
@@ -359,6 +370,8 @@ public class MainController
     private final BroadbandLimiterProcessor broadband = new BroadbandLimiterProcessor();
     private final SoftClipProcessor softClip = new SoftClipProcessor();
     private final HardClipProcessor hardClip = new HardClipProcessor();
+    private final StereoImageProcessor stereoImage = new StereoImageProcessor();
+    private float[] stereoCacheSource;
 
     // Dynamics: four automatic, analysis-driven compressors that run before the
     // Peak Normalizer. Reorderable among themselves; the Peak Normalizer and the
@@ -398,6 +411,20 @@ public class MainController
     private final ProcessingPipeline pipeline = buildPipeline();
     private final AppConfig config = AppConfig.getInstance();
     private final AudioPlayer player = new AudioPlayer(pipeline);
+    private final com.quickmaster.playback.InteractivePreview interactivePreview =
+            new com.quickmaster.playback.InteractivePreview(player,
+                    error -> AppLogger.error("Interactive preview failed.", error),
+                    () -> Platform.runLater(() -> {
+                        if (this.closing || player.getPreviewWindow() == null) return;
+                        var preview = player.getPreviewWindow();
+                        eqPreviewLabel.setText("Preview · finalizing…");
+                        if (stereoPane != null) stereoPane.setStatus("Preview · finalizing…");
+                        if (!player.isPlaying()) showPreviewGain(preview);
+                        drawWaveform();
+                        if (this.playWhenReady) requestPlayback();
+                    }));
+    private PauseTransition eqPreviewCoalesce;
+    private long previewContextRevision; // Track-scoped tempo/exclusions/source, outside ChainPreset.
 
     private AudioFile loadedFile;
     private float[] waveformDownsampled;
@@ -555,6 +582,7 @@ public class MainController
         initEqUi();
         initAutoEqUi();
         initLimiterUi();
+        initStereoUi();
         initChainUi();
         initDynamicsUi();
         initClipUi();
@@ -567,7 +595,6 @@ public class MainController
         peakEnabled.selectedProperty().addListener((obs, o, n) ->
         {
             normalizer.setEnabled(n);
-            peakAppliedLabel.setText(n ? formatSignedDb(normalizer.getGainDb()) : "·");
             scheduleDynamicsRefresh();
         });
         normalizer.setEnabled(peakEnabled.isSelected());   // transparent by default (off)
@@ -620,6 +647,11 @@ public class MainController
         installPersistentTooltip(sideRow,
                 "Side level: energy that differs between the left and right channels "
                         + "(the stereo-width component).");
+        listenMono.setSelected(player.isListenInMono());
+        listenMono.selectedProperty().addListener((obs, old, mono) -> player.setListenInMono(mono));
+        listenMono.setTooltip(new Tooltip(
+                "Monitor (L + R) / 2 in both speakers. Applies to Bypass and A/B too. "
+                        + "Does not change the master, stereo meters or export; no reanalysis."));
 
         // --- Mouse handlers on waveform: click + drag scrubbing ---
         waveformCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED,  this::onWaveformMousePressed);
@@ -728,6 +760,7 @@ public class MainController
         p.addProcessor(autoEq);        // EQ block: Auto EQ → EQ → Fade
         p.addProcessor(eq);
         p.addProcessor(fade);
+        p.addProcessor(stereoImage);
         p.addProcessor(peakComp);      // Dynamics: the four automatic compressors
         p.addProcessor(beatComp);
         p.addProcessor(leveler);
@@ -1357,7 +1390,8 @@ public class MainController
     private void requestPlayback()
     {
         if (closing || loadedFile == null) return;
-        if (!sourceAnalysisPending && (player.hasFixedRender() || levelerReadyGeneration == outputAnalysisGeneration)) {
+        if (!sourceAnalysisPending && (player.hasFixedRender() || player.getPreviewWindow() != null
+                || levelerReadyGeneration == outputAnalysisGeneration)) {
             playWhenReady = false;
             player.play();
             setStatus("Playing.");
@@ -1518,9 +1552,9 @@ public class MainController
                         });
                 if (isCancelled()) return null;   // cancelled: write nothing
                 float[] out = resampleForExport(processed, ch, srcRate, settings.sampleRate());
-                if (settings.sampleRate() != srcRate && snap.normalizer.isEnabled())
+                if (settings.sampleRate() != srcRate && (snap.normalizer.isEnabled() || snap.normalizer.isSafetyEnabled()))
                 {
-                    reclampTruePeak(out, ch, snap.normalizer.getTargetDbfs());
+                    reclampTruePeak(out, ch, snap.normalizer.getDeliveryTargetDbtp());
                 }
                 if (isCancelled()) return null;
                 AudioFile output = exportAsMp3
@@ -2536,6 +2570,16 @@ public class MainController
             scheduleDynamicsRefresh();
         });
 
+        eqAutoGain.selectedProperty().addListener((o, old, value) -> {
+            eq.setAutoGainEnabled(value);
+            scheduleDynamicsRefresh();
+        });
+        eq.setAutoGainEnabled(eqAutoGain.isSelected());
+        eqAutoGain.setTooltip(new Tooltip("Match the EQ's perceived level with DSPark K-weighting. Applies one fixed, stereo-linked gain and protects the EQ output; no compression. Downstream Stereo Image has independent, manual headroom. Turn off for manual EQ gain."));
+        eqAutoGainLabel.setTooltip(new Tooltip("EQ gain of the audible plan. ≈ marks provisional local preview calibration; the completed master uses whole-track calibration. Additional output trim appears under Peak Normalizer."));
+        eqPreviewLabel.setTooltip(new Tooltip("Preview uses the current EQ and the last completed downstream analysis. Local Auto Gain and monitoring headroom are provisional. Export always uses exact whole-track analysis."));
+        peakAppliedLabel.setTooltip(new Tooltip("Final output gain. EQ Auto Gain can protect the output when no active Stereo Image follows it. Stereo Image never enables output attenuation; enable Peak Normalizer explicitly if needed. No clipping or compression is used."));
+
         eqType.valueProperty().addListener((o, ov, nv) ->
         {
             // A fresh notch defaults to a clear, narrow cut so it's visible + adjustable.
@@ -2619,8 +2663,6 @@ public class MainController
         {
             normalizer.setTargetDbfs(nv.doubleValue());
             peakTargetLabel.setText(String.format(Locale.US, "%.1f dBTP", nv.doubleValue()));
-            if (peakEnabled.isSelected())
-                peakAppliedLabel.setText(formatSignedDb(normalizer.getGainDb()));
             scheduleDynamicsRefresh();
         });
         normalizer.setTargetDbfs(peakTarget.getValue());
@@ -2673,6 +2715,8 @@ public class MainController
             {
                 if (now - last < 33_000_000L) return;   // ~30 fps
                 last = now;
+                if (player.getPreviewWindow() != null && player.getActivePreviewWindow() != null)
+                    showPreviewGain(player.getActivePreviewWindow());
                 // Redraw the EQ while its panel is showing so the live spectrum,
                 // the Auto EQ correction and any dynamic-band handles all animate.
                 if (selectedModule != null && selectedModule.processors.contains(eq))
@@ -3356,6 +3400,7 @@ public class MainController
         updatingEqEditor = false;
         applyEditorToBand();
         drawEqCurve();
+        scheduleDynamicsRefresh();
     }
 
     /** Ends an EQ band drag. */
@@ -3596,6 +3641,14 @@ public class MainController
         return String.format(Locale.US, "%+.1f dB", db);
     }
 
+    /** The checkbox conveys enablement; this readout only conveys audible compensation. */
+    static String formatAutoGainDb(boolean active, double db, boolean provisional)
+    {
+        // Hide values that round to zero at the readout's 0.1 dB precision.
+        if (!active || !Double.isFinite(db) || Math.abs(db) < 0.05) return "";
+        return (provisional ? "≈ " : "") + formatSignedDb(db);
+    }
+
     /** Formats a time in milliseconds (e.g. "80 ms"). */
     private static String formatMs(double ms)
     {
@@ -3670,6 +3723,74 @@ public class MainController
      * chip's lit/dimmed look in sync with its enable state, and selects the
      * equalizer.
      */
+    private void initStereoUi()
+    {
+        stereoPane = new StereoImagePane(this::loadStereoReference);
+        stereoPane.setVisible(false); stereoPane.setManaged(false);
+        moduleContent.getChildren().add(stereoPane);
+        stereoPane.onChange(settings -> {
+            StereoImageSettings previous = stereoImage.settings();
+            stereoImage.setSettings(settings);
+            // A section's On control is an actionable enable, not an inert
+            // switch behind a second, initially bypassed master switch.
+            boolean activated = settings.generation() && !previous.generation()
+                    || settings.leveling() && !previous.leveling()
+                    || settings.guard() && !previous.guard()
+                    || settings.sideGainDb() != 0 && previous.sideGainDb() == 0;
+            if (activated && !stereoPane.enableBox().isSelected()) stereoPane.enableBox().setSelected(true);
+            else scheduleDynamicsRefresh();
+        });
+        stereoPane.enableBox().selectedProperty().addListener((o, a, b) -> {
+            stereoImage.setEnabled(b); scheduleDynamicsRefresh();
+        });
+    }
+
+    private void loadStereoReference()
+    {
+        FileChooser chooser = new FileChooser(); chooser.setTitle("Stereo Image reference");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio", "*.wav", "*.mp3"));
+        File file = chooser.showOpenDialog(rootStack.getScene().getWindow());
+        if (file == null) return;
+        loadStereoReference(file);
+    }
+
+    private void loadStereoReference(File file)
+    {
+        long generation = ++stereoReferenceGeneration;
+        StereoImageSettings requested = stereoImage.settings();
+        stereoPane.setStatus("Measuring reference…");
+        Task<Double> task = new Task<>() {
+            @Override protected Double call() throws Exception {
+                AudioFile reference = AudioFormatDetector.loadAuto(file.getAbsolutePath());
+                reference.load();
+                if (reference.getChannels() != 2) throw new IllegalArgumentException("The reference must have two channels.");
+                double mid = 0, side = 0; float[] pcm = reference.getSamples();
+                for (int i = 0; i < pcm.length; i += 2) {
+                    if ((i & 16383) == 0 && isCancelled()) throw new java.util.concurrent.CancellationException();
+                    double m = .5 * (pcm[i] + (double)pcm[i+1]), s = .5 * (pcm[i] - (double)pcm[i+1]);
+                    mid += m*m; side += s*s;
+                }
+                double q = StereoImageAnalyzer.share(mid, side);
+                if (!Double.isFinite(q) || q < .001 || q > .49)
+                    throw new IllegalArgumentException("Reference Side energy must be between 0.1% and 49%; silence, mono and anti-phase references cannot define this target.");
+                return q;
+            }
+        };
+        task.setOnSucceeded(e -> {
+            if (closing || generation != stereoReferenceGeneration) return;
+            stereoPane.setStatus("");
+            if (!stereoImage.settings().equals(requested)) { setStatus("Reference discarded because Stereo Image settings changed."); return; }
+            stereoPane.acceptReference(task.getValue());
+            setStatus("Stereo reference measured: " + file.getName());
+        });
+        task.setOnFailed(e -> {
+            if (closing || generation != stereoReferenceGeneration) return;
+            stereoPane.setStatus("Reference failed");
+            new Alert(Alert.AlertType.ERROR, task.getException().getMessage(), ButtonType.OK).show();
+        });
+        stereoReferenceExecutor.replace(task);
+    }
+
     private void initChainUi()
     {
         // Two movable chips: EQ (EQ + Fade) and Dynamics (the four compressors).
@@ -3677,6 +3798,7 @@ public class MainController
         // and the Limiter are pinned at the end of the chain (see rebuildPipeline).
         chainModules.clear();
         chainModules.add(new ChainModule("EQ", List.of(autoEq, eq, fade), eqPanel, eqEnabled));
+        chainModules.add(new ChainModule("Stereo Image", List.of(stereoImage), stereoPane, stereoPane.enableBox()));
         chainModules.add(new ChainModule("Dynamics", dynamicsOrder, dynamicsPanel, dynMasterEnabled));
         // Clip (Soft-Clip → Hard-Clip) then Limit, both movable. The Peak Normalizer
         // is pinned immediately before the Limiter wherever it ends up.
@@ -3722,6 +3844,7 @@ public class MainController
         {
             case "EQ":       return "Spectral processing: tone shaping and automatic EQ";
             case "Dynamics": return "Smart, automatic compression driven by your target";
+            case "Stereo Image": return "Generate new stereo, balance Side energy and control excessive width";
             case "Clip":     return "Peak reduction through smart, automatic saturation and clipping";
             case "Limit":    return "Automatic two-stage true-peak limiter";
             default:         return name;
@@ -3888,6 +4011,7 @@ public class MainController
     private Label levelerDiagnosticLabel;
     private Knob satKnob, clipKnob;
     private ComboBox<Saturation.Algorithm> satAlgoCombo;
+    private ComboBox<HardClipProcessor.Curve> hardCurveCombo;
     private ComboBox<BeatCompProcessor.NoteValue> beatNoteCombo;
     private final Knob[] mbPushKnobs = new Knob[MultibandLimiterProcessor.BANDS];
     private Knob bbPushKnob;
@@ -4300,6 +4424,10 @@ public class MainController
     {
         outputAnalysisGeneration++;
         cancelOutputAnalysis();
+        float[] stereoSource = loadedFile == null ? null : loadedFile.getSamples();
+        if (stereoCacheSource != stereoSource) {
+            stereoImage.clearGenerationCache(); stereoCacheSource = stereoSource;
+        }
         if (loadedFile == null || tonalSourceCache != loadedFile.getSamples())
         {
             tonalBufCache = null;
@@ -4323,10 +4451,14 @@ public class MainController
         closing = true;
         outputAnalysisGeneration++;
         if (dynRefreshDebounce != null) dynRefreshDebounce.stop();
+        if (eqPreviewCoalesce != null) eqPreviewCoalesce.stop();
+        interactivePreview.close();
         cancelOutputAnalysis();
         outputAnalysisExecutor.close();
         ++sourceAnalysisGeneration; ++fileLoadGeneration;
         sourceAnalysisExecutor.close();
+        ++stereoReferenceGeneration;
+        stereoReferenceExecutor.close();
         if (eqAnimator != null) eqAnimator.stop();
         if (player != null) player.close();
         if (exportTask != null) exportTask.cancel(true);
@@ -4340,7 +4472,7 @@ public class MainController
                 punch::setAmountDb);
         punchKnob = k;
         return buildSquare(punch, "Punch",
-                "Adds punch through transient expansion (boosts transients, leaves the body untouched).",
+                "Boosts locally detected attacks with a stereo-linked envelope. Body outside attack/release regions stays unchanged.",
                 "#c77dff", 12.0, k);
     }
 
@@ -4477,7 +4609,7 @@ public class MainController
                 SoftClipProcessor.DEFAULT_SAT_DB)
                 .formatter(v -> v < 0.05 ? "0.0 dB" : String.format(Locale.US, "-%.1f dB", v))
                 .accent("#b58cf0").scale(2.1)
-                .tooltip("Sets the amount of peak reduction reached through saturation, in dB. Soft-Clip has a wider knee, so it also generates harmonics and colours the sound.");
+                .tooltip("Base-rate peak reduction target through a soft-knee curve. Use Oversampling to reduce aliasing. GR measures this stage before output normalization; reconstructed peaks can differ.");
         satKnob.valueProperty().addListener((o, ov, nv) ->
         {
             softClip.setSatDb(nv.doubleValue());
@@ -4486,7 +4618,19 @@ public class MainController
         ComboBox<Saturation.Algorithm> satAlgo = new ComboBox<>();
         satAlgo.getItems().setAll(Saturation.Algorithm.TUBE, Saturation.Algorithm.TAPE,
                 Saturation.Algorithm.TRANSFORMER);
-        satAlgo.setConverter(prettyEnumConverter());
+        // Retain legacy preset IDs, with explicit names for the corrected,
+        // symmetric DSPark kernels. These are clippers, not circuit emulators.
+        satAlgo.setConverter(new javafx.util.StringConverter<>() {
+            @Override public String toString(Saturation.Algorithm a) {
+                if(a==null)return "";
+                return switch(a) { case TUBE -> "Analog"; case TAPE -> "Soft (tanh)"; case TRANSFORMER -> "Golden knee"; };
+            }
+            @Override public Saturation.Algorithm fromString(String text) {
+                return switch(text) { case "Soft (tanh)" -> Saturation.Algorithm.TAPE;
+                    case "Golden knee" -> Saturation.Algorithm.TRANSFORMER; default -> Saturation.Algorithm.TUBE; };
+            }
+        });
+        satAlgo.setTooltip(new Tooltip("DSPark curves: Analog (sine), Soft (tanh), Golden knee (linear body). All are symmetric; no channel drift or hidden high-pass. Legacy presets retain their selected slot, with corrected curves."));
         satAlgo.getSelectionModel().select(softClip.getAlgorithm());
         satAlgo.setPrefWidth(132);
         satAlgo.valueProperty().addListener((o, ov, nv) ->
@@ -4501,13 +4645,21 @@ public class MainController
                 HardClipProcessor.DEFAULT_CLIP_DB)
                 .formatter(v -> v < 0.05 ? "0.0 dB" : String.format(Locale.US, "-%.1f dB", v))
                 .accent("#4a9eff").scale(2.1)
-                .tooltip("Exact dB the loudest peak is clipped down by.");
+                .tooltip("Base-rate peak reduction target. Hard preserves samples below threshold; Soft (tanh) also rounds the body. Use Oversampling to reduce aliasing; GR is measured before output normalization.");
         clipKnob.valueProperty().addListener((o, ov, nv) ->
         {
             hardClip.setClipDb(nv.doubleValue());
             scheduleDynamicsRefresh();
         });
-        VBox hardCard = buildClipCard("Hard-Clip", "#4a9eff", clipKnob, null,
+        hardCurveCombo = new ComboBox<>();
+        hardCurveCombo.getItems().setAll(HardClipProcessor.Curve.values());
+        hardCurveCombo.setConverter(prettyEnumConverter());
+        hardCurveCombo.getSelectionModel().select(hardClip.getCurve());
+        hardCurveCombo.setPrefWidth(132);
+        hardCurveCombo.valueProperty().addListener((o,ov,nv) -> {
+            if(nv!=null) { hardClip.setCurve(nv);scheduleDynamicsRefresh(); }
+        });
+        VBox hardCard = buildClipCard("Hard-Clip", "#4a9eff", clipKnob, hardCurveCombo,
                 pos -> audibleProcessor(hardClip).getGrAtPosition(pos), hardClip::setEnabled);
 
         HBox.setHgrow(softCard, Priority.ALWAYS);
@@ -4589,7 +4741,7 @@ public class MainController
         card.setPadding(new javafx.geometry.Insets(16, 22, 18, 22));
         card.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        clipCardList.add(new ClipCard(on, fill, grLabel, grAt, setEnabled, 6.0));
+        clipCardList.add(new ClipCard(on, fill, grLabel, grAt, setEnabled, 12.0));
         return card;
     }
 
@@ -4710,6 +4862,8 @@ public class MainController
         // A worker built for the previous controls must not win this 220 ms window.
         invalidateOutputAnalysis();
         invalidateActiveSlotRender();   // a live edit makes the active slot's render stale
+        scheduleInteractiveEqPreview();
+        if (stereoPane != null && stereoImage.isEnabled()) stereoPane.setStatus("Updating…");
         if (paramGestureBaseline == null)
         {
             // Listeners run after the control and processor have changed. Use
@@ -4741,6 +4895,72 @@ public class MainController
         trimUndoHistory();
         redoStack.clear();
         updateUndoRedoButtons();
+    }
+
+    /** FX coalescing is throttled, not debounced: a sustained drag remains audible. */
+    private void scheduleInteractiveEqPreview() {
+        if (eqPreviewCoalesce == null) {
+            eqPreviewCoalesce = new PauseTransition(Duration.millis(8));
+            eqPreviewCoalesce.setOnFinished(e -> requestInteractiveEqPreview());
+        }
+        if (eqPreviewCoalesce.getStatus() != javafx.animation.Animation.Status.RUNNING)
+            eqPreviewCoalesce.playFromStart();
+    }
+
+    private void cancelInteractiveEqPreview() {
+        if (eqPreviewCoalesce != null) eqPreviewCoalesce.stop();
+        interactivePreview.cancel();
+        if (eqPreviewLabel != null) eqPreviewLabel.setText("");
+        if (stereoPane != null) stereoPane.setStatus("");
+        if (auditionSnapshot != null) {
+            var approvedEq = (EqualizerProcessor)auditionSnapshot.copies.get(eq);
+            eqAutoGainLabel.setText(formatAutoGainDb(approvedEq.isAutoGainActive(), approvedEq.getAutoGainDb(), false));
+            var approvedOutput = auditionSnapshot.normalizer;
+            peakAppliedLabel.setText(approvedOutput.isEnabled() || approvedOutput.isSafetyEnabled()
+                    ? formatSignedDb(approvedOutput.getGainDb()) : "·");
+        }
+    }
+
+    private void showPreviewGain(com.quickmaster.playback.PreviewWindow preview) {
+        eqAutoGainLabel.setText(formatAutoGainDb(eq.isAutoGainActive(), preview.eqGainDb(), true));
+        peakAppliedLabel.setText("≈ " + formatSignedDb(preview.outputGainDb()));
+    }
+
+    private void requestInteractiveEqPreview() {
+        if (closing || loadedFile == null || sourceAnalysisPending || auditionSnapshot == null
+                || auditionSource != loadedFile.getSamples() || !player.hasPublishedRender()) {
+            cancelInteractiveEqPreview(); return;
+        }
+        Snapshot approved = auditionSnapshot;
+        Snapshot next = buildSnapshot();
+        var gson = new com.google.gson.Gson();
+        var oldKey = gson.fromJson(approved.settingsKey, com.google.gson.JsonObject.class);
+        var newKey = gson.fromJson(next.settingsKey, com.google.gson.JsonObject.class);
+        for (String key : new String[]{"eqOn", "eqAutoGain", "bands", "stereoOn", "stereoImage"}) { oldKey.remove(key); newKey.remove(key); }
+        // EQ / Stereo Image edits may reuse provisional downstream controls. A/B,
+        // routing/other-module edits and source changes cannot inherit them.
+        if (!oldKey.equals(newKey) || approved.previewContextRevision != previewContextRevision) {
+            cancelInteractiveEqPreview(); return;
+        }
+        float[] source = loadedFile.getSamples();
+        int rate = loadedFile.getSampleRate(), channels = loadedFile.getChannels(), factor = oversampling;
+        eqPreviewLabel.setText("Updating preview…");
+        interactivePreview.request(source, rate, channels, () -> {
+            // Potential envelope remapping and filter setup belong to the preview
+            // worker, never FX or the audio device thread.
+            for (var entry : next.copies.entrySet()) {
+                AudioProcessor dest = entry.getValue(), src = approved.copies.get(entry.getKey());
+                if (dest instanceof AnalysisDynamicsProcessor d && src instanceof AnalysisDynamicsProcessor a) d.adoptEnvelope(a);
+                if (dest instanceof SoftClipProcessor d && src instanceof SoftClipProcessor a) d.adoptAnalysis(a);
+                if (dest instanceof HardClipProcessor d && src instanceof HardClipProcessor a) d.adoptAnalysis(a);
+                if (dest instanceof MultibandLimiterProcessor d && src instanceof MultibandLimiterProcessor a) d.adoptPreparedAnalysis(a);
+                if (dest instanceof BroadbandLimiterProcessor d && src instanceof BroadbandLimiterProcessor a) d.adoptPreparedAnalysis(a);
+                if (dest instanceof AutoEqProcessor d && src instanceof AutoEqProcessor a) d.adopt(a);
+                if (dest instanceof StereoImageProcessor d && src instanceof StereoImageProcessor a) d.adoptPlan(a);
+            }
+            next.normalizer.setAnalyzedPeak(approved.normalizer.getAnalyzedPeak());
+            return new com.quickmaster.processing.PreviewWindowRenderer(next.pipeline, source, rate, channels, factor);
+        });
     }
 
     /**
@@ -4820,6 +5040,7 @@ public class MainController
                 if (levelerReadyGeneration != generation) levelerFailedGeneration = generation;
                 updateLevelerDiagnostic();
                 AppLogger.error("Post-processing output analysis failed.", task.getException());
+                eqPreviewLabel.setText(player.getPreviewWindow() != null ? "Preview · final render failed" : "Update failed");
             }
         });
         task.setOnCancelled(e ->
@@ -4839,14 +5060,20 @@ public class MainController
                                   float[] source, float[] render)
     {
         if (closing || generation != outputAnalysisGeneration) return;
+        cancelInteractiveEqPreview();
         if (tonalChanged && s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
         adoptLive(peakComp, s); adoptLive(beatComp, s); adoptLive(leveler, s); adoptLive(punch, s);
         if (s.copies.get(softClip) instanceof SoftClipProcessor sc) softClip.adoptAnalysis(sc);
         if (s.copies.get(hardClip) instanceof HardClipProcessor hc) hardClip.adoptAnalysis(hc);
+        if (s.copies.get(stereoImage) instanceof StereoImageProcessor si) stereoImage.adoptPlan(si);
         if (s.copies.get(multiband) instanceof MultibandLimiterProcessor mb) multiband.adoptPreparedAnalysis(mb);
         if (s.copies.get(broadband) instanceof BroadbandLimiterProcessor bb) broadband.adoptPreparedAnalysis(bb);
+        normalizer.setSafetyEnabled(s.normalizer.isSafetyEnabled());
         normalizer.setAnalyzedPeak(s.normalizer.getAnalyzedPeak());
-        peakAppliedLabel.setText(normalizer.isEnabled() ? formatSignedDb(normalizer.getGainDb()) : "·");
+        peakAppliedLabel.setText(normalizer.isEnabled() || normalizer.isSafetyEnabled()
+                ? formatSignedDb(normalizer.getGainDb()) : "·");
+        EqualizerProcessor approvedEq = (EqualizerProcessor)s.copies.get(eq);
+        eqAutoGainLabel.setText(formatAutoGainDb(approvedEq.isAutoGainActive(), approvedEq.getAutoGainDb(), false));
         updateTargetRanges(s);
         // Clamping a control to the new range may have invalidated this plan.
         if (generation != outputAnalysisGeneration) return;
@@ -4863,6 +5090,8 @@ public class MainController
         exclusionsPending=false;
         updateLevelerDiagnostic();
         player.setAnalysisValid(true);
+        if (stereoPane != null) stereoPane.showPlan(stereoImage, loadedFile == null ? 0
+                : player.getPositionSamples() / (double)loadedFile.getSampleRate());
         if (onDone != null) onDone.run();
         if (playWhenReady && generation == outputAnalysisGeneration) requestPlayback();
     }
@@ -4889,6 +5118,7 @@ public class MainController
     /** FX-only presentation of statistics tied to one completed PCM buffer. */
     private void showOutputAnalysis(OutputAnalysis.Result r)
     {
+        if (stereoPane != null) stereoPane.setOutputPeak(r.truePeakDbtp());
         spectrumAnalysis = r.spectrum();
         drawEqCurve();
         if (!player.isPlaying()) {
@@ -4957,7 +5187,7 @@ public class MainController
         var preset = new com.google.gson.Gson().toJsonTree(capturePreset()).getAsJsonObject();
         var key = new com.google.gson.JsonObject();
         for (String name : new String[]{"autoEqOn", "autoEqAmount", "autoEqTarget", "autoEqAttackSec",
-                "autoEqReleaseSec", "eqOn", "bands", "fadeInSec", "fadeOutSec", "fadeType"})
+                "autoEqReleaseSec", "eqOn", "eqAutoGain", "bands", "fadeInSec", "fadeOutSec", "fadeType"})
             key.add(name, preset.get(name));
         key.addProperty("fadeOn", fade.isEnabled());
         key.addProperty("sampleRate", sr);
@@ -5036,7 +5266,7 @@ public class MainController
     private void applyTargetRange(Knob knob, double maxOvershoot)
     {
         if (knob == null) return;
-        double min = (maxOvershoot >= 1.0) ? -Math.round(maxOvershoot) : -1.0;
+        double min = Math.max(-18.0, (maxOvershoot >= 1.0) ? -Math.round(maxOvershoot) : -1.0);
         if (Math.abs(knob.getMin() - min) > 0.4) knob.range(min, 0.0);
     }
 
@@ -5047,9 +5277,10 @@ public class MainController
         final java.util.Map<AudioProcessor, AudioProcessor> copies;
         final PeakNormalizer normalizer;
         final String settingsKey;
+        final long previewContextRevision;
         WaveformPeakIndex waveform; // worker-owned until this snapshot is published
-        Snapshot(ProcessingPipeline p, java.util.Map<AudioProcessor, AudioProcessor> c, PeakNormalizer n, String settingsKey)
-        { this.pipeline = p; this.copies = c; this.normalizer = n; this.settingsKey = settingsKey; }
+        Snapshot(ProcessingPipeline p, java.util.Map<AudioProcessor, AudioProcessor> c, PeakNormalizer n, String settingsKey, long previewContextRevision)
+        { this.pipeline = p; this.copies = c; this.normalizer = n; this.settingsKey = settingsKey; this.previewContextRevision = previewContextRevision; }
     }
 
     /**
@@ -5079,6 +5310,7 @@ public class MainController
         oeq.setNumBands(eq.getNumBands());
         for (int i = 0; i < eq.getNumBands(); i++) oeq.setBand(i, eq.getBand(i));
         oeq.setEnabled(eq.isEnabled());
+        oeq.setAutoGainEnabled(eq.isAutoGainEnabled());
         FadeProcessor ofade = new FadeProcessor();
         ofade.setFadeInSec(fade.getFadeInSec());
         ofade.setFadeOutSec(fade.getFadeOutSec());
@@ -5127,6 +5359,7 @@ public class MainController
         copies.put(eq, oeq);     copies.put(fade, ofade);
         copies.put(peakComp, opeak); copies.put(beatComp, obeat);
         copies.put(leveler, olev);   copies.put(punch, opunch);
+        copies.put(stereoImage, stereoImage.fork());
         copies.put(softClip, osoft); copies.put(hardClip, ohard);
         copies.put(multiband, omulti); copies.put(broadband, obroad);
 
@@ -5142,7 +5375,7 @@ public class MainController
 
         ProcessingPipeline snap = new ProcessingPipeline();
         for (AudioProcessor p : snapOrder) snap.addProcessor(p);
-        return new Snapshot(snap, copies, onorm, new com.google.gson.Gson().toJson(capturePreset()));
+        return new Snapshot(snap, copies, onorm, new com.google.gson.Gson().toJson(capturePreset()), previewContextRevision);
     }
 
     /* =========================================================
@@ -5181,6 +5414,7 @@ public class MainController
         p.autoEqReleaseSec = autoEq.getReleaseSec();
 
         p.eqOn = eq.isEnabled();
+        p.eqAutoGain = eqAutoGain.isSelected();
         for (int i = 0; i < eqBandCount; i++)
         {
             MasterEqualizer.Band b = eq.getBand(i);
@@ -5228,6 +5462,8 @@ public class MainController
         p.punchOn = uc != null && uc.on.isSelected();
         p.punchAmountDb = punch.getAmountDb();
         for (AudioProcessor d : dynamicsOrder) p.dynamicsOrder.add(procKey(d));
+        p.stereoOn = stereoImage.isEnabled();
+        p.stereoImage = stereoImage.settings();
 
         p.clipOn = clipEnabled.isSelected();
         p.softClipOn = !clipCardList.isEmpty() && clipCardList.get(0).on.isSelected();
@@ -5273,6 +5509,7 @@ public class MainController
     private void applyPreset(com.quickmaster.config.ChainPreset p, boolean touchPlayer)
     {
         com.quickmaster.config.PresetValidation.validate(p);
+        cancelInteractiveEqPreview();
         if (dynRefreshDebounce != null) dynRefreshDebounce.stop();
         commitParamGesture();
         applyingPreset = true;
@@ -5287,6 +5524,7 @@ public class MainController
                         AutoEqProcessor.Target.class, p.autoEqTarget, AutoEqProcessor.Target.PINK));
 
             eqEnabled.setSelected(p.eqOn);
+            eqAutoGain.setSelected(p.eqAutoGain);
             int n = (p.bands != null) ? p.bands.size() : 0;
             updatingEqEditor = true;
             eq.setNumBands(n);
@@ -5370,6 +5608,11 @@ public class MainController
             }
             updateAllCompressorEnabled();
 
+            stereoImage.setSettings(p.stereoImage);
+            stereoPane.apply(p.stereoImage);
+            stereoPane.enableBox().setSelected(p.stereoOn);
+            stereoImage.setEnabled(p.stereoOn);
+
             clipEnabled.setSelected(p.clipOn);
             if (!clipCardList.isEmpty()) clipCardList.get(0).on.setSelected(p.softClipOn);
             if (clipCardList.size() > 1) clipCardList.get(1).on.setSelected(p.hardClipOn);
@@ -5380,6 +5623,7 @@ public class MainController
             if (clipKnob != null) clipKnob.setValue(p.hardClipDb);
             hardClip.setCurve(enumOr(HardClipProcessor.Curve.class, p.hardClipCurve,
                     HardClipProcessor.Curve.HARD));
+            if(hardCurveCombo!=null)hardCurveCombo.getSelectionModel().select(hardClip.getCurve());
             updateClipEnabled();
 
             limEnabled.setSelected(p.limitOn);
@@ -5400,10 +5644,11 @@ public class MainController
 
             // Chain order, then a manual pipeline rebuild (no extra analysis here;
             // the caller schedules one refresh for the whole apply).
-            if (p.chainOrder != null && p.chainOrder.size() == chainModules.size())
+            List<String> migratedOrder = com.quickmaster.config.PresetValidation.chainOrderWithStereo(p.chainOrder);
+            if (migratedOrder.size() == chainModules.size())
             {
                 List<ChainModule> newOrder = new ArrayList<>();
-                for (String name : p.chainOrder)
+                for (String name : migratedOrder)
                 {
                     for (ChainModule m : chainModules)
                         if (m.name.equals(name) && !newOrder.contains(m)) newOrder.add(m);
@@ -5690,6 +5935,8 @@ public class MainController
     private void invalidateAllSlotRenders()
     {
         if (applyingPreset) return;   // an A/B apply re-applies the OS factor; keep its renders
+        previewContextRevision++;
+        cancelInteractiveEqPreview();
         setSlotRender('A', null);
         setSlotRender('B', null);
         if (loadedFile == null || loadedFile.getSamples() != auditionSource) {
@@ -5879,10 +6126,10 @@ public class MainController
                                 ? settings.sampleRate() : audio.getSampleRate();
                         float[] out = resampleForExport(processed, audio.getChannels(),
                                 audio.getSampleRate(), outRate);
-                        if (outRate != audio.getSampleRate() && snap.normalizer.isEnabled())
+                        if (outRate != audio.getSampleRate() && (snap.normalizer.isEnabled() || snap.normalizer.isSafetyEnabled()))
                         {
                             reclampTruePeak(out, audio.getChannels(),
-                                    snap.normalizer.getTargetDbfs());
+                                    snap.normalizer.getDeliveryTargetDbtp());
                         }
 
                         if (isCancelled()) return null;
@@ -6281,6 +6528,8 @@ public class MainController
      */
     private void updateLimiterMeters()
     {
+        if (stereoPane != null && stereoPane.isVisible()) stereoPane.showPlan(audibleProcessor(stereoImage),
+                loadedFile == null ? 0 : player.getPositionSamples() / (double)loadedFile.getSampleRate());
         MultibandLimiterProcessor audibleMultiband = audibleProcessor(multiband);
         BroadbandLimiterProcessor audibleBroadband = audibleProcessor(broadband);
         long pos = (player != null) ? player.getPositionSamples() : 0L;
@@ -6361,6 +6610,7 @@ public class MainController
         if (pending) {
             if (levelerFailedGeneration == outputAnalysisGeneration) return label + " · render failed";
             if (levelerCancelledGeneration == outputAnalysisGeneration) return label + " · update cancelled";
+            if (player.getPreviewWindow() != null) return label + " · EQ preview · waveform updating…";
             return label + " · preparing updated audio…";
         }
         return label;

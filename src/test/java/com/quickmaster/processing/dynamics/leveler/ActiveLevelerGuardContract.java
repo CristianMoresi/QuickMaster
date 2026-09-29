@@ -10,11 +10,12 @@ import java.util.*;
 /** Explicit ADR013/014 and named S-001 successors; never grants from observed candidate bytes. */
 final class ActiveLevelerGuardContract
 {
-    // Explicit 0.2.1 export-SRC successor: product-audit-20260927.md A15.
-    // Only Resampler and its nested enum differ; all Leveler boundaries are identical.
-    // Historical 0.1/0.2.0 artifacts and contract pins remain untouched.
-    static final String DSPARK_JAR = "libs/dspark-0.2.1.jar";
-    static final String DSPARK_SHA256 = "4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382";
+    // Explicit 0.2.3 AutoGain successor: eq-autogain-audit.md. Relative to 0.2.2,
+    // only AutoGain changes, with two nested helper classes added outside this
+    // boundary. Clip/onset successor remains documented in dynamics-clips-audit.md.
+    // No Leveler boundary changes; historical artifacts/pins remain untouched.
+    static final String DSPARK_JAR = "libs/dspark-0.2.3.jar";
+    static final String DSPARK_SHA256 = "56df525290b09435a8d8cb5e3b56508546ad11b88f4ce2e858bdb1c2f2bb77b9";
     static final String D = "com/quickmaster/processing/dynamics/", L = D + "leveler/", M = L + "model/";
     private static final class Active {
         static final JsonObject DELTA = resource("active-schema-delta.json", "b1ae36d2c90b3060c1986156d332233786075dc59a4b5c4da3ccac2013c59641");

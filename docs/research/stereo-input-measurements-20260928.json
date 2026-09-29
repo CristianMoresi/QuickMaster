@@ -1,0 +1,539 @@
+{
+  "method_version": 1,
+  "numpy": "2.5.1",
+  "scipy": "1.18.1",
+  "self_test": "PASS: Parseval even/odd, known -6.0206 dB, bands, nulls, one-channel, gain and swap invariance",
+  "method": "M=(L+R)/2; S=(L-R)/2; 10log10(Ps/Pm); full-file exact powers; bands via 3s Hann FFT, 1.5s hop; active >= max(-60dBFS, P95-10dB); no resampling or DSP applied",
+  "tracks": [
+    {
+      "file": "By Now.wav",
+      "sha256": "dcfb61d5d419bf6044bb0dd42fd7639659f33564c4b7ef9219cbf66798bf8e91",
+      "source_unchanged": true,
+      "sample_rate": 48000,
+      "frames": 13440001,
+      "seconds": 280.00002083333334,
+      "decoded_dtype": "float32",
+      "full_file_side_mid_db": -3.9231108839833526,
+      "full_file_correlation_uncentered": 0.42380751678644235,
+      "full_file_lr_balance_db": 0.4391030548046547,
+      "full_file_side_energy_percent": 28.83667313102257,
+      "windows_total": 185,
+      "windows_active": 165,
+      "activity_gate_dbfs_power": -21.81384695803913,
+      "active_window_energy_side_mid_db": -3.922111663119452,
+      "bands": {
+        "0-120": {
+          "summed_power_ratio_db": -3.782441612317085,
+          "active_energy_percent": 65.48250135162286,
+          "valid_windows": 165,
+          "window_ratio_p10_p50_p90_db": [
+            -9.086289168321928,
+            -3.9810274769854086,
+            -2.9040071507323058
+          ]
+        },
+        "120-200": {
+          "summed_power_ratio_db": -5.113021764346698,
+          "active_energy_percent": 5.062416326739665,
+          "valid_windows": 165,
+          "window_ratio_p10_p50_p90_db": [
+            -17.044917060536537,
+            -4.387591560934572,
+            -1.6084529885637144
+          ]
+        },
+        "200-250": {
+          "summed_power_ratio_db": -3.9305559052944714,
+          "active_energy_percent": 1.9214238694819978,
+          "valid_windows": 165,
+          "window_ratio_p10_p50_p90_db": [
+            -8.6391733927514,
+            -3.411704565729914,
+            -0.3527968786515282
+          ]
+        },
+        "250-300": {
+          "summed_power_ratio_db": -3.439132423615407,
+          "active_energy_percent": 0.735037670585634,
+          "valid_windows": 165,
+          "window_ratio_p10_p50_p90_db": [
+            -10.184947986347067,
+            -3.9171701860670147,
+            -0.8753285867568793
+          ]
+        },
+        "300-2000": {
+          "summed_power_ratio_db": -3.933227555468712,
+          "active_energy_percent": 22.396689203811817,
+          "valid_windows": 165,
+          "window_ratio_p10_p50_p90_db": [
+            -7.509297224688874,
+            -3.8534756096431884,
+            -1.8738727497268668
+          ]
+        },
+        "2000-10000": {
+          "summed_power_ratio_db": -4.609252958766335,
+          "active_energy_percent": 3.7689794116141546,
+          "valid_windows": 165,
+          "window_ratio_p10_p50_p90_db": [
+            -10.348980827565969,
+            -4.717884247283866,
+            -2.176112644909588
+          ]
+        },
+        "10000-Nyquist": {
+          "summed_power_ratio_db": -5.932139290296609,
+          "active_energy_percent": 0.6329521661438756,
+          "valid_windows": 165,
+          "window_ratio_p10_p50_p90_db": [
+            -19.040941248082973,
+            -3.3346246481335418,
+            -0.7786743592319341
+          ]
+        }
+      },
+      "cutoffs": {
+        "200": {
+          "below_energy_percent": 70.54491767836252,
+          "below_side_mid_db": -3.8720096912663045,
+          "above_side_mid_db": -4.043115053549988
+        },
+        "250": {
+          "below_energy_percent": 72.46634154784452,
+          "below_side_mid_db": -3.873557753288682,
+          "above_side_mid_db": -4.051017105374824
+        },
+        "300": {
+          "below_energy_percent": 73.20137921843013,
+          "below_side_mid_db": -3.8691070244223846,
+          "above_side_mid_db": -4.068316417655647
+        }
+      }
+    },
+    {
+      "file": "Quiet Gold.wav",
+      "sha256": "cd6667b19b4c641b13b17ac3220b7ddbaeb4e9b390e907d59148a10fb944e1d0",
+      "source_unchanged": true,
+      "sample_rate": 48000,
+      "frames": 9904390,
+      "seconds": 206.34145833333332,
+      "decoded_dtype": "float32",
+      "full_file_side_mid_db": -7.160936111461814,
+      "full_file_correlation_uncentered": 0.677513089114919,
+      "full_file_lr_balance_db": 0.09139491342663728,
+      "full_file_side_energy_percent": 16.126220768034493,
+      "windows_total": 136,
+      "windows_active": 127,
+      "activity_gate_dbfs_power": -21.50628409299175,
+      "active_window_energy_side_mid_db": -7.134427175530911,
+      "bands": {
+        "0-120": {
+          "summed_power_ratio_db": -11.025064045408348,
+          "active_energy_percent": 43.42533398831193,
+          "valid_windows": 127,
+          "window_ratio_p10_p50_p90_db": [
+            -23.208412651334967,
+            -14.30741454293641,
+            -7.889645567718301
+          ]
+        },
+        "120-200": {
+          "summed_power_ratio_db": -10.893035577896711,
+          "active_energy_percent": 7.008127969608266,
+          "valid_windows": 127,
+          "window_ratio_p10_p50_p90_db": [
+            -16.363619085799474,
+            -12.329005823973858,
+            -7.610287477075371
+          ]
+        },
+        "200-250": {
+          "summed_power_ratio_db": -8.888738169709667,
+          "active_energy_percent": 3.2423009062803367,
+          "valid_windows": 127,
+          "window_ratio_p10_p50_p90_db": [
+            -14.470411494747804,
+            -10.052630012516019,
+            -6.152845400540112
+          ]
+        },
+        "250-300": {
+          "summed_power_ratio_db": -7.152821921977546,
+          "active_energy_percent": 6.798352721150323,
+          "valid_windows": 127,
+          "window_ratio_p10_p50_p90_db": [
+            -15.377444009560696,
+            -8.48997320473048,
+            -3.587507866390289
+          ]
+        },
+        "300-2000": {
+          "summed_power_ratio_db": -3.98370194927081,
+          "active_energy_percent": 29.416512151809858,
+          "valid_windows": 127,
+          "window_ratio_p10_p50_p90_db": [
+            -12.988195838074226,
+            -4.194473330252943,
+            -1.4589076085066273
+          ]
+        },
+        "2000-10000": {
+          "summed_power_ratio_db": -4.297795353797326,
+          "active_energy_percent": 8.924816654628799,
+          "valid_windows": 127,
+          "window_ratio_p10_p50_p90_db": [
+            -13.36992069165237,
+            -4.5596322641902285,
+            -2.300560565399158
+          ]
+        },
+        "10000-Nyquist": {
+          "summed_power_ratio_db": -6.501778966973614,
+          "active_energy_percent": 1.184555608210508,
+          "valid_windows": 127,
+          "window_ratio_p10_p50_p90_db": [
+            -22.116494886226718,
+            -6.179676594534983,
+            -4.016366210299514
+          ]
+        }
+      },
+      "cutoffs": {
+        "200": {
+          "below_energy_percent": 50.43346195792019,
+          "below_side_mid_db": -11.006511778867736,
+          "above_side_mid_db": -4.719406478488779
+        },
+        "250": {
+          "below_energy_percent": 53.67576286420053,
+          "below_side_mid_db": -10.85130652165075,
+          "above_side_mid_db": -4.499972722143682
+        },
+        "300": {
+          "below_energy_percent": 60.47411558535085,
+          "below_side_mid_db": -10.28804899247599,
+          "above_side_mid_db": -4.119926133256686
+        }
+      }
+    },
+    {
+      "file": "Billie Jean (80s Glam Metal).wav",
+      "sha256": "61c9a549be8f2041ae6a8656da2e51af3082716fe9af36da97102e4265b47a54",
+      "source_unchanged": true,
+      "sample_rate": 48000,
+      "frames": 10459293,
+      "seconds": 217.9019375,
+      "decoded_dtype": "int32",
+      "full_file_side_mid_db": -11.101888151342433,
+      "full_file_correlation_uncentered": 0.8560523282700825,
+      "full_file_lr_balance_db": -0.10329722834659824,
+      "full_file_side_energy_percent": 7.200410245207126,
+      "windows_total": 144,
+      "windows_active": 142,
+      "activity_gate_dbfs_power": -21.958157176115375,
+      "active_window_energy_side_mid_db": -11.091035049487505,
+      "bands": {
+        "0-120": {
+          "summed_power_ratio_db": -15.48650369123439,
+          "active_energy_percent": 20.903158484582534,
+          "valid_windows": 142,
+          "window_ratio_p10_p50_p90_db": [
+            -21.03526424658175,
+            -17.55376708928151,
+            -12.323613109709237
+          ]
+        },
+        "120-200": {
+          "summed_power_ratio_db": -10.502429736406683,
+          "active_energy_percent": 23.53976876663193,
+          "valid_windows": 142,
+          "window_ratio_p10_p50_p90_db": [
+            -15.576542404777344,
+            -10.728588189502592,
+            -7.216566756504148
+          ]
+        },
+        "200-250": {
+          "summed_power_ratio_db": -9.247746507413412,
+          "active_energy_percent": 5.736433841687134,
+          "valid_windows": 142,
+          "window_ratio_p10_p50_p90_db": [
+            -15.565084956908771,
+            -10.14646862959171,
+            -2.634931702935319
+          ]
+        },
+        "250-300": {
+          "summed_power_ratio_db": -7.739826336814305,
+          "active_energy_percent": 3.067869300528119,
+          "valid_windows": 142,
+          "window_ratio_p10_p50_p90_db": [
+            -13.226888149690925,
+            -9.216099280352838,
+            -3.011585660413126
+          ]
+        },
+        "300-2000": {
+          "summed_power_ratio_db": -10.20559856704729,
+          "active_energy_percent": 31.505747723653627,
+          "valid_windows": 142,
+          "window_ratio_p10_p50_p90_db": [
+            -13.480630357302434,
+            -10.669057314564139,
+            -5.259080121771808
+          ]
+        },
+        "2000-10000": {
+          "summed_power_ratio_db": -11.859568005362846,
+          "active_energy_percent": 13.919414612228138,
+          "valid_windows": 142,
+          "window_ratio_p10_p50_p90_db": [
+            -15.904396482972269,
+            -12.047103790718285,
+            -9.02762795153016
+          ]
+        },
+        "10000-Nyquist": {
+          "summed_power_ratio_db": -12.499008124429798,
+          "active_energy_percent": 1.327607270688541,
+          "valid_windows": 142,
+          "window_ratio_p10_p50_p90_db": [
+            -16.67651929245424,
+            -12.32940864416734,
+            -7.855799635187834
+          ]
+        }
+      },
+      "cutoffs": {
+        "200": {
+          "below_energy_percent": 44.442927251214456,
+          "below_side_mid_db": -12.247132932768883,
+          "above_side_mid_db": -10.325305367071982
+        },
+        "250": {
+          "below_energy_percent": 50.17936109290159,
+          "below_side_mid_db": -11.800275350566697,
+          "above_side_mid_db": -10.464681109839916
+        },
+        "300": {
+          "below_energy_percent": 53.24723039342971,
+          "below_side_mid_db": -11.459004580923892,
+          "above_side_mid_db": -10.70206168369979
+        }
+      }
+    },
+    {
+      "file": "Wicked Game (80s Synthwave).wav",
+      "sha256": "47df7c01ea0ddaffb1a86afbbfd4f0e44d0bfb2acd7a35912d772ffeff891016",
+      "source_unchanged": true,
+      "sample_rate": 48000,
+      "frames": 14768639,
+      "seconds": 307.67997916666667,
+      "decoded_dtype": "int16",
+      "full_file_side_mid_db": -8.235948866380197,
+      "full_file_correlation_uncentered": 0.7389760620047702,
+      "full_file_lr_balance_db": 0.04428616697102737,
+      "full_file_side_energy_percent": 13.05167715625672,
+      "windows_total": 204,
+      "windows_active": 194,
+      "activity_gate_dbfs_power": -25.669540351423045,
+      "active_window_energy_side_mid_db": -8.218351325501335,
+      "bands": {
+        "0-120": {
+          "summed_power_ratio_db": -15.010167138841389,
+          "active_energy_percent": 47.295867424841134,
+          "valid_windows": 194,
+          "window_ratio_p10_p50_p90_db": [
+            -23.516312586179637,
+            -16.59893031700213,
+            -9.644265359639993
+          ]
+        },
+        "120-200": {
+          "summed_power_ratio_db": -3.309083538716038,
+          "active_energy_percent": 13.808642714662874,
+          "valid_windows": 194,
+          "window_ratio_p10_p50_p90_db": [
+            -7.444640886591046,
+            -3.4847966334594784,
+            -0.22243412509449104
+          ]
+        },
+        "200-250": {
+          "summed_power_ratio_db": -4.433757978546902,
+          "active_energy_percent": 3.33766570655837,
+          "valid_windows": 194,
+          "window_ratio_p10_p50_p90_db": [
+            -11.044025384364645,
+            -4.728136555910192,
+            -0.9665616241092873
+          ]
+        },
+        "250-300": {
+          "summed_power_ratio_db": -4.927005493135973,
+          "active_energy_percent": 3.8276926086613687,
+          "valid_windows": 194,
+          "window_ratio_p10_p50_p90_db": [
+            -9.887447923543833,
+            -4.252477776790587,
+            -0.35547139453387744
+          ]
+        },
+        "300-2000": {
+          "summed_power_ratio_db": -5.968459477190886,
+          "active_energy_percent": 22.58859257926523,
+          "valid_windows": 194,
+          "window_ratio_p10_p50_p90_db": [
+            -9.160697923613668,
+            -5.381760258124603,
+            -3.1690543242977136
+          ]
+        },
+        "2000-10000": {
+          "summed_power_ratio_db": -9.528138394347687,
+          "active_energy_percent": 8.13188373955619,
+          "valid_windows": 194,
+          "window_ratio_p10_p50_p90_db": [
+            -14.221748895488684,
+            -9.539232928228003,
+            -6.756054550067121
+          ]
+        },
+        "10000-Nyquist": {
+          "summed_power_ratio_db": -11.642558048281673,
+          "active_energy_percent": 1.0096552264548284,
+          "valid_windows": 187,
+          "window_ratio_p10_p50_p90_db": [
+            -21.136543473225082,
+            -14.297160408108212,
+            -7.8106161701765275
+          ]
+        }
+      },
+      "cutoffs": {
+        "200": {
+          "below_energy_percent": 61.10451013950401,
+          "below_side_mid_db": -9.759727484238526,
+          "above_side_mid_db": -6.394593445351662
+        },
+        "250": {
+          "below_energy_percent": 64.44217584606238,
+          "below_side_mid_db": -9.336329972487484,
+          "above_side_mid_db": -6.608124027498308
+        },
+        "300": {
+          "below_energy_percent": 68.26986845472373,
+          "below_side_mid_db": -8.985618456705835,
+          "above_side_mid_db": -6.8403971516208815
+        }
+      }
+    },
+    {
+      "file": "Scott Buckley - Incredulity.wav",
+      "sha256": "98cc8f31210fd410fbce58e8bd0f4672a07a63a57233652948d427c3d2fd9bc3",
+      "source_unchanged": true,
+      "sample_rate": 44100,
+      "frames": 16499859,
+      "seconds": 374.146462585034,
+      "decoded_dtype": "float32",
+      "full_file_side_mid_db": -2.916239332046879,
+      "full_file_correlation_uncentered": 0.3243690935269488,
+      "full_file_lr_balance_db": 0.5695720814937416,
+      "full_file_side_energy_percent": 33.81635266082549,
+      "windows_total": 248,
+      "windows_active": 190,
+      "activity_gate_dbfs_power": -23.244153127698333,
+      "active_window_energy_side_mid_db": -3.1149267898720234,
+      "bands": {
+        "0-120": {
+          "summed_power_ratio_db": -15.225186145278933,
+          "active_energy_percent": 16.353736130215704,
+          "valid_windows": 190,
+          "window_ratio_p10_p50_p90_db": [
+            -19.541884419350314,
+            -14.058705456694252,
+            -8.200836097072184
+          ]
+        },
+        "120-200": {
+          "summed_power_ratio_db": -5.697955971830474,
+          "active_energy_percent": 39.445756026089036,
+          "valid_windows": 190,
+          "window_ratio_p10_p50_p90_db": [
+            -8.81070115512917,
+            -5.1687111869111835,
+            2.3776261853082072
+          ]
+        },
+        "200-250": {
+          "summed_power_ratio_db": 2.0481832627220053,
+          "active_energy_percent": 13.642493077833143,
+          "valid_windows": 190,
+          "window_ratio_p10_p50_p90_db": [
+            -1.3267803410182777,
+            2.0651746405393574,
+            5.617015665642475
+          ]
+        },
+        "250-300": {
+          "summed_power_ratio_db": 2.004180034598901,
+          "active_energy_percent": 3.828908543112497,
+          "valid_windows": 190,
+          "window_ratio_p10_p50_p90_db": [
+            -1.9215959411175279,
+            1.7294174081983218,
+            6.366926447737599
+          ]
+        },
+        "300-2000": {
+          "summed_power_ratio_db": -0.08028862030806372,
+          "active_energy_percent": 26.259692231810707,
+          "valid_windows": 190,
+          "window_ratio_p10_p50_p90_db": [
+            -1.540271574885809,
+            0.14326927628022107,
+            2.017048181089975
+          ]
+        },
+        "2000-10000": {
+          "summed_power_ratio_db": -1.3945434250969746,
+          "active_energy_percent": 0.4684500234207525,
+          "valid_windows": 188,
+          "window_ratio_p10_p50_p90_db": [
+            -2.438421319717807,
+            -1.3342256124572502,
+            1.4164034353768697
+          ]
+        },
+        "10000-Nyquist": {
+          "summed_power_ratio_db": -0.9556199522321508,
+          "active_energy_percent": 0.0009639675181667425,
+          "valid_windows": 107,
+          "window_ratio_p10_p50_p90_db": [
+            -1.577390310502368,
+            -1.0430887378831426,
+            -0.32144254835609276
+          ]
+        }
+      },
+      "cutoffs": {
+        "200": {
+          "below_energy_percent": 55.79949215630474,
+          "below_side_mid_db": -7.2496777720823555,
+          "above_side_mid_db": 0.7306520147964544
+        },
+        "250": {
+          "below_energy_percent": 69.44198523413789,
+          "below_side_mid_db": -4.809564484311839,
+          "above_side_mid_db": 0.15655671388404013
+        },
+        "300": {
+          "below_energy_percent": 73.2708937772504,
+          "below_side_mid_db": -4.376555548853852,
+          "above_side_mid_db": -0.1031482110414817
+        }
+      }
+    }
+  ]
+}

@@ -34,7 +34,10 @@ public final class PresetValidation {
         range(p.bbPushDb, 0, 9, "Broadband push"); range(p.normalizerTargetDbtp, -60, 0, "Peak target");
         if (p.osFactor < 1 || p.osFactor > 16 || Integer.bitCount(p.osFactor) != 1)
             throw new IllegalArgumentException("Unsupported oversampling factor.");
-        order(p.chainOrder, Set.of("EQ", "Dynamics", "Clip", "Limit"), "chain");
+        if (p.stereoImage == null) throw new IllegalArgumentException("Missing Stereo Image settings.");
+        order(p.chainOrder, p.chainOrder != null && p.chainOrder.contains("Stereo Image")
+                ? Set.of("EQ", "Dynamics", "Stereo Image", "Clip", "Limit")
+                : Set.of("EQ", "Dynamics", "Clip", "Limit"), "chain");
         order(p.dynamicsOrder, Set.of("peak", "beat", "leveler", "punch"), "dynamics");
         if (p.bands == null || p.bands.size() > MasterEqualizer.DEFAULT_MAX_BANDS)
             throw new IllegalArgumentException("Invalid EQ band list.");
@@ -61,6 +64,17 @@ public final class PresetValidation {
                 if (!Double.isFinite(field.getDouble(owner))) throw new IllegalArgumentException("Non-finite preset field: " + field.getName());
             } catch (IllegalAccessException e) { throw new IllegalStateException(e); }
         }
+    }
+
+    /** Add a bypassed new module without disturbing the relative legacy order. */
+    public static List<String> chainOrderWithStereo(List<String> input) {
+        if (input == null || input.isEmpty()) return List.of("EQ", "Stereo Image", "Dynamics", "Clip", "Limit");
+        var result = new java.util.ArrayList<>(input);
+        if (!result.contains("Stereo Image")) {
+            int before = result.indexOf("Dynamics");
+            result.add(before < 0 ? result.size() : before, "Stereo Image");
+        }
+        return result;
     }
 
     private static void range(double value, double min, double max, String name) {

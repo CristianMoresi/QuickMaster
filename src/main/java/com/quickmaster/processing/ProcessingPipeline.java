@@ -5,6 +5,7 @@ import com.quickmaster.audio.AudioFile;
 import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 import com.quickmaster.processing.limit.MultibandLimiterProcessor;
 import com.quickmaster.processing.limit.BroadbandLimiterProcessor;
+import com.quickmaster.processing.eq.EqualizerProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,10 +186,26 @@ public class ProcessingPipeline
         this.lastSampleRate = sampleRate;
         this.lastTotalSamples = totalSamples;
         this.streamFrameCursor = 0;
+        boolean outputSafety = usesEqOutputSafety();
+        if (!processors.isEmpty() && processors.get(processors.size() - 1) instanceof PeakNormalizer normalizer)
+            normalizer.setSafetyEnabled(outputSafety);
         for (AudioProcessor p : processors)
         {
             p.prepare(sampleRate, totalSamples);
         }
+    }
+
+    /** EQ's opt-in safety cannot silently normalize a downstream stereo edit.
+     * An EQ placed AFTER Stereo Image may still compensate its own input/output.
+     */
+    boolean usesEqOutputSafety() {
+        boolean safety = false;
+        for (AudioProcessor processor : processors) {
+            if (processor instanceof EqualizerProcessor eq && eq.isAutoGainActive()) safety = true;
+            if (processor instanceof com.quickmaster.processing.stereo.StereoImageProcessor stereo
+                    && stereo.isEnabled() && stereo.settings().active()) safety = false;
+        }
+        return safety;
     }
 
     /**
@@ -266,6 +283,14 @@ public class ProcessingPipeline
         {
             checkCancelled(cancellation);
             AudioProcessor p = processors.get(i);
+            if (p.isEnabled() && p instanceof OfflineRenderProcessor offline
+                    && offline.supportsOfflineRender(current.length, channels)) {
+                final int index = i, remaining = n - Math.max(0, startStage);
+                current = offline.renderOffline(current, channels, progress == null ? null
+                        : value -> progress.accept((index - Math.max(0, startStage) + value) / remaining), cancellation);
+                if (stageTap != null) stageTap.accept(current, i);
+                continue;
+            }
             if (p instanceof BroadbandLimiterProcessor broadband) {
                 // Limit is a serial pair with ONE pre-multiband peak reference.
                 // Reset on every render: no reference survives a source/routing
@@ -284,7 +309,12 @@ public class ProcessingPipeline
             DoubleConsumer stageProgress = (progress == null) ? null
                     : frac -> progress.accept(
                             (stageIndex - Math.max(0, startStage) + frac) / stageCount);
-            if (p.isEnabled()) current = renderStage(p, current, channels, stageProgress, cancellation);
+            if (p.isEnabled() || p instanceof PeakNormalizer normalizer && normalizer.isSafetyEnabled()) {
+                float[] reference = current;
+                if (p instanceof EqualizerProcessor eq) eq.beginAutoGainAnalysis();
+                current = renderStage(p, current, channels, stageProgress, cancellation);
+                if (p instanceof EqualizerProcessor eq) eq.finishAutoGainAnalysis(reference, current, channels, cancellation);
+            }
             else if (stageProgress != null) stageProgress.accept(1.0);
             if (stageTap != null) stageTap.accept(current, i);
         }

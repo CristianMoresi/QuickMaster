@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "studySha256": "8de32115b7fa145329734477fac06c00187b99d4c497d2dfee2374f8cf114add",
+  "source": "YouTube public streaming deliveries; measured 2026-09-28",
+  "status": "empirical_reference_not_perceptually_validated",
+  "convention": "M=(L+R)/2; S=(L-R)/2; Side fraction=P(S)/(P(M)+P(S))",
+  "aggregation": "Arithmetic mean of five per-recording Side energy fractions. Each recording has equal weight; pooled spectral powers within each recording.",
+  "warning": "Not perceived volume, an average of dB, or an average chorus. No semantic sections were annotated. Not a universal quality or safety limit.",
+  "profiles": [
+    {
+      "id": "electronic",
+      "label": "Electronic",
+      "referenceCount": 5,
+      "targetMid": 0.8825734630556007,
+      "targetSide": 0.11742653694439928,
+      "minimumSide": 0.029587778332283387,
+      "maximumSide": 0.30404752957784603,
+      "references": [
+        {
+          "id": "dnb-bass-1",
+          "artist": "Pendulum",
+          "title": "Watercolour",
+          "url": "https://www.youtube.com/watch?v=q9I01iNFcL4",
+          "mid": 0.9534408915103827,
+          "side": 0.04655910848961739
+        },
+        {
+          "id": "house-disco-1",
+          "artist": "Daft Punk",
+          "title": "Get Lucky",
+          "url": "https://www.youtube.com/watch?v=4D7u5KF7SP8",
+          "mid": 0.9704122216677166,
+          "side": 0.029587778332283387
+        },
+        {
+          "id": "house-disco-3",
+          "artist": "Disclosure",
+          "title": "Latch",
+          "url": "https://www.youtube.com/watch?v=VNg3MxYKSi0",
+          "mid": 0.910086066046158,
+          "side": 0.0899139339538419
+        },
+        {
+          "id": "house-disco-4",
+          "artist": "deadmau5",
+          "title": "Strobe",
+          "url": "https://www.youtube.com/watch?v=9P5gQXslrR0",
+          "mid": 0.695952470422154,
+          "side": 0.30404752957784603
+        },
+        {
+          "id": "trance-5",
+          "artist": "Tiësto",
+          "title": "Adagio for Strings",
+          "url": "https://www.youtube.com/watch?v=PyD4QQgJ6O4",
+          "mid": 0.8829756656315924,
+          "side": 0.11702433436840771
+        }
+      ]
+    },
+    {
+      "id": "pop",
+      "label": "Pop",
+      "referenceCount": 5,
+      "targetMid": 0.8984702701904996,
+      "targetSide": 0.10152972980950033,
+      "minimumSide": 0.031930525340264894,
+      "maximumSide": 0.15793336482312184,
+      "references": [
+        {
+          "id": "art-pop-1",
+          "artist": "Billie Eilish",
+          "title": "bad guy",
+          "url": "https://www.youtube.com/watch?v=ZD6rXLXZOEI",
+          "mid": 0.9680694746597351,
+          "side": 0.031930525340264894
+        },
+        {
+          "id": "pop-1",
+          "artist": "The Weeknd",
+          "title": "Blinding Lights",
+          "url": "https://www.youtube.com/watch?v=fHI8X4OXluQ",
+          "mid": 0.9161504681317936,
+          "side": 0.08384953186820636
+        },
+        {
+          "id": "pop-2",
+          "artist": "Dua Lipa",
+          "title": "Levitating",
+          "url": "https://www.youtube.com/watch?v=OsfAnsMY21M",
+          "mid": 0.8504385546243627,
+          "side": 0.14956144537563743
+        },
+        {
+          "id": "pop-3",
+          "artist": "Taylor Swift",
+          "title": "Anti-Hero",
+          "url": "https://www.youtube.com/watch?v=3YgtjHZyCIQ",
+          "mid": 0.9156262183597289,
+          "side": 0.08437378164027105
+        },
+        {
+          "id": "pop-4",
+          "artist": "Ariana Grande",
+          "title": "Into You",
+          "url": "https://www.youtube.com/watch?v=Faq-ODnfIPw",
+          "mid": 0.8420666351768783,
+          "side": 0.15793336482312184
+        }
+      ]
+    },
+    {
+      "id": "rock",
+      "label": "Rock",
+      "referenceCount": 5,
+      "targetMid": 0.8534655658787618,
+      "targetSide": 0.1465344341212382,
+      "minimumSide": 0.0992048496100352,
+      "maximumSide": 0.20720632705558167,
+      "references": [
+        {
+          "id": "alternative-rock-2",
+          "artist": "Arctic Monkeys",
+          "title": "Do I Wanna Know?",
+          "url": "https://www.youtube.com/watch?v=pqrUQrAcfo4",
+          "mid": 0.8660178234421346,
+          "side": 0.13398217655786537
+        },
+        {
+          "id": "alternative-rock-3",
+          "artist": "The Killers",
+          "title": "Mr. Brightside",
+          "url": "https://www.youtube.com/watch?v=m2zUrruKjDQ",
+          "mid": 0.853775099862101,
+          "side": 0.14622490013789904
+        },
+        {
+          "id": "alternative-rock-5",
+          "artist": "Foo Fighters",
+          "title": "The Pretender",
+          "url": "https://www.youtube.com/watch?v=BMMGwtklEeE",
+          "mid": 0.7927936729444183,
+          "side": 0.20720632705558167
+        },
+        {
+          "id": "classic-rock-1",
+          "artist": "Queen",
+          "title": "Another One Bites the Dust",
+          "url": "https://www.youtube.com/watch?v=b72gdhV_rXM",
+          "mid": 0.9007951503899647,
+          "side": 0.0992048496100352
+        },
+        {
+          "id": "classic-rock-2",
+          "artist": "AC/DC",
+          "title": "Back In Black",
+          "url": "https://www.youtube.com/watch?v=9vWNauaZAgg",
+          "mid": 0.8539460827551901,
+          "side": 0.1460539172448098
+        }
+      ]
+    },
+    {
+      "id": "metal",
+      "label": "Metal",
+      "referenceCount": 5,
+      "targetMid": 0.8372224782757332,
+      "targetSide": 0.16277752172426688,
+      "minimumSide": 0.12761624736898408,
+      "maximumSide": 0.21690361786665197,
+      "references": [
+        {
+          "id": "metal-1",
+          "artist": "Metallica",
+          "title": "Enter Sandman",
+          "url": "https://www.youtube.com/watch?v=CHIWNDAwTqQ",
+          "mid": 0.826604992495314,
+          "side": 0.17339500750468584
+        },
+        {
+          "id": "metal-2",
+          "artist": "Rammstein",
+          "title": "Deutschland",
+          "url": "https://www.youtube.com/watch?v=vGtaDvhSxaI",
+          "mid": 0.783096382133348,
+          "side": 0.21690361786665197
+        },
+        {
+          "id": "metal-3",
+          "artist": "Slipknot",
+          "title": "Duality",
+          "url": "https://www.youtube.com/watch?v=B2lmOei7qfk",
+          "mid": 0.872383752631016,
+          "side": 0.12761624736898408
+        },
+        {
+          "id": "metal-4",
+          "artist": "Gojira",
+          "title": "Stranded",
+          "url": "https://www.youtube.com/watch?v=zgychWIo6UA",
+          "mid": 0.838546014543868,
+          "side": 0.16145398545613204
+        },
+        {
+          "id": "metal-5",
+          "artist": "Bring Me The Horizon",
+          "title": "Can You Feel My Heart",
+          "url": "https://www.youtube.com/watch?v=H8Wx8GV1Oiw",
+          "mid": 0.8654812495751195,
+          "side": 0.1345187504248805
+        }
+      ]
+    },
+    {
+      "id": "hip-hop",
+      "label": "Hip Hop",
+      "referenceCount": 5,
+      "targetMid": 0.9797481802325807,
+      "targetSide": 0.020251819767419257,
+      "minimumSide": 0.0023481997279533517,
+      "maximumSide": 0.04306873294891834,
+      "references": [
+        {
+          "id": "hip-hop-1",
+          "artist": "Dr. Dre",
+          "title": "Still D.R.E.",
+          "url": "https://www.youtube.com/watch?v=Qeem6ZVr8Ic",
+          "mid": 0.9700395700175033,
+          "side": 0.029960429982496744
+        },
+        {
+          "id": "hip-hop-2",
+          "artist": "Nas",
+          "title": "N.Y. State of Mind",
+          "url": "https://www.youtube.com/watch?v=izhKFB0_2w0",
+          "mid": 0.9976278143900014,
+          "side": 0.0023721856099985944
+        },
+        {
+          "id": "hip-hop-5",
+          "artist": "Kendrick Lamar",
+          "title": "Alright",
+          "url": "https://www.youtube.com/watch?v=67vr-3kpX3Q",
+          "mid": 0.9569312670510816,
+          "side": 0.04306873294891834
+        },
+        {
+          "id": "trap-drill-1",
+          "artist": "Travis Scott",
+          "title": "SICKO MODE",
+          "url": "https://www.youtube.com/watch?v=NQbkGDoD7B0",
+          "mid": 0.9764904494322708,
+          "side": 0.023509550567729277
+        },
+        {
+          "id": "trap-drill-2",
+          "artist": "Future",
+          "title": "Mask Off",
+          "url": "https://www.youtube.com/watch?v=AMCwYdTJ_PE",
+          "mid": 0.9976518002720467,
+          "side": 0.0023481997279533517
+        }
+      ]
+    },
+    {
+      "id": "rnb-soul-funk",
+      "label": "R&B / Soul / Funk",
+      "referenceCount": 5,
+      "targetMid": 0.8817661165670677,
+      "targetSide": 0.11823388343293233,
+      "minimumSide": 0.07978993119425383,
+      "maximumSide": 0.17142705337648015,
+      "references": [
+        {
+          "id": "rnb-1",
+          "artist": "SZA",
+          "title": "Good Days",
+          "url": "https://www.youtube.com/watch?v=0BdlKkvjEgA",
+          "mid": 0.8597777918352674,
+          "side": 0.14022220816473263
+        },
+        {
+          "id": "rnb-2",
+          "artist": "Frank Ocean",
+          "title": "Pink + White",
+          "url": "https://www.youtube.com/watch?v=9cHbvRUALrc",
+          "mid": 0.8864284545893847,
+          "side": 0.11357154541061532
+        },
+        {
+          "id": "rnb-5",
+          "artist": "D’Angelo",
+          "title": "Untitled (How Does It Feel)",
+          "url": "https://www.youtube.com/watch?v=CRKXG5YleHU",
+          "mid": 0.9202100688057463,
+          "side": 0.07978993119425383
+        },
+        {
+          "id": "soul-funk-1",
+          "artist": "Silk Sonic",
+          "title": "Leave the Door Open",
+          "url": "https://www.youtube.com/watch?v=IYFqc9gk4qI",
+          "mid": 0.8285729466235199,
+          "side": 0.17142705337648015
+        },
+        {
+          "id": "soul-funk-3",
+          "artist": "Stevie Wonder",
+          "title": "Superstition",
+          "url": "https://www.youtube.com/watch?v=ftdZ363R9kQ",
+          "mid": 0.9138413209814202,
+          "side": 0.0861586790185798
+        }
+      ]
+    },
+    {
+      "id": "acoustic-folk-country",
+      "label": "Acoustic / Folk / Country",
+      "referenceCount": 5,
+      "targetMid": 0.8951134246871031,
+      "targetSide": 0.10488657531289694,
+      "minimumSide": 0.015559879928394875,
+      "maximumSide": 0.2931398406753224,
+      "references": [
+        {
+          "id": "country-1",
+          "artist": "Chris Stapleton",
+          "title": "Tennessee Whiskey",
+          "url": "https://www.youtube.com/watch?v=l6_w3887Rwo",
+          "mid": 0.9681487786356637,
+          "side": 0.03185122136433628
+        },
+        {
+          "id": "country-2",
+          "artist": "Kacey Musgraves",
+          "title": "Slow Burn",
+          "url": "https://www.youtube.com/watch?v=vYZFN4INkhs",
+          "mid": 0.8682242039826373,
+          "side": 0.13177579601736272
+        },
+        {
+          "id": "folk-acoustic-1",
+          "artist": "Tracy Chapman",
+          "title": "Fast Car",
+          "url": "https://www.youtube.com/watch?v=IJ8i49EqgYI",
+          "mid": 0.9478938614209317,
+          "side": 0.0521061385790684
+        },
+        {
+          "id": "folk-acoustic-2",
+          "artist": "Bon Iver",
+          "title": "Holocene",
+          "url": "https://www.youtube.com/watch?v=pvC5YD-IjL0",
+          "mid": 0.7068601593246776,
+          "side": 0.2931398406753224
+        },
+        {
+          "id": "folk-acoustic-4",
+          "artist": "José González",
+          "title": "Heartbeats",
+          "url": "https://www.youtube.com/watch?v=B-c3PAENnLU",
+          "mid": 0.9844401200716051,
+          "side": 0.015559879928394875
+        }
+      ]
+    },
+    {
+      "id": "jazz-blues",
+      "label": "Jazz / Blues",
+      "referenceCount": 5,
+      "targetMid": 0.8585132303106904,
+      "targetSide": 0.14148676968930962,
+      "minimumSide": 0.1176040778123498,
+      "maximumSide": 0.19595407127675643,
+      "references": [
+        {
+          "id": "blues-1",
+          "artist": "B.B. King",
+          "title": "The Thrill Is Gone",
+          "url": "https://www.youtube.com/watch?v=kpC69qIe02E",
+          "mid": 0.8567269016102825,
+          "side": 0.14327309838971744
+        },
+        {
+          "id": "blues-2",
+          "artist": "Stevie Ray Vaughan & Double Trouble",
+          "title": "Tin Pan Alley",
+          "url": "https://www.youtube.com/watch?v=LNX4Bl4T1q0",
+          "mid": 0.8815699793068453,
+          "side": 0.11843002069315471
+        },
+        {
+          "id": "jazz-1",
+          "artist": "Norah Jones",
+          "title": "Don’t Know Why",
+          "url": "https://www.youtube.com/watch?v=GtOcxj3NDBI",
+          "mid": 0.8678274197254303,
+          "side": 0.13217258027456974
+        },
+        {
+          "id": "jazz-3",
+          "artist": "Miles Davis",
+          "title": "So What",
+          "url": "https://www.youtube.com/watch?v=KJEzFvXx3Xw",
+          "mid": 0.8040459287232435,
+          "side": 0.19595407127675643
+        },
+        {
+          "id": "jazz-4",
+          "artist": "The Dave Brubeck Quartet",
+          "title": "Take Five",
+          "url": "https://www.youtube.com/watch?v=ryA6eHZNnXY",
+          "mid": 0.8823959221876502,
+          "side": 0.1176040778123498
+        }
+      ]
+    },
+    {
+      "id": "orchestral-cinematic",
+      "label": "Orchestral / Cinematic",
+      "referenceCount": 5,
+      "targetMid": 0.6490416571809586,
+      "targetSide": 0.35095834281904137,
+      "minimumSide": 0.25446024665761097,
+      "maximumSide": 0.42797077674246764,
+      "references": [
+        {
+          "id": "cinematic-1",
+          "artist": "Hans Zimmer",
+          "title": "Time",
+          "url": "https://www.youtube.com/watch?v=jgyShFzdB_Q",
+          "mid": 0.6625710819271421,
+          "side": 0.3374289180728578
+        },
+        {
+          "id": "cinematic-2",
+          "artist": "John Williams",
+          "title": "Hedwig’s Theme",
+          "url": "https://www.youtube.com/watch?v=wtHra9tFISY",
+          "mid": 0.5720292232575324,
+          "side": 0.42797077674246764
+        },
+        {
+          "id": "cinematic-3",
+          "artist": "Max Richter",
+          "title": "On the Nature of Daylight",
+          "url": "https://www.youtube.com/watch?v=tUMc_-Bcunk",
+          "mid": 0.7455397533423891,
+          "side": 0.25446024665761097
+        },
+        {
+          "id": "orchestral-1",
+          "artist": "Herbert von Karajan",
+          "title": "Symphony No. 5 in C Minor, Op. 67: I. Allegro con brio",
+          "url": "https://www.youtube.com/watch?v=4Xmg_UVAL2E",
+          "mid": 0.6088211704854213,
+          "side": 0.3911788295145788
+        },
+        {
+          "id": "orchestral-5",
+          "artist": "Gustavo Dudamel",
+          "title": "Danzón No. 2",
+          "url": "https://www.youtube.com/watch?v=LnHdDKi6gYE",
+          "mid": 0.6562470568923081,
+          "side": 0.3437529431076918
+        }
+      ]
+    },
+    {
+      "id": "latin",
+      "label": "Latin",
+      "referenceCount": 5,
+      "targetMid": 0.9097518025418956,
+      "targetSide": 0.09024819745810443,
+      "minimumSide": 0.010806244951238726,
+      "maximumSide": 0.19537643969018645,
+      "references": [
+        {
+          "id": "latin-organic-1",
+          "artist": "Marc Anthony",
+          "title": "Vivir Mi Vida",
+          "url": "https://www.youtube.com/watch?v=79OxD7KNlYw",
+          "mid": 0.8084031016972015,
+          "side": 0.19159689830279839
+        },
+        {
+          "id": "latin-pop-1",
+          "artist": "Shakira",
+          "title": "Hips Don’t Lie",
+          "url": "https://www.youtube.com/watch?v=nOj6d-HOw2w",
+          "mid": 0.9891937550487613,
+          "side": 0.010806244951238726
+        },
+        {
+          "id": "latin-pop-3",
+          "artist": "Alejandro Sanz",
+          "title": "Corazón Partío",
+          "url": "https://www.youtube.com/watch?v=mE4Mik_vfJA",
+          "mid": 0.8046235603098135,
+          "side": 0.19537643969018645
+        },
+        {
+          "id": "reggaeton-1",
+          "artist": "Bad Bunny",
+          "title": "Tití Me Preguntó",
+          "url": "https://www.youtube.com/watch?v=juRFjpB5Ppg",
+          "mid": 0.9585537950863714,
+          "side": 0.04144620491362848
+        },
+        {
+          "id": "reggaeton-3",
+          "artist": "KAROL G",
+          "title": "PROVENZA",
+          "url": "https://www.youtube.com/watch?v=i9gxO_5vA-Q",
+          "mid": 0.98798480056733,
+          "side": 0.012015199432670097
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 package com.quickmaster.processing.dynamics;
 import com.quickmaster.processing.analysis.TrackAnalysis;
+import com.quickmaster.processing.limit.OfflineLimiterEnvelope;
 
 import com.dspark.core.DspMath;
 
@@ -9,23 +10,25 @@ import com.dspark.core.DspMath;
  * Lowers the loudest peaks of the signal by a chosen amount. A
  * <b>Gain Reduction Target</b> of &minus;2&nbsp;dB places a ceiling 2&nbsp;dB
  * below the track's absolute peak and shaves every peak above it down to that
- * ceiling, so the new absolute peak is exactly 2&nbsp;dB lower; the body of the
- * sound, which lies below the ceiling, is left untouched. The reduction is
+ * ceiling. The stereo-linked envelope also affects the body during its
+ * lookahead/release, but leaves distant, below-threshold passages unchanged. The reduction is
  * limited to the headroom between the absolute peak and the loudest sustained
  * level, so it only shaves the peaks that rise above the body; that headroom is
  * the control's minimum.
  * <p>
  * The release is the duration of the longest transient in the track (floored at
  * {@value #MIN_RELEASE_MS}&nbsp;ms), so the gain recovers as soon as a peak has
- * passed, without pumping the following audio.
+ * passed. This controls transient peaks, not the macro-level of song sections.
  */
 @SuppressWarnings("deprecation")
 public final class PeakCompProcessor extends AnalysisDynamicsProcessor
 {
     /** Its measured range configures the control before the user enables it. */
     @Override public boolean analyzeWhenBypassed() { return true; }
-    /** Fixed look-ahead and attack times in ms (near-instant, click-free). */
+    /** Full, source-aligned, smooth attack span in ms. */
     public static final double LOOKAHEAD_MS = 2.0;
+    /** Historical one-pole constant; the bounded envelope now uses the full lookahead span. */
+    @Deprecated
     public static final double ATTACK_MS = 0.4;
     /** Release bounds in ms; the actual release is the longest transient, clamped here. */
     public static final double MIN_RELEASE_MS = 60.0;
@@ -57,7 +60,13 @@ public final class PeakCompProcessor extends AnalysisDynamicsProcessor
     /** Sets the gain-reduction target in dB (&le; 0). */
     public void setTargetDb(double db)
     {
-        this.targetDb = DspMath.clamp(db, MIN_TARGET_DB, MAX_TARGET_DB);
+        if (Double.isFinite(db)) this.targetDb = DspMath.clamp(db, MIN_TARGET_DB, MAX_TARGET_DB);
+    }
+
+    @Override protected float minimumLegacyGain() {
+        double gain = Math.pow(10, targetDb / 20);
+        float rounded = (float) gain;
+        return rounded < gain ? Math.nextUp(rounded) : rounded;
     }
 
     /** Headroom between the absolute peak and the loudest sustained level, in dB. */
@@ -76,6 +85,8 @@ public final class PeakCompProcessor extends AnalysisDynamicsProcessor
         float peak = 0.0f;
         for (int f = 0; f < frames; f++)
         {
+            if ((f & 16383) == 0 && Thread.currentThread().isInterrupted())
+                throw new java.util.concurrent.CancellationException();
             int base = f * channels;
             float a = 0.0f;
             for (int c = 0; c < channels; c++)
@@ -90,9 +101,8 @@ public final class PeakCompProcessor extends AnalysisDynamicsProcessor
         }
         this.mag = m;
         this.peakLin = peak;
-        double pDb = DspMath.gainToDecibels(Math.max(peak, 1e-6));
-        double sDb = DspMath.gainToDecibels(Math.max(loudestSustain, 1e-6));
-        this.maxReductionDb = Math.max(0.0, pDb - sDb);
+        this.maxReductionDb = peak > 0 && loudestSustain > 0
+                ? Math.max(0, 20 * Math.log10(peak / loudestSustain)) : 0;
 
         double longestTransientMs = 0.0;
         TrackAnalysis ta = trackAnalysis;
@@ -118,12 +128,12 @@ public final class PeakCompProcessor extends AnalysisDynamicsProcessor
         double effTarget = Math.min(-targetDb, maxReductionDb);          // >= 0
         double ceiling = peakLin * DspMath.decibelsToGain(-effTarget);
 
-        float[] target = new float[n];
-        for (int i = 0; i < n; i++)
-        {
-            target[i] = (mag[i] > ceiling) ? (float) (ceiling / mag[i]) : 1.0f;
-        }
-        gainEnv = LookaheadGainSmoother.smooth(target, envRate, LOOKAHEAD_MS, ATTACK_MS, releaseMs);
+        // The minimum-hold / double-box construction contains every source
+        // peak, including a peak at frame zero. It has no causal warm-up leak
+        // and no post-hoc hard clipping of audio.
+        gainEnv = OfflineLimiterEnvelope.compute(mag, ceiling,
+                Math.max(1, (int) Math.round(envRate * LOOKAHEAD_MS / 1000)),
+                Math.max(1, (int) Math.round(envRate * releaseMs / 1000)));
     }
 
     private static double coeff(double ms, int sampleRate)

@@ -27,6 +27,8 @@ public final class ChainPreset
 
     /* Equalizer */
     public boolean eqOn;
+    /** Enabled for new and legacy presets; explicit false preserves manual EQ gain. */
+    public boolean eqAutoGain = true;
     public List<BandPreset> bands = new ArrayList<>();
 
     /* Fade */
@@ -49,6 +51,11 @@ public final class ChainPreset
     /** Compressor order, by key: "peak", "beat", "leveler", "punch". */
     public List<String> dynamicsOrder = new ArrayList<>();
 
+    /* Stereo Image: absent in legacy presets, therefore disabled on migration. */
+    public boolean stereoOn;
+    public com.quickmaster.processing.stereo.StereoImageSettings stereoImage =
+            com.quickmaster.processing.stereo.StereoImageSettings.DEFAULT;
+
     /* Clip */
     public boolean clipOn;
     public boolean softClipOn;
@@ -69,7 +76,7 @@ public final class ChainPreset
     public boolean osOn;
     public int osFactor = 4;
 
-    /** Chain module order, by name: "EQ", "Dynamics", "Clip", "Limit". */
+    /** Chain module order. Legacy four-module orders remain supported. */
     public List<String> chainOrder = new ArrayList<>();
 
     /** One equalizer band. */

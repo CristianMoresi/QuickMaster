@@ -82,6 +82,10 @@
                   maxWidth="Infinity" maxHeight="Infinity">
                 <HBox alignment="CENTER_RIGHT" spacing="6">
                     <padding><Insets top="8" right="12" bottom="6" left="12"/></padding>
+                    <Label fx:id="eqPreviewLabel" text="" styleClass="value-muted"/>
+                    <CheckBox fx:id="eqAutoGain" text="Auto Gain" selected="true" styleClass="enable-check"/>
+                    <Label fx:id="eqAutoGainLabel" text="" minWidth="68" styleClass="value-muted"/>
+                    <Region minWidth="12"/>
                     <CheckBox fx:id="eqEnabled" text="enabled" selected="true" styleClass="enable-check"/>
                 </HBox>
 
@@ -191,6 +195,8 @@
                         <Label text="Side" styleClass="caption" minWidth="76"/>
                         <Region HBox.hgrow="ALWAYS"/><Label fx:id="meterSide" text="·" styleClass="value"/>
                     </HBox>
+                    <ToggleButton fx:id="listenMono" text="Listen in mono"
+                                  maxWidth="Infinity" styleClass="mono-monitor"/>
                 </VBox>
             </VBox>
 

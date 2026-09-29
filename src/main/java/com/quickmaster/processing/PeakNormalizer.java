@@ -19,6 +19,10 @@ import com.dspark.analysis.TruePeak;
  * <p>
  * {@link #usesAnalysis()} is {@code true}, so the pipeline feeds this stage the
  * <i>post-upstream</i> signal. Zero latency.
+ * <p>EQ Auto Gain may opt into {@link #setSafetyEnabled(boolean)}. This separate
+ * output-safety mode only attenuates true peaks above 0 dBTP to -0.1 dBTP when
+ * normalization is off. Both modes use one static gain, never sample clipping.
+ * {@link #isEnabled()} describes normalization, not this explicit safety mode.
  */
 public final class PeakNormalizer implements AudioProcessor
 {
@@ -31,6 +35,9 @@ public final class PeakNormalizer implements AudioProcessor
 
     private volatile double targetDbfs = DEFAULT_TARGET_DBFS;
     private volatile boolean enabled = true;
+    // Opt-in by EQ Auto Gain only: protects the actual delivery after decimation
+    // and any downstream processing. With both features off this remains bypass.
+    private volatile boolean safetyEnabled;
     private volatile double gain = 1.0;        // applied factor
     private volatile double cachedPeak = 0.0;  // analysed peak (linear, 0..1)
 
@@ -52,6 +59,9 @@ public final class PeakNormalizer implements AudioProcessor
     }
 
     public double getGain() { return gain; }
+    public boolean isSafetyEnabled() { return safetyEnabled; }
+    public void setSafetyEnabled(boolean value) { safetyEnabled = value; recomputeGain(); }
+    public double getDeliveryTargetDbtp() { return enabled ? targetDbfs : DEFAULT_TARGET_DBFS; }
 
     /** Applied gain in dB (positive amplifies). */
     public double getGainDb()
@@ -61,6 +71,11 @@ public final class PeakNormalizer implements AudioProcessor
 
     private void recomputeGain()
     {
+        if (!enabled) {
+            gain = safetyEnabled && cachedPeak > 1
+                    ? Math.pow(10.0, DEFAULT_TARGET_DBFS / 20.0) / cachedPeak : 1;
+            return;
+        }
         if (cachedPeak <= 0.0)
         {
             gain = 1.0;
@@ -105,7 +120,7 @@ public final class PeakNormalizer implements AudioProcessor
     @Override
     public float[] process(float[] buffer, int channels)
     {
-        if (!enabled || gain == 1.0) return buffer;
+        if (gain == 1.0) return buffer;
         float g = (float) gain;
         for (int i = 0; i < buffer.length; i++)
         {
@@ -120,5 +135,5 @@ public final class PeakNormalizer implements AudioProcessor
     public boolean isEnabled() { return enabled; }
 
     @Override
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; recomputeGain(); }
 }

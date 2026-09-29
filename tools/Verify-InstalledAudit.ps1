@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory)][ValidatePattern('^[0-9a-fA-F]{64}$')][string]$ExpectedJarSha256,
     [Parameter(Mandatory)][string]$PrivateAudioDirectory,
-    [ValidateSet('Functional', 'Performance', 'MacroMatrix')][string]$Mode = 'Functional',
+    [ValidateSet('Functional', 'Performance', 'MacroMatrix', 'Interactive')][string]$Mode = 'Functional',
     [string]$Java = 'C:/Program Files/Eclipse Adoptium/jdk-25.0.4.7-hotspot/bin/java.exe'
 )
 
@@ -13,8 +13,8 @@ $installed = 'C:/Program Files/QuickMaster/app'
 $jar = (Get-Item -LiteralPath "$installed/quickmaster.jar").FullName
 $vendor = @(Get-ChildItem -LiteralPath $installed -Filter 'dspark-*.jar')
 if ((Get-FileHash -LiteralPath $jar).Hash -ne $ExpectedJarSha256) { throw 'Wrong installed application JAR' }
-if ($vendor.Count -ne 1 -or $vendor[0].Name -ne 'dspark-0.2.1.jar' -or
-        (Get-FileHash -LiteralPath $vendor[0].FullName).Hash -ne '4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382') {
+if ($vendor.Count -ne 1 -or $vendor[0].Name -ne 'dspark-0.2.3.jar' -or
+        (Get-FileHash -LiteralPath $vendor[0].FullName).Hash -ne '56df525290b09435a8d8cb5e3b56508546ad11b88f4ce2e858bdb1c2f2bb77b9') {
     throw 'Wrong or ambiguous installed DSPark dependency'
 }
 $run = Join-Path $workspace ('dist/installed-audit-' + $Mode.ToLowerInvariant() + '-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0,8))
@@ -67,13 +67,22 @@ try {
         Run-Probe 'slots' 'SlotPublicationAudit' @() @('SLOT_PUBLICATION_PASS.*metersFollowPcm=true')
         Run-Probe 'ab-cache-isolation' 'AbCacheIsolationAudit' @() @('AB_CACHE_ISOLATION_PASS cases=9 allRawBitExact=true')
         Run-Probe 'limiter-cascade-ui' 'LimiterCascadeUiAudit' @($byNow,(Join-Path $run 'limiter-ui')) @('LIMITER_UI_PASS pushUnchanged=true fixedReference=true stagedColdExact=true')
+        Run-Probe 'clips-ui' 'ClipsUiAudit' @($byNow,(Join-Path $run 'clips-ui')) @('CLIPS_UI_PASS EnglishCurves=true presetRestored=true publishedPcm=true meters=true cachedAB=true')
+        Run-Probe 'punch-stationary' 'PunchStationaryAudit' @() @('PUNCH_STATIONARY_PASS cases=24')
+        Run-Probe 'punch-attacks' 'PunchAttackAudit' @() @('PUNCH_ATTACK_PASS bursts=270 rates=3 phases=5')
+        Run-Probe 'dynamics-clips-serial' 'DynamicsClipsSerialAudit' @() @('DYNAMICS_CLIPS_SERIAL_PASS cases=36 allStagesActive=true cumulativePeak=true raggedExact=true sourceUnchanged=true')
         foreach ($song in @('By Now.wav','Quiet Gold.wav','Billie Jean (80s Glam Metal).wav','Wicked Game (80s Synthwave).wav')) {
             $name='limiter-cascade-'+($song -replace '[^a-zA-Z0-9]','-')
             Run-Probe $name 'LimiterCascadeDiagnostic' @((Join-Path $PrivateAudioDirectory $song),'--assert') @('LIMITER_CASCADE_PASS cases=4 fixedReference=true pushUnchanged=true finite=true')
+            Run-Probe ('dynamics-clips-'+($song -replace '[^a-zA-Z0-9]','-')) 'DynamicsClipsTrackAudit' @((Join-Path $PrivateAudioDirectory $song)) @('DYNAMICS_CLIPS_TRACK_PASS stages=7 sourceUnchanged=true actualPcm=true actualClipMeters=true')
+            Run-Probe ('eq-auto-gain-'+($song -replace '[^a-zA-Z0-9]','-')) 'EqAutoGainTrackAudit' @((Join-Path $PrivateAudioDirectory $song)) @('EQ_TRACK_PASS cases=2 scalar=true outputSafe=true sourceSha256=')
         }
         Run-Probe 'presets' 'PresetAudit' @() @('PRESET_AUDIT failures=0')
         Run-Probe 'controls' 'ControlWiringAudit' @() @('CONTROL_AUDIT failures=0')
         Run-Probe 'eq-controls' 'EqControlAudit' @() @('EQ_CONTROL_AUDIT failures=0')
+        Run-Probe 'eq-auto-gain' 'EqOutputGainAudit' @($byNow,(Join-Path $run 'eq-auto-gain')) @('EQ_OUTPUT_PASS scalar=true noOverload=true waveform=true meters=true cachedAB=true oversampling=true sourceUnchanged=true')
+        Run-Probe 'eq-auto-gain-matrix' 'EqAutoGainMatrixAudit' @() @('EQ_AUTOGAIN_MATRIX_PASS cases=640')
+        Run-Probe 'eq-preview-context' 'InteractiveEqAudit' @($byNow,(Join-Path $run 'eq-preview-context'),'--full-chain','--eligibility-only') @('EQ_PREVIEW_CONTEXT_PASS exclusions=true tempo=true resumesAfterFinal=true sourceUnchanged=true')
         Run-Probe 'os-controls' 'OversamplingUiAudit' @($run) @('OS_UI_PASS factor=8','OS_UI_PASS factor=2')
         Run-Probe 'waveform' 'WaveformUiProbe' @($run) @('WAVEFORM_UI_PASS','WAVEFORM_PAN_PASS','TEMPO_UI_PASS')
         Run-Probe 'processed-waveform' 'ProcessedWaveformAudit' @((Join-Path $run 'processed-waveform')) @('PROCESSED_WAVEFORM_PASS.*exactPixelPeaks=true.*transportUnchanged=true')
@@ -103,6 +112,11 @@ try {
         $hashA = [regex]::Match($beatA,'(?i)outputSha=([0-9a-f]{64})')
         $hashB = [regex]::Match($beatB,'(?i)outputSha=([0-9a-f]{64})')
         if (!$hashA.Success -or !$hashB.Success -or $hashA.Groups[1].Value -ne $hashB.Groups[1].Value) { throw 'Beat partition outputs differ or output hashes are missing' }
+    } elseif ($Mode -eq 'Interactive') {
+        # Real audio-device timings: run alone, with no competing benchmarks.
+        Run-Probe 'eq-interactive' 'InteractiveEqAudit' @($byNow,(Join-Path $run 'eq-interactive')) @('EQ_INTERACTIVE_DRAG.*noStarvation=true','EQ_INTERACTIVE_BACKGROUND.*normalDebounce=true.*transportContinued=true','EQ_INTERACTIVE_PASS.*actualPlayback=true.*finalBitExact=true')
+        Run-Probe 'eq-interactive-full' 'InteractiveEqAudit' @($byNow,(Join-Path $run 'eq-interactive-full'),'--full-chain') @('EQ_INTERACTIVE_DRAG.*noStarvation=true','EQ_INTERACTIVE_BACKGROUND.*normalDebounce=true.*transportContinued=true','EQ_INTERACTIVE_PASS.*actualPlayback=true.*finalBitExact=true')
+        Run-Probe 'eq-interactive-full-4x' 'InteractiveEqAudit' @($byNow,(Join-Path $run 'eq-interactive-full-4x'),'--full-chain','--os=4','--excerpt') @('EQ_INTERACTIVE_EXCERPT seconds=30.0','EQ_INTERACTIVE_DRAG.*noStarvation=true','EQ_INTERACTIVE_BACKGROUND.*normalDebounce=true.*transportContinued=true','EQ_INTERACTIVE_PASS.*actualPlayback=true.*finalBitExact=true')
     } elseif ($Mode -eq 'MacroMatrix') {
         $corpus = [ordered]@{
             'by-now' = 'By Now.wav'
@@ -127,7 +141,7 @@ try {
         Run-Probe 'ab-preparation' 'AbPreparationProbe' @($byNow,'--assert-fast') @('AB_PREPARATION_PASS coldFreshController=true bitExact=true','AB_READY first-identical-B.*rendered=false')
     }
     if ((Get-FileHash -LiteralPath $jar).Hash -ne $ExpectedJarSha256) { throw 'Installed JAR changed during acceptance' }
-    if ((Get-FileHash -LiteralPath $vendor[0].FullName).Hash -ne '4f8759e3334ce1970382076cfe2015c44dd7f1378f625eeff831e70915fd4382') { throw 'Installed DSPark changed during acceptance' }
+    if ((Get-FileHash -LiteralPath $vendor[0].FullName).Hash -ne '56df525290b09435a8d8cb5e3b56508546ad11b88f4ce2e858bdb1c2f2bb77b9') { throw 'Installed DSPark changed during acceptance' }
     $summary.status = 'PASSED'
 } catch {
     $summary.status = 'FAILED'

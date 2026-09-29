@@ -1,0 +1,1331 @@
+{
+  "surface": "report",
+  "title": "No hay una única relación Mid/Side para todas las canciones",
+  "generatedAt": "2026-09-28T21:23:36.472647+00:00",
+  "status": "reviewed",
+  "buildStatus": "complete",
+  "report": {
+    "asOf": "2026-09-28"
+  },
+  "filters": [],
+  "queries": {
+    "families": {
+      "rows": [
+        {
+          "family": "Electrónica",
+          "key": "electronic",
+          "count": 5,
+          "median": -10.052554655904196,
+          "min": -15.158439011649051,
+          "max": -3.5963810172229493,
+          "low200": 20.638402298989664,
+          "low250": 29.089022875416703,
+          "low300": 35.5216146775115,
+          "rmsRange": 6.0115888569122795,
+          "crest": 13.984309487802516
+        },
+        {
+          "family": "Pop",
+          "key": "pop",
+          "count": 5,
+          "median": -10.35510705259773,
+          "min": -14.817004622149605,
+          "max": -7.268725715827914,
+          "low200": 18.992977060560143,
+          "low250": 21.428335062090685,
+          "low300": 23.19597362547421,
+          "rmsRange": 6.419316366066941,
+          "crest": 11.5258811728172
+        },
+        {
+          "family": "Rock",
+          "key": "rock",
+          "count": 5,
+          "median": -7.6691724118633955,
+          "min": -9.580931363272342,
+          "max": -5.827571630337425,
+          "low200": 10.797011962894233,
+          "low250": 11.910932789372355,
+          "low300": 19.731153539501104,
+          "rmsRange": 7.450228944364959,
+          "crest": 12.978128448578161
+        },
+        {
+          "family": "Metal",
+          "key": "metal",
+          "count": 5,
+          "median": -7.154781292100773,
+          "min": -8.348015988459997,
+          "max": -5.575484216180331,
+          "low200": 21.970641087414663,
+          "low250": 27.14327952447586,
+          "low300": 34.80649867899305,
+          "rmsRange": 5.949331130356409,
+          "crest": 11.807108519499884
+        },
+        {
+          "family": "Hip-hop",
+          "key": "hip-hop",
+          "count": 5,
+          "median": -16.1842367323305,
+          "min": -26.282439571776187,
+          "max": -13.467186497584782,
+          "low200": 12.55487922520176,
+          "low250": 15.19032273237666,
+          "low300": 21.180791052832664,
+          "rmsRange": 10.556382405504806,
+          "crest": 12.948497865485635
+        },
+        {
+          "family": "R&B / soul / funk",
+          "key": "rnb-soul-funk",
+          "count": 5,
+          "median": -8.923741531443083,
+          "min": -10.619388903769169,
+          "max": -6.842513890259619,
+          "low200": 10.117476553802634,
+          "low250": 13.960694458078171,
+          "low300": 21.05140600455958,
+          "rmsRange": 8.635101572857806,
+          "crest": 15.021672296634973
+        },
+        {
+          "family": "Acústico / folk / country",
+          "key": "acoustic-folk-country",
+          "count": 5,
+          "median": -12.598708206066497,
+          "min": -18.011830633891186,
+          "max": -3.8225865679121025,
+          "low200": 37.01093205809671,
+          "low250": 55.45429894317066,
+          "low300": 58.15671801732387,
+          "rmsRange": 8.06375044572523,
+          "crest": 16.35708316719208
+        },
+        {
+          "family": "Jazz / blues",
+          "key": "jazz-blues",
+          "count": 5,
+          "median": -8.17291999520666,
+          "min": -8.75241111673954,
+          "max": -6.131265661235766,
+          "low200": 27.458510681527166,
+          "low250": 35.97443128381598,
+          "low300": 40.85127286518153,
+          "rmsRange": 10.823614143005779,
+          "crest": 18.159424735218494
+        },
+        {
+          "family": "Orquestal / sinfónico / cine",
+          "key": "orchestral-cinematic",
+          "count": 5,
+          "median": -2.8082094356282647,
+          "min": -4.668508618444643,
+          "max": -1.2600410119782655,
+          "low200": 29.610199764582134,
+          "low250": 44.01764640270467,
+          "low300": 48.94124649546098,
+          "rmsRange": 20.30490198000782,
+          "crest": 19.177651303672143
+        },
+        {
+          "family": "Latina",
+          "key": "latin",
+          "count": 5,
+          "median": -13.641317211234018,
+          "min": -19.616065582094446,
+          "max": -6.147205537980539,
+          "low200": 20.238921743423184,
+          "low250": 23.992418302834256,
+          "low300": 27.177117605589952,
+          "rmsRange": 9.6988247113172,
+          "crest": 13.115325563554084
+        }
+      ],
+      "source": {
+        "label": "Estudio de entregas públicas de YouTube — 50 referencias",
+        "files": [
+          "stereo-study-20260928/study.json",
+          "stereo-study-20260928/verification.json"
+        ],
+        "executedAt": "2026-09-28T21:23:36.472647+00:00",
+        "caveats": [
+          "Muestra de conveniencia, n=5 por familia; no establece un óptimo perceptivo."
+        ],
+        "evidenceFlow": [
+          {
+            "title": "Captura pública verificada",
+            "detail": "Reproducción aislada silenciada; guardados descriptores y procedencia, no audio."
+          },
+          {
+            "title": "Integridad",
+            "detail": "SHA-256 study.json: 8de32115b7fa145329734477fac06c00187b99d4c497d2dfee2374f8cf114add; verificación 2026-09-28T21:29:30.662314+00:00."
+          },
+          {
+            "title": "Transformación",
+            "detail": "build_stereo_report.mjs lee el estudio verificado, calcula medianas por canción y medias espectrales con igual peso."
+          }
+        ],
+        "metricDefinitions": [
+          {
+            "label": "S/M (dB)",
+            "definition": "10 log10(Ps/Pm), potencias agrupadas de ventanas espectrales Hann completas de 3 s; mediana y extremos entre cinco canciones.",
+            "componentIds": [
+              "study-summary",
+              "family-ratios",
+              "bass-ratios",
+              "family-dynamics",
+              "implications"
+            ]
+          },
+          {
+            "label": "Side bajo el corte (%)",
+            "definition": "Mediana entre canciones de 100 × energía Side bajo el corte / energía Side total.",
+            "componentIds": [
+              "study-summary",
+              "family-ratios",
+              "bass-ratios",
+              "family-dynamics",
+              "implications"
+            ]
+          },
+          {
+            "label": "Dinámica",
+            "definition": "Medianas por familia del rango RMS P90−P10 (400 ms) y del factor de cresta de muestra. No LRA ni true peak.",
+            "componentIds": [
+              "study-summary",
+              "family-ratios",
+              "bass-ratios",
+              "family-dynamics",
+              "implications"
+            ]
+          }
+        ]
+      }
+    },
+    "tonal": {
+      "rows": [
+        {
+          "family": "Electrónica",
+          "band0": 46.80417663633336,
+          "band1": 18.00942207005562,
+          "band2": 27.032883390909856,
+          "band3": 7.206978596445116,
+          "band4": 0.9465393062560532
+        },
+        {
+          "family": "Pop",
+          "band0": 50.70813407026269,
+          "band1": 16.246237227355977,
+          "band2": 26.85848273525452,
+          "band3": 5.817173167297203,
+          "band4": 0.36997279982960835
+        },
+        {
+          "family": "Rock",
+          "band0": 27.360538449390013,
+          "band1": 23.72103589981528,
+          "band2": 33.552843940882596,
+          "band3": 14.573843660107293,
+          "band4": 0.7917380498048111
+        },
+        {
+          "family": "Metal",
+          "band0": 33.26432265433676,
+          "band1": 22.45556700812227,
+          "band2": 29.958484403454133,
+          "band3": 13.861256120047422,
+          "band4": 0.46036981403941923
+        },
+        {
+          "family": "Hip-hop",
+          "band0": 51.52003749008078,
+          "band1": 16.161395848119973,
+          "band2": 24.271317974349476,
+          "band3": 7.358889451871356,
+          "band4": 0.6883592355784116
+        },
+        {
+          "family": "R&B / soul / funk",
+          "band0": 32.708090440965044,
+          "band1": 19.682411613865742,
+          "band2": 41.62827299113035,
+          "band3": 5.686126699544434,
+          "band4": 0.2950982544944209
+        },
+        {
+          "family": "Acústico / folk / country",
+          "band0": 34.615610904591534,
+          "band1": 31.05032927296844,
+          "band2": 31.68420677608553,
+          "band3": 2.485577897056305,
+          "band4": 0.164275149298187
+        },
+        {
+          "family": "Jazz / blues",
+          "band0": 35.934908000079204,
+          "band1": 22.871457423465312,
+          "band2": 35.221474300746436,
+          "band3": 5.675039478617526,
+          "band4": 0.29712079709153133
+        },
+        {
+          "family": "Orquestal / sinfónico / cine",
+          "band0": 29.933126584503476,
+          "band1": 19.56196627885594,
+          "band2": 47.091974364964926,
+          "band3": 3.3936871620042366,
+          "band4": 0.01924560967141281
+        },
+        {
+          "family": "Latina",
+          "band0": 35.78515958758028,
+          "band1": 21.964565585385436,
+          "band2": 34.3177095541095,
+          "band3": 7.383239933008093,
+          "band4": 0.549325339916687
+        }
+      ],
+      "source": {
+        "label": "Estudio de entregas públicas de YouTube — 50 referencias",
+        "files": [
+          "stereo-study-20260928/study.json",
+          "stereo-study-20260928/verification.json"
+        ],
+        "executedAt": "2026-09-28T21:23:36.472647+00:00",
+        "caveats": [
+          "Muestra de conveniencia, n=5 por familia; no establece un óptimo perceptivo."
+        ],
+        "evidenceFlow": [
+          {
+            "title": "Captura pública verificada",
+            "detail": "Reproducción aislada silenciada; guardados descriptores y procedencia, no audio."
+          },
+          {
+            "title": "Integridad",
+            "detail": "SHA-256 study.json: 8de32115b7fa145329734477fac06c00187b99d4c497d2dfee2374f8cf114add; verificación 2026-09-28T21:29:30.662314+00:00."
+          },
+          {
+            "title": "Transformación",
+            "detail": "build_stereo_report.mjs lee el estudio verificado, calcula medianas por canción y medias espectrales con igual peso."
+          }
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Distribución tonal (%)",
+            "definition": "Media entre canciones de la media temporal de energía estéreo normalizada por ventana válida; no potencia agrupada ni dB de EQ.",
+            "componentIds": [
+              "tonal-table"
+            ]
+          }
+        ]
+      }
+    },
+    "songs": {
+      "rows": [
+        {
+          "id": "house-disco-1",
+          "family": "Electrónica",
+          "key": "electronic",
+          "artist": "Daft Punk",
+          "title": "Get Lucky",
+          "url": "https://www.youtube.com/watch?v=4D7u5KF7SP8",
+          "edition": "Random Access Memories, album version",
+          "seconds": 369.641,
+          "duration": "6:10",
+          "sideMid": -15.158439011649051,
+          "low250": 29.089022875416703,
+          "correlation": 0.9412046627695294,
+          "coverage": 99.93470448353943,
+          "rmsRange": 5.276071451178684,
+          "crest": 14.55562612250764
+        },
+        {
+          "id": "house-disco-4",
+          "family": "Electrónica",
+          "key": "electronic",
+          "artist": "deadmau5",
+          "title": "Strobe",
+          "url": "https://www.youtube.com/watch?v=9P5gQXslrR0",
+          "edition": "For Lack of a Better Name; NOT Club Edit",
+          "seconds": 634.481,
+          "duration": "10:34",
+          "sideMid": -3.5963810172229493,
+          "low250": 56.713518485173694,
+          "correlation": 0.39171734575839234,
+          "coverage": 99.96081238051258,
+          "rmsRange": 7.798931751059978,
+          "crest": 13.984309487802516
+        },
+        {
+          "id": "house-disco-3",
+          "family": "Electrónica",
+          "key": "electronic",
+          "artist": "Disclosure",
+          "title": "Latch",
+          "url": "https://www.youtube.com/watch?v=VNg3MxYKSi0",
+          "edition": "Latch feat. Sam Smith; verify album in public player metadata",
+          "seconds": 256.961,
+          "duration": "4:17",
+          "sideMid": -10.052554655904196,
+          "low250": 14.186555105725878,
+          "correlation": 0.8197638714221246,
+          "coverage": 99.90423177057998,
+          "rmsRange": 5.968443750894192,
+          "crest": 12.078683467991954
+        },
+        {
+          "id": "dnb-bass-1",
+          "family": "Electrónica",
+          "key": "electronic",
+          "artist": "Pendulum",
+          "title": "Watercolour",
+          "url": "https://www.youtube.com/watch?v=q9I01iNFcL4",
+          "edition": "Watercolour Full Version, single edition",
+          "seconds": 304.121,
+          "duration": "5:04",
+          "sideMid": -13.112891182832254,
+          "low250": 15.348049164325802,
+          "correlation": 0.9070145634130092,
+          "coverage": 99.91818749773938,
+          "rmsRange": 11.490682574403936,
+          "crest": 12.753982041234552
+        },
+        {
+          "id": "trance-5",
+          "family": "Electrónica",
+          "key": "electronic",
+          "artist": "Tiësto",
+          "title": "Adagio for Strings",
+          "url": "https://www.youtube.com/watch?v=PyD4QQgJ6O4",
+          "edition": "Just Be, album version",
+          "seconds": 443.441,
+          "duration": "7:23",
+          "sideMid": -8.776725552534861,
+          "low250": 30.60418266917558,
+          "correlation": 0.7670555362224994,
+          "coverage": 99.9439925491779,
+          "rmsRange": 6.0115888569122795,
+          "crest": 15.505288150292582
+        },
+        {
+          "id": "pop-4",
+          "family": "Pop",
+          "key": "pop",
+          "artist": "Ariana Grande",
+          "title": "Into You",
+          "url": "https://www.youtube.com/watch?v=Faq-ODnfIPw",
+          "edition": "Dangerous Woman",
+          "seconds": 244.461,
+          "duration": "4:04",
+          "sideMid": -7.268725715827914,
+          "low250": 21.428335062090685,
+          "correlation": 0.6835059724807238,
+          "coverage": 99.99347135125848,
+          "rmsRange": 6.419316366066941,
+          "crest": 12.748524384389937
+        },
+        {
+          "id": "art-pop-1",
+          "family": "Pop",
+          "key": "pop",
+          "artist": "Billie Eilish",
+          "title": "bad guy",
+          "url": "https://www.youtube.com/watch?v=ZD6rXLXZOEI",
+          "edition": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?; solo, not Bieber remix",
+          "seconds": 194.101,
+          "duration": "3:14",
+          "sideMid": -14.817004622149605,
+          "low250": 55.35981161324147,
+          "correlation": 0.9365257206163716,
+          "coverage": 99.87297901607927,
+          "rmsRange": 13.231831930111763,
+          "crest": 10.913764915959689
+        },
+        {
+          "id": "pop-2",
+          "family": "Pop",
+          "key": "pop",
+          "artist": "Dua Lipa",
+          "title": "Levitating",
+          "url": "https://www.youtube.com/watch?v=OsfAnsMY21M",
+          "edition": "Future Nostalgia; solo version, NOT DaBaby remix",
+          "seconds": 203.821,
+          "duration": "3:24",
+          "sideMid": -7.548232871335562,
+          "low250": 6.59200663755352,
+          "correlation": 0.7004635222480495,
+          "coverage": 99.87914493599776,
+          "rmsRange": 5.127499319541123,
+          "crest": 11.5258811728172
+        },
+        {
+          "id": "pop-3",
+          "family": "Pop",
+          "key": "pop",
+          "artist": "Taylor Swift",
+          "title": "Anti-Hero",
+          "url": "https://www.youtube.com/watch?v=3YgtjHZyCIQ",
+          "edition": "Anti-Hero; verify Midnights edition in public player metadata",
+          "seconds": 200.701,
+          "duration": "3:21",
+          "sideMid": -10.35510705259773,
+          "low250": 15.160290363162959,
+          "correlation": 0.832557107362069,
+          "coverage": 99.88202849014205,
+          "rmsRange": 6.969635443874333,
+          "crest": 12.768541316094343
+        },
+        {
+          "id": "pop-1",
+          "family": "Pop",
+          "key": "pop",
+          "artist": "The Weeknd",
+          "title": "Blinding Lights",
+          "url": "https://www.youtube.com/watch?v=fHI8X4OXluQ",
+          "edition": "Official audio, 2019 XO/Republic; not the music video",
+          "seconds": 203.221,
+          "duration": "3:23",
+          "sideMid": -10.3846616556853,
+          "low250": 27.067089077075263,
+          "correlation": 0.8327545316015186,
+          "coverage": 99.9950940109536,
+          "rmsRange": 4.70550869992514,
+          "crest": 10.142385308145895
+        },
+        {
+          "id": "classic-rock-2",
+          "family": "Rock",
+          "key": "rock",
+          "artist": "AC/DC",
+          "title": "Back In Black",
+          "url": "https://www.youtube.com/watch?v=9vWNauaZAgg",
+          "edition": "Back In Black; studio song, not River Plate/Donington",
+          "seconds": 255.501,
+          "duration": "4:16",
+          "sideMid": -7.6691724118633955,
+          "low250": 11.903405190815755,
+          "correlation": 0.7097881156825875,
+          "coverage": 99.90229588142512,
+          "rmsRange": 6.974413724527803,
+          "crest": 14.396141657420287
+        },
+        {
+          "id": "alternative-rock-2",
+          "family": "Rock",
+          "key": "rock",
+          "artist": "Arctic Monkeys",
+          "title": "Do I Wanna Know?",
+          "url": "https://www.youtube.com/watch?v=pqrUQrAcfo4",
+          "edition": "Do I Wanna Know?; public catalogue song, not music video",
+          "seconds": 272.421,
+          "duration": "4:32",
+          "sideMid": -8.10479801605937,
+          "low250": 11.910932789372355,
+          "correlation": 0.7362717160660341,
+          "coverage": 99.91193446907543,
+          "rmsRange": 8.176600753123438,
+          "crest": 12.978128448578161
+        },
+        {
+          "id": "alternative-rock-5",
+          "family": "Rock",
+          "key": "rock",
+          "artist": "Foo Fighters",
+          "title": "The Pretender",
+          "url": "https://www.youtube.com/watch?v=BMMGwtklEeE",
+          "edition": "Echoes, Silence, Patience & Grace",
+          "seconds": 269.381,
+          "duration": "4:29",
+          "sideMid": -5.827571630337425,
+          "low250": 24.202608139795696,
+          "correlation": 0.5856017436253228,
+          "coverage": 99.90736948782579,
+          "rmsRange": 19.97808714205043,
+          "crest": 12.938222483967152
+        },
+        {
+          "id": "classic-rock-1",
+          "family": "Rock",
+          "key": "rock",
+          "artist": "Queen",
+          "title": "Another One Bites the Dust",
+          "url": "https://www.youtube.com/watch?v=b72gdhV_rXM",
+          "edition": "The Game; 2011 phonogram, Bob Ludwig credit, catalogue publication 2026",
+          "seconds": 214.661,
+          "duration": "3:35",
+          "sideMid": -9.580931363272342,
+          "low250": 35.102333026941785,
+          "correlation": 0.802385933716524,
+          "coverage": 99.88562337825688,
+          "rmsRange": 7.450228944364959,
+          "crest": 16.06761853378853
+        },
+        {
+          "id": "alternative-rock-3",
+          "family": "Rock",
+          "key": "rock",
+          "artist": "The Killers",
+          "title": "Mr. Brightside",
+          "url": "https://www.youtube.com/watch?v=m2zUrruKjDQ",
+          "edition": "Hot Fuss; not Thin White Duke remix",
+          "seconds": 222.981,
+          "duration": "3:43",
+          "sideMid": -7.663221511217896,
+          "low250": 10.353262267710688,
+          "correlation": 0.7082301643918996,
+          "coverage": 99.8935182818267,
+          "rmsRange": 3.4387277743014906,
+          "crest": 10.516578483275412
+        },
+        {
+          "id": "metal-5",
+          "family": "Metal",
+          "key": "metal",
+          "artist": "Bring Me The Horizon",
+          "title": "Can You Feel My Heart",
+          "url": "https://www.youtube.com/watch?v=H8Wx8GV1Oiw",
+          "edition": "Sempiternal (Expanded Edition)",
+          "seconds": 228.161,
+          "duration": "3:48",
+          "sideMid": -8.084748390353882,
+          "low250": 23.873473780398,
+          "correlation": 0.7316609143675772,
+          "coverage": 99.89335118622375,
+          "rmsRange": 6.476986210497753,
+          "crest": 10.837259279066195
+        },
+        {
+          "id": "metal-4",
+          "family": "Metal",
+          "key": "metal",
+          "artist": "Gojira",
+          "title": "Stranded",
+          "url": "https://www.youtube.com/watch?v=zgychWIo6UA",
+          "edition": "Magma",
+          "seconds": 269.541,
+          "duration": "4:30",
+          "sideMid": -7.154781292100773,
+          "low250": 29.964843270967616,
+          "correlation": 0.676823518318284,
+          "coverage": 99.90984340044744,
+          "rmsRange": 5.949331130356409,
+          "crest": 11.807108519499884
+        },
+        {
+          "id": "metal-1",
+          "family": "Metal",
+          "key": "metal",
+          "artist": "Metallica",
+          "title": "Enter Sandman",
+          "url": "https://www.youtube.com/watch?v=CHIWNDAwTqQ",
+          "edition": "Metallica; studio song, mastering edition to record from player metadata",
+          "seconds": 331.581,
+          "duration": "5:32",
+          "sideMid": -6.782614351404677,
+          "low250": 61.96951334538758,
+          "correlation": 0.6533207762500964,
+          "coverage": 99.92742889369414,
+          "rmsRange": 8.198899889983048,
+          "crest": 16.70526190229568
+        },
+        {
+          "id": "metal-2",
+          "family": "Metal",
+          "key": "metal",
+          "artist": "Rammstein",
+          "title": "Deutschland",
+          "url": "https://www.youtube.com/watch?v=vGtaDvhSxaI",
+          "edition": "Rammstein; studio album song, not nine-minute narrative video",
+          "seconds": 322.361,
+          "duration": "5:22",
+          "sideMid": -5.575484216180331,
+          "low250": 27.14327952447586,
+          "correlation": 0.5647827921329993,
+          "coverage": 99.92406835814506,
+          "rmsRange": 5.04967898063364,
+          "crest": 11.909945491252873
+        },
+        {
+          "id": "metal-3",
+          "family": "Metal",
+          "key": "metal",
+          "artist": "Slipknot",
+          "title": "Duality",
+          "url": "https://www.youtube.com/watch?v=B2lmOei7qfk",
+          "edition": "Vol. 3: The Subliminal Verses (Special Edition)",
+          "seconds": 252.621,
+          "duration": "4:13",
+          "sideMid": -8.348015988459997,
+          "low250": 26.50295815994709,
+          "correlation": 0.7471868933291035,
+          "coverage": 99.9038385565729,
+          "rmsRange": 3.371519044194063,
+          "crest": 11.130273379172934
+        },
+        {
+          "id": "hip-hop-1",
+          "family": "Hip-hop",
+          "key": "hip-hop",
+          "artist": "Dr. Dre",
+          "title": "Still D.R.E.",
+          "url": "https://www.youtube.com/watch?v=Qeem6ZVr8Ic",
+          "edition": "Still D.R.E. feat. Snoop Dogg; NOT instrumental",
+          "seconds": 270.601,
+          "duration": "4:31",
+          "sideMid": -15.102414085137495,
+          "low250": 11.99050657478077,
+          "correlation": 0.9442878751037173,
+          "coverage": 99.91028784076924,
+          "rmsRange": 5.344860618320595,
+          "crest": 13.782532704563245
+        },
+        {
+          "id": "trap-drill-2",
+          "family": "Hip-hop",
+          "key": "hip-hop",
+          "artist": "Future",
+          "title": "Mask Off",
+          "url": "https://www.youtube.com/watch?v=AMCwYdTJ_PE",
+          "edition": "FUTURE; NOT Marshmello remix",
+          "seconds": 204.621,
+          "duration": "3:25",
+          "sideMid": -26.282439571776187,
+          "low250": 14.942083614040266,
+          "correlation": 0.995331201219287,
+          "coverage": 99.87897723107598,
+          "rmsRange": 14.41267504725646,
+          "crest": 9.98120441316065
+        },
+        {
+          "id": "hip-hop-5",
+          "family": "Hip-hop",
+          "key": "hip-hop",
+          "artist": "Kendrick Lamar",
+          "title": "Alright",
+          "url": "https://www.youtube.com/watch?v=67vr-3kpX3Q",
+          "edition": "Alright album song; not shortened official video/single",
+          "seconds": 219.341,
+          "duration": "3:39",
+          "sideMid": -13.467186497584782,
+          "low250": 16.755514723733953,
+          "correlation": 0.9137371448801384,
+          "coverage": 99.88699604725062,
+          "rmsRange": 11.573078516800543,
+          "crest": 12.948497865485635
+        },
+        {
+          "id": "hip-hop-2",
+          "family": "Hip-hop",
+          "key": "hip-hop",
+          "artist": "Nas",
+          "title": "N.Y. State of Mind",
+          "url": "https://www.youtube.com/watch?v=izhKFB0_2w0",
+          "edition": "N.Y. State of Mind; NOT Pt. II",
+          "seconds": 293.981,
+          "duration": "4:54",
+          "sideMid": -26.238198819099367,
+          "low250": 77.08780512012198,
+          "correlation": 0.9953931998414997,
+          "coverage": 99.916360581126,
+          "rmsRange": 5.074918819210142,
+          "crest": 11.554367179154534
+        },
+        {
+          "id": "trap-drill-1",
+          "family": "Hip-hop",
+          "key": "hip-hop",
+          "artist": "Travis Scott",
+          "title": "SICKO MODE",
+          "url": "https://www.youtube.com/watch?v=NQbkGDoD7B0",
+          "edition": "SICKO MODE studio song",
+          "seconds": 312.841,
+          "duration": "5:13",
+          "sideMid": -16.1842367323305,
+          "low250": 15.19032273237666,
+          "correlation": 0.9512828752153749,
+          "coverage": 99.92264249251217,
+          "rmsRange": 10.556382405504806,
+          "crest": 13.042975469873818
+        },
+        {
+          "id": "rnb-5",
+          "family": "R&B / soul / funk",
+          "key": "rnb-soul-funk",
+          "artist": "D’Angelo",
+          "title": "Untitled (How Does It Feel)",
+          "url": "https://www.youtube.com/watch?v=CRKXG5YleHU",
+          "edition": "Voodoo, full album track; not music-video edit",
+          "seconds": 430.821,
+          "duration": "7:11",
+          "sideMid": -10.619388903769169,
+          "low250": 13.960694458078171,
+          "correlation": 0.8409481939038282,
+          "coverage": 99.9420784966378,
+          "rmsRange": 16.409376901675515,
+          "crest": 16.09736441054678
+        },
+        {
+          "id": "rnb-2",
+          "family": "R&B / soul / funk",
+          "key": "rnb-soul-funk",
+          "artist": "Frank Ocean",
+          "title": "Pink + White",
+          "url": "https://www.youtube.com/watch?v=9cHbvRUALrc",
+          "edition": "Pink + White, album song",
+          "seconds": 184.541,
+          "duration": "3:05",
+          "sideMid": -8.923741531443083,
+          "low250": 13.361705919635014,
+          "correlation": 0.7747857149389469,
+          "coverage": 99.86591597531172,
+          "rmsRange": 8.635101572857806,
+          "crest": 13.416552875482743
+        },
+        {
+          "id": "soul-funk-1",
+          "family": "R&B / soul / funk",
+          "key": "rnb-soul-funk",
+          "artist": "Silk Sonic",
+          "title": "Leave the Door Open",
+          "url": "https://www.youtube.com/watch?v=IYFqc9gk4qI",
+          "edition": "An Evening With Silk Sonic",
+          "seconds": 242.121,
+          "duration": "4:02",
+          "sideMid": -6.842513890259619,
+          "low250": 16.763453016184034,
+          "correlation": 0.6574957147886545,
+          "coverage": 99.89983892351346,
+          "rmsRange": 8.101951636988016,
+          "crest": 15.021672296634973
+        },
+        {
+          "id": "soul-funk-3",
+          "family": "R&B / soul / funk",
+          "key": "rnb-soul-funk",
+          "artist": "Stevie Wonder",
+          "title": "Superstition",
+          "url": "https://www.youtube.com/watch?v=ftdZ363R9kQ",
+          "edition": "Talking Book",
+          "seconds": 266.141,
+          "duration": "4:26",
+          "sideMid": -10.255717598156135,
+          "low250": 7.803548870855695,
+          "correlation": 0.8282991131780261,
+          "coverage": 99.90947204677218,
+          "rmsRange": 6.011781716573111,
+          "crest": 18.20821595736245
+        },
+        {
+          "id": "rnb-1",
+          "family": "R&B / soul / funk",
+          "key": "rnb-soul-funk",
+          "artist": "SZA",
+          "title": "Good Days",
+          "url": "https://www.youtube.com/watch?v=0BdlKkvjEgA",
+          "edition": "Good Days official audio, SOS edition 2022",
+          "seconds": 280.021,
+          "duration": "4:40",
+          "sideMid": -7.875694211165676,
+          "low250": 17.976457397526154,
+          "correlation": 0.7195662085241818,
+          "coverage": 99.91405287460583,
+          "rmsRange": 12.71194920775456,
+          "crest": 13.346692066012606
+        },
+        {
+          "id": "folk-acoustic-2",
+          "family": "Acústico / folk / country",
+          "key": "acoustic-folk-country",
+          "artist": "Bon Iver",
+          "title": "Holocene",
+          "url": "https://www.youtube.com/watch?v=pvC5YD-IjL0",
+          "edition": "Bon Iver, Bon Iver",
+          "seconds": 336.621,
+          "duration": "5:37",
+          "sideMid": -3.8225865679121025,
+          "low250": 33.008296327414726,
+          "correlation": 0.41497231157087844,
+          "coverage": 99.92714744475242,
+          "rmsRange": 14.509498321973973,
+          "crest": 16.35708316719208
+        },
+        {
+          "id": "country-1",
+          "family": "Acústico / folk / country",
+          "key": "acoustic-folk-country",
+          "artist": "Chris Stapleton",
+          "title": "Tennessee Whiskey",
+          "url": "https://www.youtube.com/watch?v=l6_w3887Rwo",
+          "edition": "Tennessee Whiskey, Chris Stapleton, NOT Joshua Patterson cover",
+          "seconds": 293.301,
+          "duration": "4:53",
+          "sideMid": -14.828160114997699,
+          "low250": 75.53148755384582,
+          "correlation": 0.9377042778876302,
+          "coverage": 99.91523349732869,
+          "rmsRange": 6.100584234458182,
+          "crest": 16.067323503910576
+        },
+        {
+          "id": "folk-acoustic-4",
+          "family": "Acústico / folk / country",
+          "key": "acoustic-folk-country",
+          "artist": "José González",
+          "title": "Heartbeats",
+          "url": "https://www.youtube.com/watch?v=B-c3PAENnLU",
+          "edition": "Heartbeats, public catalogue song; verify Veneer edition",
+          "seconds": 160.261,
+          "duration": "2:40",
+          "sideMid": -18.011830633891186,
+          "low250": 64.77672391946932,
+          "correlation": 0.9749310622011409,
+          "coverage": 99.84761982016835,
+          "rmsRange": 7.644799158673649,
+          "crest": 16.525091425129332
+        },
+        {
+          "id": "country-2",
+          "family": "Acústico / folk / country",
+          "key": "acoustic-folk-country",
+          "artist": "Kacey Musgraves",
+          "title": "Slow Burn",
+          "url": "https://www.youtube.com/watch?v=vYZFN4INkhs",
+          "edition": "Golden Hour; official UMG song with mastering credits",
+          "seconds": 246.141,
+          "duration": "4:06",
+          "sideMid": -8.187962404117426,
+          "low250": 45.05570767457632,
+          "correlation": 0.7410460980574365,
+          "coverage": 99.90357478030886,
+          "rmsRange": 9.840962719178792,
+          "crest": 13.656800334927672
+        },
+        {
+          "id": "folk-acoustic-1",
+          "family": "Acústico / folk / country",
+          "key": "acoustic-folk-country",
+          "artist": "Tracy Chapman",
+          "title": "Fast Car",
+          "url": "https://www.youtube.com/watch?v=IJ8i49EqgYI",
+          "edition": "Tracy Chapman, self-titled album",
+          "seconds": 296.821,
+          "duration": "4:57",
+          "sideMid": -12.598708206066497,
+          "low250": 55.45429894317066,
+          "correlation": 0.8958955634920476,
+          "coverage": 99.9161602447266,
+          "rmsRange": 8.06375044572523,
+          "crest": 21.822312606036594
+        },
+        {
+          "id": "blues-1",
+          "family": "Jazz / blues",
+          "key": "jazz-blues",
+          "artist": "B.B. King",
+          "title": "The Thrill Is Gone",
+          "url": "https://www.youtube.com/watch?v=kpC69qIe02E",
+          "edition": "Completely Well",
+          "seconds": 324.741,
+          "duration": "5:25",
+          "sideMid": -7.7667775121743095,
+          "low250": 47.82160220044888,
+          "correlation": 0.7152864537643105,
+          "coverage": 99.92395724592829,
+          "rmsRange": 6.278029577383972,
+          "crest": 14.074449673921984
+        },
+        {
+          "id": "jazz-3",
+          "family": "Jazz / blues",
+          "key": "jazz-blues",
+          "artist": "Miles Davis",
+          "title": "So What",
+          "url": "https://www.youtube.com/watch?v=KJEzFvXx3Xw",
+          "edition": "So What feat. Coltrane/Adderley/Evans, NOT 1964 live Four & More",
+          "seconds": 562.661,
+          "duration": "9:23",
+          "sideMid": -6.131265661235766,
+          "low250": 10.515016970426535,
+          "correlation": 0.6169373476626167,
+          "coverage": 99.95640376709957,
+          "rmsRange": 13.967160705219282,
+          "crest": 22.88609568249147
+        },
+        {
+          "id": "jazz-1",
+          "family": "Jazz / blues",
+          "key": "jazz-blues",
+          "artist": "Norah Jones",
+          "title": "Don’t Know Why",
+          "url": "https://www.youtube.com/watch?v=GtOcxj3NDBI",
+          "edition": "Don’t Know Why; NOT First Sessions Demo",
+          "seconds": 186.161,
+          "duration": "3:06",
+          "sideMid": -8.17291999520666,
+          "low250": 22.872728807041742,
+          "correlation": 0.7379973145466097,
+          "coverage": 99.8688081821649,
+          "rmsRange": 10.823614143005779,
+          "crest": 16.883100994882717
+        },
+        {
+          "id": "blues-2",
+          "family": "Jazz / blues",
+          "key": "jazz-blues",
+          "artist": "Stevie Ray Vaughan & Double Trouble",
+          "title": "Tin Pan Alley",
+          "url": "https://www.youtube.com/watch?v=LNX4Bl4T1q0",
+          "edition": "Tin Pan Alley, 9:12 version; studio, not 1982 alternate or live",
+          "seconds": 551.581,
+          "duration": "9:12",
+          "sideMid": -8.71794987274885,
+          "low250": 35.97443128381598,
+          "correlation": 0.7623731141833013,
+          "coverage": 99.95560887702803,
+          "rmsRange": 5.311784651193786,
+          "crest": 20.770851997002474
+        },
+        {
+          "id": "jazz-4",
+          "family": "Jazz / blues",
+          "key": "jazz-blues",
+          "artist": "The Dave Brubeck Quartet",
+          "title": "Take Five",
+          "url": "https://www.youtube.com/watch?v=ryA6eHZNnXY",
+          "edition": "Time Out, Columbia/Legacy catalogue",
+          "seconds": 324.141,
+          "duration": "5:24",
+          "sideMid": -8.75241111673954,
+          "low250": 49.88468464563167,
+          "correlation": 0.7922829633491051,
+          "coverage": 99.92396302843515,
+          "rmsRange": 11.202428834506168,
+          "crest": 18.159424735218494
+        },
+        {
+          "id": "orchestral-5",
+          "family": "Orquestal / sinfónico / cine",
+          "key": "orchestral-cinematic",
+          "artist": "Gustavo Dudamel",
+          "title": "Danzón No. 2",
+          "url": "https://www.youtube.com/watch?v=LnHdDKi6gYE",
+          "edition": "Dudamel/Simón Bolívar, Caracas 2008 live; deliberate premeasurement revision of Fiesta draft",
+          "seconds": 586.061,
+          "duration": "9:46",
+          "sideMid": -2.8082094356282647,
+          "low250": 44.01764640270467,
+          "correlation": 0.31476301992249517,
+          "coverage": 99.95835791837368,
+          "rmsRange": 19.997981991380485,
+          "crest": 23.05139028377902
+        },
+        {
+          "id": "cinematic-1",
+          "family": "Orquestal / sinfónico / cine",
+          "key": "orchestral-cinematic",
+          "artist": "Hans Zimmer",
+          "title": "Time",
+          "url": "https://www.youtube.com/watch?v=jgyShFzdB_Q",
+          "edition": "Inception original motion picture album, not live Prague/remix",
+          "seconds": 275.581,
+          "duration": "4:36",
+          "sideMid": -2.9305017765458583,
+          "low250": 46.18437424049298,
+          "correlation": 0.32707319031699644,
+          "coverage": 99.91037843682983,
+          "rmsRange": 21.869803550454947,
+          "crest": 16.10478875190729
+        },
+        {
+          "id": "orchestral-1",
+          "family": "Orquestal / sinfónico / cine",
+          "key": "orchestral-cinematic",
+          "artist": "Herbert von Karajan",
+          "title": "Symphony No. 5 in C Minor, Op. 67: I. Allegro con brio",
+          "url": "https://www.youtube.com/watch?v=4Xmg_UVAL2E",
+          "edition": "Karajan/Berliner, recorded 1977; deliberate premeasurement revision of 1963 draft",
+          "seconds": 428.341,
+          "duration": "7:08",
+          "sideMid": -1.921144028497391,
+          "low250": 18.13520747899516,
+          "correlation": 0.2173502014315084,
+          "coverage": 99.94398271470627,
+          "rmsRange": 20.30490198000782,
+          "crest": 19.177651303672143
+        },
+        {
+          "id": "cinematic-2",
+          "family": "Orquestal / sinfónico / cine",
+          "key": "orchestral-cinematic",
+          "artist": "John Williams",
+          "title": "Hedwig’s Theme",
+          "url": "https://www.youtube.com/watch?v=wtHra9tFISY",
+          "edition": "Harry Potter and the Sorcerer’s Stone original soundtrack",
+          "seconds": 309.101,
+          "duration": "5:09",
+          "sideMid": -1.2600410119782655,
+          "low250": 25.5840898067194,
+          "correlation": 0.143844455985802,
+          "coverage": 99.9232085952488,
+          "rmsRange": 22.646462676342544,
+          "crest": 21.176678750682868
+        },
+        {
+          "id": "cinematic-3",
+          "family": "Orquestal / sinfónico / cine",
+          "key": "orchestral-cinematic",
+          "artist": "Max Richter",
+          "title": "On the Nature of Daylight",
+          "url": "https://www.youtube.com/watch?v=tUMc_-Bcunk",
+          "edition": "The Blue Notebooks (15 Years); chamber original, not orchestra version",
+          "seconds": 371.761,
+          "duration": "6:12",
+          "sideMid": -4.668508618444643,
+          "low250": 44.453329710408454,
+          "correlation": 0.4998061548749607,
+          "coverage": 99.9328469097081,
+          "rmsRange": 11.042382852137212,
+          "crest": 15.48530480758017
+        },
+        {
+          "id": "latin-pop-3",
+          "family": "Latina",
+          "key": "latin",
+          "artist": "Alejandro Sanz",
+          "title": "Corazón Partío",
+          "url": "https://www.youtube.com/watch?v=mE4Mik_vfJA",
+          "edition": "Más; not MTV Unplugged",
+          "seconds": 343.421,
+          "duration": "5:43",
+          "sideMid": -6.147205537980539,
+          "low250": 10.404732678165155,
+          "correlation": 0.6180075587930589,
+          "coverage": 99.92849738367778,
+          "rmsRange": 12.71770077956722,
+          "crest": 15.341505853781793
+        },
+        {
+          "id": "reggaeton-1",
+          "family": "Latina",
+          "key": "latin",
+          "artist": "Bad Bunny",
+          "title": "Tití Me Preguntó",
+          "url": "https://www.youtube.com/watch?v=juRFjpB5Ppg",
+          "edition": "Un Verano Sin Ti",
+          "seconds": 243.741,
+          "duration": "4:04",
+          "sideMid": -13.641317211234018,
+          "low250": 63.37857318537549,
+          "correlation": 0.9172302670538105,
+          "coverage": 99.90079469600929,
+          "rmsRange": 11.093904264875535,
+          "crest": 13.115325563554084
+        },
+        {
+          "id": "reggaeton-3",
+          "family": "Latina",
+          "key": "latin",
+          "artist": "KAROL G",
+          "title": "PROVENZA",
+          "url": "https://www.youtube.com/watch?v=i9gxO_5vA-Q",
+          "edition": "MAÑANA SERÁ BONITO; not Sistek remix",
+          "seconds": 207.641,
+          "duration": "3:28",
+          "sideMid": -19.150192795538178,
+          "low250": 43.84537331870156,
+          "correlation": 0.9759426902788266,
+          "coverage": 99.87968561122322,
+          "rmsRange": 9.6988247113172,
+          "crest": 9.783047119988494
+        },
+        {
+          "id": "latin-organic-1",
+          "family": "Latina",
+          "key": "latin",
+          "artist": "Marc Anthony",
+          "title": "Vivir Mi Vida",
+          "url": "https://www.youtube.com/watch?v=79OxD7KNlYw",
+          "edition": "3.0; original salsa, not Versión Pop",
+          "seconds": 252.361,
+          "duration": "4:12",
+          "sideMid": -6.2523949700285595,
+          "low250": 7.516754993570462,
+          "correlation": 0.616568149511465,
+          "coverage": 99.90201457435974,
+          "rmsRange": 4.676331422090621,
+          "crest": 12.615719353963065
+        },
+        {
+          "id": "latin-pop-1",
+          "family": "Latina",
+          "key": "latin",
+          "artist": "Shakira",
+          "title": "Hips Don’t Lie",
+          "url": "https://www.youtube.com/watch?v=nOj6d-HOw2w",
+          "edition": "Oral Fixation Vol. 2 Expanded; original Wyclef version, not anniversary",
+          "seconds": 220.381,
+          "duration": "3:40",
+          "sideMid": -19.616065582094446,
+          "low250": 23.992418302834256,
+          "correlation": 0.9782626446172166,
+          "coverage": 99.8895213289712,
+          "rmsRange": 7.0468836043535585,
+          "crest": 13.602341233265573
+        }
+      ],
+      "source": {
+        "label": "Estudio de entregas públicas de YouTube — 50 referencias",
+        "files": [
+          "stereo-study-20260928/study.json",
+          "stereo-study-20260928/verification.json"
+        ],
+        "executedAt": "2026-09-28T21:23:36.472647+00:00",
+        "caveats": [
+          "Muestra de conveniencia, n=5 por familia; no establece un óptimo perceptivo."
+        ],
+        "evidenceFlow": [
+          {
+            "title": "Captura pública verificada",
+            "detail": "Reproducción aislada silenciada; guardados descriptores y procedencia, no audio."
+          },
+          {
+            "title": "Integridad",
+            "detail": "SHA-256 study.json: 8de32115b7fa145329734477fac06c00187b99d4c497d2dfee2374f8cf114add; verificación 2026-09-28T21:29:30.662314+00:00."
+          },
+          {
+            "title": "Transformación",
+            "detail": "build_stereo_report.mjs lee el estudio verificado, calcula medianas por canción y medias espectrales con igual peso."
+          }
+        ],
+        "metricDefinitions": [
+          {
+            "label": "S/M (dB)",
+            "definition": "10 log10(Ps/Pm) a partir de potencias espectrales agrupadas de la canción.",
+            "componentIds": [
+              "songs-electronic",
+              "songs-pop",
+              "songs-rock",
+              "songs-metal",
+              "songs-hip-hop",
+              "songs-rnb-soul-funk",
+              "songs-acoustic-folk-country",
+              "songs-jazz-blues",
+              "songs-orchestral-cinematic",
+              "songs-latin"
+            ]
+          },
+          {
+            "label": "Duración",
+            "definition": "Duración registrada por el reproductor público de la fuente; no longitud de captura con márgenes.",
+            "componentIds": [
+              "songs-electronic",
+              "songs-pop",
+              "songs-rock",
+              "songs-metal",
+              "songs-hip-hop",
+              "songs-rnb-soul-funk",
+              "songs-acoustic-folk-country",
+              "songs-jazz-blues",
+              "songs-orchestral-cinematic",
+              "songs-latin"
+            ]
+          },
+          {
+            "label": "Cobertura (%)",
+            "definition": "Fracción del reloj multimedia de la fuente cubierta por la captura aceptada.",
+            "componentIds": [
+              "songs-electronic",
+              "songs-pop",
+              "songs-rock",
+              "songs-metal",
+              "songs-hip-hop",
+              "songs-rnb-soul-funk",
+              "songs-acoustic-folk-country",
+              "songs-jazz-blues",
+              "songs-orchestral-cinematic",
+              "songs-latin"
+            ]
+          }
+        ]
+      }
+    },
+    "verification": {
+      "rows": [
+        {
+          "verified_utc": "2026-09-28T21:29:30.662314+00:00",
+          "status": "passed",
+          "references": 50,
+          "families": 10,
+          "references_per_family": 5,
+          "source_duration_seconds": 14920.009999999997,
+          "clock_evidence_modes": {
+            "per_second": 48,
+            "30s_progress": 2
+          },
+          "references_with_preserved_selected_catalogue_item": 49,
+          "all_have_capture_source_identity": true,
+          "study_sha256": "8de32115b7fa145329734477fac06c00187b99d4c497d2dfee2374f8cf114add",
+          "verifier_sha256": "dc629787272a2faffdbfd6124123e5c74780bb6448f325f81bec4565a7ce0534",
+          "checks": [
+            "unique songs and URLs",
+            "complete 10x5 coverage",
+            "archive and measurement hashes",
+            "capture-quality gates",
+            "all stereo and tonal features recomputed",
+            "equal-song group aggregation recomputed",
+            "normalized spectral sums",
+            "no audio files in delivery"
+          ],
+          "limitations": "This validates the measured public deliveries and computations, not lossless original masters, perceptual preferences or population norms.",
+          "minimumCoverage": 99.84761982016835
+        }
+      ],
+      "source": {
+        "label": "Estudio de entregas públicas de YouTube — 50 referencias",
+        "files": [
+          "stereo-study-20260928/study.json",
+          "stereo-study-20260928/verification.json"
+        ],
+        "executedAt": "2026-09-28T21:23:36.472647+00:00",
+        "caveats": [
+          "Muestra de conveniencia, n=5 por familia; no establece un óptimo perceptivo."
+        ],
+        "evidenceFlow": [
+          {
+            "title": "Captura pública verificada",
+            "detail": "Reproducción aislada silenciada; guardados descriptores y procedencia, no audio."
+          },
+          {
+            "title": "Integridad",
+            "detail": "SHA-256 study.json: 8de32115b7fa145329734477fac06c00187b99d4c497d2dfee2374f8cf114add; verificación 2026-09-28T21:29:30.662314+00:00."
+          },
+          {
+            "title": "Transformación",
+            "detail": "build_stereo_report.mjs lee el estudio verificado, calcula medianas por canción y medias espectrales con igual peso."
+          }
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Verificación",
+            "definition": "Recomputación de datos y comprobación de integridad; no certifica el master original ni preferencia auditiva.",
+            "componentIds": [
+              "methods"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "narrative": {
+    "title": "No hay una única relación Mid/Side para todas las canciones",
+    "summary": "## Resumen de resultados\n\nSe han medido **50 canciones: diez familias con cinco referencias cada una**, con 4 h 8 min 40 s de duración de las fuentes. El estudio cubre la reproducción pública en YouTube, no los masters originales sin pérdida.\n\n- La mediana de Side respecto a Mid va de **−16,18 dB en hip-hop a −2,81 dB en orquestal/cine**: una diferencia de 13,37 dB entre estas selecciones.\n- El género tampoco fija una anchura única: en acústico/folk/country, las cinco canciones abarcan **14,19 dB**. Un perfil debe orientar, no imponer el mismo objetivo a todo.\n- Hay energía Side grave real en las referencias. Por debajo de 250 Hz representa una mediana del **11,9 % al 55,5 % del Side total**, según la familia. No equivale a un porcentaje de anchura ni demuestra que convenga generar Side nuevo en graves.\n\n**Cinco referencias por familia sirven como punto de partida empírico, no como un estudio representativo ni como prueba de una relación «perfecta».**",
+    "ratio": "## 1. Cuánto Side hay respecto al Mid\n\nMid = (L + R) / 2; Side = (L − R) / 2. La medida es 10 · log₁₀(energía Side / energía Mid). Un valor más negativo indica menos energía diferencial: −10 dB significa que el Side tiene una décima parte de la energía del Mid. No mide por sí solo calidad, anchura percibida ni seguridad mono.\n\nLa tabla muestra la mediana y los extremos de las cinco canciones de cada familia. Cada canción cuenta una vez; una canción larga no pesa más. Son relaciones calculadas agrupando las potencias espectrales de ventanas Hann de 3 segundos, no promedios de dB instantáneos.",
+    "bass": "## 2. Los graves del Side existente no deben eliminarse por defecto\n\nCada porcentaje indica qué parte de **toda la energía del Side** está por debajo del corte indicado. Las columnas son acumulativas y no se suman. Son medianas entre canciones, no objetivos de diseño.\n\nPara Stereo Image, desmarcar **Generate Low Frequencies** debe impedir la generación nueva en graves, no convertir a mono los graves originales. Este estudio no decide si el corte óptimo es 200, 250 o 300 Hz; esa elección sigue necesitando comparar el generador y sus efectos audibles.",
+    "tonal": "## 3. Datos adicionales para una futura EQ por estilo\n\nTambién se guardaron espectros L/R/M/S normalizados, variación tonal por ventanas y bloques de 15 segundos, energía por bandas, rango RMS y factor de cresta. La tabla resume la energía estéreo en cinco bandas amplias: primero se normaliza cada ventana válida, se promedia dentro de la canción y después se da el mismo peso a cada canción.\n\nLas bandas tienen anchos distintos: estos porcentajes son **energía acumulada, no altura de una curva EQ ni ganancia recomendada**. Suman aproximadamente 100 % por fila; puede haber diferencias por redondeo. Una futura EQ necesitará usar las curvas finas y su variabilidad, evitar realzar bandas sin señal fiable y conservar la intención del tema.",
+    "dynamics": "El rango RMS es P90 − P10 de niveles en ventanas de 400 ms. El factor de cresta compara el pico de muestra máximo de los canales con la potencia estéreo media. Aquí se muestra la mediana entre las cinco canciones. **No son EBU LRA, LUFS ni true peak.**",
+    "corpus": "## 4. Las 50 canciones analizadas\n\nEsta es la lista medida, no una selección pendiente. Cada enlace abre la fuente concreta de YouTube. «S/M» usa la misma definición que la tabla de familias; «Side <250 Hz» es la fracción del Side total. La duración corresponde al reproductor de la fuente. Todas pasaron los controles de captura; la cobertura registrada supera el 99,5 %.\n\nLos detalles de edición describen la entrega pública identificada. No certifican que coincida con una edición concreta del master original.",
+    "methods": "## 5. Método, controles y límites\n\n**Captura.** Reproducción pública normal, a velocidad 1×, en una aplicación aislada y silenciada: estéreo a 48 kHz, ganancia del reproductor constante y comprobación de volumen estable. AGC, cancelación de eco y supresión de ruido desactivados. Sin Spotify, extensiones de Chrome ni audio guardado en la entrega.\n\n**Cobertura.** Se midió prácticamente toda cada canción; se detuvo aproximadamente 250 ms antes del final para evitar el contenido posterior (20 ms en las dos primeras capturas pop). Puede haber un pequeño margen silencioso de encaminamiento. No es una copia PCM exacta de principio a fin. Hay evidencia del reloj cada segundo en 48 capturas y cada 30 segundos en las otras dos. Los intentos con anuncios o deriva de reloj se excluyeron.\n\n**Cálculo.** Ventanas espectrales Hann de 3 s, salto de 1,5 s; dinámica corta de 400 ms con salto de 200 ms. Bandas FFT disjuntas aproximadamente de tercio de octava, con límites adicionales a 120, 200, 250, 300 Hz, 2 kHz y 10 kHz. No son filtros de medida IEC calibrados. Los bloques de 15 s no identifican estrofas o estribillos.\n\n**Verificación.** 50 archivos de resultados, identificadores únicos y diez grupos de cinco. Se comprobaron hashes, controles de calidad, sumas espectrales, todas las características estéreo/tonales y las agregaciones de nuevo. Hay identidad de fuente en las 50 referencias; 49 conservan además el elemento seleccionado del catálogo y una se verificó directamente en la página oficial.\n\n**Límites.** Selección de conveniencia de canciones conocidas, épocas y ediciones distintas, incluida una grabación orquestal en directo. Cinco canciones no estiman la distribución de todo un género. El códec y el remuestreo pueden alterar especialmente los agudos. Los dBFS absolutos del navegador no permiten comparar el nivel de master entre canciones; los cocientes y espectros normalizados sí cancelan una atenuación común constante. No se midieron LUFS integrados BS.1770, EBU LRA, true peak ni coherencia espectral cuadrática. No hubo evaluación perceptiva controlada.",
+    "implications": "## 6. Qué cambia esto en el diseño de QuickMaster\n\n- **Perfiles orientativos:** usar estos datos como referencias iniciales por familia y mostrar su dispersión; no convertir la mediana en una obligación ni en un límite de seguridad.\n- **Adaptación al tema:** combinar el perfil con el análisis de la propia canción y, cuando exista, una referencia elegida. No elevar automáticamente todo tramo estrecho: puede ser una decisión musical.\n- **Graves independientes:** separar el permiso para generar Side nuevo en graves de la preservación del Side original.\n- **Validación pendiente:** número de bandas, profundidad y velocidad de modulación, saturación del delta y corte de graves necesitan pruebas DSP y de escucha. No se han establecido «sweet spots» mediante este corpus.\n\n**Estado del producto:** este informe entrega la investigación y sus datos. No significa que Stereo Image o una nueva EQ espectral estén implementados ni validados en la aplicación."
+  }
+}

@@ -6,13 +6,13 @@ import com.dspark.core.DspMath;
 /**
  * <b>Punch</b> - transient expander.
  * <p>
- * Tooltip: <i>"Adds punch by boosting every transient in the song."</i>
+ * Boosts detected musical attacks with a bounded stereo-linked envelope.
  * <p>
  * Makes the track hit harder by <b>boosting the transients</b> while leaving the
- * body at unity. Transients are located with the shared spectral-flux onset
- * detector ({@link TrackAnalysis}), which catches every attack - including
- * snares/kicks masked inside a dense wall, where a plain amplitude detector
- * would miss them. From the onset map a boost shape is placed directly at each
+ * body outside the attack/release region at unity. Transients are located with
+ * DSPark's SuperFlux detector ({@link TrackAnalysis}), independent of the
+ * tempo detector's strong-pulse gate. Detection is heuristic, not a guarantee
+ * that every instrument attack can be isolated in a dense mix. From the onset map a boost shape is placed at each
  * transient: it ramps up over a few ms <i>before</i> the onset so it is already
  * at {@code +Amount} dB when the attack lands, holds across the attack, then
  * falls. The boost is the same for every transient, regardless of its strength.
@@ -32,8 +32,6 @@ public final class PunchProcessor extends AnalysisDynamicsProcessor
     private static final double FALL_MS = 45.0;         // ramp down after the attack
     private static final double MIN_ATTACK_SEC = 0.015;
     private static final double MAX_ATTACK_SEC = 0.050;
-    /** Onsets weaker than this fraction of the strongest are ignored (noise). */
-    private static final double SENSITIVITY = 0.12;
 
     private volatile double amountDb = DEFAULT_AMOUNT_DB;
     private TrackAnalysis trackAnalysis;
@@ -49,7 +47,7 @@ public final class PunchProcessor extends AnalysisDynamicsProcessor
     /** Sets the punch amount in dB. */
     public void setAmountDb(double db)
     {
-        this.amountDb = DspMath.clamp(db, MIN_AMOUNT_DB, MAX_AMOUNT_DB);
+        if (Double.isFinite(db)) this.amountDb = DspMath.clamp(db, MIN_AMOUNT_DB, MAX_AMOUNT_DB);
     }
 
     @Override
@@ -57,23 +55,20 @@ public final class PunchProcessor extends AnalysisDynamicsProcessor
     {
         float[] w = new float[frames];
         TrackAnalysis ta = trackAnalysis;
-        if (ta != null && ta.getOnsetCount() > 0 && sampleRate > 0)
+        if (ta != null && sampleRate > 0)
         {
-            double[] times = ta.getOnsetTimesSec();
-            double[] durs = ta.getOnsetDurationsSec();
-            float[] strengths = ta.getOnsetStrengths();
-            float maxStrength = 0.0f;
-            for (float s : strengths) if (s > maxStrength) maxStrength = s;
-            float floor = (float) (SENSITIVITY * maxStrength);
+            double[] times = ta.getTransientTimesSec();
+            double[] durs = ta.getTransientDurationsSec();
 
             int rise = Math.max(1, (int) (RISE_MS / 1000.0 * sampleRate));
             int fall = Math.max(1, (int) (FALL_MS / 1000.0 * sampleRate));
             for (int k = 0; k < times.length; k++)
             {
-                if (strengths[k] < floor) continue;
-                int s = (int) (times[k] * sampleRate);
+                if (Thread.currentThread().isInterrupted()) throw new java.util.concurrent.CancellationException();
+                int detected = (int) (times[k] * sampleRate);
+                int s = refineAttack(samples, channels, frames, sampleRate, detected);
                 int hold = (int) (DspMath.clamp((k < durs.length) ? durs[k] : 0.03,
-                        MIN_ATTACK_SEC, MAX_ATTACK_SEC) * sampleRate);
+                        MIN_ATTACK_SEC, MAX_ATTACK_SEC) * sampleRate) + detected - s;
                 // Ramp up to 1 by the onset, hold across the attack, then ramp down.
                 for (int i = Math.max(0, s - rise); i < s && i < frames; i++)
                 {
@@ -91,6 +86,42 @@ public final class PunchProcessor extends AnalysisDynamicsProcessor
         this.weight = w;
     }
 
+    /**
+     * A spectral event is a window-centre estimate, not a sample-accurate attack.
+     * Within its 25 ms localisation tolerance, find the strongest increase of
+     * stereo-pooled 1 ms energy. Advance by one energy window so the cosine rise
+     * ends before the attack, never after it. This does NOT create extra events
+     * or change the tempo map. The original spectral event remains in the hold.
+     */
+    private static int refineAttack(float[] samples, int channels, int frames, int rate, int detected)
+    {
+        int window = Math.max(1, (int) Math.round(rate * .001));
+        int radius = Math.max(window, (int) Math.round(rate * .025));
+        int first = Math.max(window, detected - radius);
+        int end = Math.min(frames - window, detected + radius);
+        if (first >= end) return Math.max(0, Math.min(frames, detected));
+        double before = 0, after = 0;
+        for (int f = first - window; f < first; f++) before += power(samples, channels, f);
+        for (int f = first; f < first + window; f++) after += power(samples, channels, f);
+        double strongest = 0;
+        int attack = detected;
+        for (int f = first; f < end; f++)
+        {
+            double rise = after - before;
+            if (rise > strongest) { strongest = rise; attack = f - window; }
+            before += power(samples, channels, f) - power(samples, channels, f - window);
+            after += power(samples, channels, f + window) - power(samples, channels, f);
+        }
+        return Math.max(0, Math.min(detected, attack));
+    }
+
+    private static double power(float[] samples, int channels, int frame)
+    {
+        double sum = 0;
+        for (int c = 0; c < channels; c++) { double v = samples[frame * channels + c]; sum += v * v; }
+        return sum;
+    }
+
     @Override
     protected void mapFeaturesToGain()
     {
@@ -104,6 +135,8 @@ public final class PunchProcessor extends AnalysisDynamicsProcessor
         }
         for (int i = 0; i < n; i++)
         {
+            if ((i & 16383) == 0 && Thread.currentThread().isInterrupted())
+                throw new java.util.concurrent.CancellationException();
             env[i] = (float) DspMath.decibelsToGain(amountDb * weight[i]);   // >= 1
         }
         gainEnv = env;

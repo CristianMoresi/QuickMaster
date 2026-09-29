@@ -50,6 +50,9 @@ public final class EqualizerProcessor implements AudioProcessor, OfflineMetering
     private int preparedChannels = 0;
     private boolean enginePrepared = false;
     private boolean enabled = true;
+    private boolean autoGainEnabled;
+    private boolean hasEnabledBand;
+    private volatile double autoGain = 1.0;
     private long totalSamples, frameCursor;
     private record MeterHistory(float[] values, int bands, int step, int rate) { }
     private volatile MeterHistory meters;
@@ -76,7 +79,44 @@ public final class EqualizerProcessor implements AudioProcessor, OfflineMetering
     }
 
     /** Share only the completed immutable timeline when a tonal-prefix cache is reused. */
-    public void adoptMeters(EqualizerProcessor source) { meters = source.meters; }
+    public void adoptMeters(EqualizerProcessor source) { meters = source.meters; autoGain = source.autoGain; }
+
+    public void setAutoGainEnabled(boolean value) { autoGainEnabled = value; if (!value) autoGain = 1; }
+    public boolean isAutoGainEnabled() { return autoGainEnabled; }
+    public boolean isAutoGainActive() {
+        return enabled && autoGainEnabled && hasEnabledBand;
+    }
+    public double getAutoGainDb() { return isAutoGainActive() ? 20 * Math.log10(autoGain) : 0; }
+
+    /** Offline rendering first measures the unscaled, latency-aligned EQ output. */
+    public void beginAutoGainAnalysis() { autoGain = 1; }
+
+    /**
+     * DSPark perceptual matching adapted to an offline EQ: one fixed gain for
+     * the entire track, linked across channels. No attack, pumping, clipping or
+     * alteration of the EQ's relative spectral curve. The peak bound takes
+     * priority if a loudness match would overload. Neither input is retained.
+     */
+    public void finishAutoGainAnalysis(float[] dry, float[] wet, int channels,
+            com.quickmaster.processing.dynamics.leveler.CancellationToken cancellation) {
+        if (!isAutoGainActive()) return;
+        Runnable check = () -> {
+            if (cancellation != null && cancellation.isCancelled())
+                throw new java.util.concurrent.CancellationException("EQ auto gain superseded");
+        };
+        var matcher = new com.dspark.effects.AutoGain();
+        matcher.setMaxCompensationDb(24);
+        double gain = Math.pow(10, matcher.offlineGainDb(dry, wet, channels, sampleRate, check) / 20);
+        check.run();
+        double peak = com.dspark.analysis.TruePeak.measureMax(wet, channels);
+        if (peak * gain > 1) gain = Math.pow(10, -.1 / 20) / peak;
+        autoGain = gain;
+        float g = (float)gain;
+        if (g != 1) for (int i = 0; i < wet.length; i++) {
+            if ((i & 16383) == 0) check.run();
+            wet[i] *= g;
+        }
+    }
 
     public double getBandMeterAt(int band, long baseFrame, int baseRate, boolean detector) {
         MeterHistory m = meters;
@@ -119,11 +159,16 @@ public final class EqualizerProcessor implements AudioProcessor, OfflineMetering
 
     /* --- Band API (delegated to the engine) --- */
 
-    public void setBand(int index, MasterEqualizer.Band band) { engine.setBand(index, band); }
+    public void setBand(int index, MasterEqualizer.Band band) { engine.setBand(index, band); refreshAutoGainEligibility(); }
 
     public MasterEqualizer.Band getBand(int index) { return engine.getBand(index); }
 
-    public void setNumBands(int n) { engine.setNumBands(n); }
+    public void setNumBands(int n) { engine.setNumBands(n); refreshAutoGainEligibility(); }
+
+    private void refreshAutoGainEligibility() {
+        hasEnabledBand = false;
+        for (int i = 0; i < getNumBands(); i++) if (getBand(i).enabled) { hasEnabledBand = true; break; }
+    }
 
     public int getNumBands() { return engine.getNumBands(); }
 
@@ -182,6 +227,15 @@ public final class EqualizerProcessor implements AudioProcessor, OfflineMetering
         return (enabled && enginePrepared) ? engine.getLatencyFrames() : 0;
     }
 
+    /** Worker-only capacity for oversampled preview blocks. The FIR time span
+     * and phase do not change; larger blocks amortize the same FFT kernels. */
+    public void preparePreviewBlocks(int channels, int frames) {
+        if (sampleRate <= 0 || channels < 1 || channels > 2 || frames < 1 || frames > 16384)
+            throw new IllegalArgumentException("Invalid preview block capacity");
+        engine.prepare(sampleRate, frames, channels);
+        preparedChannels = channels; enginePrepared = true;
+    }
+
     @Override
     public float[] process(float[] buffer, int channels)
     {
@@ -196,6 +250,10 @@ public final class EqualizerProcessor implements AudioProcessor, OfflineMetering
             enginePrepared = true;
         }
         engine.process(buffer, channels);
+        if (isAutoGainActive() && autoGain != 1) {
+            float gain = (float)autoGain;
+            for (int i = 0; i < buffer.length; i++) buffer[i] *= gain;
+        }
         MeterHistory m = recording;
         int frames = buffer.length / channels;
         if (m != null && m.bands > 0) {

@@ -7,6 +7,70 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- Stereo Image, before Dynamics by default: independent differential-EQ
+  Generation, offline Side Leveler and Side Guard. Generation adds new Side
+  while preserving Mid, with automatic delta-only DSPark harmonics. All three
+  sections start off; Generation's initial/reset amount is 25%.
+- Generated Stereo Low Cut, Off by default through 5 kHz, using a compensated
+  linear-phase filter only on the generated difference. Side Gain independently
+  adjusts the final combined Side from -12 to +12 dB.
+- Auto (This Track), ten measured genre-energy references and local reference
+  import. The documented study covers 50 recordings across ten families; it
+  does not claim an ideal universal stereo balance. Presets, undo, cached A/B,
+  chain order, processed waveform and output energy include Stereo Image.
+- Listen in mono below Mid/Side: smoothly switched playback-only half-sum for
+  preview, Bypass and both A/B slots, with no reanalysis or export changes.
+- Interactive EQ and Stereo Image audition through a separate, cancellable
+  short-window worker while the exact whole-track master is recalculated.
+  Phase-aligned previews are labelled as provisional and never used for export
+  or the definitive A/B cache.
+
+### Fixed
+
+- Optional EQ Auto Gain uses the updated DSPark K-weighted port and a fixed
+  offline gain, preventing EQ-only overload without saturation. Its on/off state
+  survives presets, A/B and undo/redo; processed waveform and meters use the
+  same compensated audio. Final delivery protection stays scoped to EQ, without
+  silently normalizing new stereo generated after it.
+- Keep the EQ Auto Gain readout blank when no compensation is displayed, instead
+  of a misleading off/zero status. Actual and provisional gains remain visible.
+- Source/A-B/final-render barriers reject stale preview windows; tempo and
+  Leveler-exclusion changes invalidate the prepared context.
+- Correct weak stereo generation and misleading empty-meter states. Keep
+  passing-audio measurements active when all sections are off and show explicit
+  overload warnings instead of silently attenuating the full mix.
+- Peak Comp contains boundary peaks with its complete offline attack and
+  calibrated release; the shared forward-minimum no longer retains stale tail minima.
+- Punch uses DSPark SuperFlux plus waveform attack refinement, retaining quiet
+  attacks without the stationary-tone false positives of local flux normalization.
+- Clip calibration is continuous near zero, level-invariant and free of hidden
+  slew, stereo drift, DC filtering and first-sample averaging. GR meters measure
+  rendered stage audio rather than a knob-capped estimate.
+
+### Changed
+
+- Cache full-quality stereo synthesis and filtering across compatible edits,
+  with bounded memory, cancellation and exact cold-render equivalence. Remove
+  the duplicate generation-only analysis pass; the initial render still needs
+  offline computation.
+- Align Stereo Image controls and remove slider-value popup dialogs. Generate
+  all frequencies by default; old presets retain their former bass filtering.
+  Output headroom protection remains opt-in through Limit / Peak Normalizer.
+- Soft-Clip uses native-verified symmetric DSPark curves: Analog, Soft (tanh)
+  and Golden knee. Legacy Tube/Tape/Transformer preset IDs map to those slots;
+  the sound intentionally changes from the old asymmetric Java models.
+- Hard-Clip exposes its saved Hard/Soft curve. Nonlinear antialiasing uses the
+  explicit pipeline oversampling setting; 1x does not claim alias-free output.
+- DSPark Java 0.2.3 includes K-weighted Auto Gain, canonical clipping and offline
+  SuperFlux with compiled-native reference tests.
+
+Validation of the Windows development build on 2026-09-29: 921 application
+tests, 140 DSPark tests and 371 additional installed-JAR tests passed, plus
+installed UI/audio checks. See [delivery evidence](docs/diagnostics/mono-monitor.md).
+This is development work on `main`, not a published 1.3.3 release.
+
 ## [1.3.2] - 2026-09-28
 
 ### Fixed

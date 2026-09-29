@@ -1,5 +1,282 @@
 # QuickMaster — desarrollo y cierre
 
+## Publicación en main (29-09-2026)
+
+El usuario autoriza commit y push del conjunto verificado. README y changelog
+unificados con el estado actual de Stereo Image, EQ interactiva, DSPark 0.2.3,
+monitorización mono y validación. Se mantiene `1.3.3-SNAPSHOT`: no se solicita
+tag ni release. El código, recursos y paquete entregados no cambian durante
+esta preparación documental; siguen vigentes las pruebas y hashes de abajo.
+Los audios privados, corpus oficiales, respaldos y artefactos de `dist/target`
+permanecen fuera del commit. La investigación versionada contiene mediciones
+numéricas y procedencia pública, nunca PCM ni grabaciones.
+
+## Estado vigente: escucha mono y controles Stereo Image (29-09-2026)
+
+Entrega terminada: eliminados los diálogos de los valores Low Cut/Side Gain;
+son etiquetas y el ajuste sigue en los sliders. Generation inicia y se
+restablece al 25 %, sin sobrescribir presets guardados. Añadido `Listen in mono`
+bajo Correlation/Mid/Side: solo monitorización, transición suave de 20 ms,
+sin reanalizar, alterar el máster, exportación ni mediciones estéreo. No se
+modificó el DSP del low cut ni el rango aprobado de generación.
+
+Suite completa: **921 tests, 138 clases**, sin fallos/errores/skips; DSPark: 140.
+Incluye 106 variantes musicales y 94 lecturas oficiales aprobadas. Portable
+generado con Temurin 25.0.4.7 y copiado a `C:/Program Files/QuickMaster`:
+201 archivos verificados, arranque limpio a las 16:58:35 y 222 clases idénticas
+a la compilación. JAR SHA-256:
+`11e121938ed36badf4586a3344c673da646e391d9fbd94966edf0f30e0051e8d`.
+371 tests sobre el JAR instalado pasan; UI real y pruebas PCM16 silenciosas
+con By Now/Quiet Gold aprobadas. Capturas normal/compacta revisadas. Sin
+atribuir escucha humana; originales intactos. Cierre: 17:00 local.
+
+Respaldo: `C:/Program Files/QuickMaster-backup-20260929-165833`.
+Evidencia: `docs/diagnostics/mono-monitor.md` y `dist/mono-monitor-20260929/`.
+Se conserva una sola carpeta/checkout `QuickMaster`, sobre `main`. Cambios
+locales preservados; sin commit/push/release solicitado.
+
+## Entrega anterior: Stereo Image y carpeta única (29-09-2026)
+
+Entrega terminada y verificada. Se conserva la potencia aprobada de Generation
+0–100. Sustituido el checkbox de graves por `Generated Stereo Low Cut`, Off por
+defecto y hasta 5 kHz, fase lineal únicamente sobre el delta nuevo. Añadido
+`Side Gain` independiente; orden inicial EQ → Stereo Image → Dynamics → Clip →
+Limit. Tres tarjetas simétricas y controles alineados; interfaz en inglés.
+
+Caché exacta de síntesis y filtro, con invalidación por entrada/rate y límite
+de retención; preview de una sola pasada, sin rebajar calidad armónica.
+En By Now, ediciones calientes de Amount/regulación: 0,10–0,30 s de DSP frente
+a 15,84–38,94 s anteriores. La primera síntesis sigue siendo costosa y el render
+completo de UI tiene trabajo adicional. Preview instalado a 1x: p95 59/114 ms
+(Generation/todos); consumo PCM16 simulado con render concurrente: máximo 217 ms.
+No confundir estas mediciones ni atribuirles una escucha humana.
+
+Suite completa final: **913 tests, 136 clases**, cero fallos/errores/skips;
+DSPark: **140 tests**. Incluye 106 variantes musicales; paquete con 94 lecturas
+oficiales aprobadas. Portable generado con Temurin 25.0.4.7 y entregado en
+`C:/Program Files/QuickMaster`: 201 archivos idénticos y arranque limpio del EXE
+a las 15:44:16–17. JAR SHA-256:
+`20fe4d4d7bbb0484a7fbab784cf2e31b0707de57fb673c0cbdc893be0d84a2a1`.
+363 tests sobre el JAR instalado y pruebas completas de UI/audio aprobados.
+Detalle, límites y evidencias: `docs/diagnostics/stereo-interaction-results.md`.
+
+Consolidación terminada a las 16:15:51: dentro de `JA-DAW` solo queda
+`QuickMaster`, único checkout sobre `main`. Los 1.227 archivos del desarrollo
+vigente se compararon por SHA-256 antes de retirar Integration. Se preservaron
+61.419 archivos del checkout original y se comprobaron los 107.610 de Rapid,
+402 de Recovery, 201 de Helper y 120 de datos oficiales antes/después del traslado.
+Históricos en `.archive/`, corpus en `test-data/`; ambos excluidos de Git.
+El servidor del informe sigue disponible en el mismo puerto desde la nueva ruta.
+39 pruebas focales pasan desde la carpeta definitiva y el JAR reabierto conserva
+su resultado `PASSED`. Organización y recuperación: `WORKSPACE.md`.
+
+Los cambios actuales siguen locales, sin commit/push/release solicitado.
+Las secciones siguientes son un registro histórico: sus rutas antiguas, cifras
+y tareas entonces pendientes no sustituyen este estado ni autorizan recrear
+checkouts hermanos. Para continuar, usar esta carpeta y `docs/VALIDATION.md`.
+
+## Potencia, medición y ganancia de Stereo Image (29-09-2026, verificado)
+
+El usuario rechaza de nuevo la potencia y detecta atenuación global al generar
+graves. Reproducido: By Now a 90 s pasa de -0,118 a -1,173 dB de ganancia oculta.
+Nuevo rango de mezcla del delta cuatro veces mayor; banco fijo de bandas y
+checkbox de graves limitado al filtro final. Sin normalización implícita por
+Stereo, tampoco a través del autogain de una EQ anterior. Se preserva Mid y se
+advierte de sobrecarga para que Limit/Peak Normalizer sean decisiones explícitas.
+Medición activa aunque no se seleccione ningún proceso; texto claro en ese caso.
+Suite completa: 905 tests, 135 clases, sin fallos/skips; DSPark: 140.
+106 variantes musicales y 94 lecturas de sonoridad del paquete pasan.
+Portable en `C:/Program Files/QuickMaster`; 201 archivos idénticos y arranque
+limpio a las 05:39:07. SHA-256 del JAR:
+`ec8b3a831c5152ff34aab24ea7fa87432c0e3a54f2a32d069b2db64f2a9b2ff4`.
+355 tests sobre el JAR instalado, ocho renders completos sin normalización oculta,
+seis rutas y UI real instalada aprobados. Además, 20 renders completos y
+A/B/Undo/referencia/30 ediciones rápidas en el mismo código fuente congelado.
+Preview a salida PCM16 simulada: 85–144 ms, con margen de entrada explícito solo
+en esa prueba; las mediciones de potencia usan las canciones sin atenuarlas.
+Respaldo: `C:/Program Files/QuickMaster-backup-20260929-053905`.
+Cierre 05:44 local. Sin commit/push/release solicitado. Evidencia y límites:
+`docs/diagnostics/stereo-power-correction.md`.
+
+## Corrección anterior de Generation (29-09-2026, aceptación sustituida)
+
+El reporte perceptivo del usuario invalida la aceptación anterior de Generation.
+Se reprodujo en By Now: al 100 %, apenas +0,12/+0,16 dB de energía Side en dos
+tramos. Bandas demasiado solapadas cancelaban gran parte del delta y el primer
+clic podía dejar el módulo padre desactivado. Corregidos DSP y activación; los
+tres procesos empiezan apagados, armónicos automáticos sin control visible.
+UI simplificada. Se evita el segundo sintetizado completo en Generation solo.
+902 tests de app y 140 de DSPark pasan; 352 tests repetidos sobre el JAR instalado.
+20 renders completos de cuatro canciones, seis rutas y UI con A/B, Undo,
+referencia y 30 cambios rápidos aprobados. Preview medido hacia una salida PCM16
+simulada: 85–145 ms sin render de fondo, 87–135 ms con él. Sin escucha humana
+atribuida. Portable copiado a `C:/Program Files/QuickMaster`, 201 archivos idénticos
+a la imagen y arranque del EXE con log limpio. Respaldo recuperable en
+`C:/Program Files/QuickMaster-backup-20260929-022159`. Cierre a las 02:32 local;
+procesos de prueba cerrados. Sin commit/push/release solicitado.
+Estado, hash y evidencia históricos: `docs/diagnostics/stereo-generation-correction.md`.
+
+## Entrega inicial Stereo Image (29-09-2026, aceptación de Generation sustituida)
+
+Estado histórico de la entrega inicial, sustituido por la corrección anterior:
+DSP, UI inglesa, presets, A/B, Undo y preview están implementados. Generación
+con ocho bandas móviles por canal, armónicos opcionales sobre el delta,
+exclusión lineal del grave hasta 150 Hz, Side Leveler y Side Guard independientes.
+Auto, diez perfiles de energía y referencia WAV local. Mid original conservado.
+
+Pasan 900 tests de aplicación (incluidos 19 específicos), 140 de DSPark, 106 casos
+de matriz musical y 94 lecturas oficiales. Build limpio y portable generado con
+Temurin 25.0.4.7. Copiado a `C:/Program Files/QuickMaster`: 201 archivos idénticos,
+hash JAR verificado, ejecutable arrancado con log limpio. Backup recuperable:
+`C:/Program Files/QuickMaster-backup-20260929-011749`.
+JAR: `618fdd1c11d8a6a2348918279c7e2591df55437cfaa7ef4f0d461d463b585e78`.
+
+350 tests adicionales pasan sobre el JAR instalado. Auditoría real de UI con
+By Now: PCM final exacto, caché A/B, Undo, referencia local y 30 cambios rápidos;
+snapshots normales y compactos revisados. Cuatro canciones completas por cinco
+modos y seis rutas de cadena pasan tanto en fuente como en el JAR instalado.
+Aceptación cerrada a las 01:22; originales intactos, procesos de prueba cerrados.
+Sin escucha humana atribuida ni promesa de proporción estéreo perfecta universal.
+Sin commit/push/release solicitado o publicado.
+Evidencia y límites: `docs/diagnostics/stereo-image-implementation.md`.
+
+## Revisión de diseño de Stereo Image (29-09-2026)
+
+El usuario prioriza calidad de sonido, después robustez/calidad del código y
+eficiencia. Autoriza corregir sus propuestas cuando mejore el producto con evidencia.
+Base: ocho bandas por canal; `Generate Low Frequencies` desmarcado excluye el grave
+del delta nuevo hasta 150 Hz mediante FIR de fase lineal con ramas alineadas.
+El original no se filtra. Transición/rechazo y pre-ringing requieren pruebas.
+Objetivos en porcentajes de energía Mid/Side, no volumen percibido. Se han derivado
+las medias aritméticas por canción para las diez familias desde el estudio verificado;
+Electronic es 88,26 % Mid / 11,74 % Side, no el 60/40 usado como ejemplo.
+Definición/fuentes: `docs/research/stereo-study-20260928/energy-profiles.json`.
+Seis tests de conversión/corpus aprobados; no son pruebas del módulo todavía.
+Contrato completo en `docs/stereo-image-development-plan.md`; H1–H5 pendientes.
+Esta revisión solo cambia documentación/herramientas aisladas, no la app instalada.
+
+## Próximo módulo propuesto: Stereo Image (28-09-2026)
+
+**Estado vigente de la campaña:** `docs/research/stereo-campaign-state-20260928.md`.
+El usuario acotó a DIEZ familias generales y CINCO referencias por familia (50).
+El borrador de 30 familias/150 referencias queda sustituido. **Campaña completada:
+50/50 referencias, diez familias con cinco canciones cada una.** Captura pública
+silenciosa Node/Electron sin extensiones; conjunto portátil y verificado en
+`docs/research/stereo-study-20260928/`. Se guardaron también espectros normalizados,
+variación tonal y dinámica para una futura EQ por estilo, sin implementar ese módulo.
+No confundir referencias empíricas de streaming con un objetivo perceptivo perfecto.
+
+Investigación y plan de desarrollo: `docs/stereo-image-development-plan.md`.
+Único módulo nuevo en alcance; Spectral Comp, Target Loudness y otras propuestas
+quedan descartadas. Generación mediante EQ móvil y delta puro Side, armónicos
+opcionales, Side Leveler 0–100 % y Side Guard independientes. La relación objetivo
+M/S exige referencia contextual y calibración; no existe en las fuentes revisadas
+un número universal validado. Protección de transitorios pendiente de pruebas.
+Estado: investigación y herramientas de medida aisladas, sin implementación
+del módulo ni cambio de la app instalada.
+Ampliación: `Generate Low Frequencies` desmarcado por defecto, únicamente sobre
+el delta generado. La lista de cinco géneros queda sustituida por una investigación
+amplia de familias/subestilos, previa a fijar los perfiles de UI.
+H0 de recogida/medición del alcance acordado está cerrado; H1–H5 del módulo siguen
+sin implementar. El diseño recoge las medianas/rangos observados y separa la
+calibración perceptiva del generador, que corresponde a los prototipos H2.
+Validación del estudio: 58 tests Python, 15 Node, pruebas reales de reloj,
+aislamiento y espectro; 50 archivos de métricas recomputados y hashes comprobados.
+Los doce archivos del piloto anterior siguen siendo controles, no se contaron
+para cubrir géneros. No hubo cambios al portable ni commit/push/release.
+
+## Entrega completada: indicador Auto Gain sin OFF (28-09-2026)
+
+El indicador queda vacío al arrancar, al deshabilitar Auto Gain y cuando la
+compensación redondea a 0,0 dB. Ganancias no nulas mantienen signo/unidades y
+la marca provisional de preview. El checkbox conserva la indicación de activado.
+Motor sin cambios: 151 clases DSP/reproducción idénticas a la entrega anterior.
+Validación: 881 tests de aplicación, 140 DSPark, 106 variantes musicales y 94
+lecturas oficiales aprobados. Portable instalado a las 19:46 en Program Files;
+201 archivos coincidentes y arranque limpio sin elevación. Cinco tests específicos
+y auditoría real completa de EQ con By Now aprobados sobre el JAR instalado.
+JAR: `cbad134db59f08138722b07550774e30869f580dbcad25ede7f91d0347aa78a2`.
+Original intacto, sin procesos de prueba pendientes, sin commit/push/release.
+Evidencia: `docs/diagnostics/autogain-readout.md`.
+Las propuestas de nuevos módulos son discusión de producto, no implementación:
+el usuario prioriza procesamiento offline autocalibrado con controles de resultado,
+no un panel de recomendaciones que traslade ajustes manuales al usuario.
+
+## Entrega completada: preescucha interactiva de EQ (28-09-2026)
+
+Implementados trabajador independiente de ventanas, análisis posterior reutilizado,
+Auto Gain local provisional, protección lineal y cruces sin cambiar posición.
+Preview/≈ distinguen la preescucha; exportación y A/B final conservan el render
+exacto. La revisión detectó y corrigió un contexto antiguo tras cambiar exclusiones
+o tempo; regresión real reproducida antes y aprobada después de la corrección.
+La suite completa se repitió: 876 tests de aplicación, 140 DSPark, 106 variantes
+musicales y 94 lecturas oficiales, sin fallos. Portable definitivo copiado a
+Program Files a las 18:46, 201 archivos idénticos y arranque limpio sin elevación.
+JAR: `8463d8eb3ed2715b6a7e5f5d672cdac0e2fcc0d9044ff8b0fb3dab02c359dccd`.
+Tres sondas interactivas de este JAR aprobadas: medianas 97,088 ms EQ 1x,
+116,597 ms cadena 1x y 207,679 ms cadena 4x (extracto 30 s); PCM final exacto,
+arrastre sostenido, bucle/seek y render concurrente comprobados. Matriz macro
+definitiva 48/48; 326 tests instalados y las 49 sondas funcionales aprobados,
+incluida la regresión de exclusiones/tempo sobre el JAR definitivo. Las cuatro
+sondas aisladas de rendimiento también aprobaron: memoria estable tras 30 cambios,
+PCM final exacto, B idéntico 11,4 ms y A en caché 4,0–7,3 ms. Render completo
+mediano: Leveler 1,457 s, cadena 6,047 s; B sin caché 5,915 s. Son tiempos del
+plan completo, distintos de la preescucha inmediata indicada arriba.
+Comprobación final: 201 archivos coincidentes, cuatro originales de audio
+intactos y ningún proceso de prueba pendiente. No quedan pasos de este encargo.
+El render inicial completo 4x excedió 180 s en un ensayo: no se afirma resolver
+ese coste. Backup inmediato: `C:/Program Files/QuickMaster-backup-20260928-184615`.
+No commit/push/release solicitado ni publicado para este cambio.
+Plan y limitaciones: `docs/diagnostics/interactive-eq-plan.md`.
+
+## Entrega completada: Auto Gain opcional de EQ (28-09-2026)
+
+Caso By Now reproducido en el JAR instalado: +12,616 dBTP y 1.796.844 muestras
+fuera de escala con Bell +18,8 dB. Corregido con port K-weighted de DSPark,
+adaptación offline a una ganancia fija, protección true-peak y checkbox inglés
+Auto Gain (por defecto activo, persistente en presets/A-B/undo). Apagado conserva
+el audio EQ sin compensar, sin normalización oculta. By Now termina en -0,100
+dBTP sin recorte; PCM igual a EQ aislada por una constante. Suite completa:
+865 tests de aplicación, 140 DSPark, 106 variantes y 94 lecturas oficiales;
+720 vectores C++ contrastados. Portable copiado a Program Files a las 16:29,
+201 archivos idénticos y arranque limpio sin elevación. JAR:
+`e165b6c4fcaf35c69aaa95e4d6fecd9d8e05316850cfa76fac01a4678fc4c082`.
+Aceptación instalada aprobada: 315 tests, 48 sondas funcionales y 48 casos macro,
+incluidas UI/exportación/4 canciones y 640 combinaciones EQ. Cuatro sondas aisladas
+de rendimiento aprobadas; cierre a las 16:46 CEST. Medianas hasta audio: Leveler
+1,415 s; cadena completa 5,972 s; B sin caché 5,884 s; B idéntico 9,8 ms y A
+en caché 4,7–6,6 ms. PCM exacto frente a referencia nueva y memoria estable
+en 30 ediciones. No quedan pasos pendientes de este encargo.
+Registro: `docs/diagnostics/eq-autogain-audit.md`. Backup:
+`C:/Program Files/QuickMaster-backup-20260928-162909`. No tocar el checkout
+principal sucio ni publicar commit/push/release en este encargo.
+
+## Entrega completada: auditoría de dinámica y clips (28-09-2026)
+
+Finalizado a las 15:24 CEST: build, copia local y aceptación instalada aprobados.
+El release público 1.3.2 permanece intacto.
+Corregidos Peak Comp (ataque completo), mínimo anticipado al final del audio,
+Soft/Hard Clip (curvas reales de DSPark, continuidad y medición del PCM),
+y Punch (port SuperFlux C++ con refinamiento temporal de ataque).
+Los primeros prototipos de Soft y Punch fueron rechazados por pruebas de DC
+y falsos ataques antes de entregar. Curvas nativas contrastadas en 6.416 puntos;
+SuperFlux: 5.394 valores y 18 detecciones C++ reproducidas. DSPark 0.2.2
+recompilado dos veces con SHA idéntico. Suite completa aprobada: 858 tests
+de aplicación, 137 DSPark, 106 variantes y 94 lecturas oficiales. Portable
+copiado a Program Files, 201 archivos iguales, arranque limpio del EXE sin
+elevación. JAR: `3a7bbe3e5bae9b8f79ed56313e6caa99acce9087b23ecdd1598386dfdc9f7f4b`.
+Aceptación instalada: 42 sondas funcionales (308 tests), 48 combinaciones macro
+y cuatro sondas de rendimiento, todo aprobado. By Now, Quiet Gold, Billie Jean
+y Wicked Game comprobados sin modificar sus archivos. Medianas hasta audio:
+Leveler 1,369 s; cadena completa 6,285 s; B sin caché 5,776 s; B idéntico 11 ms
+y A en caché 4–6 ms. PCM exacto frente a referencia completa y memoria estable
+en 30 ediciones. Curvas nuevas: Analog, Soft (tanh), Golden knee; los presets
+antiguos conservan su slot, con sonido corregido. Límites DSP registrados;
+no se afirma escucha humana ni detección perfecta. Sin pasos pendientes de
+este encargo. Backup: `C:/Program Files/QuickMaster-backup-20260928-151239`.
+Plan/evidencia/migración: `docs/diagnostics/dynamics-clips-audit.md`.
+No commit/push/release nuevo solicitado para este encargo.
+
 ## Entrega completada: cascada del limitador y release 1.3.2
 
 Fallo reproducido en By Now: la referencia de pico del broadband subía con
@@ -334,7 +611,7 @@ Cristian Moresi como único autor y committer de estos cambios.
 - Publicación completada: commit `8ccff3c` — `[FEAT] pan waveform with mouse wheel without seeking`, enviado a `origin/codex/leveler-beat-zoom`. Se conserva intacto el checkout principal con cambios pendientes.
 - Destino definitivo solicitado por el usuario: `origin/main`, mediante avance directo desde la rama validada, sin reescribir historial. Autor y committer únicos: Cristian Moresi; sin coautores ni atribución a asistentes. Mensajes breves `[TIPO] resumen`, máximo dos líneas.
 
-## Fuente e integración
+## Fuente e integración (registro histórico, sustituido por la consolidación)
 
 - Única rama: `main`. Worktree de integración conservado en HEAD separado:
   `E:\Code\Projects\JA-DAW\QuickMaster-Integration`.
@@ -384,7 +661,7 @@ Hallazgos de la revisión final ya corregidos y aprobados en pruebas focales:
 ### Entrega y continuación
 
 - La versión de uso está en `C:\Program Files\QuickMaster\QuickMaster.exe`; la imagen fuente queda en `dist/QuickMaster` dentro de este worktree.
-- Para cambios futuros, trabajar en `QuickMaster-Integration`, consultar este documento y seguir `docs/VALIDATION.md` y `AGENTS.md`. Repetir suite, paquete, imagen y entrega cuando cambie la aplicación.
+- Instrucción actualizada tras la consolidación: para cambios futuros, trabajar únicamente en `QuickMaster`, consultar el estado vigente al inicio de este documento y seguir `docs/VALIDATION.md` y `AGENTS.md`. Repetir suite, paquete, imagen y entrega cuando cambie la aplicación.
 - La publicación definitiva es `origin/main`; no existen ramas auxiliares. El checkout principal local, con cambios pendientes, se mantiene intacto: no se fuerza su actualización ni se mezclan sus archivos sin guardar.
 - No se han incorporado a Git audio oficial, autorizaciones personales ni resultados temporales.
 

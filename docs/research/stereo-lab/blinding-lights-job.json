@@ -1,0 +1,10 @@
+{
+  "id": "pop-1",
+  "url": "https://www.youtube.com/watch?v=fHI8X4OXluQ",
+  "titleMatch": "Blinding Lights",
+  "artist": "The Weeknd",
+  "source": "Official artist audio; © 2019 The Weeknd XO / Republic / UMG, verified on public page",
+  "expectedDurationSeconds": 202,
+  "durationToleranceSeconds": 3,
+  "purpose": "Full streaming-delivery feasibility measurement, not yet a calibrated genre observation"
+}

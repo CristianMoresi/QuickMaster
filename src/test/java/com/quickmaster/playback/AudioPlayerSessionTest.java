@@ -13,6 +13,168 @@ import java.util.function.BooleanSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AudioPlayerSessionTest {
+    @Test void monoMonitorFoldsEveryAuditionRouteWithoutChangingSourceOrMeters() throws Exception {
+        for(String route:List.of("published","fixed","live","preview","bypass")) {
+            Device device=new Device();var errors=new CopyOnWriteArrayList<Throwable>();
+            float[] original=stereo(.6f,-.2f,4096),master=stereo(.5f,.1f,4096),preview=stereo(-.2f,.8f,4096);
+            float[] savedOriginal=original.clone(),savedMaster=master.clone(),savedPreview=preview.clone();
+            var meters=new CopyOnWriteArrayList<float[]>();
+            try(var player=new AudioPlayer(new ProcessingPipeline(),f->device.line,Runnable::run,errors::add)) {
+                assertFalse(player.isListenInMono());
+                player.prepare(new WavFile("generated",48000,2,original,32,true));
+                if(!route.equals("live"))player.publishRender(original,master);
+                if(route.equals("fixed"))player.setFixedRender(master);
+                if(route.equals("preview")) {
+                    player.beginPreview(original,1);player.publishPreview(new PreviewWindow(original,1,0,2,preview));
+                }
+                if(route.equals("bypass"))player.toggleAB();
+                player.setMeterTap((pcm,ch)->meters.add(pcm.clone()));
+                player.setListenInMono(true);player.play();await(()->device.closed);
+                assertTrue(errors.isEmpty(),route+": "+errors);assertEquals(1,device.opens.get());
+                byte[] pcm=device.bytes.toByteArray();assertEquals(original.length*2,pcm.length,route);
+                double expected=route.equals("live")||route.equals("bypass")?.2:.3;
+                for(int f=0;f<4096;f++) {
+                    assertEquals(expected,sample(pcm,2*f),.00005,route);
+                    assertEquals(expected,sample(pcm,2*f+1),.00005,route);
+                }
+                // Meters retain the stereo master even though the device hears mono.
+                assertTrue(meters.stream().anyMatch(x->Math.abs(x[0]-x[1])>.1),route);
+                assertArrayEquals(savedOriginal,original);assertArrayEquals(savedMaster,master);assertArrayEquals(savedPreview,preview);
+            }
+        }
+    }
+
+    @Test void liveMonoSwitchUsesSmoothFoldAndRestorationWithoutRestartOrReanalysis() throws Exception {
+        Device device=new Device();var errors=new CopyOnWriteArrayList<Throwable>();
+        ProcessingPipeline pipeline=new ProcessingPipeline();
+        pipeline.addProcessor(new AudioProcessor(){
+            public void prepare(int rate,long samples){throw new AssertionError("Monitor switch prepared DSP");}
+            public float[] process(float[] x,int channels){throw new AssertionError("Monitor switch ran DSP");}
+            public boolean isEnabled(){return true;} public void setEnabled(boolean value){}
+        });
+        float[] pcm=stereo(.6f,-.2f,6145),saved=pcm.clone();
+        try(var player=new AudioPlayer(pipeline,f->device.line,Runnable::run,errors::add)) {
+            player.prepare(new WavFile("generated",48000,2,pcm,32,true));player.publishRender(pcm,pcm);
+            device.onWrite=n->{if(n==1)player.setListenInMono(true);if(n==3)player.setListenInMono(false);};
+            player.play();await(()->device.closed);
+            assertTrue(errors.isEmpty());assertEquals(1,device.opens.get());assertEquals(1,device.flushes.get()); // close only
+            byte[] raw=device.bytes.toByteArray();assertEquals(pcm.length*2,raw.length);
+            for(int f=0;f<6145;f++) {
+                double l=sample(raw,2*f),r=sample(raw,2*f+1);
+                assertEquals(.2,(l+r)*.5,.00005,"Mid must stay constant during the switch");
+                if(f>0) {
+                    assertTrue(Math.abs(l-sample(raw,2*f-2))<.001,"Click on left");
+                    assertTrue(Math.abs(r-sample(raw,2*f-1))<.001,"Click on right");
+                }
+                if(f<1024||f>=4096){assertEquals(.6,l,.00005);assertEquals(-.2,r,.00005);}
+                if(f>=2048&&f<3072){assertEquals(.2,l,.00005);assertEquals(.2,r,.00005);}
+            }
+            assertArrayEquals(saved,pcm);assertFalse(player.isListenInMono());
+        }
+    }
+
+    @Test void monoFoldPreservesCentreCancelsAntiPhaseAndPrecedesPcmClamping() throws Exception {
+        for(float[] pair:new float[][]{{.4f,.4f},{.7f,-.7f},{.8f,0},{1.5f,-.5f},{Float.MAX_VALUE,-Float.MAX_VALUE}}) {
+            Device device=new Device();var errors=new CopyOnWriteArrayList<Throwable>();float[] x=stereo(pair[0],pair[1],17);
+            try(var player=new AudioPlayer(new ProcessingPipeline(),f->device.line,Runnable::run,errors::add)) {
+                player.setListenInMono(true);player.prepare(new WavFile("generated",96000,2,x,32,true));player.publishRender(x,x);
+                player.play();await(()->device.closed);assertTrue(errors.isEmpty());
+                double expected=.5*(double)pair[0]+.5*(double)pair[1];
+                byte[] raw=device.bytes.toByteArray();assertEquals(x.length*2,raw.length);
+                for(int i=0;i<x.length;i++)assertEquals(expected,sample(raw,i),.00005);
+            }
+        }
+    }
+
+    @Test void monoSourceStaysAtUnityAndStereoMonitoringStartsOff() throws Exception {
+        for(boolean mono:new boolean[]{false,true}) {
+            Device device=new Device();var errors=new CopyOnWriteArrayList<Throwable>();
+            try(var player=new AudioPlayer(new ProcessingPipeline(),f->device.line,Runnable::run,errors::add)) {
+                assertFalse(player.isListenInMono());player.setListenInMono(mono);
+                WavFile source=file(.25f,2057);player.prepare(source);player.publishRender(source.getSamples(),source.getSamples());
+                player.play();await(()->device.closed);assertTrue(errors.isEmpty());assertEquals(1,device.format.getChannels());
+                byte[] raw=device.bytes.toByteArray();assertEquals(4114,raw.length);
+                for(int i=0;i<2057;i++)assertEquals(.25,sample(raw,i),.00005);
+            }
+        }
+    }
+    private static float[] stereo(float l,float r,int frames) {
+        float[] pcm=new float[frames*2];for(int f=0;f<frames;f++){pcm[2*f]=l;pcm[2*f+1]=r;}return pcm;
+    }
+    private static double sample(byte[] pcm,int index) {
+        return (short)((pcm[2*index]&255)|pcm[2*index+1]<<8)/32768.0;
+    }
+
+    @Test void futureWindowKeepsPrecedingPreviewAudibleUntilItsStart() throws Exception {
+        Device device=new Device();device.block=true;var errors=new CopyOnWriteArrayList<Throwable>();
+        try(var player=new AudioPlayer(new ProcessingPipeline(),f->device.line,Runnable::run,errors::add)) {
+            WavFile source=file(.1f,10000);player.prepare(source);float[] master=new float[10000];Arrays.fill(master,.25f);
+            player.publishRender(source.getSamples(),master);player.beginPreview(source.getSamples(),1);
+            float[] first=new float[6000];Arrays.fill(first,-.25f);
+            player.publishPreview(new PreviewWindow(source.getSamples(),1,0,1,first));player.play();
+            assertTrue(device.entered.await(3,TimeUnit.SECONDS));
+            float[] next=new float[5500];Arrays.fill(next,.5f);
+            player.publishPreview(new PreviewWindow(source.getSamples(),1,4500,1,next));
+            device.block=false;device.release.countDown();await(()->device.closed);
+            byte[] raw=device.bytes.toByteArray();assertEquals(20000,raw.length);
+            for(int i=2048;i<4096;i++)assertEquals(-.25,(short)((raw[i*2]&255)|raw[i*2+1]<<8)/32768.0,.00005);
+            assertTrue(errors.isEmpty());
+        }
+    }
+    @Test void rapidPreviewGenerationsRemainObservableBehindDeviceQueue() throws Exception {
+        Device device=new Device();device.positionLag=2048;
+        var errors=new CopyOnWriteArrayList<Throwable>();
+        try(var player=new AudioPlayer(new ProcessingPipeline(),f->device.line,Runnable::run,errors::add)) {
+            WavFile source=file(.1f,12000);player.prepare(source);player.publishRender(source.getSamples(),source.getSamples().clone());
+            float[] pcm=new float[12000];Arrays.fill(pcm,.2f);
+            device.onWrite=n->{player.beginPreview(source.getSamples(),n);player.publishPreview(new PreviewWindow(source.getSamples(),n,0,1,pcm));};
+            player.play();await(()->device.closed);
+            assertTrue(player.getConsumedPreviewGeneration()>=6,"Do not overwrite a pending device-clock marker on every edit");
+            assertTrue(errors.isEmpty());
+        }
+    }
+    @Test void previewReachesDeviceBeforeWholeTrackPublicationAndCrossfadesBack() throws Exception {
+        Device device = new Device(); device.block = true;
+        List<Throwable> errors = new CopyOnWriteArrayList<>();
+        try (AudioPlayer player = new AudioPlayer(new ProcessingPipeline(), f -> device.line, Runnable::run, errors::add)) {
+            WavFile source = file(.1f, 10000); player.prepare(source);
+            float[] master = new float[10000]; Arrays.fill(master, .25f);
+            player.publishRender(source.getSamples(), master); player.play();
+            assertTrue(device.entered.await(3, TimeUnit.SECONDS));
+            assertTrue(player.beginPreview(source.getSamples(), 1));
+            float[] window = new float[8192]; Arrays.fill(window, -.25f);
+            assertTrue(player.publishPreview(new PreviewWindow(source.getSamples(), 1, 1024, 1, window)));
+            assertFalse(player.publishPreview(new PreviewWindow(source.getSamples(), 0, 1024, 1, window)));
+            device.block = false; device.release.countDown(); await(() -> device.closed);
+            assertEquals(1, player.getConsumedPreviewGeneration()); assertEquals(10000 * 2, device.bytes.size());
+            assertEquals(1, device.opens.get()); assertTrue(errors.isEmpty());
+            byte[] raw = device.bytes.toByteArray(); double previous = .25;
+            for (int i = 0; i < raw.length; i += 2) {
+                double v = (short)((raw[i] & 255) | raw[i+1] << 8) / 32768.0;
+                assertTrue(Math.abs(v - previous) < .001, "Preview must crossfade at both edges"); previous = v;
+            }
+            assertEquals(.25, previous, .001);
+            player.publishRender(source.getSamples(), master);
+            assertFalse(player.publishPreview(new PreviewWindow(source.getSamples(), 1, 1024, 1, window)));
+            player.prepare(file(.2f, 10000));
+            assertFalse(player.beginPreview(source.getSamples(), 2));
+        }
+    }
+
+    @Test void previewCannotOverrideBypassOrFixedComparison() throws Exception {
+        Device device = new Device(); List<Throwable> errors = new CopyOnWriteArrayList<>();
+        try (AudioPlayer player = new AudioPlayer(new ProcessingPipeline(), f -> device.line, Runnable::run, errors::add)) {
+            WavFile source = file(.1f, 4096); player.prepare(source); player.publishRender(source.getSamples(), new float[4096]);
+            assertTrue(player.beginPreview(source.getSamples(), 1));
+            float[] preview = new float[4096]; Arrays.fill(preview, .8f);
+            player.publishPreview(new PreviewWindow(source.getSamples(), 1, 0, 1, preview));
+            player.toggleAB(); player.play(); await(() -> device.closed);
+            byte[] raw = device.bytes.toByteArray();
+            for(int i=0;i<raw.length;i+=2) assertEquals(.1,(short)((raw[i]&255)|raw[i+1]<<8)/32768.0,.00005);
+            player.setFixedRender(new float[4096]); assertNull(player.getPreviewWindow());
+            assertFalse(player.beginPreview(source.getSamples(), 2)); assertTrue(errors.isEmpty());
+        }
+    }
     @Test void approvedPcmSkipsMutableDspAndHistoryRecalculationOnSeek() throws Exception {
         ProcessingPipeline pipeline = new ProcessingPipeline();
         pipeline.addProcessor(new AudioProcessor() {
@@ -101,6 +263,8 @@ class AudioPlayerSessionTest {
         volatile boolean block, closed, running, failOpen;
         volatile int maxWrite = Integer.MAX_VALUE, writeDelayMs, blockAtWrite = 1;
         volatile AudioFormat format;
+        volatile int positionLag;
+        java.util.function.IntConsumer onWrite = n -> {};
         long frames;
         final SourceDataLine line = (SourceDataLine) Proxy.newProxyInstance(getClass().getClassLoader(),
                 new Class<?>[]{SourceDataLine.class}, (proxy, method, args) -> {
@@ -115,13 +279,14 @@ class AudioPlayerSessionTest {
                         case "drain": drains.incrementAndGet(); return null;
                         case "write":
                             writes.incrementAndGet(); entered.countDown();
+                            onWrite.accept(writes.get());
                             if (block && writes.get() >= blockAtWrite) try { release.await(3, TimeUnit.SECONDS); } catch (InterruptedException ignored) { }
                             if (closed) return 0;
                             if (writeDelayMs > 0) Thread.sleep(writeDelayMs);
                             int count = Math.min((int) args[2], maxWrite);
                             synchronized (bytes) { bytes.write((byte[]) args[0], (int) args[1], count); frames += count / format.getFrameSize(); }
                             return count;
-                        case "getLongFramePosition": synchronized (bytes) { return frames; }
+                        case "getLongFramePosition": synchronized (bytes) { return Math.max(0,frames-positionLag); }
                         case "getFramePosition": return (int) frames;
                         case "isOpen": return !closed;
                         case "isActive": case "isRunning": return running;

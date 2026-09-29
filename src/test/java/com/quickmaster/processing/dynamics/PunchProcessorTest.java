@@ -51,7 +51,7 @@ class PunchProcessorTest
         float[] s = varyingClicks(8.0, 0.5, 0.2);
         TrackAnalysis ta = new TrackAnalysis();
         ta.analyze(s, 1, SR);
-        assertTrue(ta.getOnsetCount() >= 8, "needs onsets: " + ta.getOnsetCount());
+        assertEquals(16, ta.getTransientTimesSec().length, "known generated clicks");
 
         PunchProcessor p = new PunchProcessor();
         p.setTrackAnalysis(ta);
@@ -63,10 +63,10 @@ class PunchProcessorTest
 
         float boost = (float) Math.pow(10.0, 6.0 / 20.0);    // ~2.0
         float minB = Float.MAX_VALUE, maxB = 0f;
-        for (double t : ta.getOnsetTimesSec())
+        for (int k = 0; k < 16; k++)
         {
-            // The boost must be at full right AT the attack (no delay), so sample
-            // at the onset itself (the ramp finishes a few ms before it).
+            // Independent waveform annotations, not the detector's own times.
+            double t = .2 + k * .5;
             int i0 = (int) (t * SR);
             float atAttack = env[Math.min(i0, env.length - 1)];
             minB = Math.min(minB, atAttack);
