@@ -1,16 +1,71 @@
-# QuickMaster
+<p align="center">
+  <img src="docs/icon-master.png" alt="QuickMaster logo" width="96" />
+</p>
+
+<h1 align="center">QuickMaster</h1>
+
+<p align="center">
+  <strong>Intelligent offline mastering. Whole-track insight. Hands-on control.</strong><br />
+  Shape tone, dynamics and stereo image in a portable desktop app powered by DSPark.
+</p>
+
+<p align="center">
+  <a href="https://github.com/CristianMoresi/QuickMaster/releases/latest"><img src="https://img.shields.io/github/v/release/CristianMoresi/QuickMaster?style=flat-square&amp;color=4499ff" alt="Latest release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-64c8bc?style=flat-square" alt="MIT license" /></a>
+  <a href="#download"><img src="https://img.shields.io/badge/platforms-Windows%20%7C%20macOS%20%7C%20Linux-555?style=flat-square" alt="Windows, macOS and Linux" /></a>
+  <a href="#build-from-source"><img src="https://img.shields.io/badge/runtime-Java%2025%20bundled-e8943a?style=flat-square" alt="Java 25 bundled in portable downloads" /></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/CristianMoresi/QuickMaster/releases/latest"><strong>Download</strong></a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#using-quickmaster">User guide</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="docs/VALIDATION.md">Validation</a>
+</p>
+
+![QuickMaster — EQ, Stereo Image, dynamics, metering and processed waveform](docs/gui.png)
+
+## Overview
 
 **QuickMaster uses whole-track analysis to prepare its processing before playback.** It measures loudness, peaks and spectral content, estimates tempo, and prepares gain envelopes with advance knowledge of the signal. The Leveler follows macro RMS across musical passages; it does not need to classify a passage as a verse or chorus before correcting its level.
 
 From that, it masters: shape tone and stereo image, compress and level dynamics, clip and saturate, and limit to a true-peak ceiling, then export the result without opening a full DAW. QuickMaster is a JavaFX desktop application.
 
-![QuickMaster](docs/gui.png)
-
 Built by **Cristian Moresi**, backend developer, audio-software developer and music producer. It is a young, open-source project and it will keep growing; today it already covers the essentials for quick, intelligent masters.
 
-This README describes the current `main` development version, **1.3.3-SNAPSHOT**.
-Published downloads may lag behind it; see the [changelog](CHANGELOG.md) for
-released versus unreleased changes.
+This README describes **QuickMaster 1.3.3**. See the [changelog](CHANGELOG.md)
+for the changes in each release and [Releases](https://github.com/CristianMoresi/QuickMaster/releases)
+for portable downloads.
+
+> **Portable by design.** Download, extract and run. No installer and no separate
+> Java installation are needed for the packaged app.
+
+## Quick start
+
+1. [Download the portable ZIP](https://github.com/CristianMoresi/QuickMaster/releases/latest)
+   for your system, extract it and launch QuickMaster.
+2. **Load file** to open a WAV or MP3. Let the initial track analysis finish.
+3. Enable only the modules you need. Drag the chain chips to change their order;
+   compare settings with **A/B**, the original with **Bypass**, and stereo
+   compatibility with **Listen in mono**.
+4. Check output headroom, choose your delivery settings and **Export**. Use
+   **Batch…** to apply the chain to several files.
+
+<details>
+<summary><strong>Explore the guide</strong></summary>
+
+- [Why offline?](#why-offline)
+- [EQ — and the compressor inside it](#eq-and-a-compressor-hiding-inside-it)
+- [Dynamics](#dynamics-automatic-analysis-driven-compression)
+- [Analysis and responsiveness](#analysis-and-responsiveness)
+- [Waveform zoom](#waveform-zoom) and [Leveler exclusions](#excluding-passages-from-the-leveler)
+- [Mono monitoring](#mono-monitoring) and [Stereo Image](#stereo-image)
+- [Clip](#clip-saturation-and-hard-clip), [Limit](#limit-the-final-touch) and [Output](#output)
+- [Features](#features-at-a-glance) and [known limitations](#known-limitations)
+- [Build from source](#build-from-source), [DSPark](#built-on-dspark) and [architecture](#architecture)
+
+</details>
 
 ## Why offline?
 
