@@ -397,6 +397,7 @@ public class MainController
     private boolean playWhenReady;
     /** Static analyser curve for the latest fully rendered master. */
     private SpectrumAnalysis spectrumAnalysis = new SpectrumAnalysis();
+    private final SpectrumDisplay spectrumDisplay = new SpectrumDisplay();
     /** Rejects background output analyses that finish after a newer request. */
     private long outputAnalysisGeneration = 0L;
     private final LatestAnalysisExecutor outputAnalysisExecutor = new LatestAnalysisExecutor();
@@ -3132,16 +3133,8 @@ public class MainController
     {
         boolean live = player.isPlaying() && liveSpectrum.isReady();
         if (!live && !spectrumAnalysis.isReady()) return;
-        double top = (live ? liveSpectrum.getMaxDb() : spectrumAnalysis.getMaxDb()) + 6.0;
-        double range = 80.0;
-
-        float[] ys = new float[n];
-        for (int k = 0; k < n; k++)
-        {
-            double db = live ? liveSpectrum.levelDbAt(freqs[k]) : spectrumAnalysis.levelDbAt(freqs[k]);
-            double y = h * (top - db) / range;
-            ys[k] = (float) (y < 0 ? 0 : (y > h ? h : y));
-        }
+        float[] ys = spectrumDisplay.project(freqs, n, h,
+                live ? liveSpectrum::levelDbAt : spectrumAnalysis::levelDbAt, live);
 
         gc.setFill(new javafx.scene.paint.LinearGradient(0, 0, 0, 1, true,
                 javafx.scene.paint.CycleMethod.NO_CYCLE,

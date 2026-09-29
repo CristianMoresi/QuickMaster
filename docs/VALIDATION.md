@@ -5,22 +5,25 @@ La suite completa incluye pruebas de audio oficial ITU-R BS.2217-1 y EBU LTS 5.0
 ## Build completo
 
 Usar Eclipse Temurin 25.0.4.7 para reproducir el binario auditado de Windows,
-incluida la compilación de DSPark Java 0.2.3. El contrato de aceptación comprueba
+incluida la compilación de DSPark Java 0.2.4. El contrato de aceptación comprueba
 el hash exacto de esa dependencia. Primero, desde la raíz del proyecto:
 
 ```powershell
 .\mvnw.cmd -f vendor/dspark-java/pom.xml clean install
-Get-FileHash vendor/dspark-java/target/dspark-0.2.3.jar -Algorithm SHA256
+Get-FileHash vendor/dspark-java/target/dspark-0.2.4.jar -Algorithm SHA256
 ```
 
-Hash auditado: `56df525290b09435a8d8cb5e3b56508546ad11b88f4ce2e858bdb1c2f2bb77b9`,
-idéntico a `libs/dspark-0.2.3.jar`. Un compilador distinto puede producir otros
+Hash auditado: `4150ba7f460fc0d2848d365954de06c465a2c7dd372c11eb2fbe7fd32b98c1e6`,
+idéntico a `libs/dspark-0.2.4.jar`. Un compilador distinto puede producir otros
 bytes aun apuntando a Java 17; no se debe cambiar el pin automáticamente para
 sortear una prueba. Fuentes, referencia C++ y comprobaciones independientes en
 [migración DSPark](diagnostics/dspark-java-0.2-migration.md) y corrección de
 remuestreo 0.2.1 en [auditoría A15](diagnostics/product-audit-20260927.md),
 y curvas/port SuperFlux 0.2.2 en [dinámica y clips](diagnostics/dynamics-clips-audit.md),
 y Auto Gain 0.2.3 en [autogain EQ](diagnostics/eq-autogain-audit.md).
+El port MP3 0.2.4 y sus diferencias verificadas frente a C++ se documentan en
+[auditoría MP3](diagnostics/mp3-decoder-port.md); las 49 clases DSP anteriores
+mantienen sus bytes exactos.
 Los binarios históricos se conservan; el portable debe incluir una sola versión
 de DSPark, nunca todos los JAR antiguos de `libs` mediante un comodín.
 
@@ -55,7 +58,7 @@ Después de que la suite completa pase:
 ```powershell
 .\mvnw.cmd -q dependency:copy-dependencies '-DincludeScope=runtime' '-DoutputDirectory=target/app'
 Copy-Item -LiteralPath target/quickmaster.jar -Destination target/app/quickmaster.jar
-& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.3.3 `
+& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.3.4 `
   --vendor 'Cristian Moresi' --input target/app --main-jar quickmaster.jar `
   --main-class com.quickmaster.Launcher --icon docs/icon.ico `
   --add-modules java.base,java.desktop,java.scripting,java.sql,java.logging,java.xml,java.prefs,java.management,java.naming,jdk.jfr,jdk.unsupported,jdk.zipfs,jdk.localedata `

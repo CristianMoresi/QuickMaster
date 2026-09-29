@@ -1,91 +1,23 @@
 package com.quickmaster.audio;
 
 import com.dspark.core.Dither;
+import com.dspark.io.Mp3Decoder;
+import com.dspark.io.Mp3Stream;
 import de.sciss.jump3r.lowlevel.LameEncoder;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.file.Files;
-import java.util.Map;
+import java.nio.file.Path;
 
 /**
- * Concrete {@link AudioFile} implementation for MP3 files.
- * <p>
- * MP3 is not natively handled by the JDK, so QuickMaster relies
- * on two pure-Java libraries to bridge the gap:
- * <ul>
- *   <li><b>JLayer + mp3spi</b> for decoding (read support).
- *       The SPI registers an MP3 decoder with the standard
- *       {@code javax.sound.sampled.AudioSystem}, so the same
- *       APIs used for WAV decoding work transparently for MP3:
- *       open an {@link AudioInputStream}, ask the system to
- *       convert the MPEG-encoded stream into linear PCM, and
- *       then read raw bytes.</li>
- *   <li><b>jump3r</b> (a pure-Java port of LAME 3.98.4) for
- *       encoding (write support). The
- *       {@link LameEncoder} convenience wrapper takes a buffer
- *       of 16-bit signed little-endian interleaved PCM and
- *       produces an MP3 byte stream.</li>
- * </ul>
- * Both libraries are pure Java, so the application stays free
- * of native dependencies and remains portable across operating
- * systems.
- * <p>
- * <b>Internal representation.</b> Following the contract of
- * {@link AudioFile}, samples are stored as interleaved floats
- * in the normalized range [-1.0, +1.0], regardless of the bit
- * depth used on disk. The decoder converts 16-bit signed PCM
- * (the standard output of LAME-family decoders) into floats by
- * dividing by 32768. The encoder does the inverse: floats are
- * quantised to 16-bit signed little-endian PCM, with clamping
- * to the valid range as a defensive safeguard against any
- * upstream out-of-range value.
- * <p>
- * <b>Bitrate handling.</b> The class carries a {@code bitrate}
- * field in kbps. After {@link #load()}, the field reflects the
- * actual bitrate of the source MP3 as reported by mp3spi (or
- * {@value #FALLBACK_DECODED_BITRATE_KBPS} as a fallback if the
- * property is not available, which can happen on some VBR
- * files). The field can be overwritten via
- * {@link #setBitrate(int)} before calling {@link #save(String)}
- * so the user can pick a target bitrate at export time. The
- * default for files created from scratch (no MP3 source) is
- * {@value #DEFAULT_BITRATE_KBPS} kbps, the highest standard
- * MP3 bitrate.
- * <p>
- * <b>Encoder configuration.</b> The save path produces a
- * constant-bit-rate MP3 at the bitrate currently held on the
- * instance. The MPEG mode is chosen automatically from the
- * channel count: joint stereo for two channels (the standard
- * choice for music) and mono for one channel. The mode value
- * is the {@code int} expected by jump3r's {@link LameEncoder}
- * constructor, using the canonical LAME mode constants
- * (STEREO=0, JOINT_STEREO=1, DUAL_CHANNEL=2, MONO=3). The
- * encoder's internal quality setting is fixed to LAME quality
- * 0 (slowest algorithms, best possible quality) since
- * encoding is performed offline at export time and speed is
- * not a concern.
- * <p>
- * <b>Sample-rate limitation.</b> The MP3 format only supports
- * the sample rates 32&nbsp;000, 44&nbsp;100 and 48&nbsp;000 Hz
- * for the MPEG-1 family commonly used in QuickMaster's range.
- * If the user attempts to export an audio whose sample rate
- * falls outside this set (for example a 96&nbsp;000 or
- * 192&nbsp;000 Hz WAV imported earlier), {@link #save(String)}
- * fails fast with an {@link AudioFileException} carrying a
- * clear, actionable message.
- * <p>
- * <b>Non-destructive editing.</b> {@link #load()} installs the
- * decoded samples via {@link #setSamplesAsLoaded(float[])}, so
- * the inherited {@code reset} and {@code trim} workflows behave
- * identically to {@link WavFile}.
+ * MP3 import/export with an unchanged AudioFile contract.
+ * Imports MPEG-1 through DSPark's pure-Java float decoder; MPEG-2/2.5 use the
+ * explicit float-output compatibility adapter. Neither path quantizes or clips
+ * decoded PCM. Validated encoder delay/padding are removed before editing.
+ * Encoding retains the existing offline LAME path and TPDF-dithered PCM16 input.
+ * MP3 has no PCM bit depth; internal full scale is nominal, not a float clamp.
  */
 public class Mp3File extends AudioFile
 {
@@ -98,7 +30,7 @@ public class Mp3File extends AudioFile
 
     /**
      * Fallback bitrate used when the source MP3's bitrate
-     * property is not reported by mp3spi (some VBR files).
+     * metadata does not report a usable bitrate.
      */
     public static final int FALLBACK_DECODED_BITRATE_KBPS = 192;
 
@@ -165,7 +97,7 @@ public class Mp3File extends AudioFile
     /**
      * Returns the bitrate (in kbps) currently associated with
      * this instance. After {@link #load()} this is the source
-     * MP3's bitrate as reported by mp3spi; for files created
+     * MP3's measured mean audio bitrate; for files created
      * from scratch it is {@value #DEFAULT_BITRATE_KBPS}.
      *
      * @return the bitrate in kbps
@@ -203,146 +135,27 @@ public class Mp3File extends AudioFile
      *  LOAD
      * ==================================================================== */
 
-    /**
-     * Reads the MP3 file at the configured path, decodes the
-     * MPEG stream into normalized float samples, and populates
-     * the inherited sample rate, channel count and sample array
-     * (both the editable buffer and the pristine original
-     * snapshot, via {@link #setSamplesAsLoaded(float[])}).
-     * <p>
-     * Decoding goes through the standard
-     * {@code javax.sound.sampled.AudioSystem}: the mp3spi
-     * service provider, registered automatically by being on
-     * the classpath, recognises the MPEG stream and exposes it
-     * as an {@link AudioInputStream}. The stream is then
-     * converted to 16-bit signed little-endian linear PCM
-     * (which is what LAME-family decoders natively produce),
-     * fully read into memory, and finally normalised to the
-     * float range [-1.0, +1.0] used throughout the application.
-     * <p>
-     * The source bitrate is read from the mp3spi-provided
-     * format properties and stored so that a later export keeps
-     * the same bitrate by default. If the property is not
-     * available (some VBR files), the field falls back to
-     * {@value #FALLBACK_DECODED_BITRATE_KBPS} kbps.
-     *
-     * @throws AudioFileException if the file does not exist,
-     *         cannot be read, is not a valid MP3, or its
-     *         channel count is unsupported
-     */
+    /** Decode completely before publishing, preserving the previous audio on failure. */
     @Override
     public void load() throws AudioFileException
     {
-        File file = new File(getFilePath());
-
-        if (!file.exists())
+        try
         {
-            throw new AudioFileException(
-                    "MP3 file does not exist: " + getFilePath());
-        }
-        if (!file.canRead())
-        {
-            throw new AudioFileException(
-                    "MP3 file cannot be read (check permissions): " + getFilePath());
-        }
-
-        try (AudioInputStream mpegStream = AudioSystem.getAudioInputStream(file))
-        {
-            AudioFormat baseFormat = mpegStream.getFormat();
-            int channels   = baseFormat.getChannels();
-            int sampleRate = (int) baseFormat.getSampleRate();
-
-            if (channels < 1 || channels > 2)
-            {
-                throw new AudioFileException(
-                        "Unsupported MP3 channel count: " + channels
-                                + " (supported: 1 mono, 2 stereo)");
-            }
-
-            // Inspect mp3spi properties to recover source bitrate
-            // and VBR flag for later export defaults.
-
-            // Target PCM format: 16-bit signed little-endian,
-            // same sample rate and channel layout as the source.
-            AudioFormat pcmFormat = new AudioFormat(
-                    AudioFormat.Encoding.PCM_SIGNED,
-                    sampleRate,
-                    16,
-                    channels,
-                    channels * 2,           // frame size in bytes
-                    sampleRate,
-                    false                   // little-endian
-            );
-
-            try (AudioInputStream pcmStream = AudioSystem.getAudioInputStream(pcmFormat, mpegStream))
-            {
-                float[] decoded = PcmDecoder.read(pcmStream, 16, false, channels, -1);
-                AtomicAudioWrite.validateSamples(decoded, sampleRate, channels);
-
-                setSampleRate(sampleRate);
-                setChannels(channels);
-                setSamplesAsLoaded(decoded);
-                extractBitrateAndVbr(baseFormat);
-            }
-        }
-        catch (UnsupportedAudioFileException e)
-        {
-            throw new AudioFileException(
-                    "File is not a recognised MP3: " + getFilePath(), e);
+            Mp3Stream stream = Mp3Stream.read(Path.of(getFilePath()));
+            Mp3Stream.Audio audio = stream.version() == 1
+                    ? Mp3Decoder.decode(stream) : MpegLsfFloatDecoder.decode(stream);
+            AtomicAudioWrite.validateSamples(audio.samples(), audio.sampleRate(), audio.channels());
+            AtomicAudioWrite.checkCancelled();
+            setSampleRate(audio.sampleRate());
+            setChannels(audio.channels());
+            setSamplesAsLoaded(audio.samples());
+            bitrate = audio.bitrateKbps() > 0 ? audio.bitrateKbps() : FALLBACK_DECODED_BITRATE_KBPS;
+            vbr = audio.variableBitrate();
         }
         catch (IOException e)
         {
-            throw new AudioFileException(
-                    "I/O error while reading MP3: " + getFilePath(), e);
+            throw new AudioFileException("Cannot read MP3: " + getFilePath() + " — " + e.getMessage(), e);
         }
-    }
-
-    /**
-     * Extracts the source bitrate and VBR flag from the
-     * mp3spi-provided {@link AudioFormat} properties, if
-     * available. Updates the instance fields accordingly. If
-     * the properties are not present, falls back to
-     * {@value #FALLBACK_DECODED_BITRATE_KBPS} kbps and
-     * {@code vbr = false}.
-     */
-    private void extractBitrateAndVbr(AudioFormat baseFormat)
-    {
-        Map<String, Object> properties = baseFormat.properties();
-        Object bitrateProperty = (properties != null) ? properties.get("bitrate") : null;
-        if (bitrateProperty instanceof Integer)
-        {
-            // mp3spi reports bitrate in bits per second.
-            this.bitrate = ((Integer) bitrateProperty) / 1000;
-            if (this.bitrate <= 0)
-            {
-                this.bitrate = FALLBACK_DECODED_BITRATE_KBPS;
-            }
-        }
-        else
-        {
-            this.bitrate = FALLBACK_DECODED_BITRATE_KBPS;
-        }
-
-        Object vbrProperty = (properties != null) ? properties.get("vbr") : null;
-        this.vbr = (vbrProperty instanceof Boolean) && (Boolean) vbrProperty;
-    }
-
-    /**
-     * Converts a raw byte array of interleaved 16-bit signed
-     * little-endian PCM samples into the normalized float
-     * representation used throughout the application.
-     */
-    private static float[] decode16BitInt(byte[] raw)
-    {
-        ByteBuffer bb = ByteBuffer.wrap(raw).order(ByteOrder.LITTLE_ENDIAN);
-        int n = raw.length / 2;
-        float[] out = new float[n];
-        for (int i = 0; i < n; i++)
-        {
-            short s = bb.getShort();
-            out[i] = s / 32768.0f;
-        }
-        return out;
     }
 
     /* ====================================================================

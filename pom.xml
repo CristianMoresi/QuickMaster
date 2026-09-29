@@ -7,7 +7,7 @@
 
     <groupId>com.quickmaster</groupId>
     <artifactId>quickmaster</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
     <name>QuickMaster</name>
     <description>
         QuickMaster, an offline audio mastering desktop application (JavaFX).
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.dspark</groupId>
             <artifactId>dspark</artifactId>
-            <version>0.2.3</version>
+            <version>0.2.4</version>
         </dependency>
 
         <!-- JavaFX UI -->
@@ -69,18 +69,12 @@
             <version>${jna.version}</version>
         </dependency>
 
-        <!-- MP3 decoding (read support) -->
+        <!-- MPEG-2/2.5 float compatibility; MPEG-1 decoding is provided by DSPark. -->
         <dependency>
             <groupId>javazoom</groupId>
             <artifactId>jlayer</artifactId>
             <version>1.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.googlecode.soundlibs</groupId>
-            <artifactId>mp3spi</artifactId>
-            <version>1.9.5.4</version>
-        </dependency>
-
         <!-- MP3 encoding (write support), pure-Java LAME port -->
         <dependency>
             <groupId>de.sciss</groupId>

@@ -46,7 +46,7 @@ Download your system's ZIP, extract it and launch QuickMaster. **No installer or
 
 ### EQ
 
-Parametric and dynamic EQ with per-band **Stereo, Left, Right, Mid or Side** routing. **Auto EQ** shapes tone toward a selected target curve; optional **Auto Gain** compensates level changes and manages EQ headroom. Audition band edits while whole-track processing updates in the background.
+Parametric and dynamic EQ with per-band **Stereo, Left, Right, Mid or Side** routing. Shape the whole mix, a single channel or just its centre or stereo information. **Auto EQ** moves the measured spectrum toward a selected tonal curve, with an Amount control for how strongly it follows that target. Optional **Auto Gain** compensates EQ level changes and manages headroom without clipping. Audition band edits while whole-track processing updates in the background. The analyzer uses a display-only **4.5 dB/octave tilt** around 1 kHz.
 
 #### A compressor hiding inside the EQ
 
@@ -62,25 +62,29 @@ So if you want a detailed, manually dialled compressor instead of the automatic 
 
 - **Generation** combines moving differential EQ, saturation and harmonic generation to create new stereo information. Only the processing difference is mixed into the original — it does not simply turn up the existing Side.
 - **Generated Stereo Low Cut** filters only that added stereo, from **Off to 5 kHz**, with linear-phase filtering. The original bass stays untouched.
-- **Side Leveler** balances Side energy relative to Mid; **Side Guard** controls excessive width. Choose a genre profile, the track's own balance or a reference file.
+- **Side Leveler** raises or lowers Side toward a Mid/Side energy balance; Amount sets how strongly it regulates the song. **Side Guard** reduces Side when it exceeds that reference plus your chosen margin. Choose a genre profile, the track's own balance or a reference file.
 - **Side Gain** gives you independent control of the final Side level.
 
 Generation, Side Leveler and Side Guard are independently switchable and start off.
 
 ### Dynamics
 
-Four automatic processors, each working at a different musical scale:
+Four automatic processors, each working at a different musical scale. Their controls specify the result you want; analysis prepares the thresholds and gain envelopes:
 
-- **Peak Comp** controls short peaks.
-- **Beat Comp** reduces strong transients with tempo-aware timing.
-- **Leveler** raises quieter passages toward the strongest sustained RMS level. Use **Exclude regions** to paint intros, breaks or outros you want to preserve on the waveform.
-- **Punch** brings out attacks.
+- **Peak Comp** measures the highest peak and sets its ceiling from your chosen reduction: **−2 dB asks for 2 dB off the highest peak**, with other peaks above that ceiling reduced too. Look-ahead and automatic release smooth the correction. The available range is based on how far the peaks rise above the sustained body.
+- **Beat Comp** detects beat transients and brings the stronger ones toward the typical beat level. You choose the **maximum reduction in dB**, not a threshold: **−2 dB allows up to 2 dB of attenuation**, with less correction for smaller differences. Release follows a selected note value at the detected or manually entered tempo.
+- **Leveler** raises quieter sustained passages toward the strongest sustained RMS level, without turning louder passages down. **Leveling** sets how closely they converge and **Speed** controls the response; short-term transients retain their shape. Use **Exclude regions** to paint intros, breaks or outros you want to preserve on the waveform.
+- **Punch** lifts detected attacks by the selected **boost in dB**, bringing out impact without continuously raising the body of the song.
 
-Set the amount; whole-track analysis prepares the gain envelopes.
+Because QuickMaster sees the complete track, you do not need to play through it looking for the loudest peak before setting these controls.
 
 ### Clip & Limit
 
-**Soft-Clip** and **Hard-Clip** shape peaks and add colour, calibrated to your requested reduction. **Limit** combines a four-band linear-phase limiter with a broadband stage in series. The final **Peak Normalizer** sets your delivery ceiling in dBTP. Select up to **16× oversampling** for nonlinear processing.
+**Soft-Clip** and **Hard-Clip** let you specify **how many dB to clip off the track's highest peak**, rather than guessing an input-drive setting. Set **2 dB** and whole-track analysis calibrates the curve for a 2 dB program-peak reduction. Soft curves round peaks and add harmonic colour; the Hard curve cuts at a ceiling and leaves samples below it unchanged. Zero is bypass. The GR meter reports the rendered reduction; oversampling can change reconstructed peaks.
+
+**Limit** runs a four-band linear-phase limiter into a broadband limiter, so you can control individual frequency ranges before catching the combined peaks. Its **Push** controls add drive into the measured ceiling; unlike Clip, Push is not a fixed gain-reduction target. The meter shows the actual limiting, including contributions from the preceding bands.
+
+The final **Peak Normalizer** sets your delivery ceiling in **dBTP**. Select up to **16× oversampling** to reduce aliasing in nonlinear processing, then choose the export sample rate and bit depth.
 
 ## Listen, compare, export
 

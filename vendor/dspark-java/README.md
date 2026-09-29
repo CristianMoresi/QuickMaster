@@ -19,6 +19,12 @@ QuickMaster's clip controls. See the [scope and numerical evidence](../../docs/d
 
 ## What's included
 
+Version 0.2.4 adds an offline MPEG-1 Layer III float decoder, ported from C++
+`a8556aa7066d52b2aa22b0078cc976f3344a4869`. Existing DSP classes are unchanged.
+The port preserves floating headroom, fixes validated mono gapless tags and
+intensity-stereo band selection, and rejects truncated frames/reservoirs.
+See [MP3 scope, reference vectors and upstream differences](../../docs/diagnostics/mp3-decoder-port.md).
+
 Version 0.2.3 updates `AutoGain` to the K-weighted C++ `474b7d1` algorithm,
 including 400 ms integration and thread-safe parameter/gain publication.
 720 native block vectors verify the port. `offlineGainDb` is an explicit
@@ -30,6 +36,7 @@ See [EQ auto-gain validation](../../docs/diagnostics/eq-autogain-audit.md).
 | **Core** | `DspMath`, `BiquadCoeffs` (incl. Tilt), `FilterEngine`, `RingBuffer`, `SmoothedValue`, `WindowFunctions`, `FftReal`, `Dither`, `Resampler`, true-peak detection |
 | **Effects** | `Normalizer`, `Limiter` (true-peak brickwall), `Equalizer` (minimum- and linear-phase), `StereoWidth` (with bass-mono), `DcBlocker`, `AutoGain`, `Gain` |
 | **Analysis** | `LoudnessMeter` (EBU R128: momentary / short-term / integrated + true-peak + LRA), `SpectrumAnalyzer`, `LevelFollower` |
+| **I/O** | `Mp3Stream` (checked container/gapless metadata), `Mp3Decoder` (MPEG-1 Layer III to interleaved float PCM) |
 
 Audio uses 32-bit `float`, with nominal full scale `[-1.0, +1.0]` and unclipped
 internal headroom. Output gain/limiting, not the float representation, determines

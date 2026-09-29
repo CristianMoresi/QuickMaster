@@ -5,6 +5,19 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2026-09-29
+
+### Changed
+
+- EQ spectrum display uses a 4.5 dB/octave tilt around 1 kHz in live and
+  stopped views. Audio, EQ response, Auto EQ and metering remain unchanged.
+- MP3 import uses the DSPark MPEG-1 float decoder port, preserving quiet
+  detail and floating headroom. Validated gapless metadata removes delay and
+  padding; malformed/truncated streams are rejected. MPEG-2/2.5 retain a
+  separate float-output compatibility path. Public import/export APIs and
+  MP3 encoding are unchanged.
+- README explains the dB targets of Peak Comp, Beat Comp and Clip more clearly.
+
 ## [1.3.3] - 2026-09-29
 
 ### Added

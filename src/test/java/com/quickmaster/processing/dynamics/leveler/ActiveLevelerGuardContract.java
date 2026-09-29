@@ -10,12 +10,12 @@ import java.util.*;
 /** Explicit ADR013/014 and named S-001 successors; never grants from observed candidate bytes. */
 final class ActiveLevelerGuardContract
 {
-    // Explicit 0.2.3 AutoGain successor: eq-autogain-audit.md. Relative to 0.2.2,
-    // only AutoGain changes, with two nested helper classes added outside this
-    // boundary. Clip/onset successor remains documented in dynamics-clips-audit.md.
+    // Explicit 0.2.4 MP3 I/O successor: mp3-decoder-port.md. All 49 existing
+    // DSPark 0.2.3 class files remain byte-identical; only the io package is new.
+    // AutoGain/clip/onset successor evidence remains in the earlier audit records.
     // No Leveler boundary changes; historical artifacts/pins remain untouched.
-    static final String DSPARK_JAR = "libs/dspark-0.2.3.jar";
-    static final String DSPARK_SHA256 = "56df525290b09435a8d8cb5e3b56508546ad11b88f4ce2e858bdb1c2f2bb77b9";
+    static final String DSPARK_JAR = "libs/dspark-0.2.4.jar";
+    static final String DSPARK_SHA256 = "4150ba7f460fc0d2848d365954de06c465a2c7dd372c11eb2fbe7fd32b98c1e6";
     static final String D = "com/quickmaster/processing/dynamics/", L = D + "leveler/", M = L + "model/";
     private static final class Active {
         static final JsonObject DELTA = resource("active-schema-delta.json", "b1ae36d2c90b3060c1986156d332233786075dc59a4b5c4da3ccac2013c59641");
