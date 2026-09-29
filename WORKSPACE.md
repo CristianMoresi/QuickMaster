@@ -3,8 +3,8 @@
 La única carpeta de trabajo es `E:/Code/Projects/JA-DAW/QuickMaster`, en la rama
 `main`. El código actual se conserva aquí; los históricos no son copias activas.
 Los cambios verificados se versionan y publican desde esta carpeta. Un commit y
-push a `main` no crea un release: la versión vigente sigue siendo
-`1.3.3-SNAPSHOT` hasta preparar y verificar una publicación explícita.
+push a `main` no crea por sí solo un release: la versión `1.3.3` se publica
+mediante su tag y el flujo de empaquetado verificado.
 
 | Ubicación | Uso |
 |---|---|

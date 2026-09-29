@@ -5,7 +5,7 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.3] - 2026-09-29
 
 ### Added
 
@@ -69,7 +69,8 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 Validation of the Windows development build on 2026-09-29: 921 application
 tests, 140 DSPark tests and 371 additional installed-JAR tests passed, plus
 installed UI/audio checks. See [delivery evidence](docs/diagnostics/mono-monitor.md).
-This is development work on `main`, not a published 1.3.3 release.
+Release packaging is separately verified against the exact validated core JAR;
+see the [1.3.3 release validation](docs/releases/1.3.3-validation.md).
 
 ## [1.3.2] - 2026-09-28
 
