@@ -17,13 +17,15 @@ checks the 4.5 setting, snapshots 1360x900 and 1100x760 layouts, and asserts tha
 redrawing does not alter source/render/preset/measurements or schedule analysis.
 No sound device is opened. Local evidence: `dist/mp3-port-20260929/ui-preview/`.
 
-Delivery verified on 2026-09-29: full 936-test QuickMaster and 171-test DSPark
+Pre-release delivery verified on 2026-09-29: full 936-test QuickMaster and 171-test DSPark
 suites pass; 386 regression tests also pass against the installed JARs.
 The installed-image UI probe passes at both sizes, with snapshots under
 `dist/mp3-port-20260929/installed-ui/`. The Windows EXE started cleanly at
 18:47:02. Build/installed JAR SHA-256:
 `b93f7d49255cded28fc6535f19638adc8d5ee3bb2cfc8f224eddc7d43ac4e1cb`.
 See the [combined local delivery record](mp3-decoder-port.md#final-local-delivery).
+The separately rebuilt and published 1.3.4 package is documented in its
+[release validation](../releases/1.3.4-validation.md).
 
 Pink noise falls roughly 3 dB/octave in this mean-bin-power analyzer, so a 4.5
 display tilt deliberately leaves an approximately 1.5 dB/octave rise. Matching
