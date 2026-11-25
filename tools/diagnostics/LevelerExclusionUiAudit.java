@@ -83,7 +83,7 @@ public class LevelerExclusionUiAudit {
                 var loader=new FXMLLoader(MainController.class.getResource("main-view.fxml"));root=loader.load();c=loader.getController();
                 var scene=new Scene(root,1360,830);scene.getStylesheets().add(MainController.class.getResource("app.css").toExternalForm());
                 root.setMinSize(1360,830);root.setPrefSize(1360,830);root.setMaxSize(1360,830);root.resize(1360,830);root.applyCss();root.layout();wave=(Canvas)field("waveformCanvas");
-                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster — Leveler UI verification");stage.setScene(scene);stage.show();
+                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster: Leveler UI verification");stage.setScene(scene);stage.show();
                 var modules=(List<?>)field("chainModules");
                 for(Object module:modules)((CheckBox)field(module,"enableBox")).setSelected(false);
                 for(var p:((ProcessingPipeline)field("pipeline")).getProcessors())p.setEnabled(false);

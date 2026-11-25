@@ -51,7 +51,7 @@ class ClipperTest
         c.prepare(SR, 2);
         c.setMode(Clipper.Mode.HARD);
         c.setCeilingDb(-6.0);
-        float[] b = dc(1.0, 64, 2);     // peak 1.0 clipped to −6 dB → GR −6 dB
+        float[] b = dc(1.0, 64, 2);     // peak 1.0 clipped to -6 dB → GR -6 dB
         c.process(b, 2);
         assertEquals(-6.0, c.getGainReductionDb(), 0.1);
     }

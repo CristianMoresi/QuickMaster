@@ -22,7 +22,7 @@ public final class DspMath
 
     private DspMath()
     {
-        // Utility class — not instantiable.
+        // Utility class, not instantiable.
     }
 
     /**
@@ -80,5 +80,48 @@ public final class DspMath
         if (sample >  1.0f) return  1.0f;
         if (sample < -1.0f) return -1.0f;
         return sample;
+    }
+
+    /**
+     * Fast natural logarithm for envelope and decibel work: the value is
+     * split into mantissa and exponent, the mantissa folded into
+     * [sqrt(0.5), sqrt(2)) and its logarithm taken by four terms of the
+     * atanh series, 2 atanh((m - 1) / (m + 1)). The truncation is the
+     * limit: at most 2.9e-8 absolute on the mantissa's logarithm. Use
+     * {@link Math#log} where double precision matters.
+     *
+     * @param x  the value; must be greater than zero (other values are
+     *           handed to {@link Math#log})
+     * @return an approximation of ln(x)
+     */
+    public static double fastLog(double x)
+    {
+        long bits = Double.doubleToRawLongBits(x);
+        int e;
+        double m;   // x = m * 2^e, m in [0.5, 1)
+        if (Long.compareUnsigned(bits - 0x0010000000000000L, 0x7FE0000000000000L) < 0)   // positive, normal, finite
+        {
+            e = (int) (bits >>> 52) - 1022;
+            m = Double.longBitsToDouble((bits & 0x000FFFFFFFFFFFFFL) | 0x3FE0000000000000L);
+        }
+        else if (x > 0.0 && x < Double.MIN_NORMAL)
+        {
+            long scaled = Double.doubleToRawLongBits(x * 0x1.0p54);
+            e = (int) (scaled >>> 52) - 1022 - 54;
+            m = Double.longBitsToDouble((scaled & 0x000FFFFFFFFFFFFFL) | 0x3FE0000000000000L);
+        }
+        else
+        {
+            return Math.log(x);
+        }
+        if (m < 0.70710678118654752440)
+        {
+            m *= 2.0;
+            --e;
+        }
+        double s = (m - 1.0) / (m + 1.0);
+        double s2 = s * s;
+        double lnm = 2.0 * s * (1.0 + s2 * (1.0 / 3.0 + s2 * (1.0 / 5.0 + s2 * (1.0 / 7.0))));
+        return lnm + e * 0.6931471805599453;
     }
 }

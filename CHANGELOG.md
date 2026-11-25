@@ -5,6 +5,40 @@ All notable changes to QuickMaster are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Auto EQ is now a tonal balance driven by a model of hearing (the DSPark
+  `TonalBalance`, DSPark Java 0.2.7) instead of matching a spectral slope. It
+  measures the loudness of the song in bands of the ear's scale, lowers what is
+  in excess and raises what is lacking, in the overall tone and in narrow
+  resonances and holes, following the music. Two controls: **Amount** sets how
+  much it does, from nothing at 0 % (the sound is untouched) to all of it at
+  100 %, where a band can move by up to 12 dB; it starts at 25 %. **Cut/Boost**
+  sets what the correction is made of: in the middle (100/100) it lowers and
+  raises alike and keeps the loudness; toward Cut the raising fades out until
+  it only lowers (100/0); toward Boost the lowering fades out until it only
+  raises (0/100). Attack, Release and the target curve are gone. The
+  correction is applied by a minimum-phase filter, rendered offline with no
+  latency and already settled at the first sample of the song. A control moved
+  is heard at once on a provisional preview while the whole song is rendered
+  again. Saved presets still load with their Amount.
+- Typing a value into a knob shown in percent (Auto EQ Amount, Leveler
+  Leveling and Speed) now reads it as a percentage: 70 means 70 %. Cut/Boost
+  takes its two shares ("100/60") or a lean in percent ("-40").
+- Stereo Image and Leveler tooltips, the Side Gain scale and three error
+  messages write ranges and negative values in plain text ("20 Hz to 5 kHz",
+  "-12 dB").
+
+- Export sample-rate conversion now uses the current DSPark exact-polyphase
+  resampler (DSPark Java 0.2.5). For standard conversions such as 44.1 <-> 48
+  and 96 <-> 48 kHz each output sample reads one exact filter phase, removing
+  the previous design's low-level phase-interpolation images and reaching the
+  Ultra tier's designed stopband. Only conversions between different rates are
+  affected; same-rate exports are byte-identical. DSPark Dither also gains
+  non-finite input hardening and an opt-in psychoacoustic noise-shaper.
+
 ## [1.3.5] - 2026-09-29
 
 ### Changed

@@ -226,11 +226,11 @@ public final class BiquadCoeffs
 
     /**
      * First-order tilt filter: pivots the spectrum around
-     * {@code pivotFreq} — {@code +gainDb/2} above, {@code -gainDb/2}
+     * {@code pivotFreq}: {@code +gainDb/2} above, {@code -gainDb/2}
      * below. The single-knob tonal-balance control found on mastering
      * EQs and channel strips (SSL, Neve, Tonelux Tilt).
      *
-     * @param pivotFreq pivot frequency in Hz (typically 600–3000 Hz)
+     * @param pivotFreq pivot frequency in Hz (typically 600 to 3000 Hz)
      * @param gainDb    tilt amount in dB (positive = brighter)
      */
     public static BiquadCoeffs tilt(double sampleRate, double pivotFreq, double gainDb)

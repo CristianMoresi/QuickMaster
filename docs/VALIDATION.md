@@ -5,16 +5,16 @@ La suite completa incluye pruebas de audio oficial ITU-R BS.2217-1 y EBU LTS 5.0
 ## Build completo
 
 Usar Eclipse Temurin 25.0.4.7 para reproducir el binario auditado de Windows,
-incluida la compilación de DSPark Java 0.2.4. El contrato de aceptación comprueba
+incluida la compilación de DSPark Java 0.2.7. El contrato de aceptación comprueba
 el hash exacto de esa dependencia. Primero, desde la raíz del proyecto:
 
 ```powershell
 .\mvnw.cmd -f vendor/dspark-java/pom.xml clean install
-Get-FileHash vendor/dspark-java/target/dspark-0.2.4.jar -Algorithm SHA256
+Get-FileHash vendor/dspark-java/target/dspark-0.2.7.jar -Algorithm SHA256
 ```
 
-Hash auditado: `4150ba7f460fc0d2848d365954de06c465a2c7dd372c11eb2fbe7fd32b98c1e6`,
-idéntico a `libs/dspark-0.2.4.jar`. Un compilador distinto puede producir otros
+Hash auditado: `94a7700335a7513ff1c2fa69ecb6970a23577dacae5a26da628ffdfb6abd9c6b`,
+idéntico a `libs/dspark-0.2.7.jar`. Un compilador distinto puede producir otros
 bytes aun apuntando a Java 17; no se debe cambiar el pin automáticamente para
 sortear una prueba. Fuentes, referencia C++ y comprobaciones independientes en
 [migración DSPark](diagnostics/dspark-java-0.2-migration.md) y corrección de
@@ -24,6 +24,17 @@ y Auto Gain 0.2.3 en [autogain EQ](diagnostics/eq-autogain-audit.md).
 El port MP3 0.2.4 y sus diferencias verificadas frente a C++ se documentan en
 [auditoría MP3](diagnostics/mp3-decoder-port.md); las 49 clases DSP anteriores
 mantienen sus bytes exactos.
+La resincronización 0.2.5 (Resampler y Dither) está en
+[resync 0.2.5](diagnostics/dspark-java-0.2.5-resync.md), y el port de
+`TonalBalance` 0.2.6, con su revisión de fidelidad línea a línea y sus pruebas
+de propiedades (no existen vectores nativos de esa clase), en
+[port de TonalBalance](diagnostics/dspark-java-0.2.6-tonal-balance.md). La
+versión 0.2.7 le añade dos cuotas, cuánto de lo que subiría sube y cuánto de lo
+que bajaría baja, que con sus valores por defecto no cambian ninguna salida:
+[subir y bajar 0.2.7](diagnostics/dspark-java-0.2.7-raising-lowering.md). El
+Auto EQ que lo usa se documenta en [Auto EQ](diagnostics/auto-eq-tonal-balance.md).
+Si `mvnw.cmd` no arranca en la consola en uso, sirve cualquier Maven 3.9 con el
+mismo JDK: el binario resultante es idéntico.
 Los binarios históricos se conservan; el portable debe incluir una sola versión
 de DSPark, nunca todos los JAR antiguos de `libs` mediante un comodín.
 
@@ -58,7 +69,7 @@ Después de que la suite completa pase:
 ```powershell
 .\mvnw.cmd -q dependency:copy-dependencies '-DincludeScope=runtime' '-DoutputDirectory=target/app'
 Copy-Item -LiteralPath target/quickmaster.jar -Destination target/app/quickmaster.jar
-& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.3.4 `
+& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.3.5 `
   --vendor 'Cristian Moresi' --input target/app --main-jar quickmaster.jar `
   --main-class com.quickmaster.Launcher --icon docs/icon.ico `
   --add-modules java.base,java.desktop,java.scripting,java.sql,java.logging,java.xml,java.prefs,java.management,java.naming,jdk.jfr,jdk.unsupported,jdk.zipfs,jdk.localedata `
@@ -76,6 +87,8 @@ Cerrar QuickMaster y ejecutar el siguiente script desde PowerShell con permisos 
 ```
 
 El script comprueba la imagen, copia a una carpeta temporal dentro de `Program Files`, compara todos los archivos y conserva la instalación anterior en una carpeta `QuickMaster-backup-*`. Después verifica el JAR instalado y abre el ejecutable instalado para comprobar el inicio en el log. Cierra únicamente ese proceso de comprobación. Ante un fallo de arranque intenta restaurar la imagen anterior y conserva la imagen fallida. No borra documentos ni audio del usuario.
+
+Tras una entrega verificada elimina las copias `QuickMaster-backup-*` de entregas anteriores y conserva las dos más recientes, incluida la que acaba de crear; `-KeepBackups <n>` cambia cuántas se conservan. Solo toca carpetas reales situadas directamente en `Program Files` y con ese nombre exacto seguido de fecha y hora; un fallo de esta limpieza no invalida la entrega y queda anotado en el resultado. `tools/Test-DeployBackupCleanup.ps1` comprueba esa limpieza sobre una carpeta temporal, sin permisos de administrador.
 
 El resultado queda en `target/deployment-result.json`. `-ValidateOnly` valida la imagen fuente sin modificar la instalación. No se considera entregada una versión hasta obtener `DEPLOYED_AND_VERIFIED`.
 

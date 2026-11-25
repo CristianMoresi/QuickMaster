@@ -106,7 +106,7 @@ public final class Limiter
         ceilingSmooth.skip();
     }
 
-    /** Sets the output ceiling in dBFS (e.g. −1.0 for streaming). Non-finite values are ignored. */
+    /** Sets the output ceiling in dBFS (e.g. -1.0 for streaming). Non-finite values are ignored. */
     public void setCeilingDb(double dB) { if (Double.isFinite(dB)) ceilingDb = dB; }
 
     public double getCeilingDb() { return ceilingDb; }
@@ -125,7 +125,7 @@ public final class Limiter
     /** Enables the post-limiter safety clipper. */
     public void setSafetyClip(boolean enabled) { safetyClipEnabled = enabled; }
 
-    /** Sets the look-ahead time in milliseconds (0.5–10). Non-finite values are ignored. */
+    /** Sets the look-ahead time in milliseconds (0.5..10). Non-finite values are ignored. */
     public void setLookahead(double ms)
     {
         if (!Double.isFinite(ms)) return;

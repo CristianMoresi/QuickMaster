@@ -154,7 +154,7 @@ public class Mp3File extends AudioFile
         }
         catch (IOException e)
         {
-            throw new AudioFileException("Cannot read MP3: " + getFilePath() + " — " + e.getMessage(), e);
+            throw new AudioFileException("Cannot read MP3: " + getFilePath() + ": " + e.getMessage(), e);
         }
     }
 

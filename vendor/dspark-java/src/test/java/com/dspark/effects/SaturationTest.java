@@ -75,7 +75,7 @@ class SaturationTest
     @Test
     void staysNearCeiling()
     {
-        // At base rate, 1st-order ADAA leaves a little residual aliasing — the output
+        // At base rate, 1st-order ADAA leaves a little residual aliasing: the output
         // sits at the ceiling within a few percent (the host clamps for exactness).
         Saturation s = new Saturation();
         s.prepare(SR, 2);

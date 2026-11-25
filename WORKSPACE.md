@@ -11,14 +11,15 @@ mediante su tag y el flujo de empaquetado verificado.
 | `src/`, `vendor/`, `libs/`, `pom.xml` | Aplicación y DSPark actuales |
 | `docs/`, `tools/` | Documentación, investigación y herramientas vigentes |
 | `target/` | Compilación y resultados de pruebas; regenerable |
-| `dist/` | Imágenes portables, informes y evidencias locales |
+| `dist/` | Imagen portable de la última compilación; regenerable |
 | `test-data/official/` | Señales oficiales de ensayo y autorización local; no publicar |
 | `.archive/` | Trabajo anterior y respaldos; no es código activo |
 
 La aplicación de uso está en `C:/Program Files/QuickMaster/QuickMaster.exe`.
-Es portable, sin instalador. La imagen de esta entrega está en
-`dist/release-1.3.3-20260929/windows-image/QuickMaster/`, extraída del ZIP de
-Windows del release. Resultados: `docs/releases/1.3.3-validation.md`.
+Es portable, sin instalador. Las imágenes de cada release se descargan de su
+página en GitHub; las copias locales que hubo en `dist/` se eliminaron el
+25-11-2026 junto con el resto de esa carpeta. Resultados de cada release:
+`docs/releases/`.
 
 ## Qué se conservó al ordenar
 
@@ -35,8 +36,9 @@ El historial Git sigue en `.git/`. Los cambios anteriores del checkout principal
 tienen además un stash de recuperación
 `976cd1ce5294dd944515c777df4910e3b4a20af9`. No aplicarlo sobre el trabajo actual
 sin comparar primero. El bundle anterior a la consolidación, los inventarios
-SHA-256 y el recibo `consolidation-result.json` están en
-`dist/stereo-interaction-20260929/`.
+SHA-256 y el recibo `consolidation-result.json` estaban en
+`dist/stereo-interaction-20260929/` y se eliminaron el 25-11-2026 con el resto
+de `dist/`, por decisión del propietario; `.archive/` y el stash siguen ahí.
 
 Los respaldos y las señales oficiales están excluidos de Git. Las rutas antiguas
 que aparecen en logs son procedencia histórica, no instrucciones para recrear

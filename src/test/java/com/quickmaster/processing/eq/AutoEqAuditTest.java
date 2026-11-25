@@ -1,5 +1,6 @@
 package com.quickmaster.processing.eq;
 
+import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 import org.junit.jupiter.api.Test;
 import java.util.Random;
 import java.util.concurrent.CancellationException;
@@ -7,7 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AutoEqAuditTest {
     private static AutoEqProcessor processor(int rate) {
-        var eq = new AutoEqProcessor(); eq.setEnabled(true); eq.setAmount(1); eq.prepare(rate, 0); return eq;
+        var eq = new AutoEqProcessor(); eq.setEnabled(true); eq.setAmount(1);
+        eq.prepare(rate, 0); return eq;
     }
     @Test void polarityAndDualMonoDoNotChangeLinkedCorrectionAtAnySupportedRate() {
         for (int rate : new int[]{8000, 16000, 22050, 32000, 44100, 48000, 96000, 192000}) {
@@ -20,19 +22,21 @@ class AutoEqAuditTest {
             var m = processor(rate); var s = processor(rate);
             m.analyze(mono, 1); s.analyze(stereo, 2);
             float[] left = m.process(mono.clone(), 1), linked = s.process(stereo.clone(), 2);
+            boolean changed = false;
             for (int f=0; f<mono.length; f++) {
                 assertTrue(Float.isFinite(linked[2*f]));
-                assertEquals(left[f], linked[2*f], 1e-6, "left at rate " + rate);
-                assertEquals(-left[f], linked[2*f+1], 1e-6, "right at rate " + rate);
+                assertEquals(left[f], linked[2*f], 0.0, "left at rate " + rate);
+                assertEquals(-left[f], linked[2*f+1], 0.0, "right at rate " + rate);
+                changed |= left[f] != mono[f];
             }
+            assertTrue(changed, "a correction was applied at rate " + rate);
         }
     }
     @Test void invalidParametersAndPcmAreRejectedAndEmptyAnalysisCannotReplayAnOldTrack() {
         var eq = processor(48000);
         for (double bad : new double[]{Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}) {
             assertThrows(IllegalArgumentException.class, () -> eq.setAmount(bad));
-            assertThrows(IllegalArgumentException.class, () -> eq.setAttackSec(bad));
-            assertThrows(IllegalArgumentException.class, () -> eq.setReleaseSec(bad));
+            assertThrows(IllegalArgumentException.class, () -> eq.setCutBoost(bad));
         }
         assertThrows(IllegalArgumentException.class, () -> eq.prepare(0, 0));
         assertThrows(IllegalArgumentException.class, () -> eq.analyze(new float[]{.1f}, 2));
@@ -49,5 +53,28 @@ class AutoEqAuditTest {
             Thread.currentThread().interrupt();
             assertThrows(CancellationException.class, () -> eq.analyze(new float[48000],1));
         } finally { Thread.interrupted(); }
+    }
+    @Test void aRenderInProgressEndsWhenItsTokenIsCancelledOrItsThreadInterrupted() throws Exception {
+        float[] x = new float[48000 * 100];   // three stretches: rendered on several threads
+        Random random = new Random(5);
+        for (int i = 0; i < x.length; i++) x[i] = (float)(.1 * random.nextGaussian());
+        var token = new CancellationToken();
+        var eq = processor(48000);
+        Throwable[] seen = new Throwable[1];
+        Thread worker = new Thread(() -> { try { eq.analyze(x, 1, token); } catch (Throwable t) { seen[0] = t; } });
+        worker.start(); Thread.sleep(150); token.cancel(); worker.join(20000);
+        assertFalse(worker.isAlive(), "the render ended");
+        assertInstanceOf(CancellationException.class, seen[0]);
+
+        var other = processor(48000);
+        Thread second = new Thread(() -> { try { other.analyze(x, 1); } catch (Throwable t) { seen[0] = t; } });
+        seen[0] = null; second.start(); Thread.sleep(150); second.interrupt(); second.join(20000);
+        assertFalse(second.isAlive(), "the render ended");
+        assertInstanceOf(CancellationException.class, seen[0]);
+
+        var cancelled = new CancellationToken(); cancelled.cancel();
+        assertThrows(CancellationException.class, () -> processor(48000).analyze(x, 1, cancelled));
+        // A stopped render leaves nothing to play.
+        assertArrayEquals(new float[]{.4f, .4f}, eq.process(new float[]{.4f, .4f}, 1));
     }
 }

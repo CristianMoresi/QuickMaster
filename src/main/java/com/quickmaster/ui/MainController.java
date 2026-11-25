@@ -261,8 +261,7 @@ public class MainController
     @FXML private Pane eqCanvasWrapper;
     @FXML private Canvas eqCanvas;
     @FXML private CheckBox autoEqOn;
-    private ComboBox<AutoEqProcessor.Target> autoEqTarget;
-    private Knob autoEqAmountKnob, autoEqAttackKnob, autoEqReleaseKnob;
+    private Knob autoEqAmountKnob, autoEqCutBoostKnob;
     private Node[] autoEqControls;
     private HBox bandMenu;                 // floating mute/erase over the clicked band
     private Button bandMuteBtn;
@@ -3186,6 +3185,12 @@ public class MainController
     private void initAutoEqUi()
     {
         if (eqKnobs == null || autoEqOn == null) return;
+        Tooltip about = new Tooltip("Automatic tonal balance. It hears the song as the ear does and moves its tone "
+                + "toward an even one, following the music: it lowers what is in excess and raises what is lacking. "
+                + "Amount sets how much it does, Cut/Boost how much of it is lowering and how much raising.");
+        about.setWrapText(true);
+        about.setMaxWidth(320);
+        autoEqOn.setTooltip(about);
         autoEqOn.setSelected(autoEq.isEnabled());
         autoEqOn.selectedProperty().addListener((o, ov, nv) ->
         {
@@ -3195,41 +3200,29 @@ public class MainController
             scheduleDynamicsRefresh();
         });
 
-        autoEqTarget = new ComboBox<>();
-        autoEqTarget.getItems().setAll(AutoEqProcessor.Target.values());
-        autoEqTarget.getSelectionModel().select(autoEq.getTarget());
-        autoEqTarget.setPrefWidth(86);
-        autoEqTarget.valueProperty().addListener((o, ov, nv) ->
+        autoEqAmountKnob = autoEqKnob("Amount", AutoEqProcessor.MIN_AMOUNT, AutoEqProcessor.MAX_AMOUNT,
+                autoEq.getAmount(), v -> String.format(Locale.US, "%.0f %%", v * 100),
+                "How much the Auto EQ does. At 0 % the sound is untouched. Every correction grows with it, "
+                        + "and so does the most a band can move: 3 dB at 25 %, 12 dB at 100 %.",
+                autoEq::setAmount);
+        autoEqAmountKnob.typedScale(100);  // shown in percent: typing 70 means 70 %
+        autoEqCutBoostKnob = autoEqKnob("Cut/Boost", AutoEqProcessor.MIN_CUT_BOOST, AutoEqProcessor.MAX_CUT_BOOST,
+                autoEq.getCutBoost(), CutBoostText::text,
+                "What the correction is made of: how much of what is in excess is lowered and how much of what is "
+                        + "lacking is raised, in percent. 100/100 does both and keeps the loudness. Toward the left the "
+                        + "raising fades out, down to 100/0: it only lowers. Toward the right the lowering fades out, "
+                        + "down to 0/100: it only raises.",
+                autoEq::setCutBoost);
+        autoEqCutBoostKnob.bipolar().typed(new Knob.Typed()
         {
-            if (nv != null) { autoEq.setTarget(nv); drawEqCurve(); scheduleDynamicsRefresh(); }
+            @Override public String text(double value) { return CutBoostText.text(value); }
+            @Override public double value(String text) { return CutBoostText.value(text); }
         });
 
-        Knob amount = autoEqKnob("Amount", AutoEqProcessor.MIN_AMOUNT, AutoEqProcessor.MAX_AMOUNT,
-                autoEq.getAmount(), false, v -> String.format(Locale.US, "%.0f %%", v * 100),
-                "How strongly to pull the spectrum toward the target curve.", autoEq::setAmount);
-        Knob attack = autoEqKnob("Attack", AutoEqProcessor.MIN_ATTACK_SEC, AutoEqProcessor.MAX_ATTACK_SEC,
-                autoEq.getAttackSec(), true, this::fmtEqTime,
-                "How fast a band engages when the spectrum departs from the target.", autoEq::setAttackSec);
-        Knob release = autoEqKnob("Release", AutoEqProcessor.MIN_RELEASE_SEC, AutoEqProcessor.MAX_RELEASE_SEC,
-                autoEq.getReleaseSec(), true, this::fmtEqTime,
-                "How slowly a band relaxes back.", autoEq::setReleaseSec);
-        autoEqAmountKnob = amount;
-        autoEqAttackKnob = attack;
-        autoEqReleaseKnob = release;
+        eqKnobs.getChildren().addAll(growingDivider(),
+                labeledGroup("AUTO EQ", "#46c1a6", autoEqAmountKnob, autoEqCutBoostKnob));
 
-        // Auto EQ section: label on top, the knobs, then the target selector below.
-        Label title = new Label("AUTO EQ");
-        title.setStyle("-fx-text-fill: #46c1a6; -fx-font-size: 9.5px; -fx-font-weight: bold;");
-        HBox knobs = new HBox(4, amount, attack, release);
-        knobs.setAlignment(Pos.CENTER);
-        HBox comboRow = new HBox(autoEqTarget);
-        comboRow.setAlignment(Pos.CENTER);
-        VBox group = new VBox(6, title, knobs, comboRow);
-        group.setAlignment(Pos.TOP_CENTER);
-        group.setPadding(new javafx.geometry.Insets(14, 14, 14, 14));   // symmetric → group centred in its box
-        eqKnobs.getChildren().addAll(growingDivider(), group);
-
-        autoEqControls = new Node[] { amount, attack, release, autoEqTarget };
+        autoEqControls = new Node[] { autoEqAmountKnob, autoEqCutBoostKnob };
         setAutoEqControlsDisabled(!autoEq.isEnabled());     // dim when off (like the dynamic section)
     }
 
@@ -3240,20 +3233,13 @@ public class MainController
         for (Node c : autoEqControls) c.setDisable(disabled);
     }
 
-    private Knob autoEqKnob(String label, double min, double max, double init, boolean log,
+    private Knob autoEqKnob(String label, double min, double max, double init,
                             Knob.Formatter fmt, String tip, java.util.function.DoubleConsumer setter)
     {
         Knob k = new Knob(label, min, max, init);
         k.scale(EQ_KNOB_SCALE).accent("#46c1a6").formatter(fmt).tooltip(tip);
-        if (log) k.logarithmic();
         k.valueProperty().addListener((o, ov, nv) -> { setter.accept(nv.doubleValue()); scheduleDynamicsRefresh(); });
         return k;
-    }
-
-    private String fmtEqTime(double sec)
-    {
-        return (sec < 1.0) ? String.format(Locale.US, "%.0f ms", sec * 1000.0)
-                           : String.format(Locale.US, "%.2f s", sec);
     }
 
     /** Draws the Auto EQ correction actually applied at the playhead, on the EQ's dB axis. */
@@ -4335,6 +4321,8 @@ public class MainController
                 leveler.getSpeed(), "#54d98c", v -> String.format(Locale.US, "%.0f %%", v * 100),
                 "Controls macro response, not peak compression: low uses a 6-second context, high 2 seconds. Faster follows section changes sooner; slower preserves more phrase movement.",
                 leveler::setSpeed);
+        lev.typedScale(100);        // shown in percent: typing 70 means 70 %
+        speed.typedScale(100);
         levelingKnob = lev;
         levelerSpeedKnob = speed;
         HBox knobs = new HBox(14, lev, speed);
@@ -4928,8 +4916,9 @@ public class MainController
         var gson = new com.google.gson.Gson();
         var oldKey = gson.fromJson(approved.settingsKey, com.google.gson.JsonObject.class);
         var newKey = gson.fromJson(next.settingsKey, com.google.gson.JsonObject.class);
-        for (String key : new String[]{"eqOn", "eqAutoGain", "bands", "stereoOn", "stereoImage"}) { oldKey.remove(key); newKey.remove(key); }
-        // EQ / Stereo Image edits may reuse provisional downstream controls. A/B,
+        for (String key : new String[]{"eqOn", "eqAutoGain", "bands", "stereoOn", "stereoImage",
+                "autoEqOn", "autoEqAmount", "autoEqCutBoost"}) { oldKey.remove(key); newKey.remove(key); }
+        // EQ / Auto EQ / Stereo Image edits may reuse provisional downstream controls. A/B,
         // routing/other-module edits and source changes cannot inherit them.
         if (!oldKey.equals(newKey) || approved.previewContextRevision != previewContextRevision) {
             cancelInteractiveEqPreview(); return;
@@ -4947,7 +4936,11 @@ public class MainController
                 if (dest instanceof HardClipProcessor d && src instanceof HardClipProcessor a) d.adoptAnalysis(a);
                 if (dest instanceof MultibandLimiterProcessor d && src instanceof MultibandLimiterProcessor a) d.adoptPreparedAnalysis(a);
                 if (dest instanceof BroadbandLimiterProcessor d && src instanceof BroadbandLimiterProcessor a) d.adoptPreparedAnalysis(a);
-                if (dest instanceof AutoEqProcessor d && src instanceof AutoEqProcessor a) d.adopt(a);
+                // The approved render is this source's only if the Auto EQ was on when it was
+                // made. With other settings the window is balanced on its own (see the renderer).
+                if (dest instanceof AutoEqProcessor d && src instanceof AutoEqProcessor a) {
+                    if (a.isEnabled()) d.adopt(a); else d.forgetRender();
+                }
                 if (dest instanceof StereoImageProcessor d && src instanceof StereoImageProcessor a) d.adoptPlan(a);
             }
             next.normalizer.setAnalyzedPeak(approved.normalizer.getAnalyzedPeak());
@@ -5178,8 +5171,8 @@ public class MainController
     {
         var preset = new com.google.gson.Gson().toJsonTree(capturePreset()).getAsJsonObject();
         var key = new com.google.gson.JsonObject();
-        for (String name : new String[]{"autoEqOn", "autoEqAmount", "autoEqTarget", "autoEqAttackSec",
-                "autoEqReleaseSec", "eqOn", "eqAutoGain", "bands", "fadeInSec", "fadeOutSec", "fadeType"})
+        for (String name : new String[]{"autoEqOn", "autoEqAmount", "autoEqCutBoost",
+                "eqOn", "eqAutoGain", "bands", "fadeInSec", "fadeOutSec", "fadeType"})
             key.add(name, preset.get(name));
         key.addProperty("fadeOn", fade.isEnabled());
         key.addProperty("sampleRate", sr);
@@ -5293,9 +5286,7 @@ public class MainController
         AutoEqProcessor oAutoEq = new AutoEqProcessor();
         oAutoEq.setEnabled(autoEq.isEnabled());
         oAutoEq.setAmount(autoEq.getAmount());
-        oAutoEq.setTarget(autoEq.getTarget());
-        oAutoEq.setAttackSec(autoEq.getAttackSec());
-        oAutoEq.setReleaseSec(autoEq.getReleaseSec());
+        oAutoEq.setCutBoost(autoEq.getCutBoost());
         oAutoEq.adopt(autoEq);   // reuse the current render; re-renders only if its input/params changed
 
         EqualizerProcessor oeq = new EqualizerProcessor();
@@ -5401,9 +5392,7 @@ public class MainController
 
         p.autoEqOn = autoEq.isEnabled();
         p.autoEqAmount = autoEq.getAmount();
-        p.autoEqTarget = autoEq.getTarget().name();
-        p.autoEqAttackSec = autoEq.getAttackSec();
-        p.autoEqReleaseSec = autoEq.getReleaseSec();
+        p.autoEqCutBoost = autoEq.getCutBoost();
 
         p.eqOn = eq.isEnabled();
         p.eqAutoGain = eqAutoGain.isSelected();
@@ -5509,11 +5498,7 @@ public class MainController
         {
             autoEqOn.setSelected(p.autoEqOn);
             if (autoEqAmountKnob != null) autoEqAmountKnob.setValue(p.autoEqAmount);
-            if (autoEqAttackKnob != null) autoEqAttackKnob.setValue(p.autoEqAttackSec);
-            if (autoEqReleaseKnob != null) autoEqReleaseKnob.setValue(p.autoEqReleaseSec);
-            if (autoEqTarget != null)
-                autoEqTarget.getSelectionModel().select(enumOr(
-                        AutoEqProcessor.Target.class, p.autoEqTarget, AutoEqProcessor.Target.PINK));
+            if (autoEqCutBoostKnob != null) autoEqCutBoostKnob.setValue(p.autoEqCutBoost);
 
             eqEnabled.setSelected(p.eqOn);
             eqAutoGain.setSelected(p.eqAutoGain);
@@ -6265,7 +6250,7 @@ public class MainController
         for (BatchFailure failure : failures)
         {
             summary.append("• ").append(failure.fileName())
-                    .append(" — ").append(failure.detail()).append('\n');
+                    .append(": ").append(failure.detail()).append('\n');
         }
         return summary.toString().stripTrailing();
     }

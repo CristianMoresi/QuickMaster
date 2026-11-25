@@ -4,6 +4,7 @@ import com.dspark.analysis.TruePeak;
 import com.dspark.core.OversamplingEngine;
 import com.dspark.effects.MasterEqualizer;
 import com.quickmaster.processing.dynamics.leveler.CancellationToken;
+import com.quickmaster.processing.eq.AutoEqProcessor;
 import com.quickmaster.processing.eq.EqualizerProcessor;
 import com.quickmaster.processing.stereo.StereoImageProcessor;
 import java.util.Arrays;
@@ -16,6 +17,8 @@ public final class PreviewWindowRenderer {
     private final int rate, channels, factor, history;
     private boolean calibrated;
     private double safetyGain = 1;
+    /** Programme an Auto EQ of new settings hears before the window it is auditioned on. */
+    static final double AUTO_EQ_SETTLING_SECONDS = 1.5;
 
     public PreviewWindowRenderer(ProcessingPipeline pipeline, float[] source, int rate, int channels, int factor) {
         if (rate <= 0 || channels < 1 || channels > 2 || source.length % channels != 0
@@ -35,6 +38,10 @@ public final class PreviewWindowRenderer {
                     seconds = Math.max(seconds, Math.min(2, 4.5 * Math.max(1, b.q) / Math.max(10, b.frequency)));
             }
         }
+        // An Auto EQ whose settings are new is auditioned on the window alone:
+        // the history is what its analysis settles on before the part heard.
+        for (AudioProcessor p : pipeline.getProcessors()) if (p instanceof AutoEqProcessor auto && auto.awaitsRender())
+            seconds = Math.max(seconds, AUTO_EQ_SETTLING_SECONDS);
         // Finite FIR history is exact; very long IIR/detector histories are a
         // bounded preview approximation, never an export replacement.
         history = (int)Math.ceil(seconds * rate);
@@ -50,13 +57,17 @@ public final class PreviewWindowRenderer {
         pipeline.prepare(rate, source.length);
         float[] base = null;
         boolean localStereoPlan = pipeline.getProcessors().stream().anyMatch(p -> p instanceof StereoImageProcessor && p.isEnabled());
-        if (!calibrated || factor == 1 || localStereoPlan) {
+        boolean localAutoEq = pipeline.getProcessors().stream().anyMatch(p -> p instanceof AutoEqProcessor auto && auto.awaitsRender());
+        if (!calibrated || factor == 1 || localStereoPlan || localAutoEq) {
             base = context;
             for (AudioProcessor p : pipeline.getProcessors()) {
                 check(cancellation);
                 if (!p.isEnabled() && !(p instanceof PeakNormalizer n && n.isSafetyEnabled())) continue;
                 float[] dry = base;
                 if (!calibrated && p instanceof EqualizerProcessor eq) eq.beginAutoGainAnalysis();
+                // The window as this stage receives it, balanced with the new settings;
+                // the stage then plays it by position, here and in the oversampled pass.
+                if (p instanceof AutoEqProcessor auto && auto.awaitsRender()) auto.renderPreview(base, channels, from, cancellation);
                 if (p instanceof StereoImageProcessor si) base = si.renderPreview(base, channels, from, cancellation);
                 else base = renderStage(p, base, from, cancellation);
                 if (!calibrated && p instanceof EqualizerProcessor eq)

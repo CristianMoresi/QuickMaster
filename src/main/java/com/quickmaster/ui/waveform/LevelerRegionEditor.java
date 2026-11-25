@@ -125,7 +125,7 @@ public final class LevelerRegionEditor {
         int index=hit(frame(e.getX()));
         if(index>=0) {
             var r=model.get().regions().get(index);
-            hover.setText(String.format(Locale.US,"Excluded from Leveler · %.3f–%.3f s\nRight-click to edit or remove. Other effects still apply.",r.start()/(double)rate.getAsInt(),r.end()/(double)rate.getAsInt()));
+            hover.setText(String.format(Locale.US,"Excluded from Leveler · %.3f to %.3f s\nRight-click to edit or remove. Other effects still apply.",r.start()/(double)rate.getAsInt(),r.end()/(double)rate.getAsInt()));
         } else hover.setText(isEditing()?"Drag to exclude from Leveler. Esc to finish. Wheel to pan; Ctrl/⌘ + wheel to zoom.":"Click to seek. Shift-drag to select for trim. Wheel to pan; Ctrl/⌘ + wheel to zoom.");
         boolean handle=isEditing()&&model.get().regions().stream().anyMatch(r->Math.abs(x(r.start())-e.getX())<9||Math.abs(x(r.end())-e.getX())<9);
         canvas.setCursor(handle?Cursor.H_RESIZE:isEditing()?Cursor.CROSSHAIR:Cursor.DEFAULT);

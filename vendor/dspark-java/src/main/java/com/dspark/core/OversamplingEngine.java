@@ -3,7 +3,7 @@ package com.dspark.core;
 import java.util.Arrays;
 
 /**
- * Real-time, block-based power-of-two oversampler — a Java port of the DSPark
+ * Real-time, block-based power-of-two oversampler: a Java port of the DSPark
  * C++ {@code Oversampling} module (cascaded polyphase Kaiser half-band FIR).
  * <p>
  * Unlike {@link Oversampler} (offline, whole-buffer), this engine is
@@ -74,7 +74,7 @@ public final class OversamplingEngine
 
     /**
      * Round-trip latency of an {@code upsample → downsample} pass, in base-rate
-     * frames — the group delay the cascaded half-band filters introduce. Zero at
+     * frames: the group delay the cascaded half-band filters introduce. Zero at
      * factor 1. An offline renderer drops this many leading output frames (and
      * feeds an equal silent tail) to keep an oversampled render time-aligned.
      */
@@ -137,7 +137,7 @@ public final class OversamplingEngine
 
     /**
      * Pushes a unit impulse through {@code upsample → downsample}
-     * and returns the frame index of the peak in the base-rate output — i.e. the
+     * and returns the frame index of the peak in the base-rate output, i.e. the
      * round-trip group delay. Scan a complete filter tail even when the caller
      * requests one-frame blocks; a short buffer must not truncate the measurement.
      */

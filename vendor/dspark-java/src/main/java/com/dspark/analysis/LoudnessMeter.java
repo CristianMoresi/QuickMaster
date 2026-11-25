@@ -17,13 +17,13 @@ package com.dspark.analysis;
  * loudness is the mean power of the last 4 blocks (400 ms); short-term
  * is the last 30 blocks (3 s). The integrated value is gated per
  * BS.1770: 400 ms gating blocks (one every 100 ms), an absolute gate at
- * −70 LUFS and a relative gate 10 LU below the ungated mean. LRA (EBU
+ * -70 LUFS and a relative gate 10 LU below the ungated mean. LRA (EBU
  * Tech 3342) samples the short-term (3 s) loudness once per second, gates
- * the distribution at −70 LUFS and 20 LU below its mean, then takes the
+ * the distribution at -70 LUFS and 20 LU below its mean, then takes the
  * spread between the 95th and 10th percentiles.
  * <p>
  * Reading methods are safe to call from a UI thread while audio is being
- * fed on another thread (single writer, plain reads — adequate for
+ * fed on another thread (single writer, plain reads, adequate for
  * metering).
  */
 public final class LoudnessMeter
@@ -40,7 +40,7 @@ public final class LoudnessMeter
     private static final int MOMENTARY_BLOCKS = 4;
     private static final int SHORT_TERM_BLOCKS = 30;
 
-    // Histogram: −70..+30 LUFS at 0.1 LU resolution.
+    // Histogram: -70..+30 LUFS at 0.1 LU resolution.
     private static final double HIST_MIN_LUFS = -70.0;
     private static final double BIN_WIDTH = 0.1;
     private static final int NUM_BINS = 1000;
@@ -145,7 +145,7 @@ public final class LoudnessMeter
     /** Gated integrated loudness (BS.1770) in LUFS, or {@link #SILENCE_LUFS}. */
     public double getIntegratedLufs()
     {
-        // Pass 1: absolute gate (−70 LUFS) → ungated mean.
+        // Pass 1: absolute gate (-70 LUFS) → ungated mean.
         double sumPower = 0.0;
         long count = 0;
         for (int i = 0; i < NUM_BINS; i++)

@@ -8,7 +8,7 @@ import com.dspark.core.DspMath;
  * Peak tracking uses asymmetric attack/release one-pole smoothing; RMS
  * uses a symmetric one-pole integration window. Level readouts are taken
  * from a UI thread while audio is fed on another thread (single writer,
- * plain reads — adequate for a meter).
+ * plain reads, adequate for a meter).
  */
 public final class LevelFollower
 {

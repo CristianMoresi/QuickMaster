@@ -56,7 +56,7 @@ class InteractiveEqAudit {
             fx(()->{
                 var loader=new FXMLLoader(MainController.class.getResource("main-view.fxml"));root=loader.load();c=loader.getController();
                 var scene=new Scene(root,1360,900);scene.getStylesheets().add(MainController.class.getResource("app.css").toExternalForm());
-                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster — interactive EQ verification");stage.setScene(scene);stage.show();
+                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster: interactive EQ verification");stage.setScene(scene);stage.show();
                 var p=(ChainPreset)call("capturePreset");p.autoEqOn=false;p.dynamicsOn=p.clipOn=p.limitOn=full;p.normalizerOn=false;
                 p.eqOn=p.eqAutoGain=true;p.osOn=os>1;p.osFactor=os;p.fadeInSec=p.fadeOutSec=0;
                 if(full) {p.peakCompOn=p.beatCompOn=p.levelerOn=p.punchOn=p.softClipOn=p.hardClipOn=true;p.leveling=.5;}

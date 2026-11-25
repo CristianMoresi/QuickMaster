@@ -117,7 +117,7 @@ class EqOutputGainAudit {
                 if(!baseline)check(((Label)get("eqAutoGainLabel")).getText().isEmpty(),"Initial Auto Gain readout is not blank");
                 var scene=new Scene(root,1360,900);scene.getStylesheets().add(MainController.class.getResource("app.css").toExternalForm());
                 root.setMinSize(1360,900);root.setPrefSize(1360,900);root.setMaxSize(1360,900);
-                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster — EQ output verification");stage.setScene(scene);stage.show();
+                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster: EQ output verification");stage.setScene(scene);stage.show();
                 var p=preset();p.autoEqOn=p.dynamicsOn=p.clipOn=p.limitOn=p.normalizerOn=p.osOn=false;p.eqOn=true;p.fadeInSec=p.fadeOutSec=0;
                 var b=new ChainPreset.BandPreset();b.type="BELL";b.channel="STEREO";b.phase="LINEAR";b.frequency=857;b.gainDb=18.8;b.q=.71;
                 b.aboveRatio=b.belowRatio=1;b.aboveAttackMs=b.belowAttackMs=10;b.aboveReleaseMs=b.belowReleaseMs=100;

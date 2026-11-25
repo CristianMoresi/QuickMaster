@@ -8,7 +8,7 @@ import com.dspark.core.BiquadCoeffs;
  * <p>
  * Defaults to a 5 Hz corner (transparent DC removal), but the cutoff is
  * configurable so the same module doubles as a gentle low-cut/rumble
- * filter (e.g. 20–40 Hz) on a mastering chain.
+ * filter (e.g. 20 to 40 Hz) on a mastering chain.
  */
 public final class DcBlocker
 {

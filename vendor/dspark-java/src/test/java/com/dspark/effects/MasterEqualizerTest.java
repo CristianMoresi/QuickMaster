@@ -225,15 +225,15 @@ class MasterEqualizerTest
         b.belowRatio = 1.0;   // inert below
         eq.setBand(0, b);
 
-        // Constant 0.5 ≈ −6 dBFS, well above −20 → over = 14 dB,
-        // 14·(1−1/4)=10.5 capped at range 6 → −6 dB of gain.
+        // Constant 0.5 ≈ -6 dBFS, well above -20 → over = 14 dB,
+        // 14·(1-1/4)=10.5 capped at range 6 → -6 dB of gain.
         int frames = SR; // 1 s to settle
         float[] buf = new float[frames * 2];
         java.util.Arrays.fill(buf, 0.5f);
         eq.process(buf, 2);
 
         assertEquals(-6.0, eq.getBandGainReductionDb(0), 0.4,
-                "should settle to the −6 dB range cap");
+                "should settle to the -6 dB range cap");
         float expected = (float) (0.5 * Math.pow(10.0, -6.0 / 20.0));
         assertEquals(expected, buf[buf.length - 2], 0.02f);
     }
@@ -253,7 +253,7 @@ class MasterEqualizerTest
         b.belowAttackMs = 5.0; b.belowReleaseMs = 80.0;
         eq.setBand(0, b);
 
-        // Constant 0.02 ≈ −34 dBFS, below −20 → upward boost, positive gain.
+        // Constant 0.02 ≈ -34 dBFS, below -20 → upward boost, positive gain.
         int frames = SR;
         float[] buf = new float[frames * 2];
         java.util.Arrays.fill(buf, 0.02f);
@@ -279,7 +279,7 @@ class MasterEqualizerTest
         b.belowRatio = 1.0;   // below inert
         eq.setBand(0, b);
 
-        // A 1 kHz tone at ~−10 dBFS, well above the −40 threshold at the band freq.
+        // A 1 kHz tone at ~-10 dBFS, well above the -40 threshold at the band freq.
         int frames = SR / 2;
         float[] buf = new float[frames * 2];
         for (int i = 0; i < frames; i++)
@@ -308,12 +308,12 @@ class MasterEqualizerTest
         b.aboveRatio = 1.0;   // above section off
         eq.setBand(0, b);
 
-        // Quiet 1 kHz tone (~−40 dBFS), below the −30 threshold → boost engages.
+        // Quiet 1 kHz tone (~-40 dBFS), below the -30 threshold → boost engages.
         eq.process(tone(1000.0, 0.01f, SR / 4), 2);
         double boosted = eq.getBandGainReductionDb(0);
         assertTrue(boosted > 1.0, "below boost should engage on the quiet part, was " + boosted);
 
-        // Loud 1 kHz tone (~−6 dBFS), above the threshold → boost releases.
+        // Loud 1 kHz tone (~-6 dBFS), above the threshold → boost releases.
         eq.process(tone(1000.0, 0.5f, SR / 4), 2);
         double released = eq.getBandGainReductionDb(0);
         assertTrue(released < boosted * 0.5,

@@ -73,7 +73,7 @@ public final class Clipper
     /** Sets the clipping curve. */
     public void setMode(Mode m) { if (m != null) mode = m; }
 
-    /** Output ceiling in dBFS (−60..+6). Non-finite values are ignored. */
+    /** Output ceiling in dBFS (-60..+6). Non-finite values are ignored. */
     public void setCeilingDb(double dB) { if (Double.isFinite(dB)) ceilingDb = DspMath.clamp(dB, -60.0, 6.0); }
 
     /** Input drive applied before clipping, in dB (0..48). Non-finite values are ignored. */
@@ -98,7 +98,7 @@ public final class Clipper
 
     /**
      * Output peak the current curve would produce for a given input peak and
-     * ceiling (single stage, no slew) — used by the host to solve the ceiling for
+     * ceiling (single stage, no slew), used by the host to solve the ceiling for
      * an exact peak reduction. Monotonically non-decreasing in {@code ceiling}.
      *
      * @param inputPeak  absolute input peak

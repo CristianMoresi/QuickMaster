@@ -58,6 +58,53 @@ class PresetValidationTest {
         assertThrows(IllegalArgumentException.class, () -> PresetValidation.validate(p)); assertEquals(3, p.osFactor);
     }
 
+    @Test void autoEqBoundsAreChecked() {
+        for (double value : new double[]{-.1, 1.1}) {
+            ChainPreset p = new ChainPreset(); p.autoEqAmount = value;
+            assertThrows(IllegalArgumentException.class, () -> PresetValidation.validate(p), "amount = " + value);
+        }
+        for (double value : new double[]{-1.1, 1.1}) {
+            ChainPreset p = new ChainPreset(); p.autoEqCutBoost = value;
+            assertThrows(IllegalArgumentException.class, () -> PresetValidation.validate(p), "cut/boost = " + value);
+        }
+        for (double[] edge : new double[][]{{0, -1}, {1, 1}, {.5, 0}}) {
+            ChainPreset p = new ChainPreset(); p.autoEqAmount = edge[0]; p.autoEqCutBoost = edge[1];
+            assertDoesNotThrow(() -> PresetValidation.validate(p), edge[0] + ", " + edge[1]);
+        }
+        ChainPreset fresh = new ChainPreset();
+        assertEquals(com.quickmaster.processing.eq.AutoEqProcessor.DEFAULT_AMOUNT, fresh.autoEqAmount, 0);
+        assertEquals(0, fresh.autoEqCutBoost, 0);
+    }
+
+    @Test void presetsOfTheSlopeMatchingAutoEqKeepTheirAmount() {
+        var gson = new com.google.gson.Gson();
+        // Its amount is the amount; its target curve and its times have no counterpart and are left unread.
+        ChainPreset old = gson.fromJson("{\"version\":1,\"autoEqOn\":true,\"autoEqAmount\":0.35,\"autoEqTarget\":\"BROWN\","
+                + "\"autoEqAttackSec\":0.1,\"autoEqReleaseSec\":0.4}", ChainPreset.class);
+        PresetValidation.validate(old);
+        assertTrue(old.autoEqOn);
+        assertEquals(.35, old.autoEqAmount, 0);
+        assertEquals(0, old.autoEqCutBoost, 0, "in the middle: lowering and raising alike");
+        ChainPreset tooMuch = gson.fromJson("{\"version\":1,\"autoEqAmount\":1.5}", ChainPreset.class);
+        assertThrows(IllegalArgumentException.class, () -> PresetValidation.validate(tooMuch));
+
+        // A preset saved now holds the two controls and comes back as it went.
+        ChainPreset now = new ChainPreset();
+        now.autoEqOn = true; now.autoEqAmount = .7; now.autoEqCutBoost = -.4;
+        String json = gson.toJson(now);
+        assertTrue(json.contains("\"autoEqAmount\":0.7") && json.contains("\"autoEqCutBoost\":-0.4"), json);
+        assertFalse(json.contains("autoEqTarget") || json.contains("autoEqAttackSec") || json.contains("autoEqBalance"), json);
+        ChainPreset back = gson.fromJson(json, ChainPreset.class);
+        PresetValidation.validate(back);
+        assertEquals(.7, back.autoEqAmount, 0);
+        assertEquals(-.4, back.autoEqCutBoost, 0);
+        // And an empty one takes the defaults.
+        ChainPreset empty = gson.fromJson("{}", ChainPreset.class);
+        PresetValidation.validate(empty);
+        assertEquals(com.quickmaster.processing.eq.AutoEqProcessor.DEFAULT_AMOUNT, empty.autoEqAmount, 0);
+        assertEquals(0, empty.autoEqCutBoost, 0);
+    }
+
     private static ChainPreset.BandPreset validBand() {
         var band = new ChainPreset.BandPreset(); band.frequency = 1000; band.q = .707;
         band.aboveRatio = 2; band.belowRatio = 1; band.aboveAttackMs = 5; band.belowAttackMs = 10;

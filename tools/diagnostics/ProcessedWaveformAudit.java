@@ -58,7 +58,7 @@ public final class ProcessedWaveformAudit {
                 FXMLLoader loader=new FXMLLoader(MainController.class.getResource("main-view.fxml"));root=loader.load();c=loader.getController();
                 Scene scene=new Scene(root,1360,830);scene.getStylesheets().add(MainController.class.getResource("app.css").toExternalForm());
                 root.setMinSize(1360,830);root.setPrefSize(1360,830);root.setMaxSize(1360,830);root.resize(1360,830);root.applyCss();root.layout();
-                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster — Processed waveform verification");stage.setScene(scene);stage.show();
+                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster: Processed waveform verification");stage.setScene(scene);stage.show();
                 ChainPreset p=(ChainPreset)call("capturePreset");p.autoEqOn=p.eqOn=p.dynamicsOn=p.clipOn=p.limitOn=false;p.normalizerOn=true;p.normalizerTargetDbtp=-18;
                 var apply=MainController.class.getDeclaredMethod("applyPreset",ChainPreset.class,boolean.class);apply.setAccessible(true);apply.invoke(c,p,false);
                 float[] pcm=new float[48000*20*2];for(int f=0;f<pcm.length/2;f++){

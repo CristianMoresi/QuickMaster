@@ -617,7 +617,7 @@ public class ProcessingPipeline
         validateOversamplingFactor(factor);
         if (factor == 1 || input == null || (channels != 1 && channels != 2)
                 || input.length == 0 || input.length % channels != 0 || lastSampleRate <= 0)
-            throw new IllegalArgumentException("Require a prepared base-rate chain and a 2x–16x complete audio buffer.");
+            throw new IllegalArgumentException("Require a prepared base-rate chain and a 2x to 16x complete audio buffer.");
         checkCancelled(cancellation);
         int sampleRate = lastSampleRate;
         long totalSamples = lastTotalSamples;

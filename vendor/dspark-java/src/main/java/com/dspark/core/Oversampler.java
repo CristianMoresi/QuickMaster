@@ -1,11 +1,11 @@
 package com.dspark.core;
 
 /**
- * Offline power-of-two oversampler — a Java port of the filter design from the
+ * Offline power-of-two oversampler: a Java port of the filter design from the
  * DSPark C++ {@code Oversampling} module (Kaiser-windowed half-band FIR).
  * <p>
  * Upsample a whole interleaved buffer to {@code N×}, run nonlinear processing
- * (compression, limiting) at the higher rate, then downsample — which removes
+ * (compression, limiting) at the higher rate, then downsample, which removes
  * the aliasing those stages would otherwise fold back into the audio band.
  * <p>
  * This is the <b>offline</b> (whole-buffer) variant used for rendering/export:

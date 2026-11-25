@@ -17,10 +17,8 @@ public final class PresetValidation {
     public static void validate(ChainPreset p) {
         if (p == null || p.version != 1) throw new IllegalArgumentException("Unsupported or empty preset version.");
         finiteFields(p);
-        range(p.autoEqAmount, 0, 1, "Auto EQ amount");
-        // Zero was the schema-v1 omitted-field default; the controls clamp it to their minimum.
-        range(p.autoEqAttackSec, 0, .5, "Auto EQ attack"); range(p.autoEqReleaseSec, 0, 2, "Auto EQ release");
-        enumValue(AutoEqProcessor.Target.class, p.autoEqTarget);
+        range(p.autoEqAmount, AutoEqProcessor.MIN_AMOUNT, AutoEqProcessor.MAX_AMOUNT, "Auto EQ amount");
+        range(p.autoEqCutBoost, AutoEqProcessor.MIN_CUT_BOOST, AutoEqProcessor.MAX_CUT_BOOST, "Auto EQ cut/boost");
         range(p.fadeInSec, 0, FadeProcessor.MAX_FADE_SECONDS, "Fade in");
         range(p.fadeOutSec, 0, FadeProcessor.MAX_FADE_SECONDS, "Fade out");
         enumValue(FadeProcessor.FadeType.class, p.fadeType);

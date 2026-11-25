@@ -65,6 +65,61 @@ class PreviewWindowRendererTest {
                 assertTrue(peak.finish() < 1); assertTrue(gain < .5);
             }
     }
+    static float[] programme(int rate, int channels, double seconds) {
+        var random = new java.util.Random(41); float[] x = new float[(int)(rate * seconds) * channels];
+        for (int i = 0; i < x.length / channels; i++) {
+            double v = .12 * random.nextGaussian() + .1 * Math.sin(i * 2 * Math.PI * 2300 / rate);
+            for (int c = 0; c < channels; c++) x[i * channels + c] = (float)(c == 0 ? v : .8 * v + .02 * random.nextGaussian());
+        }
+        return x;
+    }
+    static ProcessingPipeline autoEqChain(double amount, double cutBoost) {
+        var p = new ProcessingPipeline(); var auto = new com.quickmaster.processing.eq.AutoEqProcessor();
+        auto.setEnabled(true); auto.setAmount(amount); auto.setCutBoost(cutBoost); p.addProcessor(auto);
+        var n = new PeakNormalizer(); n.setEnabled(false); p.addProcessor(n); return p;
+    }
+    @Test void autoEqOfNewSettingsIsAuditionedOnTheWindowAtOnce() {
+        int rate = 48000;
+        for (int channels : new int[]{1, 2}) for (int factor : new int[]{1, 4}) {
+            float[] x = programme(rate, channels, 8), saved = x.clone();
+            var whole = new WavFile("reference", rate, channels, x.clone(), 32, true);
+            autoEqChain(1, 0).processOversampled(whole, factor, null);
+            // No render of these settings yet: the window is balanced on its own.
+            var preview = new PreviewWindowRenderer(autoEqChain(1, 0), x, rate, channels, factor);
+            int start = 5 * rate, frames = rate / 2;
+            float[] out = preview.render(start, frames, new CancellationToken());
+            double error = 0, change = 0;
+            for (int i = 0; i < out.length; i++) {
+                error += Math.pow(out[i] - whole.getSamples()[start * channels + i], 2);
+                change += Math.pow(whole.getSamples()[start * channels + i] - x[start * channels + i], 2);
+            }
+            assertTrue(change > 0, "The whole render must change the fixture");
+            assertTrue(error < .12 * change, "channels=" + channels + " OS=" + factor + " window is "
+                    + 10 * Math.log10(error / change) + " dB under the Auto EQ's own change");
+            // The following window is rendered afresh, not replayed from the first one.
+            float[] next = preview.render(start + frames - rate / 10, frames, new CancellationToken());
+            double later = 0, laterChange = 0; int at = (start + frames - rate / 10) * channels;
+            for (int i = 0; i < next.length; i++) {
+                later += Math.pow(next[i] - whole.getSamples()[at + i], 2);
+                laterChange += Math.pow(whole.getSamples()[at + i] - x[at + i], 2);
+            }
+            assertTrue(later < .12 * laterChange, "second window OS=" + factor + ": " + 10 * Math.log10(later / laterChange) + " dB");
+            assertArrayEquals(saved, x);
+        }
+    }
+    @Test void autoEqHoldingTheRenderOfItsSettingsIsPlayedByPosition() {
+        int rate = 48000; float[] x = programme(rate, 2, 6);
+        var chain = autoEqChain(.5, 0);
+        var whole = new WavFile("reference", rate, 2, x.clone(), 32, true); chain.processOversampled(whole, 1, null);
+        var auto = (com.quickmaster.processing.eq.AutoEqProcessor)chain.getProcessors().get(0);
+        assertFalse(auto.awaitsRender());
+        float[] out = new PreviewWindowRenderer(chain, x, rate, 2, 1).render(3 * rate, rate / 4, new CancellationToken());
+        for (int i = 0; i < out.length; i++) assertEquals(whole.getSamples()[3 * rate * 2 + i], out[i], 0f);
+        // Switched off, it is not heard at all.
+        auto.setEnabled(false);
+        float[] dry = new PreviewWindowRenderer(chain, x, rate, 2, 1).render(3 * rate, rate / 4, new CancellationToken());
+        for (int i = 0; i < dry.length; i++) assertEquals(x[3 * rate * 2 + i], dry[i], 0f);
+    }
     @Test void downstreamAnalysisNeverRunsAndAbsoluteEnvelopesRemainAligned() {
         int rate = 48000; float[] x = signal(rate, 1); var p = new ProcessingPipeline();
         p.addProcessor(new AudioProcessor() {

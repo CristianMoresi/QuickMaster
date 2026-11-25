@@ -67,14 +67,14 @@ public final class StereoImagePane extends VBox {
         lowCut.setAccessibleText("Generated Stereo Low Cut"); sideGain.setAccessibleText("Side Gain");
         lowValue.setId("stereoLowCutValue"); sideValue.setId("stereoSideGainValue");
         lowCut.setBlockIncrement(.025); sideGain.setBlockIncrement(.5);
-        lowCut.setTooltip(new Tooltip("Linear-phase low cut on generated stereo only. Leftmost: Off, all frequencies generated. 20 Hz–5 kHz; the original Mid and Side are untouched. At the source Nyquist limit all generated content is excluded."));
+        lowCut.setTooltip(new Tooltip("Linear-phase low cut on generated stereo only. Leftmost: Off, all frequencies generated. 20 Hz to 5 kHz; the original Mid and Side are untouched. At the source Nyquist limit all generated content is excluded."));
         sideGain.setTooltip(new Tooltip("Final gain of combined Side, after Side Leveler and Side Guard. Mid is unchanged. Positive gain can exceed the Guard target; allow output headroom."));
         lowCut.setOnMouseClicked(e -> { if(e.getClickCount() == 2) lowCut.setValue(0); });
         sideGain.setOnMouseClicked(e -> { if(e.getClickCount() == 2) sideGain.setValue(0); });
         HBox trims = new HBox(10, sliderCard("Generated Stereo Low Cut", lowCut, lowValue, "Off", "5 kHz"),
-                sliderCard("Side Gain", sideGain, sideValue, "−12 dB", "+12 dB"));
+                sliderCard("Side Gain", sideGain, sideValue, "-12 dB", "+12 dB"));
         for(var child : trims.getChildren()) { HBox.setHgrow(child, Priority.ALWAYS); ((Region)child).setPrefWidth(380); }
-        generationAmount.tooltip("Mix the generated stereo track into the original. The approved 0–100 range is unchanged. No automatic output attenuation; use Limit / Peak Normalizer explicitly if needed.");
+        generationAmount.tooltip("Mix the generated stereo track into the original. The approved 0 to 100 range is unchanged. No automatic output attenuation; use Limit / Peak Normalizer explicitly if needed.");
         levelingAmount.tooltip("Scale the smooth offline Side correction toward the selected balance. 0%: no regulation; 100%: full correction within the +12 / -24 dB gain limits.");
         margin.tooltip("Permitted Side/Mid ratio above the target, in dB. Side Guard only attenuates; it is not a true-peak limiter. Final Side Gain is independent.");
         notice.setId("stereoNotice"); notice.setWrapText(true); notice.getStyleClass().add("stereo-notice");

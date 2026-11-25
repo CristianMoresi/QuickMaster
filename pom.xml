@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.dspark</groupId>
             <artifactId>dspark</artifactId>
-            <version>0.2.4</version>
+            <version>0.2.7</version>
         </dependency>
 
         <!-- JavaFX UI -->

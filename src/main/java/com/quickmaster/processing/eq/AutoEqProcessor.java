@@ -1,84 +1,112 @@
 package com.quickmaster.processing.eq;
-import com.quickmaster.processing.AudioProcessor;
-import com.quickmaster.processing.analysis.SpectralEngine;
 
 import com.dspark.core.DspMath;
+import com.quickmaster.processing.AudioProcessor;
+import com.quickmaster.processing.dynamics.leveler.CancellationToken;
+
+import java.util.function.BooleanSupplier;
 
 /**
- * <b>Auto EQ</b> - automatic spectral equalisation toward a target tonal curve.
+ * <b>Auto EQ</b> - automatic tonal balance.
  * <p>
- * The first stage of the EQ. It analyses the whole signal once (an STFT
- * time-frequency map) and, knowing every frequency's level at every moment,
- * shapes each moment's spectrum toward a target curve (pink noise by default,
- * or darker / brighter). The correction per band rides over time with
- * <b>Attack</b> and <b>Release</b>; <b>Amount</b> scales it (0 = off, 1 = full).
+ * The first stage of the EQ. It hears the programme through a model of the
+ * ear (loudness in bands of the Bark scale, with the threshold in quiet and
+ * the stereo image taken into account) and moves it toward an even tone:
+ * the broad tone toward flat loudness across the ear's scale, and the fine
+ * detail by lowering what stands over both of its sides (a resonance) and,
+ * more gently, raising what lies under both (a hole). The correction follows
+ * the programme in time. Two controls:
+ * <ul>
+ *   <li><b>Amount</b> is how much it does, from nothing to all of it. At 0
+ *       the programme is returned to the bit. The share of the way the tone
+ *       moves, how far a resonance is lowered or a hole raised, and the
+ *       largest correction of a band (12 dB at full) all grow with it, so the
+ *       correction at an amount is about that share of the correction at
+ *       full.</li>
+ *   <li><b>Cut/Boost</b> is what the correction is made of. In the middle it
+ *       lowers what is in excess and raises what is lacking alike, and the
+ *       loudness the model hears is kept. Toward Cut what it raises fades
+ *       out, until it only lowers; toward Boost what it lowers fades out,
+ *       until it only raises.</li>
+ * </ul>
+ * Dips are raised by six tenths of what peaks are lowered by, and the detail
+ * is read a quarter of an octave fine.
  * <p>
- * Because the file is known in advance, the entire equalised output is rendered
- * offline (linear phase, magnitude only) and then played back by position, so
- * there is no latency and seeking is exact. Disabled by default, so it costs
- * nothing until switched on.
+ * Because the file is known in advance, the whole balanced output is rendered
+ * offline (a minimum-phase filter, its latency taken off) and then played
+ * back by position, so there is no latency and seeking is exact. Disabled by
+ * default, so it costs nothing until switched on.
  */
 public final class AutoEqProcessor implements AudioProcessor
 {
-    /** Target tonal curves, by spectral slope in dB/octave (pink-centred). */
-    public enum Target
-    {
-        DEEP("Deep", -9.0), BROWN("Brown", -6.0), PINK("Pink", -3.0),
-        WHITE("White", 0.0), BLUE("Blue", 3.0);
-        public final String label;
-        public final double slopeDbPerOct;
-        Target(String label, double slope) { this.label = label; this.slopeDbPerOct = slope; }
-        @Override public String toString() { return label; }
-    }
+    public static final double DEFAULT_AMOUNT = 0.25, MIN_AMOUNT = 0.0, MAX_AMOUNT = 1.0;
+    /** Cut/Boost: -1 lowers only, 0 lowers and raises alike, 1 raises only. */
+    public static final double DEFAULT_CUT_BOOST = 0.0, MIN_CUT_BOOST = -1.0, MAX_CUT_BOOST = 1.0;
 
-    public static final double DEFAULT_AMOUNT = 0.2, MIN_AMOUNT = 0.0, MAX_AMOUNT = 1.0;
-    // Dynamic but gentle: fast enough to follow the music, slow enough not to
-    // chase individual notes.
-    public static final double DEFAULT_ATTACK_SEC = 0.1, MIN_ATTACK_SEC = 0.02, MAX_ATTACK_SEC = 0.5;
-    public static final double DEFAULT_RELEASE_SEC = 0.4, MIN_RELEASE_SEC = 0.1, MAX_RELEASE_SEC = 2.0;
-
-    private static final int FFT_SIZE = 16384;
-    private static final int HOP = FFT_SIZE / 4;
-    private static final int NUM_BANDS = 120;             // 1/12 octave, 20 Hz..~19 kHz
-    private static final double MIN_HZ = 20.0, REF_HZ = 1000.0;
-    private static final double MAX_CUT_DB = 9.0, MAX_BOOST_DB = 6.0;
-    private static final double LEVEL_FLOOR_DB = -90.0;
-    /** Overall gentleness: amount = 1 applies only this fraction of the raw match. */
-    private static final double STRENGTH = 0.30;
-    /** Correction is tapered out toward the spectral extremes (psychoacoustic). */
-    private static final double LOW_ZERO_HZ = 28.0, LOW_FULL_HZ = 55.0;
-    private static final double HIGH_FULL_HZ = 14000.0, HIGH_ZERO_HZ = 18000.0;
+    /** The largest correction of a band with Amount at full, in dB. */
+    static final double FULL_RANGE_DB = 12.0;
+    /** Dips are raised by this share of what peaks are lowered by. */
+    static final double DIPS_PER_PEAK = 0.6;
+    /** Peaks and dips are read and played this fine, in octaves. */
+    static final double DETAIL_OCTAVES = 1.0 / 4.0;
 
     private volatile boolean enabled = false;
     private volatile double amount = DEFAULT_AMOUNT;
-    private volatile Target target = Target.PINK;
-    private volatile double attackSec = DEFAULT_ATTACK_SEC;
-    private volatile double releaseSec = DEFAULT_RELEASE_SEC;
+    private volatile double cutBoost = DEFAULT_CUT_BOOST;
 
-    private final SpectralEngine engine = new SpectralEngine(FFT_SIZE, HOP);
     private int sampleRate = 0;
     private long framesProcessed = 0L;
 
-    // Pre-rendered output (interleaved), played back by position.
-    private record Render(float[] samples, int frames, int channels, int rate,
-                          long signature, float[] gain, int gainFrames) { }
-    // Publish all format, gain-map and PCM fields together during UI adoption.
+    // Pre-rendered output (interleaved), played back by position, with the
+    // settings it was rendered for and the curves in play along it. A
+    // provisional one stands for a window of the programme from `offset`,
+    // heard until the whole render replaces it.
+    private record Render(float[] samples, int offset, int frames, int channels, int rate, long signature,
+                          TonalBalanceRender.Settings settings, boolean provisional,
+                          short[] curves, int curveCount, int curveSpacing) { }
+    // Publish all format, curve and PCM fields together during UI adoption.
     private volatile Render render;
 
     public boolean isEnabled() { return enabled; }
     @Override public void setEnabled(boolean e) { this.enabled = e; }
 
+    /** How much the Auto EQ does, 0 (nothing) to 1 (all of it). */
     public double getAmount() { return amount; }
     public void setAmount(double a) { this.amount = finiteClamp(a, MIN_AMOUNT, MAX_AMOUNT); }
 
-    public Target getTarget() { return target; }
-    public void setTarget(Target t) { this.target = (t == null) ? Target.PINK : t; }
+    /** What the correction is made of: -1 lowers only, 0 lowers and raises alike, 1 raises only. */
+    public double getCutBoost() { return cutBoost; }
+    public void setCutBoost(double lean) { this.cutBoost = finiteClamp(lean, MIN_CUT_BOOST, MAX_CUT_BOOST); }
 
-    public double getAttackSec() { return attackSec; }
-    public void setAttackSec(double s) { this.attackSec = finiteClamp(s, MIN_ATTACK_SEC, MAX_ATTACK_SEC); }
+    /** The share of what would be lowered that is lowered at a Cut/Boost position: all of it up to the middle, none at Boost. */
+    public static double cutShare(double cutBoost)
+    {
+        return cutBoost <= 0.0 ? 1.0 : 1.0 - Math.min(cutBoost, 1.0);
+    }
 
-    public double getReleaseSec() { return releaseSec; }
-    public void setReleaseSec(double s) { this.releaseSec = finiteClamp(s, MIN_RELEASE_SEC, MAX_RELEASE_SEC); }
+    /** The share of what would be raised that is raised at a Cut/Boost position: none at Cut, all of it from the middle on. */
+    public static double boostShare(double cutBoost)
+    {
+        return cutBoost >= 0.0 ? 1.0 : 1.0 + Math.max(cutBoost, -1.0);
+    }
+
+    /** The largest correction of a band at the current amount, in dB. */
+    public double getRangeDb() { return settings().rangeDb(); }
+
+    /**
+     * What the two controls ask of the tonal balance. Amount is the share of
+     * every correction: of the way the tone moves, of the trimming of peaks,
+     * of the filling of dips (six tenths of it) and of the 12 dB a band may
+     * move at most. Cut/Boost is the share of all that it raises and the
+     * share it lowers. At half the amount and in the middle these are the
+     * tonal balance's own defaults.
+     */
+    TonalBalanceRender.Settings settings()
+    {
+        final double a = amount, lean = cutBoost;
+        return new TonalBalanceRender.Settings(a, a, DIPS_PER_PEAK * a, boostShare(lean), cutShare(lean),
+                DETAIL_OCTAVES, FULL_RANGE_DB * a);
+    }
 
     @Override public boolean usesAnalysis() { return true; }
     @Override public int getLatencyFrames() { return 0; }
@@ -97,179 +125,108 @@ public final class AutoEqProcessor implements AudioProcessor
     @Override
     public void analyze(float[] samples, int channels)
     {
+        analyze(samples, channels, null);
+    }
+
+    @Override
+    public void analyze(float[] samples, int channels, CancellationToken cancellation)
+    {
+        if (cancellation != null && cancellation.isCancelled())
+            throw new java.util.concurrent.CancellationException("Analysis superseded.");
         if (!enabled) return;
+        final Thread caller = Thread.currentThread();
+        final BooleanSupplier cancelled = () -> caller.isInterrupted() || (cancellation != null && cancellation.isCancelled());
         if (samples == null || channels < 1 || channels > 2 || sampleRate <= 0 || samples.length % channels != 0)
             throw new IllegalArgumentException("Auto EQ needs complete mono/stereo frames at a positive sample rate.");
         for (int i = 0; i < samples.length; i++) {
-            if ((i & 16383) == 0) checkCancelled();
+            if ((i & 16383) == 0) checkCancelled(cancelled);
             if (!Float.isFinite(samples[i])) throw new IllegalArgumentException("Non-finite Auto EQ input.");
         }
         int frames = samples.length / channels;
         if (frames == 0) { render = null; return; }
 
-        long sig = signature(samples, channels, frames);
+        var settings = settings();
+        long sig = signature(samples, channels, frames, settings, cancelled);
         Render previous = render;
-        if (previous != null && sig == previous.signature) return;
-        if (amount == 0) {
-            render = new Render(samples.clone(), frames, channels, sampleRate, sig, null, 0);
+        if (previous != null && !previous.provisional && sig == previous.signature) return;
+        if (settings.asksNothing()) {
+            render = new Render(samples.clone(), 0, frames, channels, sampleRate, sig, settings, false, null, 0, 1);
             return;
         }
 
-        // 2) Band ranges (per bin and per band).
-        int nb = engine.getNumBins();
-        int[] bandLo = new int[NUM_BANDS], bandHi = new int[NUM_BANDS];
-        double[] bandHz = new double[NUM_BANDS];
-        boolean[] active = new boolean[NUM_BANDS];
-        int activeBands = 0;
-        for (int b = 0; b < NUM_BANDS; b++)
-        {
-            bandHz[b] = MIN_HZ * Math.pow(2.0, b / 12.0);
-            double lo = bandHz[b] * Math.pow(2.0, -1.0 / 24.0);
-            double hi = bandHz[b] * Math.pow(2.0, 1.0 / 24.0);
-            active[b] = bandHz[b] < sampleRate * .5;
-            if (active[b]) activeBands++;
-            bandLo[b] = Math.min(nb - 1, Math.max(1, (int) Math.floor(lo * FFT_SIZE / sampleRate)));
-            bandHi[b] = Math.min(nb - 1, (int) Math.ceil(hi * FFT_SIZE / sampleRate));
-            if (bandHi[b] < bandLo[b]) bandHi[b] = bandLo[b];
-        }
-
-        // 3) Per-frame band levels (dB).
-        int nFrames = engine.frameCount(frames);
-        final float[] level = new float[Math.multiplyExact(nFrames, NUM_BANDS)];
-        engine.analyzePower(samples, channels, (power, idx) ->
-        {
-            int row = idx * NUM_BANDS;
-            for (int b = 0; b < NUM_BANDS; b++)
-            {
-                if (!active[b]) continue;
-                double p = 0.0;
-                for (int k = bandLo[b]; k <= bandHi[b]; k++) p += power[k];
-                p /= (bandHi[b] - bandLo[b] + 1);
-                double db = 10.0 * Math.log10(Math.max(p, 1e-12));
-                level[row + b] = (float) Math.max(db, LEVEL_FLOOR_DB);
-            }
-        });
-
-        // 4) Target shape (centred), then per-frame desired correction (centred per frame).
-        double[] targetShape = new double[NUM_BANDS];
-        double targetMean = 0.0;
-        for (int b = 0; b < NUM_BANDS; b++)
-        {
-            targetShape[b] = target.slopeDbPerOct * (Math.log(bandHz[b] / REF_HZ) / Math.log(2.0));
-            if (active[b]) targetMean += targetShape[b];
-        }
-        targetMean /= Math.max(1, activeBands);
-
-        float[] gain = new float[nFrames * NUM_BANDS];
-        for (int f = 0; f < nFrames; f++)
-        {
-            checkCancelled();
-            int row = f * NUM_BANDS;
-            double frameMean = 0.0;
-            for (int b = 0; b < NUM_BANDS; b++) if (active[b]) frameMean += level[row + b];
-            frameMean /= Math.max(1, activeBands);
-            for (int b = 0; b < NUM_BANDS; b++)
-            {
-                if (!active[b]) continue;
-                double raw = (targetShape[b] - targetMean) - (level[row + b] - frameMean);
-                if (raw > 0.0)
-                {
-                    // Don't boost near-silent bands (noise guard).
-                    double present = DspMath.clamp((level[row + b] - (frameMean - 30.0)) / 20.0, 0.0, 1.0);
-                    raw *= present;
-                }
-                raw *= STRENGTH * edgeWeight(bandHz[b]);   // gentler + roll off the extremes
-                gain[row + b] = (float) raw;
-            }
-        }
-
-        // 5) Ride each band over time (attack engages, release relaxes), then Amount + clamp.
-        double frameRate = (double) sampleRate / HOP;
-        double atk = Math.exp(-1.0 / (Math.max(attackSec, 1e-3) * frameRate));
-        double rel = Math.exp(-1.0 / (Math.max(releaseSec, 1e-3) * frameRate));
-        for (int b = 0; b < NUM_BANDS; b++)
-        {
-            checkCancelled();
-            double g = gain[b];                       // first frame
-            for (int f = 0; f < nFrames; f++)
-            {
-                double d = gain[f * NUM_BANDS + b];
-                double c = (Math.abs(d) > Math.abs(g)) ? atk : rel;
-                g = d + c * (g - d);
-                gain[f * NUM_BANDS + b] = (float) DspMath.clamp(amount * g, -MAX_CUT_DB, MAX_BOOST_DB);
-            }
-        }
-
-        // 6) Map each bin to a fractional band position (fixed for this rate).
-        final double[] binBandPos = new double[nb];
-        for (int k = 0; k < nb; k++)
-        {
-            double hz = engine.binToHz(k, sampleRate);
-            double pos = (hz <= MIN_HZ) ? 0.0 : 12.0 * (Math.log(hz / MIN_HZ) / Math.log(2.0));
-            binBandPos[k] = DspMath.clamp(pos, 0.0, NUM_BANDS - 1);
-        }
-
-        // 7) Render each channel with the (linked) per-frame, per-bin gain.
-        final float[] gainMap = gain;
-        float[] out = new float[samples.length];
-        SpectralEngine.BinGain binGain = (freq, idx) ->
-        {
-            int row = Math.min(idx, nFrames - 1) * NUM_BANDS;
-            for (int k = 0; k < nb; k++)
-            {
-                double bp = binBandPos[k];
-                int b0 = (int) bp;
-                double fr = bp - b0;
-                double gdb = (b0 >= NUM_BANDS - 1) ? gainMap[row + NUM_BANDS - 1]
-                        : gainMap[row + b0] * (1 - fr) + gainMap[row + b0 + 1] * fr;
-                float gg = (float) DspMath.decibelsToGain(gdb);
-                freq[2 * k] *= gg;
-                freq[2 * k + 1] *= gg;
-            }
-        };
-        float[] ch = new float[frames];
-        for (int c = 0; c < channels; c++)
-        {
-            for (int f = 0; f < frames; f++) ch[f] = samples[f * channels + c];
-            float[] r = engine.render(ch, binGain);
-            for (int f = 0; f < frames; f++) out[f * channels + c] = r[f];
-        }
-
-        // Reshape tone only: never raise the peak (avoids added clipping/distortion).
-        float inPeak = 0.0f, outPeak = 0.0f;
-        for (float v : samples) { float a = Math.abs(v); if (a > inPeak) inPeak = a; }
-        for (float v : out)     { float a = Math.abs(v); if (a > outPeak) outPeak = a; }
-        if (outPeak > inPeak && outPeak > 1e-9f)
-        {
-            float g = inPeak / outPeak;
-            for (int i = 0; i < out.length; i++) out[i] *= g;
-        }
-
-        checkCancelled();
-        this.render = new Render(out, frames, channels, sampleRate, sig, gain, nFrames);
+        var result = TonalBalanceRender.render(samples, channels, sampleRate, settings, renderWorkers(), cancelled);
+        checkCancelled(cancelled);
+        this.render = new Render(result.samples(), 0, frames, channels, sampleRate, sig, settings, false,
+                result.curves(), result.curveCount(), result.curveSpacing());
     }
 
-    /** Fills {@code outDb} with the correction (dB) applied at each frequency for the given position. */
+    /**
+     * Whether what this processor would play is not the render of its current
+     * settings: it is on, and holds no render, or one of other settings, or a
+     * provisional window.
+     */
+    public boolean awaitsRender()
+    {
+        Render snapshot = render;
+        return enabled && (snapshot == null || snapshot.provisional || !snapshot.settings.equals(settings()));
+    }
+
+    /** Drops the render held, so nothing of another programme or of other settings can be played. */
+    public void forgetRender() { render = null; }
+
+    /**
+     * Renders a provisional window with the current settings, to be heard at
+     * once while the whole render is on its way. The window starts cold, so
+     * its first second or more is warm-up for what follows; it is an
+     * audition, never an export.
+     *
+     * @param context      this stage's input from frame {@code from} of the programme on, interleaved
+     * @param channels     1 or 2
+     * @param from         the frame of the programme the window begins at
+     * @param cancellation polled while rendering, or null
+     */
+    public void renderPreview(float[] context, int channels, int from, CancellationToken cancellation)
+    {
+        if (!enabled) return;
+        if (context == null || channels < 1 || channels > 2 || sampleRate <= 0 || context.length % channels != 0 || from < 0)
+            throw new IllegalArgumentException("Auto EQ needs complete mono/stereo frames at a positive sample rate.");
+        final Thread caller = Thread.currentThread();
+        final BooleanSupplier cancelled = () -> caller.isInterrupted() || (cancellation != null && cancellation.isCancelled());
+        int frames = context.length / channels;
+        if (frames == 0) return;
+        var settings = settings();
+        float[] window = settings.asksNothing() ? context.clone()
+                : TonalBalanceRender.renderWindow(context, channels, sampleRate, settings, cancelled);
+        checkCancelled(cancelled);
+        render = new Render(window, from, frames, channels, sampleRate, 0L, settings, true, null, 0, 1);
+    }
+
+    /** Threads a render may use: every processor but two, left to playback and the interface. */
+    static int renderWorkers()
+    {
+        return Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
+    }
+
+    /** Fills {@code outDb} with the correction (dB) in play at each frequency for the given position. */
     public void fillCorrection(double[] freqs, long samplePos, double[] outDb)
     {
         Render snapshot = render;
-        float[] gm = snapshot == null ? null : snapshot.gain;
-        int nf = snapshot == null ? 0 : snapshot.gainFrames;
-        if (gm == null || nf == 0) { java.util.Arrays.fill(outDb, 0.0); return; }
-        // Analysis includes three leading padded windows. Use their centre
-        // times rather than indexing the map as if it had no boundary windows.
-        double timeFrame = (double) samplePos / HOP + 1.0;
-        int frame = (int) Math.max(0, Math.min(nf - 1, timeFrame));
-        int row = frame * NUM_BANDS;
+        short[] curves = snapshot == null ? null : snapshot.curves;
+        int count = snapshot == null ? 0 : snapshot.curveCount;
+        if (curves == null || count == 0) { java.util.Arrays.fill(outDb, 0.0); return; }
+        final int points = TonalBalanceRender.CURVE_POINTS;
+        double slot = DspMath.clamp((double) samplePos / snapshot.curveSpacing, 0.0, count - 1.0);
+        int s0 = (int) slot, s1 = Math.min(s0 + 1, count - 1);
+        double between = slot - s0;
+        int row0 = s0 * points, row1 = s1 * points;
         for (int i = 0; i < freqs.length; i++)
         {
-            double hz = freqs[i];
-            double pos = (hz <= MIN_HZ) ? 0.0 : 12.0 * (Math.log(hz / MIN_HZ) / Math.log(2.0));
-            pos = DspMath.clamp(pos, 0.0, NUM_BANDS - 1);
-            int b0 = (int) pos;
-            double fr = pos - b0;
-            outDb[i] = (b0 >= NUM_BANDS - 1) ? gm[row + NUM_BANDS - 1]
-                    : gm[row + b0] * (1 - fr) + gm[row + b0 + 1] * fr;
+            double pos = TonalBalanceRender.curvePosition(freqs[i]);
+            int p0 = (int) pos, p1 = Math.min(p0 + 1, points - 1);
+            double part = pos - p0;
+            double early = curves[row0 + p0] + part * (curves[row0 + p1] - curves[row0 + p0]);
+            double late = curves[row1 + p0] + part * (curves[row1 + p1] - curves[row1 + p0]);
+            outDb[i] = 0.01 * (early + between * (late - early));
         }
     }
 
@@ -279,19 +236,21 @@ public final class AutoEqProcessor implements AudioProcessor
         Render snapshot = render;
         if (!enabled || snapshot == null || channels != snapshot.channels) return buffer;
         float[] r = snapshot.samples;
-        int renderedFrames = snapshot.frames, renderedRate = snapshot.rate;
+        int renderedFrames = snapshot.frames, renderedRate = snapshot.rate, offset = snapshot.offset;
         int frames = buffer.length / channels;
         long pos = framesProcessed;
 
         // The render is stored at its analysis (base) rate; position it by time,
         // so the same render plays correctly at any oversampled processing rate.
+        // Outside what it holds (a provisional window holds a stretch only)
+        // the buffer passes as it is.
         double ratio = (sampleRate > 0 && renderedRate > 0)
                 ? (double) renderedRate / sampleRate : 1.0;
         if (ratio == 1.0)
         {
             for (int f = 0; f < frames; f++)
             {
-                long s = pos + f;
+                long s = pos + f - offset;
                 if (s < 0 || s >= renderedFrames) continue;
                 int bi = f * channels, ri = (int) (s * channels);
                 for (int c = 0; c < channels; c++) buffer[bi + c] = r[ri + c];
@@ -301,7 +260,7 @@ public final class AutoEqProcessor implements AudioProcessor
         {
             for (int f = 0; f < frames; f++)
             {
-                double s = (pos + f) * ratio;
+                double s = (pos + f) * ratio - offset;
                 if (s < 0.0 || s >= renderedFrames) continue;
                 int bi = f * channels;
                 for (int c = 0; c < channels; c++)
@@ -342,32 +301,24 @@ public final class AutoEqProcessor implements AudioProcessor
         this.render = src.render;
     }
 
-    /** Frequency weight that tapers the correction to zero toward the spectral extremes. */
-    private static double edgeWeight(double hz)
-    {
-        double w = 1.0;
-        if (hz < LOW_FULL_HZ)
-            w = Math.min(w, DspMath.clamp((hz - LOW_ZERO_HZ) / (LOW_FULL_HZ - LOW_ZERO_HZ), 0.0, 1.0));
-        if (hz > HIGH_FULL_HZ)
-            w = Math.min(w, DspMath.clamp((HIGH_ZERO_HZ - hz) / (HIGH_ZERO_HZ - HIGH_FULL_HZ), 0.0, 1.0));
-        return w;
-    }
-
-    private long signature(float[] samples, int channels, int frames)
+    private long signature(float[] samples, int channels, int frames, TonalBalanceRender.Settings s,
+                           BooleanSupplier cancelled)
     {
         long h = 1125899906842597L;
         h = h * 31 + frames;
         h = h * 31 + channels;
         h = h * 31 + sampleRate;
-        h = h * 31 + Double.hashCode(amount);
-        h = h * 31 + target.ordinal();
-        h = h * 31 + Double.hashCode(attackSec);
-        h = h * 31 + Double.hashCode(releaseSec);
-        // A sparse 512-sample fingerprint misses edits between its probes and
-        // can replay another track's PCM. Account for every input sample.
+        h = h * 31 + Double.hashCode(s.balance());
+        h = h * 31 + Double.hashCode(s.trimPeaks());
+        h = h * 31 + Double.hashCode(s.fillDips());
+        h = h * 31 + Double.hashCode(s.raising());
+        h = h * 31 + Double.hashCode(s.lowering());
+        h = h * 31 + Double.hashCode(s.detail());
+        h = h * 31 + Double.hashCode(s.rangeDb());
+        // Every sample of the input is part of the signature.
         for (int i = 0; i < samples.length; i++)
         {
-            if ((i & 16383) == 0) checkCancelled();
+            if ((i & 16383) == 0) checkCancelled(cancelled);
             h = h * 1099511628211L + Float.floatToIntBits(samples[i]);
         }
         return h;
@@ -377,7 +328,7 @@ public final class AutoEqProcessor implements AudioProcessor
         if (!Double.isFinite(value)) throw new IllegalArgumentException("Non-finite Auto EQ parameter.");
         return DspMath.clamp(value, min, max);
     }
-    private static void checkCancelled() {
-        if (Thread.currentThread().isInterrupted()) throw new java.util.concurrent.CancellationException("Auto EQ cancelled.");
+    private static void checkCancelled(BooleanSupplier cancelled) {
+        if (cancelled.getAsBoolean()) throw new java.util.concurrent.CancellationException("Auto EQ cancelled.");
     }
 }

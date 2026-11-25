@@ -18,12 +18,12 @@ public final class ChainPreset
 {
     public int version = 1;
 
-    /* Auto EQ */
+    /* Auto EQ: the tonal balance. */
     public boolean autoEqOn;
-    public double autoEqAmount;
-    public String autoEqTarget;
-    public double autoEqAttackSec;
-    public double autoEqReleaseSec;
+    /** How much it does, 0 to 1. Presets of the slope-matching Auto EQ hold their amount under this name too. */
+    public double autoEqAmount = com.quickmaster.processing.eq.AutoEqProcessor.DEFAULT_AMOUNT;
+    /** What its correction is made of: -1 lowers only, 0 lowers and raises alike, 1 raises only. */
+    public double autoEqCutBoost = com.quickmaster.processing.eq.AutoEqProcessor.DEFAULT_CUT_BOOST;
 
     /* Equalizer */
     public boolean eqOn;

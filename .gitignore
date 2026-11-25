@@ -51,4 +51,5 @@ quickmaster.log
 *.sh
 *.command
 !tools/Deploy-Portable.ps1
+!tools/Test-DeployBackupCleanup.ps1
 !tools/diagnostics/Generate-Mp3Fixtures.ps1

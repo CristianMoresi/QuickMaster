@@ -40,7 +40,7 @@ public final class StereoImageProcessor implements AudioProcessor, com.quickmast
     @Override public void prepare(int rate, long totalSamples) {
         if (rate <= 0) throw new IllegalArgumentException("Invalid sample rate");
         if (enabled && settings.active() && (rate < 8000 || rate > 3072000))
-            throw new IllegalArgumentException("Stereo Image supports 8–192 kHz sources with up to 16x oversampling");
+            throw new IllegalArgumentException("Stereo Image supports 8 to 192 kHz sources with up to 16x oversampling");
         this.rate = rate; this.totalSamples = totalSamples; frame = 0;
         generator = enabled && settings.active() ? new StereoDeltaGenerator(settings, rate) : null;
     }

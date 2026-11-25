@@ -34,7 +34,7 @@ final class StereoDeltaGenerator {
         } else {
             highPass = null; rawLatency = harmonics == null ? 0 : harmonics.latency();
         }
-        // All supported global 2x–16x renders can compensate this delay exactly
+        // All supported global 2x to 16x renders can compensate this delay exactly
         // in base-rate frames, without rounding a fractional dry-branch delay.
         latency = (rawLatency + 15) / 16 * 16;
         deltaPadding = new double[latency - rawLatency];

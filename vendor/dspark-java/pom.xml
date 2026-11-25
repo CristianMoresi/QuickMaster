@@ -7,14 +7,15 @@
 
     <groupId>com.dspark</groupId>
     <artifactId>dspark</artifactId>
-    <version>0.2.4</version>
+    <version>0.2.7</version>
     <packaging>jar</packaging>
 
     <name>DSPark for Java</name>
     <description>
         Pure-Java audio DSP library: EBU R128 loudness metering, true-peak limiting,
-        parametric and linear-phase EQ, TPDF dithering, stereo-width processing and
-        spectral analysis. Selected DSPark C++ ports and documented Java-specific processors.
+        parametric and linear-phase EQ, adaptive tonal balance, TPDF dithering,
+        stereo-width processing and spectral analysis. Selected DSPark C++ ports and
+        documented Java-specific processors.
     </description>
     <url>https://github.com/crismoresi</url>
 
@@ -36,7 +37,7 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.outputTimestamp>2026-09-28T00:00:00Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-11-25T00:00:00Z</project.build.outputTimestamp>
         <junit.version>5.10.2</junit.version>
     </properties>
 

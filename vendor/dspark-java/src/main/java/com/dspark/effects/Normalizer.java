@@ -74,7 +74,7 @@ public final class Normalizer
      * peak to the target. Digital silence yields unity gain.
      *
      * @param samples  interleaved samples (channel layout is irrelevant
-     *                 — the peak is global)
+     *                 since the peak is global)
      */
     public void analyze(float[] samples)
     {

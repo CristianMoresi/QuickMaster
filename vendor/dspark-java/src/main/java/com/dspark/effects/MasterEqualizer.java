@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * Unified mastering equalizer: a single multi-band processor that subsumes
  * per-channel volume, Mid/Side gain and stereo width, full parametric and
- * tilt EQ, and per-band dynamic EQ — with per-band channel routing and a
+ * tilt EQ, and per-band dynamic EQ, with per-band channel routing and a
  * per-band choice of linear or minimum phase.
  * <p>
  * It merges the two DSPark equalizers ({@code Equalizer}, {@code DynamicEQ})
@@ -59,7 +59,7 @@ import java.util.Arrays;
  * </ol>
  * The per-bin routing matrices are
  * {@code STEREO: B·I}, {@code LEFT: diag(B,1)}, {@code RIGHT: diag(1,B)},
- * {@code MID: ½[[B+1,B−1],[B−1,B+1]]}, {@code SIDE: ½[[1+B,1−B],[1−B,1+B]]},
+ * {@code MID: ½[[B+1,B-1],[B-1,B+1]]}, {@code SIDE: ½[[1+B,1-B],[1-B,1+B]]},
  * where {@code B(f)} is the band's (zero-phase) magnitude.
  *
  * <h2>Latency</h2>
@@ -406,7 +406,7 @@ public final class MasterEqualizer
      *
      * @param dynamicLive  when {@code true}, each dynamic band's current (live)
      *                     gain modulation is added to its static gain, so the
-     *                     curve reflects what the dynamics are doing right now —
+     *                     curve reflects what the dynamics are doing right now;
      *                     used to draw the moving dynamic curve over the static
      *                     one
      */
@@ -441,7 +441,7 @@ public final class MasterEqualizer
 
     /**
      * Fills {@code magnitudes} with the static magnitude response of a SINGLE band,
-     * ignoring its enabled flag — for drawing a muted band's (dimmed) curve.
+     * ignoring its enabled flag, for drawing a muted band's (dimmed) curve.
      */
     public void getBandMagnitudeResponse(int index, double[] frequencies, double[] magnitudes)
     {
@@ -782,7 +782,7 @@ public final class MasterEqualizer
                 rect = Math.abs(detector.processSample((float) domainValue(L, R), 0));
             }
             // Envelope-follow the rectified detector so the threshold comparison
-            // is stable — the raw band-pass output is a per-cycle oscillation that
+            // is stable: the raw band-pass output is a per-cycle oscillation that
             // would otherwise cross the threshold twice every cycle.
             detEnv += ((rect > detEnv) ? detAtk : detRel) * (rect - detEnv);
             double levelDb = gainDbOf(detEnv);
@@ -790,7 +790,7 @@ public final class MasterEqualizer
 
             // Two independent envelopes (above / below the threshold), summed.
             // Attack when the detector level is RISING (a transient), release when
-            // FALLING — so a transient quickly drops a BELOW boost (attack) just as
+            // FALLING, so a transient quickly drops a BELOW boost (attack) just as
             // it quickly engages an ABOVE cut (attack), and both recover on release.
             boolean rising = detEnv >= prevDetEnv;
             prevDetEnv = detEnv;

@@ -1,7 +1,9 @@
 param(
     [Parameter(Mandatory)][string]$ImagePath,
     [Parameter(Mandatory)][ValidatePattern('^[0-9a-fA-F]{64}$')][string]$ExpectedJarSha256,
-    [switch]$ValidateOnly
+    [switch]$ValidateOnly,
+    # Backups of earlier installations kept after a verified deployment, the one just made included.
+    [ValidateRange(1, 10000)][int]$KeepBackups = 2
 )
 
 $ErrorActionPreference = 'Stop'
@@ -39,6 +41,23 @@ function Read-NewLog([string]$Path, [long]$Offset) {
         $reader = [IO.StreamReader]::new($stream)
         try { return $reader.ReadToEnd() } finally { $reader.Dispose() }
     } finally { $stream.Dispose() }
+}
+
+# Removes the installation backups directly under $Root except the $Keep most recent, and returns
+# the names removed. Only real directories named QuickMaster-backup-yyyyMMdd-HHmmss are touched.
+function Remove-SupersededBackups([string]$Root, [int]$Keep) {
+    if ($Keep -lt 1) { throw 'At least one backup must be kept.' }
+    $rootPath = [IO.Path]::GetFullPath($Root)
+    $backups = @(Get-ChildItem -LiteralPath $rootPath -Directory -Force |
+        Where-Object { $_.Name -match '^QuickMaster-backup-\d{8}-\d{6}$' } | Sort-Object -Property Name -Descending)
+    $removed = @()
+    foreach ($old in @($backups | Select-Object -Skip $Keep)) {
+        if ([IO.Path]::GetDirectoryName($old.FullName) -ne $rootPath) { throw "Unexpected backup location: $($old.FullName)" }
+        if (($old.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw "Linked backup: $($old.FullName)" }
+        Remove-Item -LiteralPath $old.FullName -Recurse -Force
+        $removed += $old.Name
+    }
+    return $removed
 }
 
 function Close-OwnedApplication {
@@ -112,6 +131,9 @@ try {
         $result.installedJarSha256 = $installedHash
         $result.startupLog = $newLog.Trim()
         $result.status = 'DEPLOYED_AND_VERIFIED'
+        # The deployment stands whatever happens to the older backups.
+        try { $result.removedBackups = @(Remove-SupersededBackups 'C:\Program Files' $KeepBackups) }
+        catch { $result.backupCleanupError = $_.Exception.Message }
     }
 } catch {
     $result.status = 'FAILED'

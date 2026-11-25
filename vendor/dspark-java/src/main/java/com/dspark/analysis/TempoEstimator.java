@@ -9,8 +9,8 @@ package com.dspark.analysis;
  * mean-removed and its <i>autocorrelation</i> is evaluated only at lags that
  * correspond to plausible tempi (between {@value #DEFAULT_MIN_BPM} and
  * {@value #DEFAULT_MAX_BPM} BPM). Each lag's correlation is multiplied by a
- * <i>perceptual weight</i> — a log-Gaussian centred on
- * {@value #PREFERRED_BPM} BPM — which biases the result toward the tempo a
+ * <i>perceptual weight</i>, a log-Gaussian centred on
+ * {@value #PREFERRED_BPM} BPM, which biases the result toward the tempo a
  * listener would tap and resolves the octave ambiguity (a steady beat
  * correlates equally at its period and at every multiple). The weighted peak
  * is the tempo; its prominence over the mean gives a {@code [0,1]}

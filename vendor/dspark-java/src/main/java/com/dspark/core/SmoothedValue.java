@@ -12,7 +12,7 @@ public final class SmoothedValue
 {
     public enum Type
     {
-        /** One-pole IIR — natural, musical interpolation. */
+        /** One-pole IIR: natural, musical interpolation. */
         EXPONENTIAL,
         /** Constant-velocity ramp with exact arrival. */
         LINEAR,

@@ -9,7 +9,7 @@ public record StereoImageSettings(boolean generation, double generationAmount,
     public static final StereoImageSettings DEFAULT = new StereoImageSettings(
             false, .25, true, true, false, .35, false, 3, StereoProfile.AUTO, .12, 0.0, 0);
 
-    /** Legacy API/JSON: unchecked bass generation used the 150–200 Hz FIR. */
+    /** Legacy API/JSON: unchecked bass generation used the 150 to 200 Hz FIR. */
     public StereoImageSettings(boolean generation, double generationAmount,
             boolean generateLowFrequencies, boolean harmonics, boolean leveling,
             double levelingAmount, boolean guard, double guardMarginDb,

@@ -15,8 +15,8 @@ import com.dspark.core.WindowFunctions;
  * <p>
  * <b>Algorithm.</b> The signal is down-mixed to mono and analysed with a
  * short-time Fourier transform (Hann window, size {@value #DEFAULT_FFT_SIZE},
- * hop {@value #DEFAULT_HOP}). For every frame the <i>spectral flux</i> —
- * the sum over bins of the positive frame-to-frame magnitude increase — is
+ * hop {@value #DEFAULT_HOP}). For every frame the <i>spectral flux</i>,
+ * the sum over bins of the positive frame-to-frame magnitude increase, is
  * accumulated into the ODF. Spectral flux responds to sudden broadband
  * energy gains (the signature of a transient) while ignoring steady tones,
  * which makes it robust across genres. The ODF is normalised to {@code [0,1]}.

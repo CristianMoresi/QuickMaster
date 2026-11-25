@@ -42,10 +42,23 @@ Additional probes, with the same Java/classpath/isolated APPDATA setup:
 | `InteractionLatencyProbe.java` | `<private.wav> [--full-chain] [--repeats=20] [--heap-checkpoints]` | Real control listeners, latest result bitexact to a cold reference, bounded output work; separate audio-ready and meters-ready latency |
 | `PipelineLatencyProbe.java` | `<private.wav> --check-fades` | Four real chain configurations, per-stage time, finite PCM hash, source unchanged and fade snapshot preservation |
 | `PackagedDspCompatibilityProbe.java` | `<old-app-directory> <new-app-directory>` | Independent class loaders; fixed numeric limits across rates, channels and phase modes; intentionally corrected broadband excluded |
+| `AutoEqTrackAudit.java` | `<private.wav> [amount=] [cutBoost=]` | Whole-song Auto EQ: render time, integrated loudness and true peak before and after, the curve in play along the track, alignment with the source, range respected, nothing raised at Cut and nothing lowered at Boost, joins checked and stretches carried on, the parallel render against one stream, source unchanged |
+| `AutoEqUiAudit.java` | `<private.wav> <output-dir>` | The two real Auto EQ controls (Amount and Cut/Boost); Amount at zero publishes the source and draws nothing; the drawn correction grows with Amount; Cut raises and Boost lowers nothing; published PCM bit-exact to an independent render after each edit; provisional preview published at once; typed values; presets, including one of the slope-matching Auto EQ; undo; screenshots |
+
+`ReadmeScreenshot.java` (`<private.wav> <output.png> [scale] [playhead-seconds]`) is not a probe:
+it redraws `docs/gui.png`, the picture of the interface the README shows, off
+screen from the real FXML at the design size times the scale (2 when left out),
+with every module on, a gentle tilt band, the Auto EQ at 50 % and the playhead
+where you put it (a third of the way in by default; `docs/gui.png` is By Now at
+160 s, where the Auto EQ moves most). Run it against the
+packaged JARs after a change to the interface, and look at the result before
+replacing the picture.
 
 The compatibility probe above records the original DSPark migration, not blanket
 equivalence for the later product audit: Auto EQ, multiband tail handling and
-export SRC have intentional, independently tested corrections.
+export SRC have intentional, independently tested corrections. Auto EQ has
+since become the DSPark tonal balance: against a build that predates it the
+probe is expected to differ there, by design.
 
 Product audit probes (same installed classpath, no audio device):
 

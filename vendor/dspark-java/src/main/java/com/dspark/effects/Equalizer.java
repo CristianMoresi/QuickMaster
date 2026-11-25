@@ -10,7 +10,7 @@ import com.dspark.core.WindowFunctions;
  * linear-phase (FFT) modes.
  * <p>
  * In minimum-phase mode each band is a single biquad (peak, shelf, tilt,
- * low/high-pass or notch) — zero latency, the natural choice for tracking
+ * low/high-pass or notch): zero latency, the natural choice for tracking
  * and quick tone shaping. In linear-phase mode the combined magnitude
  * response of all bands is realized as a symmetric FIR applied by
  * overlap-save FFT convolution, so the phase is left untouched (no

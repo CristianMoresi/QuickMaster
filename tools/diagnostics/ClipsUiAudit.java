@@ -67,7 +67,7 @@ class ClipsUiAudit {
                 FXMLLoader loader=new FXMLLoader(MainController.class.getResource("main-view.fxml"));root=loader.load();c=loader.getController();
                 Scene scene=new Scene(root,1360,830);scene.getStylesheets().add(MainController.class.getResource("app.css").toExternalForm());
                 root.setMinSize(1360,830);root.setPrefSize(1360,830);root.setMaxSize(1360,830);
-                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster — clipping audit");stage.setScene(scene);stage.show();
+                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster: clipping audit");stage.setScene(scene);stage.show();
                 ChainPreset p=(ChainPreset)call("capturePreset");p.autoEqOn=p.eqOn=p.dynamicsOn=p.limitOn=false;p.clipOn=p.softClipOn=p.hardClipOn=true;
                 p.softClipDb=2;p.softClipAlgo="TUBE";p.hardClipDb=1;p.hardClipCurve="SOFT";p.normalizerOn=true;p.normalizerTargetDbtp=-1;p.osOn=false;
                 call("applyPreset",new Class<?>[]{ChainPreset.class,boolean.class},p,false);

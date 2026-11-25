@@ -50,15 +50,33 @@ class ResamplerTest
     }
 
     @Test
-    @DisplayName("44.1k to 48k conversion is sample-accurate against the ideal sine")
+    @DisplayName("Common audio rates resolve to an exact polyphase table (no phase-interp images)")
+    void commonRatesAreExactPolyphase()
+    {
+        Resampler r = new Resampler();
+        // Every standard conversion QuickMaster exports to is rational and exact.
+        r.prepare(44100, 48000, Resampler.Quality.ULTRA);
+        assertTrue(r.isExact(), "44.1 -> 48 must be exact (160/147)");
+        r.prepare(48000, 44100, Resampler.Quality.ULTRA);
+        assertTrue(r.isExact(), "48 -> 44.1 must be exact (147/160)");
+        r.prepare(96000, 48000, Resampler.Quality.ULTRA);
+        assertTrue(r.isExact(), "96 -> 48 must be exact (1/2)");
+        assertEquals(0.5, r.getRatio(), 0.0);
+        r.prepare(88200, 44100, Resampler.Quality.ULTRA);
+        assertTrue(r.isExact(), "88.2 -> 44.1 must be exact (1/2)");
+    }
+
+    @Test
+    @DisplayName("44.1k to 48k (exact polyphase) is sample-accurate against the ideal sine")
     void conversionIsTimeAlignedAndClean()
     {
-        // Exercises every polyphase fraction (non-trivial ratio). The batch
-        // path is time-aligned: out[k] must match the source sine evaluated
-        // at k / ratio, with no sub-sample jitter (a reversed-frac kernel
-        // reads at intPos - frac and errs by ~6e-2 here).
+        // Exact polyphase has no phase-interpolation error: out[k] matches the
+        // source sine evaluated at k / ratio to near the float floor (the old
+        // interpolated-table design erred by ~6e-2 with a reversed-frac kernel
+        // and ~1e-4 with linear phase interpolation).
         Resampler r = new Resampler();
         r.prepare(44100, 48000, Resampler.Quality.ULTRA);
+        assertTrue(r.isExact());
         int n = 44100;
         float[] in = new float[n];
         double step = 2.0 * Math.PI * 1000.0 / 44100.0;
@@ -72,22 +90,30 @@ class ResamplerTest
             double ideal = 0.5 * Math.sin(outStep * k);
             maxErr = Math.max(maxErr, Math.abs(out[k] - ideal));
         }
-        assertTrue(maxErr < 1e-3, "max error vs ideal sine was " + maxErr);
+        assertTrue(maxErr < 1e-4, "max error vs ideal sine was " + maxErr);
     }
 
     @Test
-    @DisplayName("Quality tiers match the documented 20 kHz droop (44.1 to 48)")
-    void qualityTiersMatchDocumentedDroop()
+    @DisplayName("Normal/High/Ultra keep 20 kHz on 44.1 to 48; Draft trades the top for speed")
+    void passbandHoldsTwentyKhz()
     {
-        // Reference table (same as the C++ Resampler docs): Draft -3.3 dB,
-        // Normal -0.6 dB, High -0.02 dB, Ultra flat at 20 kHz for 44.1->48.
-        assertDroop(Resampler.Quality.DRAFT, -3.3, 0.4);
-        assertDroop(Resampler.Quality.NORMAL, -0.6, 0.2);
-        assertDroop(Resampler.Quality.HIGH, -0.02, 0.1);
-        assertDroop(Resampler.Quality.ULTRA, 0.0, 0.05);
+        // Passband edge = tier fraction * lower Nyquist (22050 Hz). Normal
+        // (19845 Hz), High (20066 Hz) and Ultra (20176 Hz) all keep 20 kHz
+        // essentially flat (the cutoff, the -6 dB point, sits even higher);
+        // only Draft (passband 17640 Hz) places 20 kHz past its cutoff.
+        double ultra = droopDb(Resampler.Quality.ULTRA);
+        double high  = droopDb(Resampler.Quality.HIGH);
+        double normal = droopDb(Resampler.Quality.NORMAL);
+        double draft = droopDb(Resampler.Quality.DRAFT);
+
+        assertTrue(Math.abs(ultra) < 0.2, "Ultra 20 kHz should be flat, was " + ultra + " dB");
+        assertTrue(Math.abs(high) < 0.2, "High 20 kHz should be flat, was " + high + " dB");
+        assertTrue(Math.abs(normal) < 0.3, "Normal 20 kHz should be near-flat, was " + normal + " dB");
+        assertTrue(draft < -1.0 && draft < high - 0.5,
+                "Draft should trade the top: draft=" + draft + " dB, high=" + high + " dB");
     }
 
-    private static void assertDroop(Resampler.Quality q, double wantDb, double tol)
+    private static double droopDb(Resampler.Quality q)
     {
         Resampler r = new Resampler();
         r.prepare(44100, 48000, q);
@@ -96,8 +122,27 @@ class ResamplerTest
         for (int i = 0; i < n; i++) in[i] = (float) Math.sin(2.0 * Math.PI * 20000.0 * i / 44100.0);
         float[] out = r.process(in);
         double amp = goertzel(out, out.length / 4, 3 * out.length / 4, 20000.0, 48000.0);
-        double gotDb = 20.0 * Math.log10(amp);
-        assertEquals(wantDb, gotDb, tol, q + " 20 kHz gain");
+        return 20.0 * Math.log10(amp);
+    }
+
+    @Test
+    @DisplayName("Content above the target Nyquist is rejected on downsample (Ultra)")
+    void stopbandRejectsAboveNyquist()
+    {
+        // 48 kHz source, a 23 kHz tone (above the 22.05 kHz target Nyquist):
+        // the designed stopband starts at the target Nyquist, so the tone must
+        // be strongly attenuated rather than aliased back into the 44.1k band.
+        Resampler r = new Resampler();
+        r.prepare(48000, 44100, Resampler.Quality.ULTRA);
+        int n = 48000 * 2;
+        float[] in = new float[n];
+        for (int i = 0; i < n; i++) in[i] = (float) Math.sin(2.0 * Math.PI * 23000.0 * i / 48000.0);
+        float[] out = r.process(in);
+
+        double peak = 0.0;
+        for (int i = out.length / 4; i < 3 * out.length / 4; i++) peak = Math.max(peak, Math.abs(out[i]));
+        double db = 20.0 * Math.log10(peak + 1e-30);
+        assertTrue(db < -80.0, "out-of-band tone should be rejected below -80 dB, was " + db + " dB");
     }
 
     /** Goertzel amplitude of a real tone at {@code freq} over x[from..to). */

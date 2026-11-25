@@ -41,11 +41,47 @@ public final class FFTComplex {
     public void forward(float[] data) { transform(data, false); }
     public void inverse(float[] data) { transform(data, true); }
 
+    /** Forward transform of {@code size} interleaved complex doubles, in place (not normalized). */
+    public void forward(double[] data) { transform(data, false); }
+
+    /** Inverse transform of {@code size} interleaved complex doubles, in place (normalized by 1/N). */
+    public void inverse(double[] data) { transform(data, true); }
+
+    // The result of run(): whichever work pair the last pass wrote.
+    private double[] outR, outI;
+
     private void transform(float[] data, boolean inverse) {
         for (int i = 0; i < size; i++) {
             realA[i] = data[2 * i];
             imagA[i] = inverse ? -data[2 * i + 1] : data[2 * i + 1];
         }
+        run();
+        double[] xr = outR, xi = outI;
+        double scale = inverse ? 1.0 / size : 1.0;
+        double imScale = inverse ? -scale : scale;
+        for (int i = 0; i < size; i++) {
+            data[2 * i] = (float) (xr[i] * scale);
+            data[2 * i + 1] = (float) (xi[i] * imScale);
+        }
+    }
+
+    private void transform(double[] data, boolean inverse) {
+        for (int i = 0; i < size; i++) {
+            realA[i] = data[2 * i];
+            imagA[i] = inverse ? -data[2 * i + 1] : data[2 * i + 1];
+        }
+        run();
+        double[] xr = outR, xi = outI;
+        double scale = inverse ? 1.0 / size : 1.0;
+        double imScale = inverse ? -scale : scale;
+        for (int i = 0; i < size; i++) {
+            data[2 * i] = xr[i] * scale;
+            data[2 * i + 1] = xi[i] * imScale;
+        }
+    }
+
+    /** The passes over realA/imagA; leaves the spectrum in outR/outI. */
+    private void run() {
         double[] xr = realA, xi = imagA, yr = realB, yi = imagB;
         int n = size, stride = 1, offset = 0;
         while (n >= 4) {
@@ -86,11 +122,6 @@ public final class FFTComplex {
             }
             xr = yr; xi = yi;
         }
-        double scale = inverse ? 1.0 / size : 1.0;
-        double imScale = inverse ? -scale : scale;
-        for (int i = 0; i < size; i++) {
-            data[2 * i] = (float) (xr[i] * scale);
-            data[2 * i + 1] = (float) (xi[i] * imScale);
-        }
+        outR = xr; outI = xi;
     }
 }

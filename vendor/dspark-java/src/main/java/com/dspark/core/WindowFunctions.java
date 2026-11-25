@@ -11,7 +11,7 @@ public final class WindowFunctions
 {
     private WindowFunctions() { }
 
-    /** Rectangular window (all ones — i.e. no windowing). */
+    /** Rectangular window (all ones, i.e. no windowing). */
     public static void rectangular(double[] out, int size)
     {
         for (int i = 0; i < size; i++) out[i] = 1.0;
@@ -49,7 +49,7 @@ public final class WindowFunctions
         }
     }
 
-    /** Blackman-Harris (4-term) window — very low side lobes (~-92 dB). */
+    /** Blackman-Harris (4-term) window: very low side lobes (~-92 dB). */
     public static void blackmanHarris(double[] out, int size)
     {
         if (size == 1) { out[0] = 1.0; return; }
@@ -77,6 +77,28 @@ public final class WindowFunctions
         }
     }
 
+    /**
+     * Asymmetric window for low-latency analysis: the rising half of a Hann
+     * window over the first {@code size - fall} samples and its falling half
+     * over the last {@code fall}, so the weight sits on the most recent
+     * samples (the peak is {@code fall} samples from the end).
+     *
+     * @param out   destination
+     * @param size  number of samples
+     * @param fall  length of the falling part, 1 to size - 1 (clamped)
+     */
+    public static void asymmetricHann(double[] out, int size, int fall)
+    {
+        if (size <= 0) return;
+        if (size == 1) { out[0] = 1.0; return; }
+        int f = Math.max(1, Math.min(fall, size - 1));
+        int rise = size - f;
+        for (int i = 0; i < rise; i++)
+            out[i] = 0.5 - 0.5 * Math.cos(Math.PI * i / rise);
+        for (int i = 0; i < f; i++)
+            out[rise + i] = 0.5 + 0.5 * Math.cos(Math.PI * i / f);
+    }
+
     /** Multiplies an interleaved/mono float signal by a window, in place. */
     public static void apply(float[] signal, double[] window, int size)
     {
@@ -94,7 +116,7 @@ public final class WindowFunctions
     private static double besselI0(double x)
     {
         double sum = 1.0, term = 1.0, half = x / 2.0;
-        for (int k = 1; k <= 50; k++)
+        for (int k = 1; k < 50; k++)
         {
             term *= (half / k) * (half / k);
             sum += term;

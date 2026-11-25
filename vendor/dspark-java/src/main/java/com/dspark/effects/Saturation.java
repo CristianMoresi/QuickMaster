@@ -8,7 +8,7 @@ import com.dspark.core.DspMath;
  * <p>
  * The signal is shaped by a warm soft-clip curve against a ceiling: the body
  * below the knee passes through cleanly, only the material near the ceiling is
- * rounded, generating musical harmonics. Three voicings are offered —
+ * rounded, generating musical harmonics. Three voicings are offered:
  * {@link Algorithm#TUBE} (asymmetric knee → warm 2nd-harmonic colour),
  * {@link Algorithm#TAPE} (symmetric → odd harmonics, smooth) and
  * {@link Algorithm#TRANSFORMER} (firmer, denser). The nonlinearity is
@@ -27,11 +27,11 @@ public final class Saturation
     /** Soft-clip voicing. */
     public enum Algorithm
     {
-        /** Asymmetric knee — warm, dominant 2nd harmonic. */
+        /** Asymmetric knee: warm, dominant 2nd harmonic. */
         TUBE,
-        /** Symmetric knee — smooth, odd harmonics. */
+        /** Symmetric knee: smooth, odd harmonics. */
         TAPE,
-        /** Firmer asymmetric knee — denser even + odd harmonics. */
+        /** Firmer asymmetric knee: denser even + odd harmonics. */
         TRANSFORMER
     }
 
@@ -97,7 +97,7 @@ public final class Saturation
         if (Double.isFinite(linear)) ceiling = Math.max(1e-4, linear);
     }
 
-    /** Stereo drift intensity (0..1) — independent per-channel harmonic variation. */
+    /** Stereo drift intensity (0..1): independent per-channel harmonic variation. */
     public void setStereoAmount(double a)
     {
         if (Double.isFinite(a)) stereoAmount = DspMath.clamp(a, 0.0, 1.0);
@@ -111,7 +111,7 @@ public final class Saturation
 
     /**
      * Output peak the soft-clip would produce for a given input peak and ceiling,
-     * at the current drive — used by the host to solve the ceiling for an exact
+     * at the current drive, used by the host to solve the ceiling for an exact
      * peak reduction. Uses the gentler (positive) side, which is the loudest.
      * Monotonically increasing in {@code ceilingCandidate}.
      */

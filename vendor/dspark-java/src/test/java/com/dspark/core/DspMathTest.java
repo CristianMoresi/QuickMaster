@@ -54,4 +54,30 @@ class DspMathTest
         assertEquals(-1.0f, DspMath.clampSample(-2.0f), 0.0f);
         assertTrue(Math.abs(DspMath.clampSample(0.5f) - 0.5f) < 1e-7);
     }
+
+    @Test
+    @DisplayName("fastLog stays within its series truncation of the exact logarithm over sixty decades")
+    void fastLogAccuracy()
+    {
+        double worst = 0.0;
+        for (double x = 1e-30; x < 1e30; x *= 1.0137)
+            worst = Math.max(worst, Math.abs(DspMath.fastLog(x) - Math.log(x)));
+        assertTrue(worst < 3.0e-8, "worst error " + worst);
+        // The mantissa of a power of two folds onto 1: only the exponent is left.
+        assertEquals(0.0, DspMath.fastLog(1.0), 0.0);
+        assertEquals(10.0 * Math.log(2.0), DspMath.fastLog(1024.0), 0.0);
+        assertEquals(-3.0 * Math.log(2.0), DspMath.fastLog(0.125), 0.0);
+    }
+
+    @Test
+    @DisplayName("fastLog reads subnormal values and hands what has no logarithm to Math.log")
+    void fastLogEdges()
+    {
+        assertEquals(Math.log(1e-310), DspMath.fastLog(1e-310), 3.0e-8);
+        assertEquals(Math.log(Double.MIN_VALUE), DspMath.fastLog(Double.MIN_VALUE), 3.0e-8);
+        assertEquals(Double.NEGATIVE_INFINITY, DspMath.fastLog(0.0), 0.0);
+        assertEquals(Double.POSITIVE_INFINITY, DspMath.fastLog(Double.POSITIVE_INFINITY), 0.0);
+        assertTrue(Double.isNaN(DspMath.fastLog(-1.0)));
+        assertTrue(Double.isNaN(DspMath.fastLog(Double.NaN)));
+    }
 }
