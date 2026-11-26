@@ -124,4 +124,33 @@ public final class DspMath
         double lnm = 2.0 * s * (1.0 + s2 * (1.0 / 3.0 + s2 * (1.0 / 5.0 + s2 * (1.0 / 7.0))));
         return lnm + e * 0.6931471805599453;
     }
+
+    /** Coefficients of the odd sine polynomial of {@link #fastSin} on [-pi/2, pi/2]. */
+    private static final double[] FAST_SIN_POLYNOMIAL = {
+        0.99999997408724855, -0.16666646026660671, 0.0083328727116396326,
+        -0.00019799239565814083, 2.5871610835732768e-6 };
+
+    /**
+     * Fast sine: the argument is reduced to [-pi, pi] with a two-term split
+     * of 2 pi (6.28125 and its remainder), folded into [-pi/2, pi/2] by
+     * sin(x) = sin(pi - x), and evaluated by an endpoint-constrained minimax
+     * polynomial of degree 9 (equiripple error 3.73e-9, exactly 1 at pi/2).
+     *
+     * @param x  argument in radians
+     * @return an approximation of sin(x)
+     */
+    public static double fastSin(double x)
+    {
+        final double k = Math.floor(x * (1.0 / (2.0 * Math.PI)) + 0.5);
+        x -= k * 6.28125;
+        x -= k * 0.0019353071795864769253;
+
+        final double halfPi = Math.PI / 2.0;
+        if (x > halfPi) x = Math.PI - x;
+        else if (x < -halfPi) x = -Math.PI - x;
+
+        final double x2 = x * x;
+        final double[] c = FAST_SIN_POLYNOMIAL;
+        return x * (c[0] + x2 * (c[1] + x2 * (c[2] + x2 * (c[3] + x2 * c[4]))));
+    }
 }

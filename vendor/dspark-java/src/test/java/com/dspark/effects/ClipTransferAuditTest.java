@@ -28,8 +28,8 @@ class ClipTransferAuditTest {
     }
 
     @Test void rationalVoicingsAreContinuousMonotoneAndNeverExpand() {
-        Saturation sat=new Saturation();
-        for(Saturation.Algorithm mode:Saturation.Algorithm.values()) {
+        RationalKneeSaturation sat=new RationalKneeSaturation();
+        for(RationalKneeSaturation.Algorithm mode:RationalKneeSaturation.Algorithm.values()) {
             sat.setAlgorithm(mode);double previous=-Double.MAX_VALUE;
             for(int i=-20000;i<=20000;i++) {
                 double x=i/1000.0,y=sat.shapeSample(x,1);

@@ -7,7 +7,7 @@
 
     <groupId>com.dspark</groupId>
     <artifactId>dspark</artifactId>
-    <version>0.2.7</version>
+    <version>0.2.8</version>
     <packaging>jar</packaging>
 
     <name>DSPark for Java</name>

@@ -3,12 +3,13 @@ import com.quickmaster.config.ChainPreset;
 import com.quickmaster.processing.*;
 import com.quickmaster.processing.clip.*;
 import com.quickmaster.ui.*;
-import com.dspark.effects.Saturation;
 import javafx.application.Platform;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.layout.Region;
 import java.lang.reflect.*;
 import java.nio.file.*;
@@ -17,7 +18,7 @@ import java.util.concurrent.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-/** Actual English controls, preset migration, latest worker/PCM, meter and A/B. */
+/** Actual English controls, preset migration, latest worker/PCM for a curve and a tape alignment, meter and A/B. */
 class ClipsUiAudit {
     static MainController c;static Region root;static javafx.stage.Stage stage;
     static Object get(Object o,String n)throws Exception {var f=o.getClass().getDeclaredField(n);f.setAccessible(true);return f.get(o);}
@@ -35,14 +36,15 @@ class ClipsUiAudit {
     static void verify()throws Exception {
         record State(float[] source,float[] actual,int rate,int channels,ChainPreset preset) { }
         State s=fx(()->{AudioFile f=(AudioFile)get("loadedFile");return new State(f.getSamples(),pcm(),f.getSampleRate(),f.getChannels(),(ChainPreset)call("capturePreset"));});
-        var soft=new SoftClipProcessor();soft.setEnabled(true);soft.setSatDb(s.preset.softClipDb);soft.setAlgorithm(Saturation.Algorithm.valueOf(s.preset.softClipAlgo));
+        var soft=new SaturationProcessor();soft.setEnabled(true);soft.setSatDb(s.preset.softClipDb);
+        soft.setType(SaturationType.fromPreset(s.preset.saturationType,s.preset.softClipAlgo));soft.setTapePreset(TapePreset.valueOf(s.preset.tapePreset));
         var hard=new HardClipProcessor();hard.setEnabled(true);hard.setClipDb(s.preset.hardClipDb);hard.setCurve(HardClipProcessor.Curve.valueOf(s.preset.hardClipCurve));
         var pipe=new ProcessingPipeline();pipe.addProcessor(soft);pipe.addProcessor(hard);pipe.addProcessor(new PeakNormalizer(-1));pipe.prepare(s.rate,s.source.length);
         float[] cold=pipe.analyzeAndRender(s.source,s.channels,0,null,null,null);
         check(Arrays.equals(cold,s.actual),"Published clip PCM differs from fresh cumulative render");
         fx(()-> {
             Method audible=MainController.class.getDeclaredMethod("audibleProcessor",AudioProcessor.class);audible.setAccessible(true);
-            var approvedSoft=(SoftClipProcessor)audible.invoke(c,get("softClip"));
+            var approvedSoft=(SaturationProcessor)audible.invoke(c,get("saturation"));
             var approvedHard=(HardClipProcessor)audible.invoke(c,get("hardClip"));
             for(int f=0;f<s.source.length/s.channels;f+=1024) {
                 check(Math.abs(soft.getGrAtPosition(f)-approvedSoft.getGrAtPosition(f))<.00001,"Soft meter snapshot");
@@ -50,7 +52,7 @@ class ClipsUiAudit {
             }
             return null;
         });
-        System.out.println("CLIPS_UI_PCM_PASS soft="+s.preset.softClipAlgo+" hard="+s.preset.hardClipCurve+" coldExact=true meters=true");
+        System.out.println("CLIPS_UI_PCM_PASS saturation="+s.preset.saturationType+"/"+s.preset.tapePreset+" hard="+s.preset.hardClipCurve+" coldExact=true meters=true");
     }
     static void shot(Path path)throws Exception {
         root.applyCss();root.layout();call("drawWaveform");var img=root.snapshot(null,null);
@@ -67,25 +69,25 @@ class ClipsUiAudit {
                 FXMLLoader loader=new FXMLLoader(MainController.class.getResource("main-view.fxml"));root=loader.load();c=loader.getController();
                 Scene scene=new Scene(root,1360,830);scene.getStylesheets().add(MainController.class.getResource("app.css").toExternalForm());
                 root.setMinSize(1360,830);root.setPrefSize(1360,830);root.setMaxSize(1360,830);
-                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster: clipping audit");stage.setScene(scene);stage.show();
+                stage=new javafx.stage.Stage();stage.setTitle("QuickMaster: clipping audit");stage.setX(-20000);stage.setY(-20000);stage.setScene(scene);stage.show();
                 ChainPreset p=(ChainPreset)call("capturePreset");p.autoEqOn=p.eqOn=p.dynamicsOn=p.limitOn=false;p.clipOn=p.softClipOn=p.hardClipOn=true;
                 p.softClipDb=2;p.softClipAlgo="TUBE";p.hardClipDb=1;p.hardClipCurve="SOFT";p.normalizerOn=true;p.normalizerTargetDbtp=-1;p.osOn=false;
                 call("applyPreset",new Class<?>[]{ChainPreset.class,boolean.class},p,false);
                 check(((ComboBox<?>)get("hardCurveCombo")).getValue()==HardClipProcessor.Curve.SOFT,"Hidden preset curve");
-                ComboBox<Saturation.Algorithm> combo=(ComboBox<Saturation.Algorithm>)get("satAlgoCombo");
-                check(combo.getConverter().toString(combo.getValue()).equals("Analog"),"Misleading legacy algorithm label");
+                check(((MenuButton)get("satTypeButton")).getText().equals("Soft clip: Sine"),"Legacy curve shown as "+((MenuButton)get("satTypeButton")).getText());
                 for(Object module:(List<?>)get("chainModules"))if(get(module,"name").equals("Clip"))call("selectModule",new Class<?>[]{module.getClass()},module);
                 call("loadAudioFile",new Class<?>[]{java.io.File.class},source.toFile());return null;
             });
             ready();verify();float[] a=fx(()->pcm());
             fx(()-> {call("onSelectSlotB");((Knob)get("satKnob")).setValue(1);((Knob)get("satKnob")).setValue(4);
                 ((ComboBox<HardClipProcessor.Curve>)get("hardCurveCombo")).setValue(HardClipProcessor.Curve.HARD);
-                ((ComboBox<Saturation.Algorithm>)get("satAlgoCombo")).setValue(Saturation.Algorithm.TRANSFORMER);
+                ((Map<String,RadioMenuItem>)get("satTypeItems")).get("GOLDEN").fire();
+                check(((MenuButton)get("satTypeButton")).getText().equals("Soft clip: Golden knee"),"Curve entry");
                 ((PauseTransition)get("dynRefreshDebounce")).stop();call("syncLiveAnalysis");return null;});
             ready();verify();float[] b=fx(()->pcm());check(!Arrays.equals(a,b),"Controls did not change audio");
             fx(()-> {
                 Method audible=MainController.class.getDeclaredMethod("audibleProcessor",AudioProcessor.class);audible.setAccessible(true);
-                var soft=(SoftClipProcessor)audible.invoke(c,get("softClip"));
+                var soft=(SaturationProcessor)audible.invoke(c,get("saturation"));
                 var hard=(HardClipProcessor)audible.invoke(c,get("hardClip"));
                 AudioFile file=(AudioFile)get("loadedFile");int peakFrame=0;double largest=0;
                 for(int f=0;f<file.getSamples().length/file.getChannels();f+=1024) {
@@ -108,8 +110,13 @@ class ClipsUiAudit {
             fx(()-> {shot(output.resolve("clips-audit.png"));call("onSelectSlotA");check(pcm()==a,"A cache");
                 check(((ComboBox<?>)get("hardCurveCombo")).getValue()==HardClipProcessor.Curve.SOFT,"A curve UI");
                 call("onSelectSlotB");check(pcm()==b,"B cache");return null;});
+            fx(()-> {((Map<String,RadioMenuItem>)get("satTypeItems")).get("TAPE/COLORED_15").fire();
+                check(((MenuButton)get("satTypeButton")).getText().equals("Tape: 15 ips Colored"),"Tape entry");
+                ((Knob)get("satKnob")).setValue(3);
+                ((PauseTransition)get("dynRefreshDebounce")).stop();call("syncLiveAnalysis");return null;});
+            ready();verify();float[] t=fx(()->pcm());check(!Arrays.equals(b,t),"Tape did not change audio");
             check(before.equals(com.quickmaster.config.LevelerExclusionStore.identity(source)),"Source changed");
-            System.out.println("CLIPS_UI_PASS EnglishCurves=true presetRestored=true publishedPcm=true meters=true cachedAB=true sourceUnchanged=true");
+            System.out.println("CLIPS_UI_PASS EnglishCurves=true tape=true presetRestored=true publishedPcm=true meters=true cachedAB=true sourceUnchanged=true");
         } finally {fx(()-> {if(c!=null)c.shutdown();if(stage!=null)stage.close();return null;});Platform.exit();}
     }
 }

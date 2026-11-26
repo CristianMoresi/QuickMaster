@@ -3,6 +3,7 @@ package com.quickmaster.processing;
 import com.dspark.analysis.TruePeak;
 import com.dspark.core.OversamplingEngine;
 import com.dspark.effects.MasterEqualizer;
+import com.quickmaster.processing.clip.SaturationProcessor;
 import com.quickmaster.processing.dynamics.leveler.CancellationToken;
 import com.quickmaster.processing.eq.AutoEqProcessor;
 import com.quickmaster.processing.eq.EqualizerProcessor;
@@ -19,6 +20,8 @@ public final class PreviewWindowRenderer {
     private double safetyGain = 1;
     /** Programme an Auto EQ of new settings hears before the window it is auditioned on. */
     static final double AUTO_EQ_SETTLING_SECONDS = 1.5;
+    /** Programme an analog saturation circuit hears before the window it is auditioned on. */
+    static final double ANALOG_SETTLING_SECONDS = 0.6;
 
     public PreviewWindowRenderer(ProcessingPipeline pipeline, float[] source, int rate, int channels, int factor) {
         if (rate <= 0 || channels < 1 || channels > 2 || source.length % channels != 0
@@ -42,6 +45,10 @@ public final class PreviewWindowRenderer {
         // the history is what its analysis settles on before the part heard.
         for (AudioProcessor p : pipeline.getProcessors()) if (p instanceof AutoEqProcessor auto && auto.awaitsRender())
             seconds = Math.max(seconds, AUTO_EQ_SETTLING_SECONDS);
+        // An analog saturation circuit settles its couplings and its supply on what precedes the window.
+        for (AudioProcessor p : pipeline.getProcessors())
+            if (p instanceof SaturationProcessor sat && p.isEnabled() && sat.isAnalogModel())
+                seconds = Math.max(seconds, ANALOG_SETTLING_SECONDS);
         // Finite FIR history is exact; very long IIR/detector histories are a
         // bounded preview approximation, never an export replacement.
         history = (int)Math.ceil(seconds * rate);

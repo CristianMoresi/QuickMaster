@@ -5,16 +5,16 @@ La suite completa incluye pruebas de audio oficial ITU-R BS.2217-1 y EBU LTS 5.0
 ## Build completo
 
 Usar Eclipse Temurin 25.0.4.7 para reproducir el binario auditado de Windows,
-incluida la compilación de DSPark Java 0.2.7. El contrato de aceptación comprueba
+incluida la compilación de DSPark Java 0.2.8. El contrato de aceptación comprueba
 el hash exacto de esa dependencia. Primero, desde la raíz del proyecto:
 
 ```powershell
 .\mvnw.cmd -f vendor/dspark-java/pom.xml clean install
-Get-FileHash vendor/dspark-java/target/dspark-0.2.7.jar -Algorithm SHA256
+Get-FileHash vendor/dspark-java/target/dspark-0.2.8.jar -Algorithm SHA256
 ```
 
-Hash auditado: `94a7700335a7513ff1c2fa69ecb6970a23577dacae5a26da628ffdfb6abd9c6b`,
-idéntico a `libs/dspark-0.2.7.jar`. Un compilador distinto puede producir otros
+Hash auditado: `fc89da3dfdc8ed08c7b2de37f00f9ef3a2e09983488f0c52dae8c81d962e48d6`,
+idéntico a `libs/dspark-0.2.8.jar`. Un compilador distinto puede producir otros
 bytes aun apuntando a Java 17; no se debe cambiar el pin automáticamente para
 sortear una prueba. Fuentes, referencia C++ y comprobaciones independientes en
 [migración DSPark](diagnostics/dspark-java-0.2-migration.md) y corrección de
@@ -33,6 +33,12 @@ versión 0.2.7 le añade dos cuotas, cuánto de lo que subiría sube y cuánto d
 que bajaría baja, que con sus valores por defecto no cambian ninguna salida:
 [subir y bajar 0.2.7](diagnostics/dspark-java-0.2.7-raising-lowering.md). El
 Auto EQ que lo usa se documenta en [Auto EQ](diagnostics/auto-eq-tonal-balance.md).
+La versión 0.2.8 porta completos los circuitos analógicos de DSPark (TapeMachine,
+TubePreamp, TransformerModel, Saturation, MultibandSaturation, CrossoverFilter) y
+las clases en que se apoyan, como clases nuevas; las anteriores no cambian:
+[circuitos analógicos 0.2.8](diagnostics/dspark-java-0.2.8-analog-saturation.md).
+La etapa de saturación que los usa se documenta en
+[saturación analógica](diagnostics/saturation-analog-stage.md).
 Si `mvnw.cmd` no arranca en la consola en uso, sirve cualquier Maven 3.9 con el
 mismo JDK: el binario resultante es idéntico.
 Los binarios históricos se conservan; el portable debe incluir una sola versión
@@ -69,7 +75,7 @@ Después de que la suite completa pase:
 ```powershell
 .\mvnw.cmd -q dependency:copy-dependencies '-DincludeScope=runtime' '-DoutputDirectory=target/app'
 Copy-Item -LiteralPath target/quickmaster.jar -Destination target/app/quickmaster.jar
-& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.3.5 `
+& "$env:JAVA_HOME/bin/jpackage.exe" --type app-image --name QuickMaster --app-version 1.4.0 `
   --vendor 'Cristian Moresi' --input target/app --main-jar quickmaster.jar `
   --main-class com.quickmaster.Launcher --icon docs/icon.ico `
   --add-modules java.base,java.desktop,java.scripting,java.sql,java.logging,java.xml,java.prefs,java.management,java.naming,jdk.jfr,jdk.unsupported,jdk.zipfs,jdk.localedata `

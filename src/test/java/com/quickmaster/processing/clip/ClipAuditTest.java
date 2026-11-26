@@ -1,6 +1,6 @@
 package com.quickmaster.processing.clip;
 
-import com.dspark.effects.Saturation;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,7 +40,7 @@ class ClipAuditTest {
     @Test void softClipMustNotDecorrelateDualMonoWithoutAUserControl() {
         float[] input=new float[96000];
         for(int f=0;f<input.length/2;f++)input[2*f]=input[2*f+1]=(float)(.9*Math.sin(f*.07));
-        SoftClipProcessor p=soft(input,2,3,Saturation.Algorithm.TUBE);
+        SoftClipProcessor p=soft(input,2,3,SaturationType.SINE);
         p.process(input,2);
         for(int f=0;f<input.length/2;f++)assertEquals(input[2*f],input[2*f+1],"frame "+f);
     }
@@ -48,7 +48,7 @@ class ClipAuditTest {
     @Test void aSoftClipMustNotHighPassAnUnclippedBassPassage() {
         float[] input=new float[48000];input[input.length-1]=1;
         for(int i=0;i<input.length-1;i++)input[i]=(float)(.1*Math.sin(2*Math.PI*20*i/48000));
-        SoftClipProcessor p=soft(input,1,1,Saturation.Algorithm.TRANSFORMER);
+        SoftClipProcessor p=soft(input,1,1,SaturationType.GOLDEN);
         float[] output=input.clone();p.process(output,1);
         for(int i=0;i<input.length-1;i++)assertEquals(input[i],output[i],1e-7,"frame "+i);
     }
@@ -60,7 +60,7 @@ class ClipAuditTest {
     }
 
     @Test void softVoicingsHaveNoAsymmetricNearZeroJumpOrGeneratedDcOnSymmetricAudio() {
-        for(Saturation.Algorithm algorithm:Saturation.Algorithm.values())for(double db:new double[]{.001,1,6,12}) {
+        for(SaturationType algorithm:new SaturationType[]{SaturationType.SINE, SaturationType.TANH, SaturationType.GOLDEN})for(double db:new double[]{.001,1,6,12}) {
             float[] source=new float[48000];
             for(int i=0;i<source.length;i++)source[i]=(float)(.9*Math.sin(2*Math.PI*100*i/48000));
             var p=soft(source,1,db,algorithm);float[] out=source.clone();p.process(out,1);
@@ -75,8 +75,8 @@ class ClipAuditTest {
         HardClipProcessor p=new HardClipProcessor();p.setEnabled(true);p.setClipDb(db);p.setCurve(curve);
         p.prepare(48000,input.length);p.analyze(input,channels);return p;
     }
-    static SoftClipProcessor soft(float[] input,int channels,double db,Saturation.Algorithm algorithm) {
-        SoftClipProcessor p=new SoftClipProcessor();p.setEnabled(true);p.setSatDb(db);p.setAlgorithm(algorithm);
+    static SoftClipProcessor soft(float[] input,int channels,double db,SaturationType algorithm) {
+        SoftClipProcessor p=new SoftClipProcessor();p.setEnabled(true);p.setSatDb(db);p.setCurve(algorithm);
         p.prepare(48000,input.length);p.analyze(input,channels);return p;
     }
 }

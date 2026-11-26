@@ -4,7 +4,7 @@ import com.quickmaster.processing.OfflineMetering;
 import com.quickmaster.processing.analysis.TrackAnalysis;
 import com.quickmaster.processing.dynamics.*;
 import com.quickmaster.processing.clip.*;
-import com.dspark.effects.Saturation;
+import com.quickmaster.processing.clip.SaturationType;
 import java.nio.file.*;
 import java.security.*;
 import java.util.*;
@@ -26,7 +26,7 @@ class DynamicsClipsTrackAudit {
         var peak=new PeakCompProcessor();peak.setTrackAnalysis(analysis);peak.setTargetDb(-3);
         var punch=new PunchProcessor();punch.setTrackAnalysis(analysis);punch.setAmountDb(3);
         List<AudioProcessor> stages=new ArrayList<>();stages.add(peak);stages.add(punch);
-        for(var mode:Saturation.Algorithm.values()) {var soft=new SoftClipProcessor();soft.setAlgorithm(mode);soft.setSatDb(3);stages.add(soft);}
+        for(var mode:new SaturationType[]{SaturationType.SINE, SaturationType.TANH, SaturationType.GOLDEN}) {var soft=new SoftClipProcessor();soft.setCurve(mode);soft.setSatDb(3);stages.add(soft);}
         for(var curve:HardClipProcessor.Curve.values()) {var hard=new HardClipProcessor();hard.setCurve(curve);hard.setClipDb(3);stages.add(hard);}
         int count=0;
         for(AudioProcessor stage:stages) {

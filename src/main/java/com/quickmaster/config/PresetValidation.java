@@ -1,9 +1,10 @@
 package com.quickmaster.config;
 
 import com.dspark.effects.MasterEqualizer;
-import com.dspark.effects.Saturation;
 import com.quickmaster.processing.FadeProcessor;
 import com.quickmaster.processing.clip.HardClipProcessor;
+import com.quickmaster.processing.clip.SaturationType;
+import com.quickmaster.processing.clip.TapePreset;
 import com.quickmaster.processing.dynamics.BeatCompProcessor;
 import com.quickmaster.processing.eq.AutoEqProcessor;
 import java.util.HashSet;
@@ -26,7 +27,10 @@ public final class PresetValidation {
         range(p.leveling, 0, 1, "Leveling"); range(p.levelerSpeed, 0, 1, "Leveler speed");
         range(p.punchAmountDb, 0, 12, "Punch"); enumValue(BeatCompProcessor.NoteValue.class, p.beatNote);
         range(p.softClipDb, 0, 12, "Soft clip"); range(p.hardClipDb, 0, 12, "Hard clip");
-        enumValue(Saturation.Algorithm.class, p.softClipAlgo); enumValue(HardClipProcessor.Curve.class, p.hardClipCurve);
+        if (p.softClipAlgo != null && !Set.of("TUBE", "TAPE", "TRANSFORMER").contains(p.softClipAlgo))
+            throw new IllegalArgumentException("Unknown saturation curve: " + p.softClipAlgo);
+        enumValue(SaturationType.class, p.saturationType); enumValue(TapePreset.class, p.tapePreset);
+        enumValue(HardClipProcessor.Curve.class, p.hardClipCurve);
         if (p.mbPushDb == null || p.mbPushDb.length != 4) throw new IllegalArgumentException("Preset requires four multiband values.");
         for (double push : p.mbPushDb) range(push, 0, 6, "Multiband push");
         range(p.bbPushDb, 0, 9, "Broadband push"); range(p.normalizerTargetDbtp, -60, 0, "Peak target");

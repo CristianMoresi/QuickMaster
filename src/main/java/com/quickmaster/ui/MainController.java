@@ -23,8 +23,9 @@ import com.quickmaster.ui.waveform.LevelerRegionEditor;
 import com.quickmaster.processing.limit.MultibandLimiterProcessor;
 import com.quickmaster.processing.limit.BroadbandLimiterProcessor;
 import com.quickmaster.processing.clip.HardClipProcessor;
-import com.quickmaster.processing.clip.SoftClipProcessor;
-import com.dspark.effects.Saturation;
+import com.quickmaster.processing.clip.SaturationProcessor;
+import com.quickmaster.processing.clip.SaturationType;
+import com.quickmaster.processing.clip.TapePreset;
 import com.quickmaster.processing.dynamics.PeakCompProcessor;
 import com.quickmaster.processing.PeakNormalizer;
 import com.quickmaster.processing.ProcessingPipeline;
@@ -63,6 +64,11 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -367,7 +373,7 @@ public class MainController
     private final PeakNormalizer normalizer = new PeakNormalizer();
     private final MultibandLimiterProcessor multiband = new MultibandLimiterProcessor();
     private final BroadbandLimiterProcessor broadband = new BroadbandLimiterProcessor();
-    private final SoftClipProcessor softClip = new SoftClipProcessor();
+    private final SaturationProcessor saturation = new SaturationProcessor();
     private final HardClipProcessor hardClip = new HardClipProcessor();
     private final StereoImageProcessor stereoImage = new StereoImageProcessor();
     private float[] stereoCacheSource;
@@ -765,7 +771,7 @@ public class MainController
         p.addProcessor(beatComp);
         p.addProcessor(leveler);
         p.addProcessor(punch);
-        p.addProcessor(softClip);      // Clip: Soft-Clip (saturation) → Hard-Clip
+        p.addProcessor(saturation);      // Clip: Saturation → Hard-Clip
         p.addProcessor(hardClip);
         p.addProcessor(multiband);     // Limit: multiband then broadband true-peak limiting
         p.addProcessor(broadband);
@@ -3778,9 +3784,9 @@ public class MainController
         chainModules.add(new ChainModule("EQ", List.of(autoEq, eq, fade), eqPanel, eqEnabled));
         chainModules.add(new ChainModule("Stereo Image", List.of(stereoImage), stereoPane, stereoPane.enableBox()));
         chainModules.add(new ChainModule("Dynamics", dynamicsOrder, dynamicsPanel, dynMasterEnabled));
-        // Clip (Soft-Clip → Hard-Clip) then Limit, both movable. The Peak Normalizer
+        // Clip (Saturation → Hard-Clip) then Limit, both movable. The Peak Normalizer
         // is pinned immediately before the Limiter wherever it ends up.
-        chainModules.add(new ChainModule("Clip", List.of(softClip, hardClip), clipPanel, clipEnabled));
+        chainModules.add(new ChainModule("Clip", List.of(saturation, hardClip), clipPanel, clipEnabled));
         chainModules.add(new ChainModule("Limit", List.of(multiband, broadband), limiterPanel, limEnabled));
 
         for (ChainModule m : chainModules)
@@ -3988,7 +3994,9 @@ public class MainController
     private Knob levelingKnob, levelerSpeedKnob, punchKnob;
     private Label levelerDiagnosticLabel;
     private Knob satKnob, clipKnob;
-    private ComboBox<Saturation.Algorithm> satAlgoCombo;
+    private MenuButton satTypeButton;
+    private final ToggleGroup satTypeGroup = new ToggleGroup();
+    private final java.util.Map<String, RadioMenuItem> satTypeItems = new java.util.HashMap<>();
     private ComboBox<HardClipProcessor.Curve> hardCurveCombo;
     private ComboBox<BeatCompProcessor.NoteValue> beatNoteCombo;
     private final Knob[] mbPushKnobs = new Knob[MultibandLimiterProcessor.BANDS];
@@ -4556,7 +4564,7 @@ public class MainController
     }
 
     /* =========================================================
-     *  Clip section: Soft-Clip (saturation) + Hard-Clip
+     *  Clip section: Saturation + Hard-Clip
      * ========================================================= */
 
     private static final class ClipCard
@@ -4579,47 +4587,80 @@ public class MainController
 
     private final List<ClipCard> clipCardList = new ArrayList<>();
 
-    /** Builds the two clip cards (Soft-Clip + Hard-Clip) and wires the master enable. */
+    /** A menu entry choosing a saturation type and, for tape, its alignment. */
+    private RadioMenuItem saturationItem(SaturationType type, TapePreset preset, String text)
+    {
+        RadioMenuItem item = new RadioMenuItem(text);
+        item.setToggleGroup(satTypeGroup);
+        satTypeItems.put(saturationKey(type, preset), item);
+        item.setOnAction(e ->
+        {
+            saturation.setType(type);
+            if (preset != null) saturation.setTapePreset(preset);
+            showSaturation();
+            scheduleDynamicsRefresh();
+        });
+        return item;
+    }
+
+    private static String saturationKey(SaturationType type, TapePreset preset)
+    {
+        return type == SaturationType.TAPE ? type + "/" + preset : type.name();
+    }
+
+    /** Shows the saturation type in its button and ticks its entry. */
+    private void showSaturation()
+    {
+        if (satTypeButton == null) return;
+        SaturationType type = saturation.getType();
+        TapePreset preset = saturation.getTapePreset();
+        satTypeButton.setText(switch (type)
+        {
+            case SINE, TANH, GOLDEN -> "Soft clip: " + type.label();
+            case TAPE -> "Tape: " + preset.label();
+            default -> type.label();
+        });
+        RadioMenuItem item = satTypeItems.get(saturationKey(type, preset));
+        if (item != null) item.setSelected(true);
+    }
+
+    /** Builds the two clip cards (Saturation + Hard-Clip) and wires the master enable. */
     private void initClipUi()
     {
         if (clipCards == null) return;
         clipCardList.clear();
 
-        satKnob = new Knob("Saturate", SoftClipProcessor.MIN_SAT_DB, SoftClipProcessor.MAX_SAT_DB,
-                SoftClipProcessor.DEFAULT_SAT_DB)
+        satKnob = new Knob("Saturate", SaturationProcessor.MIN_SAT_DB, SaturationProcessor.MAX_SAT_DB,
+                SaturationProcessor.DEFAULT_SAT_DB)
                 .formatter(v -> v < 0.05 ? "0.0 dB" : String.format(Locale.US, "-%.1f dB", v))
                 .accent("#b58cf0").scale(2.1)
-                .tooltip("Base-rate peak reduction target through a soft-knee curve. Use Oversampling to reduce aliasing. GR measures this stage before output normalization; reconstructed peaks can differ.");
+                .tooltip("How many dB of peak the saturation takes off, exactly, at the analysis rate. The soft clip curves measure it from the song's peak and keep the body below their knee. The analog models measure it from their own linear response, so their equalization is not counted as clipping, and keep the loudness. Use Oversampling to reduce the aliasing of the curves. GR measures this stage before output normalization; reconstructed peaks can differ.");
         satKnob.valueProperty().addListener((o, ov, nv) ->
         {
-            softClip.setSatDb(nv.doubleValue());
+            saturation.setSatDb(nv.doubleValue());
             scheduleDynamicsRefresh();
         });
-        ComboBox<Saturation.Algorithm> satAlgo = new ComboBox<>();
-        satAlgo.getItems().setAll(Saturation.Algorithm.TUBE, Saturation.Algorithm.TAPE,
-                Saturation.Algorithm.TRANSFORMER);
-        // Retain legacy preset IDs, with explicit names for the corrected,
-        // symmetric DSPark kernels. These are clippers, not circuit emulators.
-        satAlgo.setConverter(new javafx.util.StringConverter<>() {
-            @Override public String toString(Saturation.Algorithm a) {
-                if(a==null)return "";
-                return switch(a) { case TUBE -> "Analog"; case TAPE -> "Soft (tanh)"; case TRANSFORMER -> "Golden knee"; };
-            }
-            @Override public Saturation.Algorithm fromString(String text) {
-                return switch(text) { case "Soft (tanh)" -> Saturation.Algorithm.TAPE;
-                    case "Golden knee" -> Saturation.Algorithm.TRANSFORMER; default -> Saturation.Algorithm.TUBE; };
-            }
-        });
-        satAlgo.setTooltip(new Tooltip("DSPark curves: Analog (sine), Soft (tanh), Golden knee (linear body). All are symmetric; no channel drift or hidden high-pass. Legacy presets retain their selected slot, with corrected curves."));
-        satAlgo.getSelectionModel().select(softClip.getAlgorithm());
-        satAlgo.setPrefWidth(132);
-        satAlgo.valueProperty().addListener((o, ov, nv) ->
-        {
-            if (nv != null) { softClip.setAlgorithm(nv); scheduleDynamicsRefresh(); }
-        });
-        satAlgoCombo = satAlgo;
-        VBox softCard = buildClipCard("Soft-Clip", "#b58cf0", satKnob, satAlgo,
-                pos -> audibleProcessor(softClip).getGrAtPosition(pos), softClip::setEnabled);
+        satTypeButton = new MenuButton();
+        Menu softMenu = new Menu("Soft clip");
+        for (SaturationType t : List.of(SaturationType.SINE, SaturationType.TANH, SaturationType.GOLDEN))
+            softMenu.getItems().add(saturationItem(t, null, t.label()));
+        Menu tapeMenu = new Menu("Tape machine");
+        for (TapePreset preset : TapePreset.values())
+            tapeMenu.getItems().add(saturationItem(SaturationType.TAPE, preset, preset.label()));
+        satTypeButton.getItems().setAll(softMenu, new SeparatorMenuItem(),
+                saturationItem(SaturationType.TUBE_PREAMP, null, SaturationType.TUBE_PREAMP.label()),
+                saturationItem(SaturationType.TRANSFORMER, null, SaturationType.TRANSFORMER.label()),
+                saturationItem(SaturationType.MULTI_STAGE, null, SaturationType.MULTI_STAGE.label()),
+                tapeMenu);
+        satTypeButton.setTooltip(new Tooltip("What lowers the peaks. Soft clip offers DSPark's memoryless curves. "
+                + "Tube preamp, Transformer, Multi-stage and Tape machine are DSPark's analog saturation: the song enters "
+                + "each at its alignment, the drive is solved so the saturation takes off the amount set, measured against "
+                + "the model's own linear response, and the loudness is kept. Tape machine offers typical alignments, "
+                + "from a transparent 30 ips master to a 3.75 ips vintage machine."));
+        satTypeButton.setPrefWidth(160);
+        showSaturation();
+        VBox softCard = buildClipCard("Saturation", "#b58cf0", satKnob, satTypeButton,
+                pos -> audibleProcessor(saturation).getGrAtPosition(pos), saturation::setEnabled);
 
         clipKnob = new Knob("Clip", HardClipProcessor.MIN_CLIP_DB, HardClipProcessor.MAX_CLIP_DB,
                 HardClipProcessor.DEFAULT_CLIP_DB)
@@ -4917,8 +4958,9 @@ public class MainController
         var oldKey = gson.fromJson(approved.settingsKey, com.google.gson.JsonObject.class);
         var newKey = gson.fromJson(next.settingsKey, com.google.gson.JsonObject.class);
         for (String key : new String[]{"eqOn", "eqAutoGain", "bands", "stereoOn", "stereoImage",
-                "autoEqOn", "autoEqAmount", "autoEqCutBoost"}) { oldKey.remove(key); newKey.remove(key); }
-        // EQ / Auto EQ / Stereo Image edits may reuse provisional downstream controls. A/B,
+                "autoEqOn", "autoEqAmount", "autoEqCutBoost", "softClipDb", "softClipAlgo", "saturationType",
+                "tapePreset"}) { oldKey.remove(key); newKey.remove(key); }
+        // EQ / Auto EQ / Stereo Image / Saturation edits may reuse provisional downstream controls. A/B,
         // routing/other-module edits and source changes cannot inherit them.
         if (!oldKey.equals(newKey) || approved.previewContextRevision != previewContextRevision) {
             cancelInteractiveEqPreview(); return;
@@ -4932,7 +4974,7 @@ public class MainController
             for (var entry : next.copies.entrySet()) {
                 AudioProcessor dest = entry.getValue(), src = approved.copies.get(entry.getKey());
                 if (dest instanceof AnalysisDynamicsProcessor d && src instanceof AnalysisDynamicsProcessor a) d.adoptEnvelope(a);
-                if (dest instanceof SoftClipProcessor d && src instanceof SoftClipProcessor a) d.adoptAnalysis(a);
+                if (dest instanceof SaturationProcessor d && src instanceof SaturationProcessor a) d.adoptAnalysis(a);
                 if (dest instanceof HardClipProcessor d && src instanceof HardClipProcessor a) d.adoptAnalysis(a);
                 if (dest instanceof MultibandLimiterProcessor d && src instanceof MultibandLimiterProcessor a) d.adoptPreparedAnalysis(a);
                 if (dest instanceof BroadbandLimiterProcessor d && src instanceof BroadbandLimiterProcessor a) d.adoptPreparedAnalysis(a);
@@ -5048,7 +5090,7 @@ public class MainController
         cancelInteractiveEqPreview();
         if (tonalChanged && s.copies.get(autoEq) instanceof AutoEqProcessor a) autoEq.adopt(a);
         adoptLive(peakComp, s); adoptLive(beatComp, s); adoptLive(leveler, s); adoptLive(punch, s);
-        if (s.copies.get(softClip) instanceof SoftClipProcessor sc) softClip.adoptAnalysis(sc);
+        if (s.copies.get(saturation) instanceof SaturationProcessor sc) saturation.adoptAnalysis(sc);
         if (s.copies.get(hardClip) instanceof HardClipProcessor hc) hardClip.adoptAnalysis(hc);
         if (s.copies.get(stereoImage) instanceof StereoImageProcessor si) stereoImage.adoptPlan(si);
         if (s.copies.get(multiband) instanceof MultibandLimiterProcessor mb) multiband.adoptPreparedAnalysis(mb);
@@ -5316,10 +5358,11 @@ public class MainController
         opunch.setAmountDb(punch.getAmountDb());
         opunch.setEnabled(punch.isEnabled());
 
-        SoftClipProcessor osoft = new SoftClipProcessor();
-        osoft.setSatDb(softClip.getSatDb());
-        osoft.setAlgorithm(softClip.getAlgorithm());
-        osoft.setEnabled(softClip.isEnabled());
+        SaturationProcessor osoft = new SaturationProcessor();
+        osoft.setSatDb(saturation.getSatDb());
+        osoft.setType(saturation.getType());
+        osoft.setTapePreset(saturation.getTapePreset());
+        osoft.setEnabled(saturation.isEnabled());
         HardClipProcessor ohard = new HardClipProcessor();
         ohard.setClipDb(hardClip.getClipDb());
         ohard.setCurve(hardClip.getCurve());
@@ -5343,7 +5386,7 @@ public class MainController
         copies.put(peakComp, opeak); copies.put(beatComp, obeat);
         copies.put(leveler, olev);   copies.put(punch, opunch);
         copies.put(stereoImage, stereoImage.fork());
-        copies.put(softClip, osoft); copies.put(hardClip, ohard);
+        copies.put(saturation, osoft); copies.put(hardClip, ohard);
         copies.put(multiband, omulti); copies.put(broadband, obroad);
 
         // Mirror the live chain order, with the Peak Normalizer pinned last.
@@ -5448,8 +5491,10 @@ public class MainController
 
         p.clipOn = clipEnabled.isSelected();
         p.softClipOn = !clipCardList.isEmpty() && clipCardList.get(0).on.isSelected();
-        p.softClipDb = softClip.getSatDb();
-        p.softClipAlgo = softClip.getAlgorithm().name();
+        p.softClipDb = saturation.getSatDb();
+        p.softClipAlgo = saturation.getType().legacyAlgorithm();
+        p.saturationType = saturation.getType().name();
+        p.tapePreset = saturation.getTapePreset().name();
         p.hardClipOn = clipCardList.size() > 1 && clipCardList.get(1).on.isSelected();
         p.hardClipDb = hardClip.getClipDb();
         p.hardClipCurve = hardClip.getCurve().name();
@@ -5594,9 +5639,9 @@ public class MainController
             if (!clipCardList.isEmpty()) clipCardList.get(0).on.setSelected(p.softClipOn);
             if (clipCardList.size() > 1) clipCardList.get(1).on.setSelected(p.hardClipOn);
             if (satKnob != null) satKnob.setValue(p.softClipDb);
-            if (satAlgoCombo != null)
-                satAlgoCombo.getSelectionModel().select(enumOr(
-                        Saturation.Algorithm.class, p.softClipAlgo, Saturation.Algorithm.TUBE));
+            saturation.setType(SaturationType.fromPreset(p.saturationType, p.softClipAlgo));
+            saturation.setTapePreset(enumOr(TapePreset.class, p.tapePreset, TapePreset.DEFAULT));
+            showSaturation();
             if (clipKnob != null) clipKnob.setValue(p.hardClipDb);
             hardClip.setCurve(enumOr(HardClipProcessor.Curve.class, p.hardClipCurve,
                     HardClipProcessor.Curve.HARD));

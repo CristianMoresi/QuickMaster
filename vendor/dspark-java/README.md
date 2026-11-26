@@ -10,6 +10,19 @@ Version 0.2 incorporates audited kernels from C++ commit
 parity with the entire C++ library. QuickMaster-specific offline dynamics and EQ
 voicing are preserved. See the [migration and numerical validation record](../../docs/diagnostics/dspark-java-0.2-migration.md).
 
+Version 0.2.8 adds DSPark's analog circuits of C++ `14a44cff`, complete:
+`TapeMachine`, `TubePreamp`, `TransformerModel`, the 11-algorithm `Saturation`,
+`MultibandSaturation` and `CrossoverFilter`, with what they stand on (the
+current `Oversampling` engine, `FIRFilter`, `DryWetMixer`, `Hysteresis`,
+`TapeTransport`, `AnalogRandom`, `Smoothers`, `FilterDesign`, `BiquadDesign`,
+`BiquadFilter`, `BiquadCascade`, `NormalizedLadder`, `Adaa`, `Interpolation`,
+the `core.wdf` tone stack, `CabinetModel`, `MidSide`, `DcBlockFilter`). Every
+C++ test assertion on them is ported and passes, and independent line-by-line
+reviews found no difference that changes an output. The Java-only
+rational-knee voicings formerly named `Saturation` are now
+`RationalKneeSaturation`, unchanged. Existing classes keep their behaviour. See
+the [0.2.8 record](../../docs/diagnostics/dspark-java-0.2.8-analog-saturation.md).
+
 Version 0.2.7 gives `TonalBalance` two shares, `setRaising` and `setLowering`:
 how much of what it would raise is raised and of what it would lower is
 lowered, through the balance, the detail, the offset that keeps the loudness

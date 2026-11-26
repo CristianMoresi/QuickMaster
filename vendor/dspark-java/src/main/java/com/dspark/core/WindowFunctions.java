@@ -78,6 +78,34 @@ public final class WindowFunctions
     }
 
     /**
+     * Kaiser window with shape parameter {@code beta}, in the periodic (WOLA)
+     * or the symmetric (FIR design) convention. The symmetric window starts
+     * and ends on the same value, which gives a designed FIR exact linear
+     * phase. A size of 1 produces a unit impulse; a size under 1 writes
+     * nothing.
+     *
+     * @param out       destination
+     * @param size      number of samples
+     * @param beta      shape parameter (typically 0 to 14; accurate to about 30)
+     * @param periodic  true for the periodic window, false for the symmetric one
+     */
+    public static void kaiser(double[] out, int size, double beta, boolean periodic)
+    {
+        if (size <= 0) return;
+        if (size == 1) { out[0] = 1.0; return; }
+        final int n = periodic ? size : size - 1;
+        final double invDenominator = 1.0 / besselI0(beta);
+        for (int i = 0; i < size; i++)
+        {
+            final double x = 2.0 * (double) i / (double) n - 1.0;
+            // Protected against rounding making (1 - x*x) strictly negative.
+            final double r = 1.0 - x * x;
+            final double arg = beta * Math.sqrt(0.0 < r ? r : 0.0);
+            out[i] = besselI0(arg) * invDenominator;
+        }
+    }
+
+    /**
      * Asymmetric window for low-latency analysis: the rising half of a Hann
      * window over the first {@code size - fall} samples and its falling half
      * over the last {@code fall}, so the weight sits on the most recent

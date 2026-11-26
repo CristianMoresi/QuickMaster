@@ -61,6 +61,10 @@ public final class ChainPreset
     public boolean softClipOn;
     public double softClipDb;
     public String softClipAlgo;
+    /** The saturation type (SaturationType); older presets name only a curve, in softClipAlgo. */
+    public String saturationType;
+    /** The tape alignment (TapePreset) when the saturation type is TAPE. */
+    public String tapePreset;
     public boolean hardClipOn;
     public double hardClipDb;
     public String hardClipCurve;

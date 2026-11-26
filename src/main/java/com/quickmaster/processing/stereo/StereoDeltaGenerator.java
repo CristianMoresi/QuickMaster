@@ -1,7 +1,7 @@
 package com.quickmaster.processing.stereo;
 
 import com.dspark.core.OversamplingEngine;
-import com.dspark.effects.Saturation;
+import com.dspark.effects.RationalKneeSaturation;
 
 /** New stereo from moving differential bands, never multiplication of existing Side. */
 final class StereoDeltaGenerator {
@@ -127,7 +127,7 @@ final class StereoDeltaGenerator {
     private static final class Harmonics {
         private static final int BLOCK = 256;
         private final OversamplingEngine os = new OversamplingEngine();
-        private final Saturation tube = new Saturation(), tape = new Saturation();
+        private final RationalKneeSaturation tube = new RationalKneeSaturation(), tape = new RationalKneeSaturation();
         private final float[] input = new float[BLOCK * 2], output = new float[BLOCK * 2];
         private final float[] l, r;
         private final double[] dry;
@@ -138,7 +138,7 @@ final class StereoDeltaGenerator {
             l = new float[BLOCK * factor]; r = new float[BLOCK * factor];
             os.prepare(factor, 2, BLOCK, OversamplingEngine.Quality.MAXIMUM);
             tube.prepare((double)rate * factor, 1); tape.prepare((double)rate * factor, 1);
-            tube.setAlgorithm(Saturation.Algorithm.TUBE); tape.setAlgorithm(Saturation.Algorithm.TAPE);
+            tube.setAlgorithm(RationalKneeSaturation.Algorithm.TUBE); tape.setAlgorithm(RationalKneeSaturation.Algorithm.TAPE);
             tube.setDriveDb(0); tape.setDriveDb(0);
             tube.setCeiling(.08); tape.setCeiling(.08);
             dry = new double[latency()];

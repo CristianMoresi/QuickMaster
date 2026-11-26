@@ -1,7 +1,7 @@
 package com.quickmaster.processing.clip;
 import com.quickmaster.processing.ProcessingPipeline;
 
-import com.dspark.effects.Saturation;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -139,7 +139,7 @@ class ClipProcessorsTest
     {
         SoftClipProcessor p = new SoftClipProcessor();
         p.setEnabled(true);
-        p.setAlgorithm(Saturation.Algorithm.TAPE);
+        p.setCurve(SaturationType.TANH);
         p.setSatDb(2.0);
         p.prepare(SR, 0);
         float[] sig = sine(200.0, 0.8, 8192, 2);
@@ -157,7 +157,7 @@ class ClipProcessorsTest
     {
         SoftClipProcessor p = new SoftClipProcessor();
         p.setEnabled(true);
-        p.setAlgorithm(Saturation.Algorithm.TAPE);
+        p.setCurve(SaturationType.TANH);
         p.setSatDb(0.0);
         p.prepare(SR, 0);
         float[] sig = sine(200.0, 0.8, 8192, 2);

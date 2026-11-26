@@ -1,6 +1,6 @@
 package com.quickmaster.processing.clip;
 
-import com.dspark.effects.Saturation;
+
 import com.quickmaster.audio.WavFile;
 import com.quickmaster.processing.ProcessingPipeline;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ class ClipRenderAuditTest {
         if(kind<2) {
             HardClipProcessor p=new HardClipProcessor();p.setCurve(HardClipProcessor.Curve.values()[kind]);p.setClipDb(db);p.setEnabled(true);return p;
         }
-        SoftClipProcessor p=new SoftClipProcessor();p.setAlgorithm(Saturation.Algorithm.values()[kind-2]);p.setSatDb(db);p.setEnabled(true);return p;
+        SoftClipProcessor p=new SoftClipProcessor();p.setCurve(new SaturationType[]{SaturationType.SINE, SaturationType.TANH, SaturationType.GOLDEN}[kind-2]);p.setSatDb(db);p.setEnabled(true);return p;
     }
     private static double peak(float[] x,int start,int end) {
         double peak=0;for(int i=start;i<end;i++)peak=Math.max(peak,Math.abs(x[i]));return peak;

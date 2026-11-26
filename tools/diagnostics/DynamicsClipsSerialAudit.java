@@ -2,16 +2,16 @@ import com.quickmaster.processing.*;
 import com.quickmaster.processing.analysis.TrackAnalysis;
 import com.quickmaster.processing.dynamics.*;
 import com.quickmaster.processing.clip.*;
-import com.dspark.effects.Saturation;
+import com.quickmaster.processing.clip.SaturationType;
 import java.util.*;
 
 /** Pipeline versus independently staged, ragged-block cumulative processing. */
 class DynamicsClipsSerialAudit {
-    static List<AudioProcessor> stages(TrackAnalysis analysis,Saturation.Algorithm algorithm,HardClipProcessor.Curve curve) {
+    static List<AudioProcessor> stages(TrackAnalysis analysis,SaturationType algorithm,HardClipProcessor.Curve curve) {
         var peak=new PeakCompProcessor();peak.setTrackAnalysis(analysis);peak.setTargetDb(-2);
         var beat=new BeatCompProcessor();beat.setTrackAnalysis(analysis);beat.setTargetDb(-1);
         var punch=new PunchProcessor();punch.setTrackAnalysis(analysis);punch.setAmountDb(3);
-        var soft=new SoftClipProcessor();soft.setAlgorithm(algorithm);soft.setSatDb(3);
+        var soft=new SoftClipProcessor();soft.setCurve(algorithm);soft.setSatDb(3);
         var hard=new HardClipProcessor();hard.setCurve(curve);hard.setClipDb(2);
         List<AudioProcessor> stages=List.of(peak,beat,punch,soft,hard);
         stages.forEach(s->s.setEnabled(true));return stages;
@@ -34,7 +34,7 @@ class DynamicsClipsSerialAudit {
             float[] untouched=source.clone();var analysis=new TrackAnalysis();analysis.analyze(source,channels,rate);
             analysis.setManualBpm(120);
             if(analysis.getTransientTimesSec().length<10)throw new AssertionError("Punch not exercised");
-            for(var algorithm:Saturation.Algorithm.values())for(var curve:HardClipProcessor.Curve.values()) {
+            for(var algorithm:new SaturationType[]{SaturationType.SINE, SaturationType.TANH, SaturationType.GOLDEN})for(var curve:HardClipProcessor.Curve.values()) {
                 var pipeline=new ProcessingPipeline();for(var stage:stages(analysis,algorithm,curve))pipeline.addProcessor(stage);
                 pipeline.prepare(rate,source.length);
                 float[] actual=pipeline.analyzeAndRender(source,channels,0,null,null,null);
