@@ -7,6 +7,31 @@ and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-26
+
+### Added
+
+- The saturation stage (the first card of Clip, now called Saturation) gains
+  DSPark's analog saturation, ported in full to DSPark Java 0.2.8: **Tube
+  preamp** (a 12AX7 stage solved as a circuit, with the supply's sag and a
+  neutral tone stack), **Transformer** (the Saturation effect's core
+  saturation: the low end saturates before the top), **Multi-stage** (tube,
+  tape and transformer in series) and **Tape machine**, a reel-to-reel machine
+  with a physical, AC-biased magnetic core, offered as six typical alignments
+  in a submenu: 30 ips Clean master, 15 ips Master, 15 ips Colored, 7.5 ips
+  Warm, 3.75 ips Vintage and 30 ips Fat. The memoryless curves (sine, tanh and
+  golden knee) stay as they were, under Soft clip; hard clipping stays in the
+  Hard-Clip card. The one control is how many dB of peak the saturation takes
+  off, exactly. With an analog model the song enters at the model's
+  alignment, the reduction is measured against the model's own linear
+  response (its equalization and filters are not counted as clipping), the
+  drive is solved over the whole song so that the most saturated moment
+  loses exactly the amount set, and the loudness leaves as it came; the
+  meter reads that reduction moment by moment, so its deepest reading is the
+  knob's. Wow and flutter, hiss and hum stay off, as a mastering transfer
+  keeps them. Presets store the type and the tape alignment; older presets
+  load with the curve they had.
+
 ### Changed
 
 - Auto EQ is now a tonal balance driven by a model of hearing (the DSPark
